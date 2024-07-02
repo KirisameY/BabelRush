@@ -2,8 +2,6 @@
 
 using BabelRush.Entity;
 
-using Godot;
-
 namespace BabelRush.Action;
 
 public interface IAction
