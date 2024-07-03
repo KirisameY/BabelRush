@@ -1,3 +1,40 @@
+using Godot;
+
 namespace BabelRush;
 
-public static class Game { }
+public partial class Game : Node
+{
+    //Singleton
+    #pragma warning disable CS8618
+    public static Game Instance { get; private set; }
+    #pragma warning restore CS8618
+
+    private Game() => Instance = this;
+
+    
+    //Handle notification here
+    public override void _Notification(int what)
+    {
+        switch ((long)what)
+        {
+            case NotificationWMCloseRequest:
+                OnCloseRequest();
+                break;
+        }
+    }
+
+    //On Game Start
+    public override void _Ready() { }
+
+    //Use this to stop game
+    public void ExitGame()
+    {
+        OnCloseRequest();
+    }
+
+    //Before Game Exit
+    private void OnCloseRequest()
+    {
+        GetTree().Quit();
+    }
+}
