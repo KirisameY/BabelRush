@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-using BabelRush.Entity;
+using BabelRush.Mob;
 
 namespace BabelRush.Action;
 
@@ -9,5 +9,5 @@ public interface IAction
     IActionType Type { get; }
     int Value { get; }
     
-    void Act(IEntity self, IEnumerable<IEntity> targets);
+    void Act(IMob self, IEnumerable<IMob> targets);
 }

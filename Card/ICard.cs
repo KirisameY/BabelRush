@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using BabelRush.Action;
-using BabelRush.Entity;
+using BabelRush.Mob;
 
 namespace BabelRush.Card;
 
@@ -10,5 +10,5 @@ public interface ICard
     ICardType Type { get; }
     List<IAction> Actions { get; }
 
-    void Use(IEnumerable<IEntity> targets);
+    void Use(IEnumerable<IMob> targets);
 }
