@@ -11,7 +11,7 @@ public partial class Game : Node
 
     private Game() => Instance = this;
 
-    
+
     //Handle notification here
     public override void _Notification(int what)
     {
@@ -29,12 +29,10 @@ public partial class Game : Node
     //Use this to stop game
     public void ExitGame()
     {
-        OnCloseRequest();
+        GetTree().Root.PropagateNotification((int)NotificationWMCloseRequest);
+        GetTree().Quit();
     }
 
     //Before Game Exit
-    private void OnCloseRequest()
-    {
-        GetTree().Quit();
-    }
+    private void OnCloseRequest() { }
 }
