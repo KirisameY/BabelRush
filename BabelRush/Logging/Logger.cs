@@ -46,10 +46,13 @@ public sealed class Logger : IDisposable
             _logQueue = logQueue;
             _logFile = InitLogFile();
             _cancellationTokenSource = new();
-            _task = Task.Run(() => WriteLogAsync(_cancellationTokenSource.Token));
+            _task = Task.Run(() => WriteLogAsync(_cancellationTokenSource.Token)).ContinueWith(_ =>
+            {
+                _logFile.Close();
+            }, continuationOptions: TaskContinuationOptions.ExecuteSynchronously);
         }
 
-        private async void WriteLogAsync(CancellationToken cancellationToken)
+        private async Task WriteLogAsync(CancellationToken cancellationToken)
         {
             // ReSharper disable MethodHasAsyncOverloadWithCancellation
             // ReSharper disable MethodHasAsyncOverload
@@ -81,8 +84,12 @@ public sealed class Logger : IDisposable
         {
             DirectoryInfo logDir = new(Project.LogDirPath);
             if (!logDir.Exists) logDir.Create();
-            var logFiles = logDir.EnumerateFiles().OrderByDescending(log => log.Name).ToList();
-            for (int i = logFiles.Count; i > Project.MaxLogFileCount; i--)
+            var logFiles =
+                logDir.EnumerateFiles()
+                      .Where(file => file.Name.Contains(".log"))
+                      .OrderByDescending(log => log.Name)
+                      .ToList();
+            for (int i = logFiles.Count; i > Project.MaxLogFileCount - 1; i--)
             {
                 logFiles[i - 1].Delete();
             }
@@ -92,11 +99,10 @@ public sealed class Logger : IDisposable
             return logFile;
         }
 
-        public void Dispose()
+        public async void Dispose()
         {
-            _cancellationTokenSource.Cancel();
-            _task.Wait();
-            _logFile.Close();
+            await _cancellationTokenSource.CancelAsync();
+            await _task;
         }
     }
 }
