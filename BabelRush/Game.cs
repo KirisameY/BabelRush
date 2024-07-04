@@ -1,3 +1,5 @@
+using BabelRush.Logging;
+
 using Godot;
 
 namespace BabelRush;
@@ -23,16 +25,25 @@ public partial class Game : Node
         }
     }
 
+    //Log
+    public Logger Logger { get; } = new();
+
     //On Game Start
-    public override void _Ready() { }
+    public override void _Ready()
+    {
+        Logger.Log(new(LogLevel.Info,"Start!"));
+    }
 
     //Use this to stop game
     public void ExitGame()
     {
-        GetTree().Root.PropagateNotification((int)NotificationWMCloseRequest);
+        PropagateNotification((int)NotificationWMCloseRequest);
         GetTree().Quit();
     }
 
     //Before Game Exit
-    private void OnCloseRequest() { }
+    private void OnCloseRequest()
+    {
+        Logger.Dispose();
+    }
 }
