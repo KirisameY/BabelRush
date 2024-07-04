@@ -49,8 +49,10 @@ public sealed class Logger : IDisposable
             _task = Task.Run(() => WriteLogAsync(_cancellationTokenSource.Token));
         }
 
-        private void WriteLogAsync(CancellationToken cancellationToken)
+        private async void WriteLogAsync(CancellationToken cancellationToken)
         {
+            // ReSharper disable MethodHasAsyncOverloadWithCancellation
+            // ReSharper disable MethodHasAsyncOverload
             var writer = new StreamWriter(_logFile);
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -60,16 +62,19 @@ public sealed class Logger : IDisposable
                 }
 
                 writer.Flush();
-                Task.Delay(8000, cancellationToken).Wait(CancellationToken.None);
+                try { await Task.Delay(8000, cancellationToken); }
+                catch (TaskCanceledException) { }
             }
 
             while (_logQueue.TryDequeue(out var log))
             {
-                writer.Write($"{log}\n");
+                writer.WriteLine(log);
             }
 
             writer.Flush();
             writer.Close();
+            // ReSharper restore MethodHasAsyncOverload
+            // ReSharper restore MethodHasAsyncOverloadWithCancellation
         }
 
         private static FileStream InitLogFile()
