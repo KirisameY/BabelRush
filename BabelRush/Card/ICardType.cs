@@ -10,8 +10,9 @@ public interface ICardType
 {
     string Name { get; }
     Texture2D Icon { get; }
+    bool Usable { get; }
     int Cost { get; }
-    IList<IAction> Actions { get; }
+    IReadOnlyList<IAction> Actions { get; }
 
     ICard NewInstance();
 }

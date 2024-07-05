@@ -1,0 +1,78 @@
+[gd_scene load_steps=7 format=3 uid="uid://c48624bhp8kkr"]
+
+[sub_resource type="Gradient" id="Gradient_ase1b"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8rbtf"]
+gradient = SubResource("Gradient_ase1b")
+width = 160
+height = 256
+fill_from = Vector2(0, 1)
+
+[sub_resource type="Gradient" id="Gradient_mc62r"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_020be"]
+gradient = SubResource("Gradient_mc62r")
+
+[sub_resource type="LabelSettings" id="LabelSettings_6mtfs"]
+font_size = 18
+outline_size = 1
+outline_color = Color(1, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_ax66c"]
+outline_size = 4
+outline_color = Color(0.299504, 0.494458, 1, 1)
+
+[node name="Card" type="Node2D"]
+
+[node name="Frame" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_8rbtf")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -64.0
+offset_top = -112.0
+offset_right = 64.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("GradientTexture1D_020be")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -73.0
+offset_top = 22.0
+offset_right = 74.0
+offset_bottom = 51.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "CardName"
+label_settings = SubResource("LabelSettings_6mtfs")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label" type="Label" parent="Label"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -46.5
+offset_top = -32.5
+offset_right = 46.5
+offset_bottom = -6.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "N"
+label_settings = SubResource("LabelSettings_ax66c")
+horizontal_alignment = 1
+vertical_alignment = 1

@@ -8,7 +8,7 @@ namespace BabelRush.Card;
 public interface ICard
 {
     ICardType Type { get; }
-    List<IAction> Actions { get; }
+    IList<IAction> Actions { get; }
 
     void Use(IEnumerable<IMob> targets);
 }
