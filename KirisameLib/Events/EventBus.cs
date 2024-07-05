@@ -1,6 +1,4 @@
-using System;
-
-namespace BabelRush.Events;
+namespace KirisameLib.Events;
 
 public static class EventBus
 {

@@ -1,4 +1,4 @@
-﻿namespace BabelRush.Logging;
+﻿namespace KirisameLib.Logging;
 
 public record Log(LogLevel Level, string Message)
 {

@@ -1,6 +1,6 @@
-using BabelRush.Logging;
-
 using Godot;
+
+using KirisameLib.Logging;
 
 namespace BabelRush;
 
@@ -26,7 +26,7 @@ public partial class Game : Node
     }
 
     //Log
-    public Logger Logger { get; } = new(Project.LogDirPath, Project.Name, Project.MaxLogFileCount);
+    public Logger Logger { get; } = new(GD.Print, Project.LogDirPath, Project.Name, Project.MaxLogFileCount);
 
     //On Game Start
     public override void _Ready()
