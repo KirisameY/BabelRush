@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace BabelRush.Action;
+namespace BabelRush.Actions;
 
 public interface IActionType
 {

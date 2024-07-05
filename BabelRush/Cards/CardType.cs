@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 
-using BabelRush.Action;
+using BabelRush.Actions;
 
 using Godot;
 
-namespace BabelRush.Card;
+namespace BabelRush.Cards;
 
 public class CardType(string name, Texture2D icon, bool usable, int cost)
     : ICardType

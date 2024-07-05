@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-using BabelRush.Mob;
+using BabelRush.Mobs;
 
-namespace BabelRush.Action;
+namespace BabelRush.Actions;
 
 public interface IAction
 {

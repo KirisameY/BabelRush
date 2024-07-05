@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 
-using BabelRush.Event;
+using BabelRush.Events;
 
 using Godot;
 
-namespace BabelRush.Test;
+namespace BabelRush.Tests;
 
 public partial class EventBusTest : Node
 {

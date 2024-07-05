@@ -2,7 +2,7 @@ using System;
 
 using Godot;
 
-namespace BabelRush.Card;
+namespace BabelRush.Cards;
 
 [GlobalClass]
 public partial class CardTypeResource : Resource

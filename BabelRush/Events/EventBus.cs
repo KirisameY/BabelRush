@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Reflection;
 
-namespace BabelRush.Event;
+namespace BabelRush.Events;
 
 public static class EventBus
 {
@@ -18,9 +16,16 @@ public static class EventBus
     private static void AddEventHandler<TEvent>(Action<TEvent> handler)
         where TEvent : BaseEvent => HandlerContainer<TEvent>.EventHandler += handler;
 
+    private static void RemoveEventHandler<TEvent>(Action<TEvent> handler)
+        where TEvent : BaseEvent => HandlerContainer<TEvent>.EventHandler -= handler;
 
-    public static void Register<TEvent>(Action<TEvent> handler)
-        where TEvent : BaseEvent => AddEventHandler(handler);
+
+    public static Action Register<TEvent>(Action<TEvent> handler)
+        where TEvent : BaseEvent
+    {
+        AddEventHandler(handler);
+        return () => RemoveEventHandler(handler);
+    }
 
     public static void Publish<TEvent>(TEvent @event)
         where TEvent : BaseEvent

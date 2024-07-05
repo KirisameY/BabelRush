@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-using BabelRush.Action;
+using BabelRush.Actions;
 
 using Godot;
 
-namespace BabelRush.Card;
+namespace BabelRush.Cards;
 
 public interface ICardType
 {

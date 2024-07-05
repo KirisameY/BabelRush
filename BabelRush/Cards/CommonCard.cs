@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-using BabelRush.Action;
-using BabelRush.Mob;
+using BabelRush.Actions;
+using BabelRush.Mobs;
 
-namespace BabelRush.Card;
+namespace BabelRush.Cards;
 
 public class CommonCard(ICardType type) : ICard
 {

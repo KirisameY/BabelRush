@@ -1,4 +1,4 @@
-﻿namespace BabelRush.Mob;
+﻿namespace BabelRush.Mobs;
 
 public interface IMob
 {

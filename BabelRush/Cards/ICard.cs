@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 
-using BabelRush.Action;
-using BabelRush.Mob;
+using BabelRush.Actions;
+using BabelRush.Mobs;
 
-namespace BabelRush.Card;
+namespace BabelRush.Cards;
 
 public interface ICard
 {

@@ -1,4 +1,4 @@
-namespace BabelRush.Event;
+namespace BabelRush.Events;
 
 public class BaseEvent
 {
