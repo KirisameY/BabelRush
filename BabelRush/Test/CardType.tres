@@ -9,4 +9,4 @@ Name = "TestCard"
 Icon = ExtResource("1_kbiko")
 Usable = true
 Cost = 5
-Actions = []
+Actions = PackedStringArray()

@@ -26,12 +26,13 @@ public static class EventBus
         where TEvent : BaseEvent
     {
         var type = typeof(TEvent);
-        do
+        for (;;)
         {
             var handlerContainerType = typeof(HandlerContainer<>).MakeGenericType(type!);
             var invoke = handlerContainerType.GetMethod(nameof(HandlerContainer<BaseEvent>.InvokeHandler));
             invoke!.Invoke(null, [@event]);
+            if (type == typeof(BaseEvent)) break;
             type = type!.BaseType;
-        } while (type != typeof(BaseEvent));
+        }
     }
 }
