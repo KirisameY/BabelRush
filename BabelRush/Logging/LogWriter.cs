@@ -16,10 +16,10 @@ public partial class Logger
         private readonly CancellationTokenSource _cancellationTokenSource;
         private readonly Task _task;
 
-        public LogWriter(ConcurrentQueue<Log> logQueue)
+        public LogWriter(ConcurrentQueue<Log> logQueue, string logDirPath, string logFileName, int maxLogFileCount)
         {
             _logQueue = logQueue;
-            _logFile = InitLogFile();
+            _logFile = InitLogFile(logDirPath, logFileName, maxLogFileCount);
             _cancellationTokenSource = new();
             _task = Task.Run(() => WriteLogAsync(_cancellationTokenSource.Token)).ContinueWith(_ =>
             {
@@ -55,21 +55,21 @@ public partial class Logger
             // ReSharper restore MethodHasAsyncOverloadWithCancellation
         }
 
-        private static FileStream InitLogFile()
+        private static FileStream InitLogFile(string logDirPath, string logFileName, int maxLogFileCount)
         {
-            DirectoryInfo logDir = new(Project.LogDirPath);
+            DirectoryInfo logDir = new(logDirPath);
             if (!logDir.Exists) logDir.Create();
             var logFiles =
                 logDir.EnumerateFiles()
                       .Where(file => file.Name.Contains(".log"))
                       .OrderByDescending(log => log.Name)
                       .ToList();
-            for (int i = logFiles.Count; i > Project.MaxLogFileCount - 1; i--)
+            for (int i = logFiles.Count; i > maxLogFileCount - 1; i--)
             {
                 logFiles[i - 1].Delete();
             }
 
-            var filePath = $"{Project.LogDirPath}/{Project.Name}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.log";
+            var filePath = $"{logDirPath}/{logFileName}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.log";
             var logFile = File.Open(filePath, FileMode.OpenOrCreate);
             return logFile;
         }

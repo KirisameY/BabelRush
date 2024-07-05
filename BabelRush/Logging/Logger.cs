@@ -13,9 +13,9 @@ public sealed partial class Logger : IDisposable
     private readonly ConcurrentQueue<Log> _logQueue = [];
     private readonly LogWriter _writer;
 
-    public Logger()
+    public Logger(string logDirPath, string logFileName, int maxLogFileCount)
     {
-        _writer = new(_logQueue);
+        _writer = new(_logQueue,logDirPath,logFileName,maxLogFileCount);
     }
 
     public void Dispose()

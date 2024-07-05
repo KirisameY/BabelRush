@@ -26,12 +26,12 @@ public partial class Game : Node
     }
 
     //Log
-    public Logger Logger { get; } = new();
+    public Logger Logger { get; } = new(Project.LogDirPath, Project.Name, Project.MaxLogFileCount);
 
     //On Game Start
     public override void _Ready()
     {
-        Logger.Log(new(LogLevel.Info,"Start!"));
+        Logger.Log(new(LogLevel.Info, "Start!"));
     }
 
     //Use this to stop game
