@@ -1,6 +1,3 @@
 namespace KirisameLib.Events;
 
-public class BaseEvent
-{
-    
-}
+public record BaseEvent;

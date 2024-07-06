@@ -40,13 +40,7 @@ public partial class EventBusTest : Node
     }
 
 
-    class TestEvent1(string msg) : BaseEvent
-    {
-        public string Msg { get; set; } = msg;
-    }
+    private record TestEvent1(string Msg) : BaseEvent;
 
-    class TestEvent2(string msg, string msg2) : TestEvent1(msg)
-    {
-        public string Msg2 { get; set; } = msg2;
-    }
+    private record TestEvent2(string Msg, string Msg2) : TestEvent1(Msg);
 }
