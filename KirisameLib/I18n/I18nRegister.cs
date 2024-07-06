@@ -1,10 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 using KirisameLib.Register;
 
 namespace KirisameLib.I18n;
 
 // ReSharper disable once InconsistentNaming
 public class I18nRegister<T>(string defaultLocal, IRegister<T> defaultRegister) : IRegister<T>
-    where T : class
+
 {
     private Dictionary<string, Dictionary<string, T>> LocalRegisterDict { get; } = [];
     private string DefaultLocal { get; } = defaultLocal;
@@ -26,15 +28,16 @@ public class I18nRegister<T>(string defaultLocal, IRegister<T> defaultRegister) 
 
     public T GetItem(string id)
     {
-        var result = GetItemInLocal(LocalSettings.Local, id);
-        result ??= GetItemInLocal(DefaultLocal, id);
-        result ??= DefaultRegister.GetItem(id);
-        return result;
+        if (GetItemInLocal(LocalSettings.Local, id, out var item)) return item;
+        if (GetItemInLocal(DefaultLocal,        id, out item)) return item;
+        return DefaultRegister.GetItem(id);
     }
 
-    private T? GetItemInLocal(string local, string id)
+    private bool GetItemInLocal(string local, string id, [NotNullWhen(true)] out T? item)
     {
-        LocalRegisterDict.TryGetValue(LocalSettings.Local, out var regDict);
-        return regDict?.GetValueOrDefault(id);
+        item = default(T);
+        if (!LocalRegisterDict.TryGetValue(local, out var regDict))
+            return false;
+        return regDict.TryGetValue(id, out item);
     }
 }
