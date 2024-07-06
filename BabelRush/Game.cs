@@ -6,10 +6,9 @@ namespace BabelRush;
 
 public partial class Game : Node
 {
-    //Singleton
     #pragma warning disable CS8618
+    //Singleton
     public static Game Instance { get; private set; }
-    #pragma warning restore CS8618
 
     private Game() => Instance = this;
 
@@ -25,13 +24,14 @@ public partial class Game : Node
         }
     }
 
-    //Log
-    public Logger Logger { get; } = new(GD.Print, Project.LogDirPath, Project.Name, Project.MaxLogFileCount);
-
     //On Game Start
     public override void _Ready()
     {
-        Logger.Log(new(LogLevel.Info, "Start!"));
+        //Init logger
+        LogManager.Initialize(GD.Print, Project.LogDirPath, Project.Name, Project.MaxLogFileCount);
+        Logger = LogManager.GetLogger("Root");
+
+        Logger.Log(LogLevel.Info, "Game Start!");
     }
 
     //Use this to stop game
@@ -44,6 +44,9 @@ public partial class Game : Node
     //Before Game Exit
     private void OnCloseRequest()
     {
-        Logger.Dispose();
+        LogManager.Dispose();
     }
+
+    //members
+    private Logger Logger { get; set; }
 }

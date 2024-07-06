@@ -1,32 +1,15 @@
-﻿using System.Collections.Concurrent;
-
-using JetBrains.Annotations;
-
 namespace KirisameLib.Logging;
 
-[MustDisposeResource]
-public sealed partial class Logger : IDisposable
+public class Logger
 {
-    private readonly ConcurrentQueue<Log> _logQueue = [];
-    private readonly LogWriter _writer;
-
-    private readonly Action<string> _runtimePrinter;
-
-    public Logger(Action<string> runtimePrinter, string logDirPath, string logFileName, int maxLogFileCount)
+    internal Logger(string source, Action<Log> logAction)
     {
-        _writer = new(_logQueue, logDirPath, logFileName, maxLogFileCount);
-        _runtimePrinter = runtimePrinter;
+        Source = source;
+        LogAction = logAction;
     }
 
-    public void Dispose()
-    {
-        _writer.Dispose();
-    }
+    public string Source { get; init; }
+    private Action<Log> LogAction { get; init; }
 
-    //Operation
-    public void Log(Log log)
-    {
-        _runtimePrinter(log.ToString());
-        _logQueue.Enqueue(log);
-    }
+    public void Log(LogLevel level, string message) => LogAction(new Log(level, Source, message));
 }

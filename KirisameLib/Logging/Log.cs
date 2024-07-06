@@ -1,9 +1,11 @@
 ﻿namespace KirisameLib.Logging;
 
-public record Log(LogLevel Level, string Message)
+public record Log(LogLevel Level, string Source, string Message)
 {
+    private DateTime Time { get; init; } = DateTime.Now;
+
     public override string ToString() =>
-        $"[{Level}] {Message}";
+        $"{Time:HH:mm:ss.fff}[{Level}][{Source}]:{Message}";
 }
 
 public enum LogLevel

@@ -2,7 +2,7 @@ using System.Collections.Concurrent;
 
 namespace KirisameLib.Logging;
 
-public partial class Logger
+public static partial class LogManager
 {
     private sealed class LogWriter : IDisposable
     {
