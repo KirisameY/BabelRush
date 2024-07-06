@@ -11,12 +11,16 @@ public static partial class LogManager
 
     private static bool Initialized { get; set; } = false;
 
-    public static void Initialize(Action<string> runtimePrinter, string logDirPath, string logFileName, int maxLogFileCount)
+    public static void Initialize(LogLevel minWriteLevel, LogLevel minPrintLevel, Action<string> runtimePrinter, string logDirPath,
+                                  string logFileName, int maxLogFileCount)
     {
         if (Initialized)
         {
             Log(new(LogLevel.Warning, nameof(LogManager), "Request for duplicate initialization of Logger"));
         }
+
+        MinWriteLevel = minWriteLevel;
+        MinPrintLevel = minPrintLevel;
 
         Writer = new(LogQueue, logDirPath, logFileName, maxLogFileCount);
         RuntimePrinter = runtimePrinter;
@@ -47,4 +51,7 @@ public static partial class LogManager
         RuntimePrinter?.Invoke(log.ToString());
         LogQueue.Enqueue(log);
     }
+
+    public static LogLevel MinWriteLevel { get; private set; }
+    public static LogLevel MinPrintLevel { get; private set; }
 }

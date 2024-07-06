@@ -5,7 +5,7 @@ public record Log(LogLevel Level, string Source, string Message)
     private DateTime Time { get; init; } = DateTime.Now;
 
     public override string ToString() =>
-        $"{Time:HH:mm:ss.fff}[{Level}][{Source}]:{Message}";
+        $"{Time:yyyy-MM-dd HH:mm:ss.fff} |{Level}| [{Source}]:{Message}";
 }
 
 public enum LogLevel

@@ -28,10 +28,18 @@ public partial class Game : Node
     public override void _Ready()
     {
         //Init logger
-        LogManager.Initialize(GD.Print, Project.LogDirPath, Project.Name, Project.MaxLogFileCount);
+    #if DEBUG
+        var minWriteLevel = LogLevel.Debug;
+        var minPrintLevel = LogLevel.Debug;
+    #else
+        var minWriteLevel = LogLevel.Info;
+        var minPrintLevel = LogLevel.Warning;
+    #endif
+        LogManager.Initialize(minWriteLevel, minPrintLevel, GD.Print, Project.LogDirPath, Project.Name, Project.MaxLogFileCount);
         Logger = LogManager.GetLogger("Root");
 
-        Logger.Log(LogLevel.Info, "Game Start!");
+        Logger.Log(LogLevel.Debug, "Debug On");
+        Logger.Log(LogLevel.Info,  "Game Start!");
     }
 
     //Use this to stop game
