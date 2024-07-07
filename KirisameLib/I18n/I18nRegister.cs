@@ -6,14 +6,18 @@ using KirisameLib.Register;
 namespace KirisameLib.I18n;
 
 // ReSharper disable once InconsistentNaming
-public class I18nRegister<T>(string defaultLocal, IRegister<T> defaultRegister) : IRegister<T>
-
+public class I18nRegister<T>(IRegister<T> defaultRegister) : IRegister<T>
 {
+    //New
+    public I18nRegister(string registerName, Func<string, T> defaultItemGetter) :
+        this(new CommonRegister<T>(registerName, defaultItemGetter)) { }
+
+    //Member
     public string Name => DefaultRegister.Name;
     private Dictionary<string, Dictionary<string, T>> LocalRegisterDict { get; } = [];
-    private string DefaultLocal { get; } = defaultLocal;
     private IRegister<T> DefaultRegister { get; } = defaultRegister;
 
+    //Register methods
     public bool RegisterLocalizedItem(string local, string id, T item)
     {
         const string loggingProcessName = "LocalRegistering";
@@ -39,10 +43,13 @@ public class I18nRegister<T>(string defaultLocal, IRegister<T> defaultRegister) 
     public T GetItem(string id)
     {
         const string loggingProcessName = "GettingItem";
+
         if (GetItemInLocal(LocalSettings.Local, id, out var item)) return item;
         Logger.Log(LogLevel.Debug, loggingProcessName, $"Item id '{id}' not exist in current local, try to get in default local");
-        if (GetItemInLocal(DefaultLocal, id, out item)) return item;
+
+        if (GetItemInLocal(LocalSettings.DefaultLocal, id, out item)) return item;
         Logger.Log(LogLevel.Debug, loggingProcessName, $"Item id '{id}' not exist in default local, try to get in default register");
+
         return DefaultRegister.GetItem(id);
     }
 
