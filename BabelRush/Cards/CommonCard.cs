@@ -10,7 +10,7 @@ namespace BabelRush.Cards;
 public class CommonCard(ICardType type) : ICard
 {
     public ICardType Type { get; } = type;
-    public IList<IAction> Actions { get; } = type.Actions.ToList();
+    public IList<IAction> Actions { get; } = type.Actions.Select(actionType => actionType.NewInstance()).ToList();
 
     public void Use(IEnumerable<IMob> targets)
     {

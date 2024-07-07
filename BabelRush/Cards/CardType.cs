@@ -6,7 +6,7 @@ using Godot;
 
 namespace BabelRush.Cards;
 
-public class CardType(string id, bool usable, int cost, IReadOnlyList<IAction> actions)
+public class CardType(string id, bool usable, int cost, IReadOnlyList<IActionType> actions)
     : ICardType
 {
     public string Id { get; } = id;
@@ -15,7 +15,7 @@ public class CardType(string id, bool usable, int cost, IReadOnlyList<IAction> a
     public Texture2D Icon => Registers.CardIcon.GetItem(Id);
     public bool Usable { get; } = usable;
     public int Cost { get; } = cost;
-    public IReadOnlyList<IAction> Actions { get; } = actions;
+    public IReadOnlyList<IActionType> Actions { get; } = actions;
 
     public ICard NewInstance()
     {

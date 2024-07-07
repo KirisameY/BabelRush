@@ -14,7 +14,7 @@ public interface ICardType
     Texture2D Icon { get; }
     bool Usable { get; }
     int Cost { get; }
-    IReadOnlyList<IAction> Actions { get; }
+    IReadOnlyList<IActionType> Actions { get; }
 
     ICard NewInstance();
 }
