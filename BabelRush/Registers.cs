@@ -1,5 +1,3 @@
-using System;
-
 using BabelRush.Actions;
 using BabelRush.Cards;
 
