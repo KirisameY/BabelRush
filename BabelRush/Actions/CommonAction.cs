@@ -39,6 +39,14 @@ public class CommonSimpleAction : IAction
         return res;
     }
 
+    public static CommonSimpleAction GetInstance(string id, ActFunc act)
+    {
+        if (Actions.TryGetValue(id, out var res)) return res;
+        res = new(Registers.Actions.GetItem(id), act);
+        Actions.Add(id, res);
+        return res;
+    }
+
 
     public delegate void ActFunc(IMob self, IReadOnlySet<IMob> targets);
 
