@@ -16,5 +16,5 @@ public class ActionType(string id, bool hasValue, Func<IAction> instanceGetter) 
 
 
     public static ActionType Default { get; } =
-        new("default", false, () => CommonSimpleAction.GetInstance(Default, (_, _) => { }));
+        new("default", false, () => CommonSimpleAction.GetInstance("default", (_, _) => { }));
 }
