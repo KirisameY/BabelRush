@@ -10,12 +10,12 @@ namespace BabelRush.Actions;
 
 public class CommonValueAction(IActionType type, int value, CommonValueAction.ActFunc act) : IAction
 {
-    public delegate void ActFunc(IMob self, IEnumerable<IMob> targets, int value);
+    public delegate void ActFunc(IMob self, IReadOnlySet<IMob> targets, int value);
 
     public IActionType Type { get; } = type;
     public int Value { get; } = value;
 
-    public void Act(IMob self, IEnumerable<IMob> targets)
+    public void Act(IMob self, IReadOnlySet<IMob> targets)
     {
         act(self, targets, Value);
     }
@@ -40,14 +40,14 @@ public class CommonSimpleAction : IAction
     }
 
 
-    public delegate void ActFunc(IMob self, IEnumerable<IMob> targets);
+    public delegate void ActFunc(IMob self, IReadOnlySet<IMob> targets);
 
     public IActionType Type { get; }
     public int Value => 0;
 
     private readonly ActFunc _act;
 
-    public void Act(IMob self, IEnumerable<IMob> targets)
+    public void Act(IMob self, IReadOnlySet<IMob> targets)
     {
         _act(self, targets);
     }

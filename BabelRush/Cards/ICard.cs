@@ -10,5 +10,5 @@ public interface ICard
     ICardType Type { get; }
     IList<IAction> Actions { get; }
 
-    void Use(IEnumerable<IMob> targets);
+    void Use(IMob user, IReadOnlySet<IMob> targets);
 }
