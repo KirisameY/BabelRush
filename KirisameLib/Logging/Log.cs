@@ -15,4 +15,5 @@ public enum LogLevel
     Warning,
     Error,
     Fatal,
+    Disable,
 }

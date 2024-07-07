@@ -48,8 +48,10 @@ public static partial class LogManager
 
     private static void Log(Log log)
     {
-        RuntimePrinter?.Invoke(log.ToString());
-        LogQueue.Enqueue(log);
+        if (log.Level >= MinPrintLevel)
+            RuntimePrinter?.Invoke(log.ToString());
+        if (log.Level >= MinWriteLevel)
+            LogQueue.Enqueue(log);
     }
 
     public static LogLevel MinWriteLevel { get; private set; }
