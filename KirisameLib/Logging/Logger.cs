@@ -11,5 +11,5 @@ public class Logger
     public string Source { get; init; }
     private Action<Log> LogAction { get; init; }
 
-    public void Log(LogLevel level, string message) => LogAction(new Log(level, Source, message));
+    public void Log(LogLevel level, string process, string message) => LogAction(new Log(level, Source, process, message));
 }

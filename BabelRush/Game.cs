@@ -38,8 +38,8 @@ public partial class Game : Node
         LogManager.Initialize(minWriteLevel, minPrintLevel, GD.Print, Project.LogDirPath, Project.Name, Project.MaxLogFileCount);
         Logger = LogManager.GetLogger("Root");
 
-        Logger.Log(LogLevel.Debug, "Debug On");
-        Logger.Log(LogLevel.Info,  "Game Start!");
+        Logger.Log(LogLevel.Debug, "Initializing", "Debug On");
+        Logger.Log(LogLevel.Info,  "Initializing", "Game Start!");
     }
 
     //Use this to stop game

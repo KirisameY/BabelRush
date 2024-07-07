@@ -16,7 +16,7 @@ public static partial class LogManager
     {
         if (Initialized)
         {
-            Log(new(LogLevel.Warning, nameof(LogManager), "Request for duplicate initialization of Logger"));
+            Log(new(LogLevel.Warning, nameof(LogManager), "Initializing", "Request for duplicate initialization of Logger"));
         }
 
         MinWriteLevel = minWriteLevel;
