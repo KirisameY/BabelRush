@@ -11,6 +11,7 @@ public class CardType(string id, bool usable, int cost, IReadOnlyList<IAction> a
 {
     public string Id { get; } = id;
     public string Name => Registers.CardName.GetItem(Id);
+    public string Description => Registers.CardDesc.GetItem(Id);
     public Texture2D Icon => Registers.CardIcon.GetItem(Id);
     public bool Usable { get; } = usable;
     public int Cost { get; } = cost;

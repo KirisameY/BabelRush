@@ -23,10 +23,12 @@ public static class Registers
         new CommonRegister<IActionType>(nameof(Actions), _ => ActionType.Default);
 
     //Card
-    public static IRegister<string> CardName { get; set; } =
+    public static IRegister<string> CardName { get; } =
         new I18nRegister<string>(nameof(CardName), id => id);
-    public static IRegister<Texture2D> CardIcon { get; set; } =
+    public static IRegister<string> CardDesc { get; } =
+        new I18nRegister<string>(nameof(CardDesc), _ => "");
+    public static IRegister<Texture2D> CardIcon { get; } =
         new I18nRegister<Texture2D>(nameof(CardIcon), _ => new PlaceholderTexture2D());
-    public static IRegister<ICardType> Cards { get; set; } =
+    public static IRegister<ICardType> Cards { get; } =
         new CommonRegister<ICardType>(nameof(Cards), _ => CardType.Default);
 }
