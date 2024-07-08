@@ -54,6 +54,7 @@ public partial class CardInterface : Node2D
         Visible = true;
         IconNode.Texture = Card.Type.Icon;
         TitleNode.Text = Card.Type.Name;
+        CostNode.Visible = Card.Type.Usable;
         CostNode.Text = Card.Type.Cost.ToString();
     }
 }
