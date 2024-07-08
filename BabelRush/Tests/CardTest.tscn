@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://hjl6mhe24o5x"]
+
+[ext_resource type="Script" path="res://Tests/CardTest.cs" id="1_7d3yq"]
+[ext_resource type="PackedScene" uid="uid://c48624bhp8kkr" path="res://Cards/Card.tscn" id="1_f2j5k"]
+
+[node name="CardTest" type="Node2D"]
+script = ExtResource("1_7d3yq")
+
+[node name="Card" parent="." instance=ExtResource("1_f2j5k")]
+position = Vector2(372, 221)
