@@ -2,6 +2,7 @@ namespace KirisameLib.Numeric;
 
 public interface IModifierType<T> : IComparable<IModifierType<T>>
 {
+    int Order { get; }
     IModifier<T> NewInstance();
 }
 
