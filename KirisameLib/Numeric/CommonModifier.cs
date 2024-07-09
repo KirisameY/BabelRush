@@ -1,13 +1,13 @@
 namespace KirisameLib.Numeric;
 
-public class CommonModifier<TBase, TMod>(IModifierType<TBase, TMod> type, TMod defaultValue) : IModifier<TBase, TMod>
+public class CommonModifier(IModifierType type, double value) : IModifier
 {
-    public IModifierType<TBase, TMod> Type { get; } = type;
-    IModifierType<TBase> IModifier<TBase>.Type => Type;
-    public TMod Value { get; set; } = defaultValue;
+    public IModifierType Type { get; } = type;
+    IModifierType IModifier.Type => Type;
+    public double Value { get; set; } = value;
 
 
-    public void Modify(ref TBase value)
+    public void Modify(ref double value)
     {
         Type.Modify(Value, ref value);
     }

@@ -1,14 +1,8 @@
 namespace KirisameLib.Numeric;
 
-public interface IModifier<T>
+public interface IModifier
 {
-    IModifierType<T> Type { get; }
-    
-    void Modify(ref T value);
-}
-
-public interface IModifier<TBase, TMod> : IModifier<TBase>
-{
-    new IModifierType<TBase, TMod> Type { get; }
-    TMod Value { get; set; }
+    IModifierType Type { get; }
+    double Value { get; set; }
+    void Modify(ref double value);
 }

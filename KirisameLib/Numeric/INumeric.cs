@@ -1,10 +1,10 @@
 namespace KirisameLib.Numeric;
 
-public interface INumeric<T>
+public interface INumeric
 {
-    T BaseValue { get; set; }
-    T FinalValue { get; }
+    double BaseValue { get; set; }
+    double FinalValue { get; }
     
-    void AddModifier(IModifier<T> modifier);
-    void RemoveModifier(IModifier<T> modifier);
+    void AddModifier(IModifier modifier);
+    void RemoveModifier(IModifier modifier);
 }
