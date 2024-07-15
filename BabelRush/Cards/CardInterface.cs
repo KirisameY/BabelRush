@@ -7,10 +7,10 @@ public partial class CardInterface : Node2D
     //Factory
     private CardInterface() { }
 
-    public static CardInterface CreateInstance()
+    public static CardInterface CreateInstance(ICard card)
     {
         var instance = Scene.Instantiate<CardInterface>();
-
+        instance.Card = card;
         return instance;
     }
 
@@ -35,10 +35,10 @@ public partial class CardInterface : Node2D
     public ICard? Card
     {
         get => _card;
-        set
+        private set
         {
             _card = value;
-            Refresh();
+            CallDeferred(MethodName.Refresh);
         }
     }
 

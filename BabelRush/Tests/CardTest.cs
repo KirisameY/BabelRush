@@ -6,8 +6,6 @@ namespace BabelRush.Tests;
 
 public partial class CardTest : Node2D
 {
-    private CardInterface Card => GetNode<CardInterface>("Card");
-
     public override void _Ready()
     {
         CallDeferred(MethodName.Test);
@@ -16,6 +14,13 @@ public partial class CardTest : Node2D
     public void Test()
     {
         var cardTypeList = ResourceLoader.Load<CardTypeResourceList>("res://Tests/CardTypeList.tres");
-        Card.Card = cardTypeList[1].ToCardType().NewInstance();
+        var n = 0;
+        foreach (var cardType in cardTypeList)
+        {
+            var card = CardInterface.CreateInstance(cardType.ToCardType().NewInstance());
+            AddChild(card);
+            card.Position = new(80 + 200 * n, 200);
+            n++;
+        }
     }
 }
