@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://hjl6mhe24o5x"]
+[gd_scene load_steps=4 format=3 uid="uid://hjl6mhe24o5x"]
 
 [ext_resource type="Script" path="res://Tests/CardTest.cs" id="1_7d3yq"]
 [ext_resource type="PackedScene" uid="uid://c48624bhp8kkr" path="res://Cards/Card.tscn" id="1_f2j5k"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rmhyr"]
 
 [node name="CardTest" type="Node2D"]
 script = ExtResource("1_7d3yq")
@@ -9,3 +11,11 @@ script = ExtResource("1_7d3yq")
 [node name="Card" parent="." instance=ExtResource("1_f2j5k")]
 visible = false
 position = Vector2(251, 131)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_left = 228.0
+offset_top = 20.0
+offset_right = 268.0
+offset_bottom = 60.0
+rotation = 0.514937
+texture = SubResource("PlaceholderTexture2D_rmhyr")
