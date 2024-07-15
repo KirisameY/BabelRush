@@ -22,6 +22,6 @@ public partial class CardTypeResource : Resource
     public ICardType ToCardType()
     {
         var actions = Actions.Select(id => Registers.Actions.GetItem(id)).ToList();
-        return new CardType(Id, Usable, Cost, actions);
+        return new CommonCardType(Id, Usable, Cost, actions);
     }
 }

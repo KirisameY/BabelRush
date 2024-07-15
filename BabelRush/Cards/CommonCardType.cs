@@ -6,7 +6,7 @@ using Godot;
 
 namespace BabelRush.Cards;
 
-public class CardType(string id, bool usable, int cost, IReadOnlyList<IActionType> actions)
+public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<IActionType> actions)
     : ICardType
 {
     public string Id { get; } = id;
@@ -24,5 +24,5 @@ public class CardType(string id, bool usable, int cost, IReadOnlyList<IActionTyp
     }
 
 
-    public static CardType Default { get; } = new CardType("default", false, 0, []);
+    public static CommonCardType Default { get; } = new CommonCardType("default", false, 0, []);
 }

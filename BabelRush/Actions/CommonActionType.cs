@@ -4,7 +4,7 @@ using Godot;
 
 namespace BabelRush.Actions;
 
-public class ActionType(string id, bool hasValue, Func<IAction> instanceGetter) : IActionType
+public class CommonActionType(string id, bool hasValue, Func<IAction> instanceGetter) : IActionType
 {
     public string Id { get; } = id;
     public string Name => Registers.ActionName.GetItem(Id);
@@ -15,6 +15,6 @@ public class ActionType(string id, bool hasValue, Func<IAction> instanceGetter) 
     public IAction NewInstance() => instanceGetter();
 
 
-    public static ActionType Default { get; } =
+    public static CommonActionType Default { get; } =
         new("default", false, () => CommonSimpleAction.GetInstance("default", (_, _) => { }));
 }

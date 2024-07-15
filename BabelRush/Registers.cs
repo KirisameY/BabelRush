@@ -18,7 +18,7 @@ public static class Registers
     public static IRegister<Texture2D> ActionIcon { get; } =
         new I18nRegister<Texture2D>(nameof(ActionIcon), _ => new PlaceholderTexture2D());
     public static IRegister<IActionType> Actions { get; } =
-        new CommonRegister<IActionType>(nameof(Actions), _ => ActionType.Default);
+        new CommonRegister<IActionType>(nameof(Actions), _ => CommonActionType.Default);
 
     //Card
     public static IRegister<string> CardName { get; } =
@@ -28,5 +28,5 @@ public static class Registers
     public static IRegister<Texture2D> CardIcon { get; } =
         new I18nRegister<Texture2D>(nameof(CardIcon), _ => new PlaceholderTexture2D());
     public static IRegister<ICardType> Cards { get; } =
-        new CommonRegister<ICardType>(nameof(Cards), _ => CardType.Default);
+        new CommonRegister<ICardType>(nameof(Cards), _ => CommonCardType.Default);
 }
