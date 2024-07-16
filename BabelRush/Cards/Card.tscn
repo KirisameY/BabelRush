@@ -1,8 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://c48624bhp8kkr"]
+[gd_scene load_steps=8 format=3 uid="uid://c48624bhp8kkr"]
 
 [ext_resource type="Script" path="res://Cards/CardInterface.cs" id="1_i3vct"]
 [ext_resource type="Texture2D" uid="uid://c03hxrsu27kje" path="res://Sprites/card/border.png" id="2_o5np5"]
 [ext_resource type="PackedScene" uid="uid://b5ev2jf32dtb5" path="res://Cards/i_cost.tscn" id="3_a0u5r"]
+[ext_resource type="PackedScene" uid="uid://ddk4klce5mvc0" path="res://Cards/i_action.tscn" id="4_g4bhr"]
+[ext_resource type="PackedScene" uid="uid://cs244m70rkrp6" path="res://Cards/i_feature.tscn" id="5_xp502"]
 
 [sub_resource type="Gradient" id="Gradient_mc62r"]
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
@@ -11,6 +13,7 @@ colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 gradient = SubResource("Gradient_mc62r")
 
 [node name="Card" type="Node2D"]
+process_mode = 4
 texture_filter = 1
 script = ExtResource("1_i3vct")
 
@@ -33,3 +36,12 @@ expand_mode = 1
 texture = ExtResource("2_o5np5")
 
 [node name="Cost" parent="." instance=ExtResource("3_a0u5r")]
+
+[node name="Action0" parent="." instance=ExtResource("4_g4bhr")]
+position = Vector2(-26, -27)
+
+[node name="Action1" parent="." instance=ExtResource("4_g4bhr")]
+position = Vector2(10, -27)
+
+[node name="Feature" parent="." instance=ExtResource("5_xp502")]
+position = Vector2(-23, -17)

@@ -1,0 +1,78 @@
+[gd_scene load_steps=5 format=3 uid="uid://cs244m70rkrp6"]
+
+[ext_resource type="Texture2D" uid="uid://bkhgimgw67bn2" path="res://Sprites/card/feature0.png" id="1_epn03"]
+[ext_resource type="Script" path="res://Cards/i_feature.gd" id="2_7r0lo"]
+[ext_resource type="Texture2D" uid="uid://3lr3v65nxrcv" path="res://Sprites/card/feature1.png" id="2_16or5"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_soit6"]
+
+[node name="Feature" type="Sprite2D"]
+texture = ExtResource("1_epn03")
+script = ExtResource("2_7r0lo")
+
+[node name="Icon0" type="TextureRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -9.0
+offset_top = -9.0
+offset_right = -1.0
+offset_bottom = -1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_soit6")
+
+[node name="Feature1" type="Sprite2D" parent="."]
+position = Vector2(0, 9)
+texture = ExtResource("2_16or5")
+
+[node name="Icon1" type="TextureRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -9.0
+offset_right = -1.0
+offset_bottom = 8.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_soit6")
+
+[node name="Feature2" type="Sprite2D" parent="."]
+position = Vector2(0, 18)
+texture = ExtResource("2_16or5")
+
+[node name="Icon2" type="TextureRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -9.0
+offset_top = 9.0
+offset_right = -1.0
+offset_bottom = 17.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_soit6")
+
+[node name="Feature3" type="Sprite2D" parent="."]
+position = Vector2(0, 27)
+texture = ExtResource("2_16or5")
+
+[node name="Icon3" type="TextureRect" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -9.0
+offset_top = 18.0
+offset_right = -1.0
+offset_bottom = 26.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_soit6")

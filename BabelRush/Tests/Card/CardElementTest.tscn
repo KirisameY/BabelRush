@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://b3tjcy4rhjdxh"]
+
+[ext_resource type="PackedScene" uid="uid://b5ev2jf32dtb5" path="res://Cards/i_cost.tscn" id="1_yjupg"]
+[ext_resource type="PackedScene" uid="uid://ddk4klce5mvc0" path="res://Cards/i_action.tscn" id="2_ojm8s"]
+[ext_resource type="PackedScene" uid="uid://cs244m70rkrp6" path="res://Cards/i_feature.tscn" id="3_ttdgc"]
+
+[node name="CardElementTest" type="Node2D"]
+texture_filter = 1
+
+[node name="Cost" parent="." instance=ExtResource("1_yjupg")]
+position = Vector2(32, 29)
+
+[node name="VSlider" type="VSlider" parent="."]
+offset_left = 69.0
+offset_top = 6.0
+offset_right = 85.0
+offset_bottom = 79.0
+min_value = -1.0
+max_value = 7.0
+
+[node name="Action" parent="." instance=ExtResource("2_ojm8s")]
+position = Vector2(27, 141)
+
+[node name="VSlider2" type="VSlider" parent="."]
+offset_left = 69.0
+offset_top = 112.0
+offset_right = 85.0
+offset_bottom = 185.0
+min_value = -1.0
+
+[node name="Feature" parent="." instance=ExtResource("3_ttdgc")]
+position = Vector2(119, 19)
+
+[node name="VSlider3" type="VSlider" parent="."]
+offset_left = 139.0
+offset_top = 3.0
+offset_right = 155.0
+offset_bottom = 76.0
+min_value = -1.0
+max_value = 6.0
+
+[connection signal="value_changed" from="VSlider" to="Cost" method="SetValue"]
+[connection signal="value_changed" from="VSlider2" to="Action" method="SetValue"]
+[connection signal="value_changed" from="VSlider3" to="Feature" method="SetCount"]
