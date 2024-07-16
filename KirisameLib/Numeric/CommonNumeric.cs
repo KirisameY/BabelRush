@@ -1,11 +1,11 @@
 namespace KirisameLib.Numeric;
 
-public class CommonNumeric(double baseValue) : INumeric
+public class CommonNumeric<T>(T baseValue) : INumeric<T>
 {
-    public double BaseValue { get; set; } = baseValue;
-    public double FinalValue => CalculateFinalValue();
+    public T BaseValue { get; set; } = baseValue;
+    public T FinalValue => CalculateFinalValue();
 
-    private double CalculateFinalValue()
+    private T CalculateFinalValue()
     {
         var value = BaseValue;
         foreach (var modifierList in ModifierLists.Values)
@@ -16,9 +16,9 @@ public class CommonNumeric(double baseValue) : INumeric
         return value;
     }
 
-    private SortedList<IModifierType, List<IModifier>> ModifierLists { get; } = [];
+    private SortedList<IModifierType<T>, List<IModifier<T>>> ModifierLists { get; } = [];
 
-    public void AddModifier(IModifier modifier)
+    public void AddModifier(IModifier<T> modifier)
     {
         if (!ModifierLists.TryGetValue(modifier.Type, out var list))
         {
@@ -29,7 +29,7 @@ public class CommonNumeric(double baseValue) : INumeric
         list.Add(modifier);
     }
 
-    public void RemoveModifier(IModifier modifier)
+    public void RemoveModifier(IModifier<T> modifier)
     {
         if (!ModifierLists.TryGetValue(modifier.Type, out var list)) return;
         list.Remove(modifier);

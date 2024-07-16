@@ -1,10 +1,10 @@
 namespace KirisameLib.Numeric;
 
-public interface IModifierType : IComparable<IModifierType>
+public interface IModifierType<T> : IComparable<IModifierType<T>>
 {
-    delegate void ModifyFunc(double mod, ref double value);
+    delegate void ModifyFunc(double mod, ref T value);
 
     ModifyFunc Modify { get; }
     int Order { get; }
-    IModifier NewInstance(double value);
+    IModifier<T> NewInstance(double value);
 }

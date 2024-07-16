@@ -1,12 +1,12 @@
 namespace KirisameLib.Numeric;
 
-public class CommonModifierType(int order, IModifierType.ModifyFunc modify) : IModifierType
+public class CommonModifierType<T>(int order, IModifierType<T>.ModifyFunc modify) : IModifierType<T>
 {
     public int Order { get; } = order;
 
-    public int CompareTo(IModifierType? other) => Order.CompareTo(other?.Order);
+    public int CompareTo(IModifierType<T>? other) => Order.CompareTo(other?.Order);
 
-    public IModifier NewInstance(double value) => new CommonModifier(this, value);
+    public IModifier<T> NewInstance(double value) => new CommonModifier<T>(this, value);
 
-    public IModifierType.ModifyFunc Modify { get; } = modify;
+    public IModifierType<T>.ModifyFunc Modify { get; } = modify;
 }

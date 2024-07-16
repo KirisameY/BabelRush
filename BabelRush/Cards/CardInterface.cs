@@ -1,5 +1,3 @@
-using System.Linq;
-
 using Godot;
 
 using KirisameLib.Logging;
