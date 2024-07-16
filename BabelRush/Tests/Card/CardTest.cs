@@ -2,7 +2,7 @@ using BabelRush.Cards;
 
 using Godot;
 
-namespace BabelRush.Tests;
+namespace BabelRush.Tests.Card;
 
 public partial class CardTest : Node2D
 {
@@ -13,13 +13,13 @@ public partial class CardTest : Node2D
 
     public void Test()
     {
-        var cardTypeList = ResourceLoader.Load<CardTypeResourceList>("res://Tests/CardTypeList.tres");
+        var cardTypeList = ResourceLoader.Load<CardTypeResourceList>("res://Tests/Card/CardTypeList.tres");
         var n = 0;
         foreach (var cardType in cardTypeList)
         {
             var card = CardInterface.CreateInstance(cardType.ToCardType().NewInstance());
             AddChild(card);
-            card.Position = new(80 + 200 * n, 200);
+            card.Position = new(80 + 64 * n, 200);
             n++;
         }
     }

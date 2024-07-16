@@ -9,6 +9,7 @@ namespace BabelRush.Cards;
 public interface ICard
 {
     ICardType Type { get; }
+    int Cost { get; }
     IList<IAction> Actions { get; }
 
     void Use(IMob user, IReadOnlySet<IMob> targets);

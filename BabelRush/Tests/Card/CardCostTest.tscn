@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://b3tjcy4rhjdxh"]
+
+[ext_resource type="PackedScene" uid="uid://b5ev2jf32dtb5" path="res://Cards/i_cost.tscn" id="1_yjupg"]
+
+[node name="CardCost" type="Node2D"]
+texture_filter = 1
+
+[node name="Cost" parent="." instance=ExtResource("1_yjupg")]
+position = Vector2(85, 82)
+
+[node name="VSlider" type="VSlider" parent="."]
+offset_left = 215.0
+offset_top = 48.0
+offset_right = 231.0
+offset_bottom = 121.0
+min_value = -1.0
+max_value = 7.0
+
+[connection signal="value_changed" from="VSlider" to="Cost" method="SetValue"]
