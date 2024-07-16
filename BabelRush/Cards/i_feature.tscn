@@ -6,7 +6,7 @@
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_soit6"]
 
-[node name="Feature" type="Sprite2D"]
+[node name="Features" type="Sprite2D"]
 texture = ExtResource("1_epn03")
 script = ExtResource("2_7r0lo")
 

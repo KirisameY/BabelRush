@@ -57,5 +57,5 @@ position = Vector2(-26, -27)
 [node name="Action1" parent="." instance=ExtResource("4_g4bhr")]
 position = Vector2(10, -27)
 
-[node name="Feature" parent="." instance=ExtResource("5_xp502")]
+[node name="Features" parent="." instance=ExtResource("5_xp502")]
 position = Vector2(-23, -17)
