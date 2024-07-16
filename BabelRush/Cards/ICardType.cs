@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using BabelRush.Actions;
+using BabelRush.Cards.Features;
 
 using Godot;
 
@@ -15,6 +16,7 @@ public interface ICardType
     bool Usable { get; }
     int Cost { get; }
     IReadOnlyList<IActionType> Actions { get; }
+    IReadOnlyList<IFeatureType> Features { get; }
 
     ICard NewInstance();
 }

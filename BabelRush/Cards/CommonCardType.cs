@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 
 using BabelRush.Actions;
+using BabelRush.Cards.Features;
 
 using Godot;
 
 namespace BabelRush.Cards;
 
-public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<IActionType> actions)
+public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<IActionType> actions, IReadOnlyList<IFeatureType> features)
     : ICardType
 {
     public string Id { get; } = id;
@@ -16,6 +17,7 @@ public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<IAct
     public bool Usable { get; } = usable;
     public int Cost { get; } = cost;
     public IReadOnlyList<IActionType> Actions { get; } = actions;
+    public IReadOnlyList<IFeatureType> Features { get; } = features;
 
     public ICard NewInstance()
     {
@@ -24,5 +26,5 @@ public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<IAct
     }
 
 
-    public static CommonCardType Default { get; } = new CommonCardType("default", false, 0, []);
+    public static CommonCardType Default { get; } = new CommonCardType("default", false, 0, [], []);
 }
