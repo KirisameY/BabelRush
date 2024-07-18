@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 using BabelRush.Cards;
 
@@ -28,7 +27,6 @@ public partial class CardField : Control, ICardContainer
 
     //Member
     private List<CardInterface> CardList { get; } = [];
-    private List<Tween> TweenList { get; set; } = [];
 
 
     //Init
@@ -76,7 +74,7 @@ public partial class CardField : Control, ICardContainer
 
     public void CardSelected(CardInterface card)
     {
-        if (Selected is null) Selected = card;
+        Selected = card;
     }
 
     public void CardUnselected(CardInterface card)
