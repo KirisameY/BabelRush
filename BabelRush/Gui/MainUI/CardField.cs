@@ -23,6 +23,7 @@ public partial class CardField : Control, ICardContainer
     private const double InsertInterval = 0.15;
     private const double MoveInterval = 0.2;
     private const double SelectInterval = 0.1;
+    private const double SortingInterval = 0.1;
 
 
     //Member
@@ -95,7 +96,13 @@ public partial class CardField : Control, ICardContainer
         {
             CreateTween().TweenMethod(Callable.From((float y) => @new.SetPositionY(y)),
                                       @new.Position.Y, SelectedCardYOffset, SelectInterval);
+            SortTween?.Kill();
             var newIndex = CardList.IndexOf(@new);
+            for (int i = 0; i < newIndex; i++)
+            {
+                CardList[i].MoveToFront();
+            }
+
             for (int i = CardList.Count - 1; i >= newIndex; i--)
             {
                 CardList[i].MoveToFront();
@@ -103,14 +110,21 @@ public partial class CardField : Control, ICardContainer
         }
         else
         {
-            foreach (var card in CardList)
+            SortTween?.Kill();
+            SortTween = CreateTween();
+            SortTween.TweenCallback(Callable.From(() =>
             {
-                card.MoveToFront();
-            }
+                foreach (var card in CardList)
+                {
+                    card.MoveToFront();
+                }
+            })).SetDelay(SortingInterval);
         }
 
         UpdateCardPosition();
     }
+
+    private Tween? SortTween { get; set; }
 
 
     //UI dynamic
@@ -124,28 +138,9 @@ public partial class CardField : Control, ICardContainer
         var deltaPos = count > 1 ? (rPos - lPos) / (count - 1) : 0;
 
         float[] result = new float[count];
-        if (Selected is null)
+        for (int i = 0; i < count; i++)
         {
-            for (int i = 0; i < count; i++)
-            {
-                result[i] = lPos + i * deltaPos;
-            }
-        }
-        else
-        {
-            var sIndex = SelectedCardIndex;
-            var sPos = result[sIndex] = lPos + sIndex * deltaPos;
-            var lDelta = sIndex > 1 ? (sPos - lPos) / sIndex : 0;
-            var rDelta = (count - sIndex - 1 > 0) ? (rPos - sPos) / (count - sIndex - 1) : 0;
-            for (int i = 0; i < sIndex; i++)
-            {
-                result[i] = lPos + i * lDelta;
-            }
-
-            for (int i = 1; sIndex + i < count; i++)
-            {
-                result[sIndex + i] = sPos + i * rDelta;
-            }
+            result[i] = lPos + i * deltaPos;
         }
 
         return result;
