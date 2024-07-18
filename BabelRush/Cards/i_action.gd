@@ -5,10 +5,12 @@ extends Node2D
 @onready var N1 = $N1
 @onready var Placeholder = $Placeholder
 
-func SetIcon(icon:Texture2D) -> void:
+
+func SetIcon(icon: Texture2D) -> void:
 	Icon.texture = icon
 
-func SetValue(value:int) -> void:
+
+func SetValue(value: int) -> void:
 	if(value<0):
 		N1.visible = false
 		N0.visible = false
@@ -24,10 +26,11 @@ func SetValue(value:int) -> void:
 		N0.visible = true
 		N0.position.x = 14.5
 		Icon.position.x = 0
-		N0.frame = value%10
-		N1.frame = (value/10)%10
+		N0.frame = value %10
+		N1.frame = (value/10) %10
 
-func SetEmpty(empty:bool) -> void:
+
+func SetEmpty(empty: bool) -> void:
 	Icon.visible = !empty
 	N0.visible = !empty
 	N1.visible = !empty

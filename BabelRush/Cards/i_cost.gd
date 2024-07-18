@@ -3,9 +3,10 @@ extends AnimatedSprite2D
 @onready
 var num: AnimatedSprite2D = $NumBase/num;
 @onready
-var points: Array= $Points.get_children();
+var points: Array = $Points.get_children();
 
-func SetValue(value:int) -> void:
+
+func SetValue(value: int) -> void:
 	#base
 	if value<0:
 		frame=1
