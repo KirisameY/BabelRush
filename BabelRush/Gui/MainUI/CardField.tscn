@@ -15,6 +15,7 @@ offset_top = -54.0
 offset_right = 200.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 2
 script = ExtResource("1_swruo")
 
 [node name="Panel" type="Panel" parent="."]
@@ -27,4 +28,4 @@ grow_vertical = 2
 
 [node name="Card" parent="." instance=ExtResource("1_23248")]
 visible = false
-position = Vector2(200, 24)
+position = Vector2(200, 32)

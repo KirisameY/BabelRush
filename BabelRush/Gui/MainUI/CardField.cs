@@ -9,7 +9,7 @@ using Godot;
 
 namespace BabelRush.Gui.MainUI;
 
-public partial class CardField : Control
+public partial class CardField : Control, ICardContainer
 {
     //Const
     private const float LeftPos = 0;
@@ -17,17 +17,17 @@ public partial class CardField : Control
     private const float MidPos = (LeftPos + RightPos) / 2;
     private const float CardRadius = 30;
     private const float CardInterval = 4;
-    private const float CardYOffset = 24;
+    private const float CardYOffset = 32;
+    private const float SelectedCardYOffset = 24;
 
     private const double InsertInterval = 0.15;
     private const double MoveInterval = 0.2;
+    private const double SelectInterval = 0.1;
 
 
     //Member
     private List<CardInterface> CardList { get; } = [];
     private List<Tween> TweenList { get; set; } = [];
-    private CardInterface SelectedCard { get; set; }
-    private int SelectedCardIndex => CardList.IndexOf(SelectedCard);
 
 
     //Init
@@ -40,6 +40,8 @@ public partial class CardField : Control
         CardList.Add(card);
         AddChild(card);
         card.Selectable = false;
+        card.Container = this;
+
         var tween = CreateTween();
         tween.TweenMethod(Callable.From((float y) => card.SetPositionY(y)), card.Position.Y, CardYOffset, InsertInterval);
         tween.TweenCallback(Callable.From(() => card.Selectable = true));
@@ -53,6 +55,65 @@ public partial class CardField : Control
         AddCard(ci);
     }
 
+
+    //Card Select
+    private CardInterface? _selected;
+    private CardInterface? Selected
+    {
+        get => _selected;
+        set
+        {
+            var old = _selected;
+            var @new = value;
+            _selected = value;
+
+            OnSelectChanged(old, @new);
+        }
+    }
+
+    private int SelectedCardIndex => Selected is not null ? CardList.IndexOf(Selected) : -1;
+
+    public void CardSelected(CardInterface card)
+    {
+        if (Selected is null) Selected = card;
+    }
+
+    public void CardUnselected(CardInterface card)
+    {
+        if (Selected == card) Selected = null;
+    }
+
+    private void OnSelectChanged(CardInterface? old, CardInterface? @new)
+    {
+        if (old is not null)
+        {
+            CreateTween().TweenMethod(Callable.From((float y) => old.SetPositionY(y)),
+                                      old.Position.Y, CardYOffset, SelectInterval);
+        }
+
+        if (@new is not null)
+        {
+            CreateTween().TweenMethod(Callable.From((float y) => @new.SetPositionY(y)),
+                                      @new.Position.Y, SelectedCardYOffset, SelectInterval);
+            var newIndex = CardList.IndexOf(@new);
+            for (int i = CardList.Count - 1; i >= newIndex; i--)
+            {
+                CardList[i].MoveToFront();
+            }
+        }
+        else
+        {
+            foreach (var card in CardList)
+            {
+                card.MoveToFront();
+            }
+        }
+
+        UpdateCardPosition();
+    }
+
+
+    //UI dynamic
     private float[] CalculateCardXPosition()
     {
         var count = CardList.Count;
@@ -63,9 +124,28 @@ public partial class CardField : Control
         var deltaPos = count > 1 ? (rPos - lPos) / (count - 1) : 0;
 
         float[] result = new float[count];
-        for (int i = 0; i < count; i++)
+        if (Selected is null)
         {
-            result[i] = lPos + i * deltaPos;
+            for (int i = 0; i < count; i++)
+            {
+                result[i] = lPos + i * deltaPos;
+            }
+        }
+        else
+        {
+            var sIndex = SelectedCardIndex;
+            var sPos = result[sIndex] = lPos + sIndex * deltaPos;
+            var lDelta = sIndex > 1 ? (sPos - lPos) / sIndex : 0;
+            var rDelta = (count - sIndex - 1 > 0) ? (rPos - sPos) / (count - sIndex - 1) : 0;
+            for (int i = 0; i < sIndex; i++)
+            {
+                result[i] = lPos + i * lDelta;
+            }
+
+            for (int i = 1; sIndex + i < count; i++)
+            {
+                result[sIndex + i] = sPos + i * rDelta;
+            }
         }
 
         return result;

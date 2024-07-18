@@ -17,20 +17,6 @@ process_mode = 4
 texture_filter = 1
 script = ExtResource("1_i3vct")
 
-[node name="Box" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -30.0
-offset_top = -34.0
-offset_right = 30.0
-offset_bottom = 36.0
-grow_horizontal = 2
-grow_vertical = 2
-
 [node name="Icon" type="TextureRect" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
@@ -59,3 +45,17 @@ position = Vector2(10, -27)
 
 [node name="Features" parent="." instance=ExtResource("5_xp502")]
 position = Vector2(-23, -17)
+
+[node name="Box" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -30.0
+offset_top = -34.0
+offset_right = 30.0
+offset_bottom = 36.0
+grow_horizontal = 2
+grow_vertical = 2

@@ -114,10 +114,8 @@ public partial class CardInterface : Node2D
     public void SetPositionY(float y) => Position = new(Position.X, y);
 
 
-    //Signal
-    [Signal] public delegate void MouseEnteredEventHandler(CardInterface source);
-
-    [Signal] public delegate void MouseExitedEventHandler(CardInterface source);
+    //Select
+    public ICardContainer? Container { get; set; }
 
     private void InitSignal()
     {
@@ -125,16 +123,24 @@ public partial class CardInterface : Node2D
         boxNode.MouseEntered += () =>
         {
             if (Selectable)
-                EmitSignal(SignalName.MouseEntered, this);
+                Container?.CardSelected(this);
         };
         boxNode.MouseExited += () =>
         {
             if (Selectable)
-                EmitSignal(SignalName.MouseExited, this);
+                Container?.CardUnselected(this);
         };
     }
+
+    public void ResetSignal() { }
 
 
     //Logging
     private static Logger Logger { get; } = LogManager.GetLogger(nameof(CardInterface));
+}
+
+public interface ICardContainer
+{
+    void CardSelected(CardInterface card);
+    void CardUnselected(CardInterface card);
 }
