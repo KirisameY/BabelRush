@@ -1,9 +1,12 @@
+using System.Numerics;
+
 namespace KirisameLib.Numeric;
 
-public class CommonNumeric<T>(T baseValue) : INumeric<T>
+public class ModifiableNumeric<T>(T baseValue) : NumericBase<T>
+    where T : struct, INumber<T>
 {
-    public T BaseValue { get; set; } = baseValue;
-    public T FinalValue => CalculateFinalValue();
+    public override T BaseValue { get; set; } = baseValue;
+    public override T FinalValue => CalculateFinalValue();
 
     private T CalculateFinalValue()
     {
