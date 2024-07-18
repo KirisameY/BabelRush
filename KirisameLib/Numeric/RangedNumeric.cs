@@ -6,16 +6,7 @@ public class RangedNumeric<T>(T minValue = default, T maxValue = default, T valu
     where T : struct, INumber<T>
 {
     public override T BaseValue { get; set; } = value;
-    public override T FinalValue
-    {
-        get
-        {
-            var result = BaseValue;
-            if (result < MinValue) result = MinValue;
-            if (result > MaxValue) result = MaxValue;
-            return result;
-        }
-    }
+    public override T FinalValue => MathSpark.Clamp(BaseValue, MinValue, MaxValue);
 
     public T MinValue { get; set; } = minValue;
     public T MaxValue { get; set; } = maxValue;
