@@ -1,3 +1,5 @@
+using BabelRush.Gui;
+
 using Godot;
 
 using KirisameLib.Logging;
@@ -63,6 +65,8 @@ public partial class CardInterface : Node2D
             CallDeferred(MethodName.Refresh);
         }
     }
+    public bool Selectable { get; set; }
+    public Tween? PosTween { get; set; }
 
 
     //Update
@@ -105,6 +109,11 @@ public partial class CardInterface : Node2D
     }
 
 
+    //Extend
+    public void SetPositionX(float x) => Position = new(x, Position.Y);
+    public void SetPositionY(float y) => Position = new(Position.X, y);
+
+
     //Signal
     [Signal] public delegate void MouseEnteredEventHandler(CardInterface source);
 
@@ -113,8 +122,16 @@ public partial class CardInterface : Node2D
     private void InitSignal()
     {
         var boxNode = GetNode<Control>("Box");
-        boxNode.MouseEntered += () => EmitSignal(SignalName.MouseEntered, this);
-        boxNode.MouseExited += () => EmitSignal(SignalName.MouseExited,   this);
+        boxNode.MouseEntered += () =>
+        {
+            if (Selectable)
+                EmitSignal(SignalName.MouseEntered, this);
+        };
+        boxNode.MouseExited += () =>
+        {
+            if (Selectable)
+                EmitSignal(SignalName.MouseExited, this);
+        };
     }
 
 
