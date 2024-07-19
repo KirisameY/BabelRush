@@ -2,6 +2,8 @@ using BabelRush.Cards;
 
 using Godot;
 
+using CardInterface = BabelRush.Gui.Card.CardInterface;
+
 namespace BabelRush.Tests.Card;
 
 public partial class CardTest : Node2D

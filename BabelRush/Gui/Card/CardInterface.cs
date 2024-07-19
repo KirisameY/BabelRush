@@ -1,8 +1,10 @@
+using BabelRush.Cards;
+
 using Godot;
 
 using KirisameLib.Logging;
 
-namespace BabelRush.Cards;
+namespace BabelRush.Gui.Card;
 
 public partial class CardInterface : Node2D
 {
@@ -23,7 +25,7 @@ public partial class CardInterface : Node2D
         return instance;
     }
 
-    private const string ScenePath = "res://Cards/Card.tscn";
+    private const string ScenePath = "res://Gui/Card/Card.tscn";
     private static PackedScene Scene { get; } = ResourceLoader.Load<PackedScene>(ScenePath);
 
 
