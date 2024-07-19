@@ -1,8 +1,6 @@
 using System;
 using System.Linq;
 
-using BabelRush.Cards;
-
 using Godot;
 
 using CardInterface = BabelRush.Gui.Card.CardInterface;
@@ -11,6 +9,21 @@ namespace BabelRush.Gui.MainUI;
 
 public partial class CardField
 {
+    //Const
+    private const float LeftPos = 0;
+    private const float RightPos = 400;
+    private const float MidPos = (LeftPos + RightPos) / 2;
+    private const float CardRadius = 30;
+    private const float CardInterval = 2;
+    private const float CardYOffset = 32;
+    private const float SelectedCardYOffset = 16;
+
+    private const double InsertInterval = 0.15;
+    private const double MoveInterval = 0.2;
+    private const double SelectInterval = 0.1;
+    private const double SortingInterval = 0.1;
+
+    //Func
     private float[] CalculateCardXPosition()
     {
         var count = CardList.Count;
@@ -40,9 +53,21 @@ public partial class CardField
         }
     }
 
+    private void InsertCard(CardInterface card)
+    {
+        card.YPosTween?.Kill();
+        var tween = card.YPosTween = CreateTween();
+        tween.TweenMethod(Callable.From((float y) => card.SetPositionY(y)), card.Position.Y, CardYOffset, InsertInterval)
+             .SetTrans(Tween.TransitionType.Quart)
+             .SetEase(Tween.EaseType.Out);
+        tween.TweenCallback(Callable.From(() => card.Selectable = true));
+        tween.TweenCallback(Callable.From(SortCards));
+        UpdateCardPosition();
+    }
+
     private void OnSelectChanged(CardInterface? old, CardInterface? @new)
     {
-        if (old is not null)
+        if (old is not null && old.Selectable)
         {
             old.YPosTween?.Kill();
             old.YPosTween = CreateTween();
@@ -50,6 +75,7 @@ public partial class CardField
                .TweenMethod(Callable.From((float y) => old.SetPositionY(y)), old.Position.Y, CardYOffset, SelectInterval)
                .SetTrans(Tween.TransitionType.Quart)
                .SetEase(Tween.EaseType.In);
+            old.YPosTween.TweenCallback(Callable.From(SortCards));
         }
 
         if (@new is not null)
@@ -60,33 +86,33 @@ public partial class CardField
                 .TweenMethod(Callable.From((float y) => @new.SetPositionY(y)), @new.Position.Y, SelectedCardYOffset, SelectInterval)
                 .SetTrans(Tween.TransitionType.Back)
                 .SetEase(Tween.EaseType.Out);
-            SortTween?.Kill();
-            var newIndex = CardList.IndexOf(@new);
-            for (int i = 0; i < newIndex; i++)
+            SortCards();
+        }
+
+        UpdateCardPosition();
+    }
+
+    private void SortCards()
+    {
+        if (Selected is not null)
+        {
+            var selectedIndex = SelectedCardIndex;
+            for (int i = 0; i < selectedIndex; i++)
             {
                 CardList[i].MoveToFront();
             }
 
-            for (int i = CardList.Count - 1; i >= newIndex; i--)
+            for (int i = CardList.Count - 1; i >= selectedIndex; i--)
             {
                 CardList[i].MoveToFront();
             }
         }
         else
         {
-            SortTween?.Kill();
-            SortTween = CreateTween();
-            SortTween.TweenCallback(Callable.From(() =>
+            foreach (var card in CardList)
             {
-                foreach (var card in CardList)
-                {
-                    card.MoveToFront();
-                }
-            })).SetDelay(SortingInterval);
+                card.MoveToFront();
+            }
         }
-
-        UpdateCardPosition();
     }
-
-    private Tween? SortTween { get; set; }
 }

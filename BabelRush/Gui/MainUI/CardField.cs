@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using BabelRush.Cards;
 using BabelRush.Gui.Card;
@@ -13,27 +12,19 @@ namespace BabelRush.Gui.MainUI;
 
 public partial class CardField : Control, ICardContainer
 {
-    //Const
-    private const float LeftPos = 0;
-    private const float RightPos = 400;
-    private const float MidPos = (LeftPos + RightPos) / 2;
-    private const float CardRadius = 30;
-    private const float CardInterval = 2;
-    private const float CardYOffset = 32;
-    private const float SelectedCardYOffset = 16;
-
-    private const double InsertInterval = 0.15;
-    private const double MoveInterval = 0.2;
-    private const double SelectInterval = 0.1;
-    private const double SortingInterval = 0.1;
-
-
     //Member
     private List<CardInterface> CardList { get; } = [];
 
 
     //Init
     public override void _Ready() { }
+
+
+    //Process
+    public override void _Process(double delta)
+    {
+        MovePickedCard();
+    }
 
 
     //Card Operation
@@ -43,13 +34,8 @@ public partial class CardField : Control, ICardContainer
         AddChild(card);
         card.Selectable = false;
         card.Container = this;
-        
-        var tween = card.YPosTween = CreateTween();
-        tween.TweenMethod(Callable.From((float y) => card.SetPositionY(y)), card.Position.Y, CardYOffset, InsertInterval)
-             .SetTrans(Tween.TransitionType.Quart)
-             .SetEase(Tween.EaseType.Out);
-        tween.TweenCallback(Callable.From(() => card.Selectable = true));
-        UpdateCardPosition();
+
+        InsertCard(card);
     }
 
     public void AddCard(ICard card)
@@ -67,6 +53,7 @@ public partial class CardField : Control, ICardContainer
         get => _selected;
         set
         {
+            if (Picked is not null) return;
             var old = _selected;
             var @new = value;
             _selected = value;
@@ -85,5 +72,54 @@ public partial class CardField : Control, ICardContainer
     public void CardUnselected(CardInterface card)
     {
         if (Selected == card) Selected = null;
+    }
+
+    private CardInterface? _picked;
+    private CardInterface? Picked
+    {
+        get => _picked;
+        set
+        {
+            var old = _picked;
+            var @new = value;
+            _picked = value;
+
+            if (old is not null)
+            {
+                old.Selectable = false;
+                InsertCard(old);
+            }
+
+            if (@new is not null) PickUpCard(@new);
+        }
+    }
+
+    public void CardPressed(CardInterface card)
+    {
+        Picked = card;
+    }
+
+    public void CardReleased(CardInterface card)
+    {
+        if (Picked == card) Picked = null;
+    }
+
+    public void CardClicked(CardInterface card) { }
+
+
+    //Card Drag
+    private Vector2 PickOffset { get; set; }
+
+    private void MovePickedCard()
+    {
+        if (Picked is null) return;
+        Picked.Position = GetLocalMousePosition() + PickOffset;
+    }
+
+    private void PickUpCard(CardInterface card)
+    {
+        PickOffset = -card.GetLocalMousePosition();
+        card.XPosTween?.Kill();
+        card.YPosTween?.Kill();
     }
 }

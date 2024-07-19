@@ -125,7 +125,11 @@ public partial class CardInterface : Node2D
         {
             if (_selectable == value) return;
             _selectable = value;
-            if (!_selectable && Selected) Selected = false;
+            if (!_selectable)
+            {
+                Selected = false;
+                Pressed = false;
+            }
         }
     }
 
@@ -135,19 +139,36 @@ public partial class CardInterface : Node2D
         get => _selected;
         private set
         {
-            if (!Selectable) return;
             if (_selected == value) return;
+            if (!Selectable && value) return;
             _selected = value;
             if (_selected) Container?.CardSelected(this);
             else Container?.CardUnselected(this);
         }
     }
 
+    private bool _pressed;
+    public bool Pressed
+    {
+        get => _pressed;
+        private set
+        {
+            if (_pressed == value) return;
+            if (!Selectable && value) return;
+            _pressed = value;
+            if (_pressed) Container?.CardPressed(this);
+            else Container?.CardReleased(this);
+        }
+    }
+
     private void InitSignal()
     {
-        var boxNode = GetNode<Control>("Box");
+        var boxNode = GetNode<Button>("Box");
         boxNode.MouseEntered += () => Selected = true;
         boxNode.MouseExited += () => Selected = false;
+        boxNode.ButtonDown += () => Pressed = true;
+        boxNode.ButtonUp += () => Pressed = false;
+        boxNode.Pressed += () => Container?.CardClicked(this);
     }
 
 
@@ -159,4 +180,7 @@ public interface ICardContainer
 {
     void CardSelected(CardInterface card);
     void CardUnselected(CardInterface card);
+    void CardPressed(CardInterface card);
+    void CardReleased(CardInterface card);
+    void CardClicked(CardInterface card);
 }

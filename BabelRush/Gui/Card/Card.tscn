@@ -13,7 +13,6 @@ colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 gradient = SubResource("Gradient_mc62r")
 
 [node name="Card" type="Node2D"]
-process_mode = 4
 texture_filter = 1
 script = ExtResource("1_i3vct")
 
@@ -46,8 +45,8 @@ position = Vector2(10, -27)
 [node name="Features" parent="." instance=ExtResource("5_xp502")]
 position = Vector2(-23, -17)
 
-[node name="Box" type="Control" parent="."]
-layout_mode = 3
+[node name="Box" type="Button" parent="."]
+self_modulate = Color(1, 1, 1, 0)
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
