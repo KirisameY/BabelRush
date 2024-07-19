@@ -17,7 +17,7 @@ public partial class CardField : Control, ICardContainer
     private const float CardRadius = 30;
     private const float CardInterval = 4;
     private const float CardYOffset = 32;
-    private const float SelectedCardYOffset = 24;
+    private const float SelectedCardYOffset = 16;
 
     private const double InsertInterval = 0.15;
     private const double MoveInterval = 0.2;
@@ -42,7 +42,9 @@ public partial class CardField : Control, ICardContainer
         card.Container = this;
 
         var tween = CreateTween();
-        tween.TweenMethod(Callable.From((float y) => card.SetPositionY(y)), card.Position.Y, CardYOffset, InsertInterval);
+        tween.TweenMethod(Callable.From((float y) => card.SetPositionY(y)), card.Position.Y, CardYOffset, InsertInterval)
+             .SetTrans(Tween.TransitionType.Quart)
+             .SetEase(Tween.EaseType.Out);
         tween.TweenCallback(Callable.From(() => card.Selectable = true));
         UpdateCardPosition();
     }
@@ -87,13 +89,17 @@ public partial class CardField : Control, ICardContainer
         if (old is not null)
         {
             CreateTween().TweenMethod(Callable.From((float y) => old.SetPositionY(y)),
-                                      old.Position.Y, CardYOffset, SelectInterval);
+                                      old.Position.Y, CardYOffset, SelectInterval)
+                         .SetTrans(Tween.TransitionType.Back)
+                         .SetEase(Tween.EaseType.Out);
         }
 
         if (@new is not null)
         {
             CreateTween().TweenMethod(Callable.From((float y) => @new.SetPositionY(y)),
-                                      @new.Position.Y, SelectedCardYOffset, SelectInterval);
+                                      @new.Position.Y, SelectedCardYOffset, SelectInterval)
+                         .SetTrans(Tween.TransitionType.Back)
+                         .SetEase(Tween.EaseType.Out);
             SortTween?.Kill();
             var newIndex = CardList.IndexOf(@new);
             for (int i = 0; i < newIndex; i++)

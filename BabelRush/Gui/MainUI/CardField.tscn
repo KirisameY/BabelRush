@@ -28,4 +28,4 @@ grow_vertical = 2
 
 [node name="Card" parent="." instance=ExtResource("1_23248")]
 visible = false
-position = Vector2(200, 32)
+position = Vector2(200, 16)
