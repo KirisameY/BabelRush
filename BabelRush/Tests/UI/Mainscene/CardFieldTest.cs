@@ -14,10 +14,11 @@ public partial class CardFieldTest : Control
     {
         //Test
         void AddTestCard() => CardField.AddCard(CommonCard.Default);
-        var tween = CreateTween();
-        for (int i = 0; i < 8; i++)
-        {
-            tween.TweenCallback(Callable.From(AddTestCard)).SetDelay(0.1);
-        }
+        // var tween = CreateTween();
+        // for (int i = 0; i < 8; i++)
+        // {
+        //     tween.TweenCallback(Callable.From(AddTestCard)).SetDelay(0.1);
+        // }
+        AddTestCard();
     }
 }

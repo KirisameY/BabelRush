@@ -15,7 +15,7 @@ public partial class CardField : Control, ICardContainer
     private const float RightPos = 400;
     private const float MidPos = (LeftPos + RightPos) / 2;
     private const float CardRadius = 30;
-    private const float CardInterval = 4;
+    private const float CardInterval = 2;
     private const float CardYOffset = 32;
     private const float SelectedCardYOffset = 16;
 

@@ -18,14 +18,15 @@ grow_vertical = 0
 mouse_filter = 2
 script = ExtResource("1_swruo")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="TestPanel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
-[node name="Card" parent="." instance=ExtResource("1_23248")]
+[node name="TempCard" parent="." instance=ExtResource("1_23248")]
 visible = false
 position = Vector2(200, 16)
