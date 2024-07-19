@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3 uid="uid://du070sjdbxoea"]
+
+[ext_resource type="Texture2D" uid="uid://d3tnwovqixtui" path="res://Sprites/mainui/apball_base.png" id="1_x2cbq"]
+[ext_resource type="Texture2D" uid="uid://1uodtdma74ts" path="res://Sprites/mainui/apball_p1.png" id="2_ovrgl"]
+[ext_resource type="Texture2D" uid="uid://d23jpngj7xthl" path="res://Sprites/mainui/apball_p2.png" id="3_pegct"]
+
+[node name="ApBall" type="Control"]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -114.0
+offset_bottom = -72.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="ApballBase" type="Sprite2D" parent="."]
+position = Vector2(240, 20)
+texture = ExtResource("1_x2cbq")
+
+[node name="Point1" type="Sprite2D" parent="."]
+modulate = Color(0.26, 0.889, 1, 1)
+position = Vector2(240, 20)
+texture = ExtResource("2_ovrgl")
+
+[node name="Point2" type="Sprite2D" parent="."]
+modulate = Color(0.26, 0.889, 1, 1)
+self_modulate = Color(0.75, 0.75, 0.75, 1)
+position = Vector2(240, 20)
+texture = ExtResource("3_pegct")
+
+[node name="Point3" type="Sprite2D" parent="."]
+modulate = Color(0.26, 0.889, 1, 1)
+position = Vector2(240, 20)
+texture = ExtResource("2_ovrgl")
+flip_v = true
+
+[node name="Point4" type="Sprite2D" parent="."]
+modulate = Color(0.26, 0.889, 1, 1)
+self_modulate = Color(0.75, 0.75, 0.75, 1)
+position = Vector2(240, 20)
+texture = ExtResource("2_ovrgl")
+flip_h = true
+flip_v = true
+
+[node name="Point5" type="Sprite2D" parent="."]
+modulate = Color(0.26, 0.889, 1, 1)
+position = Vector2(240, 20)
+texture = ExtResource("3_pegct")
+flip_h = true
+
+[node name="Point6" type="Sprite2D" parent="."]
+modulate = Color(0.26, 0.889, 1, 1)
+self_modulate = Color(0.75, 0.75, 0.75, 1)
+position = Vector2(240, 20)
+texture = ExtResource("2_ovrgl")
+flip_h = true
