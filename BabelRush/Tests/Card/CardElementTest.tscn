@@ -28,6 +28,12 @@ offset_right = 85.0
 offset_bottom = 185.0
 min_value = -1.0
 
+[node name="CheckButton" type="CheckButton" parent="."]
+offset_left = 15.0
+offset_top = 160.0
+offset_right = 59.0
+offset_bottom = 184.0
+
 [node name="Feature" parent="." instance=ExtResource("3_ttdgc")]
 position = Vector2(119, 19)
 
@@ -41,4 +47,5 @@ max_value = 6.0
 
 [connection signal="value_changed" from="VSlider" to="Cost" method="SetValue"]
 [connection signal="value_changed" from="VSlider2" to="Action" method="SetValue"]
+[connection signal="toggled" from="CheckButton" to="Action" method="SetEmpty"]
 [connection signal="value_changed" from="VSlider3" to="Feature" method="SetCount"]

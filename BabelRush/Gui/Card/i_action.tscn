@@ -19,17 +19,20 @@ offset_bottom = 4.0
 grow_vertical = 2
 texture = SubResource("PlaceholderTexture2D_0dk8s")
 
-[node name="N0" type="AnimatedSprite2D" parent="."]
+[node name="Num" type="Node2D" parent="."]
+
+[node name="N0" type="AnimatedSprite2D" parent="Num"]
 self_modulate = Color(0.25, 0.25, 0.25, 1)
 position = Vector2(14.5, 0.5)
 sprite_frames = ExtResource("2_my8ck")
 
-[node name="N1" type="AnimatedSprite2D" parent="."]
+[node name="N1" type="AnimatedSprite2D" parent="Num"]
 self_modulate = Color(0.25, 0.25, 0.25, 1)
 position = Vector2(10.5, 0.5)
 sprite_frames = ExtResource("2_my8ck")
 
 [node name="Placeholder" type="Sprite2D" parent="."]
+visible = false
 self_modulate = Color(0.25, 0.25, 0.25, 1)
 position = Vector2(8, 1)
 texture = ExtResource("3_6l5h4")

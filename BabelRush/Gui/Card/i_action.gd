@@ -1,8 +1,9 @@
 extends Node2D
 
 @onready var Icon = $Icon
-@onready var N0 = $N0
-@onready var N1 = $N1
+@onready var Num = $Num
+@onready var N0 = $Num/N0
+@onready var N1 = $Num/N1
 @onready var Placeholder = $Placeholder
 
 
@@ -32,6 +33,5 @@ func SetValue(value: int) -> void:
 
 func SetEmpty(empty: bool) -> void:
 	Icon.visible = !empty
-	N0.visible = !empty
-	N1.visible = !empty
+	Num.visible = !empty
 	Placeholder.visible = empty
