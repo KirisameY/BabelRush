@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3 uid="uid://cv0ylp4dqbds1"]
+
+[ext_resource type="Script" path="res://Tests/UI/Mainscene/MainSceneUiTest.cs" id="1_d5lrs"]
+[ext_resource type="PackedScene" uid="uid://c202t6rhh7t1u" path="res://Gui/MainUI/MainUI.tscn" id="2_fl4i0"]
+
+[node name="MainSceneUiTest" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_d5lrs")
+
+[node name="MainUi" parent="." instance=ExtResource("2_fl4i0")]
+layout_mode = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 445.0
+offset_top = 217.0
+offset_right = 459.0
+offset_bottom = 228.0
+
+[node name="HSlider" type="HSlider" parent="."]
+layout_mode = 0
+offset_left = 275.0
+offset_top = 154.0
+offset_right = 394.0
+offset_bottom = 170.0
+min_value = -1.0
+max_value = 20.0
+
+[connection signal="pressed" from="Button" to="." method="Test"]
