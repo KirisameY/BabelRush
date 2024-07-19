@@ -117,6 +117,7 @@ public partial class CardInterface : Node2D
     //Select
     public ICardContainer? Container { get; set; }
 
+    private bool _preSelected, _prePressed;
     private bool _selectable;
     public bool Selectable
     {
@@ -125,7 +126,12 @@ public partial class CardInterface : Node2D
         {
             if (_selectable == value) return;
             _selectable = value;
-            if (!_selectable)
+            if (_selectable)
+            {
+                Selected = _preSelected;
+                Pressed = _prePressed;
+            }
+            else
             {
                 Selected = false;
                 Pressed = false;
@@ -141,6 +147,7 @@ public partial class CardInterface : Node2D
         {
             if (_selected == value) return;
             if (!Selectable && value) return;
+
             _selected = value;
             if (_selected) Container?.CardSelected(this);
             else Container?.CardUnselected(this);
@@ -155,6 +162,7 @@ public partial class CardInterface : Node2D
         {
             if (_pressed == value) return;
             if (!Selectable && value) return;
+
             _pressed = value;
             if (_pressed) Container?.CardPressed(this);
             else Container?.CardReleased(this);
@@ -164,10 +172,10 @@ public partial class CardInterface : Node2D
     private void InitSignal()
     {
         var boxNode = GetNode<Button>("Box");
-        boxNode.MouseEntered += () => Selected = true;
-        boxNode.MouseExited += () => Selected = false;
-        boxNode.ButtonDown += () => Pressed = true;
-        boxNode.ButtonUp += () => Pressed = false;
+        boxNode.MouseEntered += () => Selected = _preSelected = true;
+        boxNode.MouseExited += () => Selected = _preSelected = false;
+        boxNode.ButtonDown += () => Pressed = _prePressed = true;
+        boxNode.ButtonUp += () => Pressed = _prePressed = false;
         boxNode.Pressed += () => Container?.CardClicked(this);
     }
 

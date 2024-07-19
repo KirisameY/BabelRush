@@ -36,6 +36,7 @@ public partial class CardField : Control, ICardContainer
         card.Container = this;
 
         InsertCard(card);
+        UpdateCardPosition();
     }
 
     public void AddCard(ICard card)

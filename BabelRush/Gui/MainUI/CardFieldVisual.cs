@@ -88,8 +88,6 @@ public partial class CardField
                 .SetEase(Tween.EaseType.Out);
             SortCards();
         }
-
-        UpdateCardPosition();
     }
 
     private void SortCards()
