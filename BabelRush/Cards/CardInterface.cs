@@ -63,8 +63,8 @@ public partial class CardInterface : Node2D
             CallDeferred(MethodName.Refresh);
         }
     }
-    public bool Selectable { get; set; }
-    public Tween? PosTween { get; set; }
+    public Tween? XPosTween { get; set; }
+    public Tween? YPosTween { get; set; }
 
 
     //Update
@@ -115,22 +115,38 @@ public partial class CardInterface : Node2D
     //Select
     public ICardContainer? Container { get; set; }
 
+    private bool _selectable;
+    public bool Selectable
+    {
+        get => _selectable;
+        set
+        {
+            if (_selectable == value) return;
+            _selectable = value;
+            if (!_selectable && Selected) Selected = false;
+        }
+    }
+
+    private bool _selected;
+    public bool Selected
+    {
+        get => _selected;
+        private set
+        {
+            if (!Selectable) return;
+            if (_selected == value) return;
+            _selected = value;
+            if (_selected) Container?.CardSelected(this);
+            else Container?.CardUnselected(this);
+        }
+    }
+
     private void InitSignal()
     {
         var boxNode = GetNode<Control>("Box");
-        boxNode.MouseEntered += () =>
-        {
-            if (Selectable)
-                Container?.CardSelected(this);
-        };
-        boxNode.MouseExited += () =>
-        {
-            if (Selectable)
-                Container?.CardUnselected(this);
-        };
+        boxNode.MouseEntered += () => Selected = true;
+        boxNode.MouseExited += () => Selected = false;
     }
-
-    public void ResetSignal() { }
 
 
     //Logging
