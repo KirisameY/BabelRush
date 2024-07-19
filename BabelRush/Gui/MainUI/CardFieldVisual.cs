@@ -21,7 +21,6 @@ public partial class CardField
     private const double InsertInterval = 0.15;
     private const double MoveInterval = 0.2;
     private const double SelectInterval = 0.1;
-    private const double SortingInterval = 0.1;
 
     //Func
     private float[] CalculateCardXPosition()
