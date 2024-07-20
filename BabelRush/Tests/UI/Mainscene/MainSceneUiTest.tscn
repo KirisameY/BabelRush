@@ -24,10 +24,10 @@ offset_bottom = 228.0
 
 [node name="HSlider" type="HSlider" parent="."]
 layout_mode = 0
-offset_left = 275.0
-offset_top = 154.0
-offset_right = 394.0
-offset_bottom = 170.0
+offset_left = 287.0
+offset_top = 169.0
+offset_right = 406.0
+offset_bottom = 185.0
 min_value = -1.0
 max_value = 20.0
 
