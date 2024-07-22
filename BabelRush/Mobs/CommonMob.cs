@@ -1,9 +1,7 @@
 namespace BabelRush.Mobs;
 
-public class CommonMob : IMob
+public class CommonMob : Mob
 {
-    public int Health { get; set; }
-    public int Shield { get; set; }
-
-    public static CommonMob Default { get; } = new();
+    public override int Health { get; set; }
+    public override int Shield { get; set; }
 }

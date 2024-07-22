@@ -4,30 +4,30 @@ using BabelRush.Mobs;
 
 namespace BabelRush.Actions;
 
-public class CommonValueAction(IActionType type, int value, CommonValueAction.ActFunc act) : IAction
+public class CommonValueAction(ActionType type, int value, CommonValueAction.ActFunc act) : Action
 {
-    public delegate void ActFunc(IMob self, IReadOnlySet<IMob> targets, int value);
+    public delegate void ActFunc(Mob self, IReadOnlySet<Mob> targets, int value);
 
-    public IActionType Type { get; } = type;
-    public int Value { get; } = value;
+    public override ActionType Type { get; } = type;
+    public override int Value { get; } = value;
 
-    public void Act(IMob self, IReadOnlySet<IMob> targets)
+    public override void Act(Mob self, IReadOnlySet<Mob> targets)
     {
         act(self, targets, Value);
     }
 }
 
-public class CommonSimpleAction : IAction
+public class CommonSimpleAction : Action
 {
     private static Dictionary<string, CommonSimpleAction> Actions { get; } = [];
 
-    private CommonSimpleAction(IActionType type, ActFunc act)
+    private CommonSimpleAction(ActionType type, ActFunc act)
     {
         Type = type;
         _act = act;
     }
 
-    public static CommonSimpleAction GetInstance(IActionType type, ActFunc act)
+    public static CommonSimpleAction GetInstance(ActionType type, ActFunc act)
     {
         if (Actions.TryGetValue(type.Id, out var res)) return res;
         res = new(type, act);
@@ -44,14 +44,14 @@ public class CommonSimpleAction : IAction
     }
 
 
-    public delegate void ActFunc(IMob self, IReadOnlySet<IMob> targets);
+    public delegate void ActFunc(Mob self, IReadOnlySet<Mob> targets);
 
-    public IActionType Type { get; }
-    public int Value => 0;
+    public override ActionType Type { get; }
+    public override int Value => 0;
 
     private readonly ActFunc _act;
 
-    public void Act(IMob self, IReadOnlySet<IMob> targets)
+    public override void Act(Mob self, IReadOnlySet<Mob> targets)
     {
         _act(self, targets);
     }

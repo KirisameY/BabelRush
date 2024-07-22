@@ -7,24 +7,21 @@ using Godot;
 
 namespace BabelRush.Cards;
 
-public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<IActionType> actions, IReadOnlyList<IFeatureType> features)
-    : ICardType
+public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<ActionType> actions, IReadOnlyList<FeatureType> features)
+    : CardType
 {
-    public string Id { get; } = id;
-    public string Name => Registers.CardName.GetItem(Id);
-    public string Description => Registers.CardDesc.GetItem(Id);
-    public Texture2D Icon => Registers.CardIcon.GetItem(Id);
-    public bool Usable { get; } = usable;
-    public int Cost { get; } = cost;
-    public IReadOnlyList<IActionType> Actions { get; } = actions;
-    public IReadOnlyList<IFeatureType> Features { get; } = features;
+    public override string Id { get; } = id;
+    public override string Name => Registers.CardName.GetItem(Id);
+    public override string Description => Registers.CardDesc.GetItem(Id);
+    public override Texture2D Icon => Registers.CardIcon.GetItem(Id);
+    public override bool Usable { get; } = usable;
+    public override int Cost { get; } = cost;
+    public override IReadOnlyList<ActionType> Actions { get; } = actions;
+    public override IReadOnlyList<FeatureType> Features { get; } = features;
 
-    public ICard NewInstance()
+    public override Card NewInstance()
     {
         //暂且考虑将有必要用特殊卡牌类的条件判断写在这儿
         return new CommonCard(this);
     }
-
-
-    public static CommonCardType Default { get; } = new CommonCardType("default", false, 0, [], []);
 }

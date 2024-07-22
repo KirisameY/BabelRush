@@ -18,8 +18,8 @@ public static class Registers
         new I18nRegister<string>(nameof(ActionDesc), _ => "");
     public static IRegister<Texture2D> ActionIcon { get; } =
         new I18nRegister<Texture2D>(nameof(ActionIcon), _ => new PlaceholderTexture2D());
-    public static IRegister<IActionType> Actions { get; } =
-        new CommonRegister<IActionType>(nameof(Actions), _ => CommonActionType.Default);
+    public static IRegister<ActionType> Actions { get; } =
+        new CommonRegister<ActionType>(nameof(Actions), _ => ActionType.Default);
 
     //Feature
     public static IRegister<string> FeatureName { get; } =
@@ -28,8 +28,8 @@ public static class Registers
         new I18nRegister<string>(nameof(FeatureDesc), _ => "");
     public static IRegister<Texture2D> FeatureIcon { get; } =
         new I18nRegister<Texture2D>(nameof(FeatureIcon), _ => new PlaceholderTexture2D());
-    public static IRegister<IFeatureType> Features { get; } =
-        new CommonRegister<IFeatureType>(nameof(Features), _ => CommonFeatureType.Default);
+    public static IRegister<FeatureType> Features { get; } =
+        new CommonRegister<FeatureType>(nameof(Features), _ => FeatureType.Default);
 
     //Card
     public static IRegister<string> CardName { get; } =
@@ -38,6 +38,6 @@ public static class Registers
         new I18nRegister<string>(nameof(CardDesc), _ => "");
     public static IRegister<Texture2D> CardIcon { get; } =
         new I18nRegister<Texture2D>(nameof(CardIcon), _ => new PlaceholderTexture2D());
-    public static IRegister<ICardType> Cards { get; } =
-        new CommonRegister<ICardType>(nameof(Cards), _ => CommonCardType.Default);
+    public static IRegister<CardType> Cards { get; } =
+        new CommonRegister<CardType>(nameof(Cards), _ => CardType.Default);
 }

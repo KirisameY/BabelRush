@@ -11,7 +11,7 @@ public partial class CardInterface : Node2D
     //Factory
     private CardInterface() { }
 
-    public static CardInterface GetInstance(ICard card)
+    public static CardInterface GetInstance(Cards.Card card)
     {
         CardInterface instance = CreateInstance();
         instance.Card = card;
@@ -50,14 +50,14 @@ public partial class CardInterface : Node2D
 
 
     //Property
-    private ICard? _card;
-    public ICard Card
+    private Cards.Card? _card;
+    public Cards.Card Card
     {
         get
         {
             if (_card is not null) return _card;
             Logger.Log(LogLevel.Error, "GettingCard", $"CardInterface {this} has no card instance reference");
-            return CommonCard.Default;
+            return Cards.Card.Default;
         }
         private set
         {

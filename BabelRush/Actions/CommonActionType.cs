@@ -4,17 +4,13 @@ using Godot;
 
 namespace BabelRush.Actions;
 
-public class CommonActionType(string id, bool hasValue, Func<IAction> instanceGetter) : IActionType
+public class CommonActionType(string id, bool hasValue, Func<Action> instanceGetter) : ActionType
 {
-    public string Id { get; } = id;
-    public string Name => Registers.ActionName.GetItem(Id);
-    public string Description => Registers.ActionDesc.GetItem(Id);
-    public Texture2D Icon => Registers.ActionIcon.GetItem(Id);
-    public bool HasValue { get; } = hasValue;
+    public override string Id { get; } = id;
+    public override string Name => Registers.ActionName.GetItem(Id);
+    public override string Description => Registers.ActionDesc.GetItem(Id);
+    public override Texture2D Icon => Registers.ActionIcon.GetItem(Id);
+    public override bool HasValue { get; } = hasValue;
 
-    public IAction NewInstance() => instanceGetter();
-
-
-    public static CommonActionType Default { get; } =
-        new("default", false, () => CommonSimpleAction.GetInstance("default", (_, _) => { }));
+    public override Action NewInstance() => instanceGetter();
 }

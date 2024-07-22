@@ -23,7 +23,7 @@ public partial class MainSceneUiTest : Control
     public void Test()
     {
         //Test
-        void AddTestCard() => CardField.AddCard(CommonCard.Default);
+        void AddTestCard() => CardField.AddCard(Cards.Card.Default);
         // var tween = CreateTween();
         // for (int i = 0; i < 8; i++)
         // {

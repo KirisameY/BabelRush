@@ -8,14 +8,14 @@ namespace BabelRush.Gui.Mob;
 
 public partial class MobInterface : Node
 {
-    private IMob? _mob;
-    public IMob Mob
+    private Mobs.Mob? _mob;
+    public Mobs.Mob Mob
     {
         get
         {
             if (_mob is not null) return _mob;
             Logger.Log(LogLevel.Error, "GettingMob", $"MobInterface {this} has no mob instance reference");
-            return CommonMob.Default;
+            return Mobs.Mob.Default;
         }
         private set => _mob = value;
     }
