@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://ivk70wynqfry"]
+
+[ext_resource type="Texture2D" uid="uid://ungwmmq5jewk" path="res://Sprites/mainui/healthbar_base.png" id="1_kqo8e"]
+[ext_resource type="Texture2D" uid="uid://ct7rwt7uxdjim" path="res://Sprites/mainui/healthbar_shield.png" id="2_q45p7"]
+
+[node name="HealthBar" type="Sprite2D"]
+texture_filter = 1
+texture = ExtResource("1_kqo8e")
+offset = Vector2(-5, 0)
+
+[node name="HealthbarShield" type="Sprite2D" parent="."]
+texture = ExtResource("2_q45p7")
+offset = Vector2(-5, 0)
