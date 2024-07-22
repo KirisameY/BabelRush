@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 
-using BabelRush.Cards;
 using BabelRush.Gui.Card;
 
 using Godot;
