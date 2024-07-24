@@ -22,8 +22,8 @@ var health: int:
 		value = clamp(value,0,max_health)
 		health = value
 		queue_redraw()
-func set_max_health(value:float): max_health=value
-func set_health(value:float): health=value
+func set_max_health(value:float): max_health=int(value)
+func set_health(value:float): health=int(value)
 
 var left_pos:float
 var right_pos:float

@@ -93,6 +93,17 @@ public partial class MobInterface : Node2D
         }
     }
 
+    //Signal
+    private void OnMouseEntered()
+    {
+        EventBus.Publish(new MobInterfaceSelectedEvent(this, true));
+    }
+
+    private void OnMouseExited()
+    {
+        EventBus.Publish(new MobInterfaceSelectedEvent(this, false));
+    }
+
 
     //Logging
     private static Logger Logger { get; } = LogManager.GetLogger(nameof(MobInterface));
