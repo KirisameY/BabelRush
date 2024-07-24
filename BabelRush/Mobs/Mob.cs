@@ -1,9 +1,31 @@
-﻿namespace BabelRush.Mobs;
+﻿using KirisameLib.Events;
 
-public abstract class Mob
+namespace BabelRush.Mobs;
+
+public class Mob
 {
-    public abstract int Health { get; set; }
-    public abstract int Shield { get; set; }
-    
-    public static CommonMob Default { get; } = new();
+    private int _maxHealth;
+    private int _health;
+    public int MaxHealth
+    {
+        get => _maxHealth;
+        set
+        {
+            var old = MaxHealth;
+            _maxHealth = value;
+            EventBus.Publish(new MobMaxHealthChangedEvent(this, old, MaxHealth));
+        }
+    }
+    public int Health
+    {
+        get => _health;
+        set
+        {
+            var old = Health;
+            _health = value;
+            EventBus.Publish(new MobHealthChangedEvent(this, old, Health));
+        }
+    }
+
+    public static Mob Default { get; } = new();
 }

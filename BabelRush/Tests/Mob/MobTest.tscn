@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://bw2p3ago34pp3"]
+
+[ext_resource type="Script" path="res://Tests/Mob/MobTest.cs" id="1_pnaxy"]
+
+[node name="MobTest" type="Node2D"]
+script = ExtResource("1_pnaxy")
+
+[node name="Marker2D" type="Marker2D" parent="."]
+position = Vector2(43, 50)
+
+[node name="VSlider" type="VSlider" parent="."]
+offset_left = 94.0
+offset_top = 4.0
+offset_right = 110.0
+offset_bottom = 82.0
+
+[node name="VSlider" type="VSlider" parent="VSlider"]
+offset_left = 19.0
+offset_right = 35.0
+offset_bottom = 78.0
+min_value = 1.0
+value = 100.0
+
+[connection signal="value_changed" from="VSlider" to="." method="SetMobHealth"]
+[connection signal="value_changed" from="VSlider/VSlider" to="." method="SetMobMaxHealth"]
+[connection signal="value_changed" from="VSlider/VSlider" to="VSlider" method="set_max"]

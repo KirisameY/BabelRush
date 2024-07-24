@@ -1,0 +1,33 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2pjaa5hwbvhv"]
+
+[ext_resource type="PackedScene" uid="uid://ivk70wynqfry" path="res://Gui/Mob/HealthBar.tscn" id="1_22iad"]
+
+[node name="MobElementTest" type="Node2D"]
+
+[node name="HealthBar" parent="." instance=ExtResource("1_22iad")]
+position = Vector2(67, 26)
+
+[node name="CheckButton" type="CheckButton" parent="."]
+offset_left = 55.0
+offset_top = 40.0
+offset_right = 99.0
+offset_bottom = 64.0
+
+[node name="VSlider" type="VSlider" parent="."]
+offset_left = 107.0
+offset_top = 5.0
+offset_right = 123.0
+offset_bottom = 62.0
+
+[node name="VSlider2" type="VSlider" parent="."]
+offset_left = 131.0
+offset_top = 5.0
+offset_right = 147.0
+offset_bottom = 62.0
+min_value = 1.0
+value = 100.0
+
+[connection signal="toggled" from="CheckButton" to="HealthBar" method="set_shielded"]
+[connection signal="value_changed" from="VSlider" to="HealthBar" method="set_health"]
+[connection signal="value_changed" from="VSlider2" to="HealthBar" method="set_max_health"]
+[connection signal="value_changed" from="VSlider2" to="VSlider" method="set_max"]

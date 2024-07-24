@@ -1,13 +1,24 @@
-[gd_scene load_steps=3 format=3 uid="uid://ivk70wynqfry"]
+[gd_scene load_steps=4 format=3 uid="uid://ivk70wynqfry"]
 
 [ext_resource type="Texture2D" uid="uid://ungwmmq5jewk" path="res://Sprites/mainui/healthbar_base.png" id="1_kqo8e"]
+[ext_resource type="Script" path="res://Gui/Mob/health_bar.gd" id="2_mynsg"]
 [ext_resource type="Texture2D" uid="uid://ct7rwt7uxdjim" path="res://Sprites/mainui/healthbar_shield.png" id="2_q45p7"]
 
 [node name="HealthBar" type="Sprite2D"]
 texture_filter = 1
 texture = ExtResource("1_kqo8e")
 offset = Vector2(-5, 0)
+script = ExtResource("2_mynsg")
+health_color = Color(1, 0, 0, 1)
+shielded_health_color = Color(0.235294, 0.352941, 0.501961, 1)
 
 [node name="HealthbarShield" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("2_q45p7")
 offset = Vector2(-5, 0)
+
+[node name="LeftMarker" type="Marker2D" parent="."]
+position = Vector2(-24, 0)
+
+[node name="RightMarker" type="Marker2D" parent="."]
+position = Vector2(28, 0)
