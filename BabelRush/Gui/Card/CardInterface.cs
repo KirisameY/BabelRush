@@ -19,7 +19,6 @@ public partial class CardInterface : Node2D
     private static CardInterface CreateInstance()
     {
         var instance = Scene.Instantiate<CardInterface>();
-        instance.CallDeferred(MethodName.InitSignal);
         return instance;
     }
 
@@ -167,15 +166,13 @@ public partial class CardInterface : Node2D
         }
     }
 
-    private void InitSignal()
-    {
-        var boxNode = GetNode<Button>("Box");
-        boxNode.MouseEntered += () => Selected = _preSelected = true;
-        boxNode.MouseExited += () => Selected = _preSelected = false;
-        boxNode.ButtonDown += () => Pressed = _prePressed = true;
-        boxNode.ButtonUp += () => Pressed = _prePressed = false;
-        boxNode.Pressed += () => Container?.CardClicked(this);
-    }
+    
+    //Signal
+    private void OnMouseEntered()=>Selected = _preSelected = true;
+    private void OnMouseExited() => Selected = _preSelected = false;
+    private void OnButtonDown() => Pressed = _prePressed = true;
+    private void OnButtonUp() => Pressed = _prePressed = false;
+    private void OnPressed() => Container?.CardClicked(this);
 
 
     //Logging

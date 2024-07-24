@@ -58,3 +58,9 @@ offset_right = 30.0
 offset_bottom = 36.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[connection signal="button_down" from="Box" to="." method="OnButtonDown"]
+[connection signal="button_up" from="Box" to="." method="OnButtonUp"]
+[connection signal="mouse_entered" from="Box" to="." method="OnMouseEntered"]
+[connection signal="mouse_exited" from="Box" to="." method="OnMouseExited"]
+[connection signal="pressed" from="Box" to="." method="OnPressed"]
