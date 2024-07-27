@@ -2,18 +2,17 @@ using System;
 
 using BabelRush.Mobs;
 
-using Godot;
-
 using KirisameLib.Logging;
 
 namespace BabelRush.GamePlay;
 
-public partial class Play : Node2D
+public class Play
 {
-    //Singleton
+    //Singleton & Initialize
     private Play(PlayState state) //Todo
     {
         _state = state;
+        _node = new();
     }
 
     private static Play? _instance;
@@ -25,19 +24,35 @@ public partial class Play : Node2D
             Logger.Log(LogLevel.Error, "GettingInstance", "GamePlay did not initialized");
             throw new GamePlayNotInitializedException();
         }
-        private set => _instance = value;
     }
 
-    public static Play Initialize(Mob player)
+    public static void Initialize(Mob player)
     {
-        Instance = new(new(player));
-        return Instance;
+        const string logProcess = "Initializing";
+
+        _instance?.Dispose();
+        _instance = new(new(player));
+        Logger.Log(LogLevel.Info, logProcess, "Gameplay initialized successfully");
     }
 
 
     //Member
     private readonly PlayState _state;
     public static PlayState State => Instance._state;
+
+    private readonly PlayNode _node;
+    public static PlayNode Node => Instance._node;
+
+
+    //Dispose
+    private void Dispose()
+    {
+        const string logProcess = "Disposing";
+
+        Logger.Log(LogLevel.Debug, logProcess, "Free Node...");
+        _node.QueueFree();
+        Logger.Log(LogLevel.Debug, logProcess, "Old gameplay disposed");
+    }
 
 
     //Logging

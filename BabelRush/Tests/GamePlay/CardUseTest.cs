@@ -33,7 +33,7 @@ public partial class CardUseTest : Node
         enemy2.Position = GetNode<Marker2D>("Scene/Enemy2").Position;
 
         Play.Initialize(player.Mob);
-        AddChild(Play.Instance);
+        AddChild(Play.Node);
     }
 
     private void OnEvent(BaseEvent e)

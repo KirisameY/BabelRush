@@ -146,7 +146,7 @@ public partial class CardField : Control, ICardContainer
 
     private bool TryUseCard(CardInterface card)
     {
-        //temp,记得改成正确的机制
+        //Todo ,记得改成正确的机制
         if (FocusedMob is null) return false;
         card.Card.Use(Play.State.Player, new List<Mobs.Mob> { FocusedMob }.ToFrozenSet());
 
@@ -156,7 +156,7 @@ public partial class CardField : Control, ICardContainer
     }
 
 
-    //Temp, move them out
+    //Todo , move them out
     //新机制可以做成两段：卡牌举起时通知目标选择器，然后剩下的全权交给目标选择器处理，打出时直接通知选择器打出。
     private Mobs.Mob? FocusedMob { get; set; }
 
