@@ -28,6 +28,7 @@ offset_right = 26.0
 offset_bottom = 32.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 texture = SubResource("GradientTexture1D_020be")
 expand_mode = 1
 
@@ -58,6 +59,7 @@ offset_right = 30.0
 offset_bottom = 36.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 
 [connection signal="button_down" from="Box" to="." method="OnButtonDown"]
 [connection signal="button_up" from="Box" to="." method="OnButtonUp"]

@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://c2f23d213oqlm"]
+
+[ext_resource type="Script" path="res://Tests/GamePlay/CardUseTest.cs" id="1_c00ik"]
+[ext_resource type="PackedScene" uid="uid://c202t6rhh7t1u" path="res://Gui/MainUI/MainUI.tscn" id="2_06bql"]
+
+[node name="CardUseTest" type="Node"]
+script = ExtResource("1_c00ik")
+
+[node name="Scene" type="Node2D" parent="."]
+
+[node name="Player" type="Marker2D" parent="Scene"]
+position = Vector2(84, 105)
+
+[node name="Enemy1" type="Marker2D" parent="Scene"]
+position = Vector2(313, 108)
+
+[node name="Enemy2" type="Marker2D" parent="Scene"]
+position = Vector2(397, 107)
+
+[node name="MainUi" parent="." instance=ExtResource("2_06bql")]
+
+[node name="Button" type="Button" parent="MainUi"]
+layout_mode = 0
+offset_left = 449.0
+offset_top = 218.0
+offset_right = 457.0
+offset_bottom = 226.0
+
+[connection signal="pressed" from="MainUi/Button" to="." method="AddCard"]

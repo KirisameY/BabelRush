@@ -47,7 +47,11 @@ public partial class MobInterface : Node2D
             Logger.Log(LogLevel.Error, "GettingMob", $"MobInterface {this} has no mob instance reference");
             return TheMob.Default;
         }
-        private set => _mob = value;
+        private set
+        {
+            _mob = value;
+            Refresh();
+        }
     }
 
 

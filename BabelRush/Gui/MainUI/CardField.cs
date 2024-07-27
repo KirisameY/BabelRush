@@ -8,18 +8,25 @@ using BabelRush.Mobs;
 
 using Godot;
 
+using KirisameLib.Events;
+
 using CardInterface = BabelRush.Gui.Card.CardInterface;
 
 namespace BabelRush.Gui.MainUI;
 
 public partial class CardField : Control, ICardContainer
 {
+    //Init
+    public CardField()
+    {
+        EventBus.Register<MobInterfaceSelectedEvent>(OnMobInterfaceSelected);
+    }
+
+    public override void _Ready() { }
+
+
     //Member
     private List<CardInterface> CardList { get; } = [];
-
-
-    //Init
-    public override void _Ready() { }
 
 
     //Process
@@ -46,6 +53,14 @@ public partial class CardField : Control, ICardContainer
         var ci = CardInterface.GetInstance(card);
         ci.GlobalPosition = new(Project.ViewportSize.X / 2, Project.ViewportSize.Y + 32);
         AddCard(ci);
+    }
+
+    public void RemoveCard(CardInterface card)
+    {
+        CardList.Remove(card);
+        card.QueueFree();
+        UpdateCardPosition();
+        SortCards();
     }
 
 
@@ -134,11 +149,9 @@ public partial class CardField : Control, ICardContainer
         //temp,记得改成正确的机制
         if (FocusedMob is null) return false;
         card.Card.Use(Play.State.Player, new List<Mobs.Mob> { FocusedMob }.ToFrozenSet());
-        
-        CardList.Remove(card);
-        card.QueueFree();
-        CallDeferred(MethodName.SortCards);
-        
+
+        RemoveCard(card);
+
         return true;
     }
 

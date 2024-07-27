@@ -1,5 +1,7 @@
 using System;
 
+using BabelRush.Mobs;
+
 using Godot;
 
 using KirisameLib.Logging;
@@ -9,7 +11,7 @@ namespace BabelRush.GamePlay;
 public partial class Play : Node2D
 {
     //Singleton
-    private Play(PlayState state)//Todo
+    private Play(PlayState state) //Todo
     {
         _state = state;
     }
@@ -24,6 +26,12 @@ public partial class Play : Node2D
             throw new GamePlayNotInitializedException();
         }
         private set => _instance = value;
+    }
+
+    public static Play Initialize(Mob player)
+    {
+        Instance = new(new(player));
+        return Instance;
     }
 
 
