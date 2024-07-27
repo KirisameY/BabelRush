@@ -15,6 +15,7 @@ offset_right = 110.0
 offset_bottom = 82.0
 
 [node name="VSlider" type="VSlider" parent="VSlider"]
+layout_mode = 0
 offset_left = 19.0
 offset_right = 35.0
 offset_bottom = 78.0

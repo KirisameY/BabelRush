@@ -13,4 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\KirisameLib\KirisameLib.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scene\" />
+  </ItemGroup>
 </Project>

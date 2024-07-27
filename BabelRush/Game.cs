@@ -1,5 +1,7 @@
 using System;
 
+using BabelRush.GamePlay;
+
 using Godot;
 
 using KirisameLib.Logging;
@@ -8,7 +10,7 @@ namespace BabelRush;
 
 public partial class Game : Node
 {
-    //Singleton
+    //Singleton & Initialize
     private static Game? _instance;
     public static Game Instance
     {
@@ -29,7 +31,6 @@ public partial class Game : Node
         const LogLevel minPrintLevel = LogLevel.Warning;
     #endif
         LogManager.Initialize(minWriteLevel, minPrintLevel, GD.Print, Project.LogDirPath, Project.Name, Project.MaxLogFileCount);
-        Logger = LogManager.GetLogger("Root");
     }
 
 
@@ -44,28 +45,31 @@ public partial class Game : Node
         }
     }
 
-    //On Game Start
+
+    //Methods
     public override void _Ready()
     {
         Logger.Log(LogLevel.Debug, "Initializing", "Debug On");
         Logger.Log(LogLevel.Info,  "Initializing", "Game Start!");
     }
 
-    //Use this to stop game
-    public void ExitGame()
-    {
-        PropagateNotification((int)NotificationWMCloseRequest);
-        GetTree().Quit();
-    }
-
-    //Before Game Exit
     private void OnCloseRequest()
     {
         LogManager.Dispose();
     }
 
-    //members
-    private Logger Logger { get; set; }
+
+    //Public Methods
+    public static void ExitGame()
+    {
+        Instance.PropagateNotification((int)NotificationWMCloseRequest);
+        Instance.GetTree().Quit();
+    }
+
+
+    //Logging
+    private static Logger Logger { get; } = LogManager.GetLogger("Root");
+
 
     //Exceptions
     public class GameNotInitializedException : Exception;

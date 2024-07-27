@@ -1,6 +1,10 @@
+using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 
+using BabelRush.GamePlay;
 using BabelRush.Gui.Card;
+using BabelRush.Mobs;
 
 using Godot;
 
@@ -73,12 +77,17 @@ public partial class CardField : Control, ICardContainer
         if (Selected == card) Selected = null;
     }
 
+    public void CardClicked(CardInterface card) { }
+
+
+    //Card Drag & Use
     private CardInterface? _picked;
     private CardInterface? Picked
     {
         get => _picked;
         set
         {
+            var oldOut = PickedCardOutField;
             var old = _picked;
             var @new = value;
             _picked = value;
@@ -86,12 +95,14 @@ public partial class CardField : Control, ICardContainer
             if (old is not null)
             {
                 old.Selectable = false;
-                InsertCard(old);
+                if (!oldOut || !TryUseCard(old)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
+                    InsertCard(old);
             }
 
             if (@new is not null) PickUpCard(@new);
         }
     }
+    private Vector2 PickOffset { get; set; }
 
     public void CardPressed(CardInterface card)
     {
@@ -103,11 +114,7 @@ public partial class CardField : Control, ICardContainer
         if (Picked == card) Picked = null;
     }
 
-    public void CardClicked(CardInterface card) { }
-
-
-    //Card Drag
-    private Vector2 PickOffset { get; set; }
+    private bool PickedCardOutField => Picked?.Position.Y < 0;
 
     private void MovePickedCard()
     {
@@ -120,5 +127,29 @@ public partial class CardField : Control, ICardContainer
         PickOffset = -card.GetLocalMousePosition();
         card.XPosTween?.Kill();
         card.YPosTween?.Kill();
+    }
+
+    private bool TryUseCard(CardInterface card)
+    {
+        //temp,记得改成正确的机制
+        if (FocusedMob is null) return false;
+        card.Card.Use(Play.State.Player, new List<Mobs.Mob> { FocusedMob }.ToFrozenSet());
+        
+        CardList.Remove(card);
+        card.QueueFree();
+        CallDeferred(MethodName.SortCards);
+        
+        return true;
+    }
+
+
+    //Temp, move them out
+    //新机制可以做成两段：卡牌举起时通知目标选择器，然后剩下的全权交给目标选择器处理，打出时直接通知选择器打出。
+    private Mobs.Mob? FocusedMob { get; set; }
+
+    private void OnMobInterfaceSelected(MobInterfaceSelectedEvent e)
+    {
+        if (e.Selected) FocusedMob = e.Interface.Mob;
+        else if (e.Interface.Mob == FocusedMob) FocusedMob = null;
     }
 }
