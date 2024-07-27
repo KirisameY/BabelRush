@@ -2,11 +2,11 @@ using KirisameLib.Logging;
 
 namespace KirisameLib.Register;
 
-public class CommonRegister<T>(string registerName, Func<string, T> defaultGetter) : IRegister<T>
+public class CommonRegister<T>(string registerName, Func<string, T> defaultItemItemGetter) : IRegister<T>
 {
     public string Name { get; } = registerName;
     private Dictionary<string, T> RegDict { get; } = [];
-    private Func<string, T> DefaultGetter { get; } = defaultGetter;
+    private Func<string, T> DefaultItemGetter { get; } = defaultItemItemGetter;
 
     public bool RegisterItem(string id, T item)
     {
@@ -28,7 +28,7 @@ public class CommonRegister<T>(string registerName, Func<string, T> defaultGette
         Logger.Log(LogLevel.Warning, loggingProcessName, $"The attempted query ID '{id}' is not registered , default value will be return");
         try
         {
-            return DefaultGetter(id);
+            return DefaultItemGetter(id);
         }
         catch (Exception e)
         {
@@ -38,7 +38,7 @@ public class CommonRegister<T>(string registerName, Func<string, T> defaultGette
                 Logger.Log(LogLevel.Fatal, loggingProcessName,
                            $"Exception on Getting default value: {e}, and default value of {typeof(T).Name} is null");
                 throw new
-                    GettingDefaultValueFailedException($"RegisterName: {Name}, DefaultGetter: {DefaultGetter}, Type: {typeof(T).Name}",
+                    GettingDefaultValueFailedException($"RegisterName: {Name}, DefaultGetter: {DefaultItemGetter}, Type: {typeof(T).Name}",
                                                        e);
             }
 
