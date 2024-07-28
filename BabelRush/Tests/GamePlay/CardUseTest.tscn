@@ -20,7 +20,6 @@ position = Vector2(397, 107)
 [node name="MainUi" parent="." instance=ExtResource("2_06bql")]
 
 [node name="Button" type="Button" parent="MainUi"]
-layout_mode = 0
 offset_left = 449.0
 offset_top = 218.0
 offset_right = 457.0
