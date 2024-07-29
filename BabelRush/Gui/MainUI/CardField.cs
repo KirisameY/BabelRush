@@ -100,7 +100,7 @@ public partial class CardField : Control
                 old.Selectable = false;
                 if (!oldOut || !TryUseCard(old)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
                     InsertCard(old);
-                EventBus.Publish(new CardPickedEvent(old.Card,   false));
+                EventBus.Publish(new CardPickedEvent(old.Card, false));
             }
 
             if (@new is not null)
@@ -142,16 +142,19 @@ public partial class CardField : Control
     //Event handlers
     public override void _EnterTree()
     {
-        EventBus.Register<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
-        EventBus.Register<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
+        // EventBus.Register<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
+        // EventBus.Register<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
+        EventHandlerClassRegisterer.RegisterInstance(this);
     }
 
     public override void _ExitTree()
     {
-        EventBus.Unregister<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
-        EventBus.Unregister<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
+        // EventBus.Unregister<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
+        // EventBus.Unregister<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
+        EventHandlerClassRegisterer.UnRegisterInstance(this);
     }
 
+    [EventHandler<CardInterfaceSelectedEvent>]
     public void OnCardInterfaceSelectedEvent(CardInterfaceSelectedEvent e)
     {
         if (!CardList.Contains(e.CardInterface)) return;
@@ -161,6 +164,7 @@ public partial class CardField : Control
             Selected = null;
     }
 
+    [EventHandler<CardInterfacePressedEvent>]
     public void OnCardInterfacePressedEvent(CardInterfacePressedEvent e)
     {
         if (!CardList.Contains(e.CardInterface)) return;

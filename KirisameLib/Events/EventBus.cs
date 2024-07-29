@@ -18,7 +18,9 @@ public static class EventBus
         where TEvent : BaseEvent => HandlerContainer<TEvent>.EventHandler -= handler;
 
 
-    /// <returns>Callback to remove registered handler, useful when unregistering an anonymous function</returns>
+    /// <returns>
+    ///     Callback to remove registered handler, useful when unregistering an anonymous function
+    /// </returns>
     public static Action Register<TEvent>(Action<TEvent> handler)
         where TEvent : BaseEvent
     {

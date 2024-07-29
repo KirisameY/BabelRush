@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 using Godot;
@@ -11,9 +12,7 @@ public partial class EventBusTest : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        EventBus.Register<BaseEvent>(EventHandler);
-        EventBus.Register<TestEvent1>(EventHandler1);
-        EventBus.Register<TestEvent2>(EventHandler2);
+        EventHandlerClassRegisterer.RegisterInstance(this);
 
         Task.Delay(1000).ContinueWith(_ =>
         {
@@ -24,16 +23,19 @@ public partial class EventBusTest : Node
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta) { }
 
+    [EventHandler<BaseEvent>]
     private void EventHandler(BaseEvent e)
     {
         GD.Print("E0");
     }
 
+    [EventHandler<TestEvent1>]
     private void EventHandler1(TestEvent1 e)
     {
         GD.Print("E1", e.Msg);
     }
 
+    [EventHandler<TestEvent2>]
     private void EventHandler2(TestEvent2 e)
     {
         GD.Print("E2", e.Msg, e.Msg2);

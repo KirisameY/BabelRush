@@ -15,8 +15,7 @@ public partial class MobTest : Node2D
         MobInterface = MobInterface.GetInstance(Mobs.Mob.Default);
         AddChild(MobInterface);
         MobInterface.Position = GetNode<Marker2D>("Marker2D").Position;
-        EventBus.Register<MobEvent>(OnMobEvent);
-        EventBus.Register<MobInterfaceEvent>(OnMobInterfaceEvent);
+        EventHandlerClassRegisterer.RegisterInstance(this);
     }
 
 
@@ -35,11 +34,13 @@ public partial class MobTest : Node2D
 
 
     //Event
+    [EventHandler<MobInterfaceEvent>]
     private void OnMobInterfaceEvent(MobInterfaceEvent e)
     {
         GD.Print(e);
     }
 
+    [EventHandler<MobEvent>]
     private void OnMobEvent(MobEvent e)
     {
         GD.Print(e);

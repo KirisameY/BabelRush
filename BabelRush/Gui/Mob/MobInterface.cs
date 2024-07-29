@@ -24,7 +24,7 @@ public partial class MobInterface : Node2D
     private static MobInterface CreateInstance()
     {
         var instance = Scene.Instantiate<MobInterface>();
-        instance.SubscribeEvents();
+        EventHandlerClassRegisterer.RegisterInstance(instance);
         return instance;
     }
 
@@ -75,12 +75,8 @@ public partial class MobInterface : Node2D
 
 
     //Event
-    private void SubscribeEvents()
-    {
-        EventBus.Register<MobMaxHealthChangedEvent>(OnMobMaxHealthChanged);
-        EventBus.Register<MobHealthChangedEvent>(OnMobHealthChanged);
-    }
 
+    [EventHandler<MobMaxHealthChangedEvent>]
     private void OnMobMaxHealthChanged(MobMaxHealthChangedEvent e)
     {
         if (e.Mob == Mob)
@@ -89,6 +85,7 @@ public partial class MobInterface : Node2D
         }
     }
 
+    [EventHandler<MobHealthChangedEvent>]
     private void OnMobHealthChanged(MobHealthChangedEvent e)
     {
         if (e.Mob == Mob)
@@ -96,6 +93,7 @@ public partial class MobInterface : Node2D
             HealthBar.SetDeferred(StringNameHealth, e.NewValue);
         }
     }
+
 
     //Signal
     private void OnMouseEntered()

@@ -12,7 +12,7 @@ public partial class CardUseTest : Node
 {
     public override void _Ready()
     {
-        EventBus.Register<BaseEvent>(OnEvent);
+        EventHandlerClassRegisterer.RegisterInstance(this);
         CallDeferred(MethodName.Initialize);
     }
 
@@ -36,6 +36,7 @@ public partial class CardUseTest : Node
         AddChild(Play.Node);
     }
 
+    [EventHandler<BaseEvent>]
     private void OnEvent(BaseEvent e)
     {
         GD.Print(e);
