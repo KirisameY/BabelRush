@@ -1,5 +1,6 @@
 using Godot;
 
+using KirisameLib.Events;
 using KirisameLib.Logging;
 
 namespace BabelRush.Gui.Card;
@@ -112,8 +113,6 @@ public partial class CardInterface : Node2D
 
 
     //Select
-    public ICardContainer? Container { get; set; }
-
     private bool _preSelected, _prePressed;
     private bool _selectable;
     public bool Selectable
@@ -146,8 +145,7 @@ public partial class CardInterface : Node2D
             if (!Selectable && value) return;
 
             _selected = value;
-            if (_selected) Container?.CardSelected(this);
-            else Container?.CardUnselected(this);
+            EventBus.Publish(new CardInterfaceSelectedEvent(this, _selected));
         }
     }
 
@@ -161,29 +159,19 @@ public partial class CardInterface : Node2D
             if (!Selectable && value) return;
 
             _pressed = value;
-            if (_pressed) Container?.CardPressed(this);
-            else Container?.CardReleased(this);
+            EventBus.Publish(new CardInterfacePressedEvent(this, _pressed));
         }
     }
 
-    
+
     //Signal
-    private void OnMouseEntered()=>Selected = _preSelected = true;
+    private void OnMouseEntered() => Selected = _preSelected = true;
     private void OnMouseExited() => Selected = _preSelected = false;
     private void OnButtonDown() => Pressed = _prePressed = true;
     private void OnButtonUp() => Pressed = _prePressed = false;
-    private void OnPressed() => Container?.CardClicked(this);
+    private void OnPressed() => EventBus.Publish(new CardInterfaceClickedEvent(this));
 
 
     //Logging
     private static Logger Logger { get; } = LogManager.GetLogger(nameof(CardInterface));
-}
-
-public interface ICardContainer
-{
-    void CardSelected(CardInterface card);
-    void CardUnselected(CardInterface card);
-    void CardPressed(CardInterface card);
-    void CardReleased(CardInterface card);
-    void CardClicked(CardInterface card);
 }

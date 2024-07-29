@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Linq;
 
 using BabelRush.GamePlay;
 using BabelRush.Gui.Card;
@@ -14,7 +15,7 @@ using CardInterface = BabelRush.Gui.Card.CardInterface;
 
 namespace BabelRush.Gui.MainUI;
 
-public partial class CardField : Control, ICardContainer
+public partial class CardField : Control
 {
     //Init
     public CardField()
@@ -42,7 +43,6 @@ public partial class CardField : Control, ICardContainer
         CardList.Add(card);
         AddChild(card);
         card.Selectable = false;
-        card.Container = this;
 
         InsertCard(card);
         UpdateCardPosition();
@@ -82,18 +82,6 @@ public partial class CardField : Control, ICardContainer
 
     private int SelectedCardIndex => Selected is not null ? CardList.IndexOf(Selected) : -1;
 
-    public void CardSelected(CardInterface card)
-    {
-        Selected = card;
-    }
-
-    public void CardUnselected(CardInterface card)
-    {
-        if (Selected == card) Selected = null;
-    }
-
-    public void CardClicked(CardInterface card) { }
-
 
     //Card Drag & Use
     private CardInterface? _picked;
@@ -119,16 +107,6 @@ public partial class CardField : Control, ICardContainer
     }
     private Vector2 PickOffset { get; set; }
 
-    public void CardPressed(CardInterface card)
-    {
-        Picked = card;
-    }
-
-    public void CardReleased(CardInterface card)
-    {
-        if (Picked == card) Picked = null;
-    }
-
     private bool PickedCardOutField => Picked?.Position.Y < 0;
 
     private void MovePickedCard()
@@ -153,6 +131,38 @@ public partial class CardField : Control, ICardContainer
         RemoveCard(card);
 
         return true;
+    }
+
+
+    //Event handlers
+    public override void _EnterTree()
+    {
+        EventBus.Register<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
+        EventBus.Register<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
+    }
+
+    public override void _ExitTree()
+    {
+        EventBus.Unregister<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
+        EventBus.Unregister<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
+    }
+
+    public void OnCardInterfaceSelectedEvent(CardInterfaceSelectedEvent e)
+    {
+        if (!CardList.Contains(e.CardInterface)) return;
+        if (e.Selected)
+            Selected = e.CardInterface;
+        else if (Selected == e.CardInterface)
+            Selected = null;
+    }
+
+    public void OnCardInterfacePressedEvent(CardInterfacePressedEvent e)
+    {
+        if (!CardList.Contains(e.CardInterface)) return;
+        if (e.Pressed)
+            Picked = e.CardInterface;
+        else if (Picked == e.CardInterface)
+            Picked = null;
     }
 
 
