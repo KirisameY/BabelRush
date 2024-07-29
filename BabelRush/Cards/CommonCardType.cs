@@ -11,9 +11,9 @@ public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<Acti
     : CardType
 {
     public override string Id { get; } = id;
-    public override string Name => Registers.CardName.GetItem(Id);
-    public override string Description => Registers.CardDesc.GetItem(Id);
-    public override Texture2D Icon => Registers.CardIcon.GetItem(Id);
+    public override string Name => Registers.CardRegisters.CardName.GetItem(Id);
+    public override string Description => Registers.CardRegisters.CardDesc.GetItem(Id);
+    public override Texture2D Icon => Registers.CardRegisters.CardIcon.GetItem(Id);
     public override bool Usable { get; } = usable;
     public override int Cost { get; } = cost;
     public override IReadOnlyList<ActionType> Actions { get; } = actions;

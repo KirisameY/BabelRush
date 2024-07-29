@@ -1,12 +1,19 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
 using BabelRush.Mobs;
 
 namespace BabelRush.Actions;
 
-public abstract class Action
+public class Action(ActionType type)
 {
-    public abstract ActionType Type { get; }
-    public abstract int Value { get; }
-    public abstract void Act(Mob self, IReadOnlySet<Mob> targets);
+    public ActionType Type { get; } = type;
+    public int Value { get; set; }
+
+    public void Act(Mob self, IReadOnlyList<Mob> targets)
+    {
+        foreach (var actionItem in Type.ActionItems)
+        {
+            actionItem.Act(self,targets,Value);
+        }
+    }
 }

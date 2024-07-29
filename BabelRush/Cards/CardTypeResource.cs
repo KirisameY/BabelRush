@@ -1,5 +1,7 @@
 using System.Linq;
 
+using BabelRush.Registers;
+
 using Godot;
 
 namespace BabelRush.Cards;
@@ -24,8 +26,8 @@ public partial class CardTypeResource : Resource
 
     public CardType ToCardType()
     {
-        var actions = Actions.Select(id => Registers.Actions.GetItem(id)).ToList();
-        var features = Features.Select(id => Registers.Features.GetItem(id)).ToList();
+        var actions = Actions.Select(id => ActionRegisters.Actions.GetItem(id)).ToList();
+        var features = Features.Select(id => CardFeatureRegisters.Features.GetItem(id)).ToList();
         return new CommonCardType(Id, Usable, Cost, actions, features);
     }
 }

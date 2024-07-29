@@ -14,7 +14,7 @@ public class CommonCard(CardType type) : Card
     public override IList<Action> Actions { get; } = type.Actions.Select(actionType => actionType.NewInstance()).ToList();
     public override IList<Feature> Features { get; } = type.Features.Select(featureType => featureType.NewInstance()).ToList();
 
-    public override void Use(Mob user, IReadOnlySet<Mob> targets)
+    public override void Use(Mob user, IReadOnlyList<Mob> targets)
     {
         foreach (var action in Actions)
         {

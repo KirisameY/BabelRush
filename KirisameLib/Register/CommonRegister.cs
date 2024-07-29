@@ -2,11 +2,11 @@ using KirisameLib.Logging;
 
 namespace KirisameLib.Register;
 
-public class CommonRegister<T>(string registerName, Func<string, T> defaultItemItemGetter) : IRegister<T>
+public class CommonRegister<T>(string registerName, Func<string, T> defaultItemGetter) : IRegister<T>
 {
     public string Name { get; } = registerName;
     private Dictionary<string, T> RegDict { get; } = [];
-    private Func<string, T> DefaultItemGetter { get; } = defaultItemItemGetter;
+    private Func<string, T> DefaultItemGetter { get; } = defaultItemGetter;
 
     public bool RegisterItem(string id, T item)
     {

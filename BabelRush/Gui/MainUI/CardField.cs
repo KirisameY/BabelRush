@@ -148,7 +148,7 @@ public partial class CardField : Control, ICardContainer
     {
         //Todo ,记得改成正确的机制
         if (FocusedMob is null) return false;
-        card.Card.Use(Play.State.Player, new List<Mobs.Mob> { FocusedMob }.ToFrozenSet());
+        card.Card.Use(Play.State.Player, [FocusedMob]);
 
         RemoveCard(card);
 

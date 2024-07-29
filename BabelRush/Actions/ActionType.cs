@@ -1,16 +1,21 @@
-﻿using Godot;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+
+using BabelRush.Registers;
+
+using Godot;
 
 namespace BabelRush.Actions;
 
-public abstract class ActionType
+public class ActionType(string id, IEnumerable<ActionItem> actionItems)
 {
-    public abstract string Id { get; }
-    public abstract string Name { get; }
-    public abstract string Description { get; }
-    public abstract Texture2D Icon { get; }
-    public abstract bool HasValue { get; }
-    public abstract Action NewInstance();
+    public string Id { get; } = id;
+    public string Name => ActionRegisters.ActionName.GetItem(Id);
+    public string Desc => ActionRegisters.ActionDesc.GetItem(Id);
+    public Texture2D Icon => ActionRegisters.ActionIcon.GetItem(Id);
+    public IImmutableList<ActionItem> ActionItems { get; } = actionItems.ToImmutableList();
 
-    public static ActionType Default { get; } =
-        new CommonActionType("default", false, () => CommonSimpleAction.GetInstance("default", (_, _) => { }));
+    public Action NewInstance() => new(this);
+
+    public static ActionType Default { get; } = new("default", []);
 }
