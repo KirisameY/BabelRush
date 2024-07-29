@@ -4,18 +4,24 @@ public static class EventBus
 {
     private static class HandlerContainer<TEvent> where TEvent : BaseEvent
     {
-        public static Action<TEvent>? EventHandler { get; set; }
-        public static void InvokeHandler(TEvent @event) => EventHandler?.Invoke(@event);
+        private static List<Action<TEvent>> EventHandlers { get; } = [];
+
+        public static void AddEventHandler(Action<TEvent> handler)
+        {
+            if (EventHandlers.Contains(handler)) return;
+            EventHandlers.Add(handler);
+        }
+
+        public static void RemoveEventHandler(Action<TEvent> handler) => EventHandlers.Remove(handler);
+
+        public static void InvokeHandler(TEvent @event)
+        {
+            foreach (var eventHandler in EventHandlers)
+            {
+                eventHandler.Invoke(@event);
+            }
+        }
     }
-
-    private static Action<TEvent>? GetEventHandler<TEvent>()
-        where TEvent : BaseEvent => HandlerContainer<TEvent>.EventHandler;
-
-    private static void AddEventHandler<TEvent>(Action<TEvent> handler)
-        where TEvent : BaseEvent => HandlerContainer<TEvent>.EventHandler += handler;
-
-    private static void RemoveEventHandler<TEvent>(Action<TEvent> handler)
-        where TEvent : BaseEvent => HandlerContainer<TEvent>.EventHandler -= handler;
 
 
     /// <returns>
@@ -24,14 +30,14 @@ public static class EventBus
     public static Action Register<TEvent>(Action<TEvent> handler)
         where TEvent : BaseEvent
     {
-        AddEventHandler(handler);
-        return () => RemoveEventHandler(handler);
+        HandlerContainer<TEvent>.AddEventHandler(handler);
+        return () => HandlerContainer<TEvent>.RemoveEventHandler(handler);
     }
 
     public static void Unregister<TEvent>(Action<TEvent> handler)
         where TEvent : BaseEvent
     {
-        RemoveEventHandler(handler);
+        HandlerContainer<TEvent>.RemoveEventHandler(handler);
     }
 
     public static void Publish<TEvent>(TEvent @event)

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 
 using BabelRush.GamePlay;
@@ -5,6 +6,8 @@ using BabelRush.Gui.MainUI;
 using BabelRush.Gui.Mob;
 
 using Godot;
+
+using JetBrains.Annotations;
 
 using KirisameLib.Events;
 
@@ -43,11 +46,11 @@ public partial class CardUseTest : Node
         var cardField = GetNode<CardField>("MainUi/CardField");
         cardField.AddCard(Cards.Card.Default);
     }
-    
-    [EventHandler]
-    private static void OnEvent(BaseEvent e)
+
+    [EventHandler] [UsedImplicitly]
+    [SuppressMessage("Performance", "CA1822:将成员标记为 static")]
+    private void OnEvent(BaseEvent e)
     {
         GD.Print(e);
     }
 }
-
