@@ -12,7 +12,6 @@ public class Play
     private Play(PlayState state) //Todo
     {
         _state = state;
-        _node = new();
     }
 
     private static Play? _instance;
@@ -40,7 +39,7 @@ public class Play
     private readonly PlayState _state;
     public static PlayState State => Instance._state;
 
-    private readonly PlayNode _node;
+    private readonly PlayNode _node = new();
     public static PlayNode Node => Instance._node;
 
 
@@ -51,7 +50,7 @@ public class Play
 
         Logger.Log(LogLevel.Debug, logProcess, "Free Node...");
         _node.QueueFree();
-        Logger.Log(LogLevel.Debug, logProcess, "Old gameplay disposed");
+        Logger.Log(LogLevel.Info, logProcess, "Old gameplay disposed");
     }
 
 

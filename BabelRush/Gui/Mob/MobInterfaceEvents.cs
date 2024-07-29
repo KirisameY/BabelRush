@@ -1,11 +1,9 @@
-using BabelRush.Gui.Mob;
-
 using KirisameLib.Events;
 
-namespace BabelRush.Mobs;
+namespace BabelRush.Gui.Mob;
 
 //Base
-public record MobInterfaceEvent(MobInterface Interface) : BaseEvent;
+public record MobInterfaceEvent(MobInterface Interface) : GuiEvent;
 
 //Select
 public record MobInterfaceSelectedEvent(MobInterface Interface, bool Selected) : MobInterfaceEvent(Interface);

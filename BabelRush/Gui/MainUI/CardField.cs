@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Linq;
 
+using BabelRush.Cards;
 using BabelRush.GamePlay;
 using BabelRush.Gui.Card;
-using BabelRush.Mobs;
+using BabelRush.Gui.Mob;
 
 using Godot;
 
@@ -77,6 +75,8 @@ public partial class CardField : Control
             _selected = value;
 
             OnSelectChanged(old, @new);
+            if (old is not null) EventBus.Publish(new CardSelectedEvent(old.Card,   false));
+            if (@new is not null) EventBus.Publish(new CardSelectedEvent(@new.Card, true));
         }
     }
 
@@ -100,9 +100,14 @@ public partial class CardField : Control
                 old.Selectable = false;
                 if (!oldOut || !TryUseCard(old)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
                     InsertCard(old);
+                EventBus.Publish(new CardPickedEvent(old.Card,   false));
             }
 
-            if (@new is not null) PickUpCard(@new);
+            if (@new is not null)
+            {
+                PickUpCard(@new);
+                EventBus.Publish(new CardPickedEvent(@new.Card, true));
+            }
         }
     }
     private Vector2 PickOffset { get; set; }

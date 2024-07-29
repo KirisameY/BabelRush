@@ -13,7 +13,7 @@ public class Action(ActionType type)
     {
         foreach (var actionItem in Type.ActionItems)
         {
-            actionItem.Act(self,targets,Value);
+            actionItem.Act(self, targets, Value);
         }
     }
 }
