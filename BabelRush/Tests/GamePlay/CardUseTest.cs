@@ -14,9 +14,8 @@ public partial class CardUseTest : Node
 {
     public override void _Ready()
     {
-        //EventHandlerRegisterer.RegisterInstance(this);
+        EventHandlerRegisterer.RegisterInstance(this);
         CallDeferred(MethodName.Initialize);
-        EventHandlerRegisterer.RegisterStaticIn(Assembly.GetAssembly(GetType())!);
     }
 
     private void Initialize()
@@ -46,15 +45,9 @@ public partial class CardUseTest : Node
     }
     
     [EventHandler]
-    public static class TestClass
+    private static void OnEvent(BaseEvent e)
     {
-        public static void Call() { }
-
-        [EventHandler]
-        private static void OnEvent(BaseEvent e)
-        {
-            GD.Print(e);
-        }
+        GD.Print(e);
     }
 }
 
