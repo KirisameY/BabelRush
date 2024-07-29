@@ -1,3 +1,5 @@
+using System.Reflection;
+
 using BabelRush.GamePlay;
 using BabelRush.Gui.MainUI;
 using BabelRush.Gui.Mob;
@@ -12,8 +14,9 @@ public partial class CardUseTest : Node
 {
     public override void _Ready()
     {
-        EventHandlerClassRegisterer.RegisterInstance(this);
+        //EventHandlerRegisterer.RegisterInstance(this);
         CallDeferred(MethodName.Initialize);
+        EventHandlerRegisterer.RegisterStaticIn(Assembly.GetAssembly(GetType())!);
     }
 
     private void Initialize()
@@ -36,15 +39,22 @@ public partial class CardUseTest : Node
         AddChild(Play.Node);
     }
 
-    [EventHandler<BaseEvent>]
-    private void OnEvent(BaseEvent e)
-    {
-        GD.Print(e);
-    }
-
     public void AddCard()
     {
         var cardField = GetNode<CardField>("MainUi/CardField");
         cardField.AddCard(Cards.Card.Default);
     }
+    
+    [EventHandler]
+    public static class TestClass
+    {
+        public static void Call() { }
+
+        [EventHandler]
+        private static void OnEvent(BaseEvent e)
+        {
+            GD.Print(e);
+        }
+    }
 }
+

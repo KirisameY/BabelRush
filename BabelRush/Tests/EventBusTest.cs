@@ -12,7 +12,7 @@ public partial class EventBusTest : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        EventHandlerClassRegisterer.RegisterInstance(this);
+        EventHandlerRegisterer.RegisterInstance(this);
 
         Task.Delay(1000).ContinueWith(_ =>
         {
@@ -23,19 +23,19 @@ public partial class EventBusTest : Node
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta) { }
 
-    [EventHandler<BaseEvent>]
+    [EventHandler]
     private void EventHandler(BaseEvent e)
     {
         GD.Print("E0");
     }
 
-    [EventHandler<TestEvent1>]
+    [EventHandler]
     private void EventHandler1(TestEvent1 e)
     {
         GD.Print("E1", e.Msg);
     }
 
-    [EventHandler<TestEvent2>]
+    [EventHandler]
     private void EventHandler2(TestEvent2 e)
     {
         GD.Print("E2", e.Msg, e.Msg2);

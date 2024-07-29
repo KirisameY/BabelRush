@@ -144,17 +144,17 @@ public partial class CardField : Control
     {
         // EventBus.Register<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
         // EventBus.Register<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
-        EventHandlerClassRegisterer.RegisterInstance(this);
+        EventHandlerRegisterer.RegisterInstance(this);
     }
 
     public override void _ExitTree()
     {
         // EventBus.Unregister<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
         // EventBus.Unregister<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
-        EventHandlerClassRegisterer.UnRegisterInstance(this);
+        EventHandlerRegisterer.UnRegisterInstance(this);
     }
 
-    [EventHandler<CardInterfaceSelectedEvent>]
+    [EventHandler]
     public void OnCardInterfaceSelectedEvent(CardInterfaceSelectedEvent e)
     {
         if (!CardList.Contains(e.CardInterface)) return;
@@ -164,7 +164,7 @@ public partial class CardField : Control
             Selected = null;
     }
 
-    [EventHandler<CardInterfacePressedEvent>]
+    [EventHandler]
     public void OnCardInterfacePressedEvent(CardInterfacePressedEvent e)
     {
         if (!CardList.Contains(e.CardInterface)) return;
