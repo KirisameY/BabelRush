@@ -25,6 +25,13 @@ public static class EventHandlerRegisterer
 
         foreach (var method in methodList)
         {
+            if (method.ReturnType != typeof(void))
+            {
+                Logger.Log(LogLevel.Error, nameof(RegisterInstance),
+                           $"Method {container.GetType().Name}.{method} has EventHandlerAttribute, but return type is not void");
+                continue;
+            }
+
             if (method.GetParameters().Length != 1)
             {
                 Logger.Log(LogLevel.Error, nameof(RegisterInstance),
@@ -77,6 +84,13 @@ public static class EventHandlerRegisterer
 
         foreach (MethodInfo method in methodEventList)
         {
+            if (method.ReturnType != typeof(void))
+            {
+                Logger.Log(LogLevel.Error, nameof(RegisterInstance),
+                           $"Method {type.Name}.{method} has EventHandlerAttribute, but return type is not void");
+                continue;
+            }
+            
             if (method.GetParameters().Length != 1)
             {
                 Logger.Log(LogLevel.Error, nameof(RegisterInstance),
