@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using BabelRush.Cards;
 using BabelRush.GamePlay;
 using BabelRush.Gui.Card;
-using BabelRush.Gui.Mob;
 
 using Godot;
 
@@ -16,11 +15,6 @@ namespace BabelRush.Gui.MainUI;
 public partial class CardField : Control
 {
     //Init
-    public CardField()
-    {
-        EventBus.Register<MobInterfaceSelectedEvent>(OnMobInterfaceSelected);
-    }
-
     public override void _Ready() { }
 
 
@@ -129,9 +123,7 @@ public partial class CardField : Control
 
     private bool TryUseCard(CardInterface card)
     {
-        //Todo ,记得改成正确的机制
-        if (FocusedMob is null) return false;
-        card.Card.Use(Play.State.Player, [FocusedMob]);
+        if (!card.Card.Use(Play.State.Player)) return false; // 若使用失败，返回false
 
         RemoveCard(card);
 
@@ -172,16 +164,5 @@ public partial class CardField : Control
             Picked = e.CardInterface;
         else if (Picked == e.CardInterface)
             Picked = null;
-    }
-
-
-    //Todo , move them out
-    //新机制可以做成两段：卡牌举起时通知目标选择器，然后剩下的全权交给目标选择器处理，打出时直接通知选择器打出。
-    private Mobs.Mob? FocusedMob { get; set; }
-
-    private void OnMobInterfaceSelected(MobInterfaceSelectedEvent e)
-    {
-        if (e.Selected) FocusedMob = e.Interface.Mob;
-        else if (e.Interface.Mob == FocusedMob) FocusedMob = null;
     }
 }
