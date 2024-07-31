@@ -18,5 +18,5 @@ public class ActionType(string id, TargetPattern targetPattern, IEnumerable<Acti
 
     public Action NewInstance() => new(this);
 
-    public static ActionType Default { get; } = new("default", TargetPattern.None, []);
+    public static ActionType Default { get; } = new("default", new TargetPattern.None(), []);
 }

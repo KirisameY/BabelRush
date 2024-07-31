@@ -17,14 +17,12 @@ public class CommonCard(CardType type) : Card
     public override IList<Action> Actions { get; } = type.Actions.Select(actionType => actionType.NewInstance()).ToList();
     public override IList<Feature> Features { get; } = type.Features.Select(featureType => featureType.NewInstance()).ToList();
 
-    public override bool TargetSelected()
-    {
-        return Actions.All
+    public override bool TargetSelected() =>
+        Actions.Count > 0 && Actions.All
             (action =>
-                 action.Type.TargetPattern == TargetPattern.None ||
+                 action.Type.TargetPattern is TargetPattern.None ||
                  TargetSelector.GetTargets(action.Type.TargetPattern).Count > 0
             );
-    }
 
     public override bool Use(Mob user)
     {
