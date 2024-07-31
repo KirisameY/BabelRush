@@ -6,6 +6,8 @@ using BabelRush.Gui.Card;
 
 using Godot;
 
+using JetBrains.Annotations;
+
 using KirisameLib.Events;
 
 using CardInterface = BabelRush.Gui.Card.CardInterface;
@@ -146,7 +148,7 @@ public partial class CardField : Control
         EventHandlerRegisterer.UnRegisterInstance(this);
     }
 
-    [EventHandler]
+    [EventHandler] [UsedImplicitly]
     public void OnCardInterfaceSelectedEvent(CardInterfaceSelectedEvent e)
     {
         if (!CardList.Contains(e.CardInterface)) return;
@@ -156,7 +158,7 @@ public partial class CardField : Control
             Selected = null;
     }
 
-    [EventHandler]
+    [EventHandler] [UsedImplicitly]
     public void OnCardInterfacePressedEvent(CardInterfacePressedEvent e)
     {
         if (!CardList.Contains(e.CardInterface)) return;

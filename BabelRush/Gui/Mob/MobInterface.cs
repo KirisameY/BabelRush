@@ -2,6 +2,8 @@ using BabelRush.Mobs;
 
 using Godot;
 
+using JetBrains.Annotations;
+
 using KirisameLib.Events;
 using KirisameLib.Logging;
 
@@ -75,23 +77,28 @@ public partial class MobInterface : Node2D
 
 
     //Event
-
-    [EventHandler]
+    [EventHandler] [UsedImplicitly]
     private void OnMobMaxHealthChanged(MobMaxHealthChangedEvent e)
     {
-        if (e.Mob == Mob)
-        {
-            HealthBar.SetDeferred(StringNameMaxHealth, e.NewValue);
-        }
+        if (e.Mob != Mob) return;
+        HealthBar.SetDeferred(StringNameMaxHealth, e.NewValue);
     }
 
-    [EventHandler]
+    [EventHandler] [UsedImplicitly]
     private void OnMobHealthChanged(MobHealthChangedEvent e)
     {
-        if (e.Mob == Mob)
-        {
-            HealthBar.SetDeferred(StringNameHealth, e.NewValue);
-        }
+        if (e.Mob != Mob) return;
+        HealthBar.SetDeferred(StringNameHealth, e.NewValue);
+    }
+
+    [EventHandler] [UsedImplicitly]
+    private void OnMobSelected(MobSelectedEvent e)
+    {
+        if (e.Mob != Mob) return;
+        if (e.ByCursor)
+            Modulate = new Color(Modulate.R, e.Selected ? 0 : 1, Modulate.B);
+        if (e.ByCursor)
+            Modulate = new Color(Modulate.R, Modulate.G, e.Selected ? 0 : 1);
     }
 
 
