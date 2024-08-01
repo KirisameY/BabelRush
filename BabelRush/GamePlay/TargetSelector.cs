@@ -25,6 +25,7 @@ public static class TargetSelector
         get => _cursorSelectRange;
         set
         {
+            if (CursorSelectRange == value) return;
             _cursorSelectRange = value;
             if (!GetRange(value).Contains(CursorSelected)) CursorSelected = null;
         }
@@ -36,6 +37,7 @@ public static class TargetSelector
         get => _autoSelectRange;
         set
         {
+            if (AutoSelectRange == value) return;
             _autoSelectRange = value;
             AutoSelected = GetRange(value);
         }
