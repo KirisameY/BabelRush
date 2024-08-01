@@ -97,7 +97,7 @@ public partial class MobInterface : Node2D
         if (e.Mob != Mob) return;
         if (e.ByCursor)
             Modulate = new Color(Modulate.R, e.Selected ? 0 : 1, Modulate.B);
-        if (e.ByCursor)
+        else
             Modulate = new Color(Modulate.R, Modulate.G, e.Selected ? 0 : 1);
     }
 

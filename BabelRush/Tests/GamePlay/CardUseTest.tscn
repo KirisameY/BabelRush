@@ -9,7 +9,10 @@ script = ExtResource("1_c00ik")
 [node name="Scene" type="Node2D" parent="."]
 
 [node name="Player" type="Marker2D" parent="Scene"]
-position = Vector2(84, 105)
+position = Vector2(124, 98)
+
+[node name="Friend1" type="Marker2D" parent="Scene"]
+position = Vector2(51, 118)
 
 [node name="Enemy1" type="Marker2D" parent="Scene"]
 position = Vector2(313, 108)
@@ -25,4 +28,28 @@ offset_top = 218.0
 offset_right = 457.0
 offset_bottom = 226.0
 
+[node name="Target1" type="LineEdit" parent="MainUi"]
+offset_left = 423.0
+offset_top = 175.0
+offset_right = 531.0
+offset_bottom = 206.0
+scale = Vector2(0.5, 0.5)
+text = "None"
+placeholder_text = "Action1"
+alignment = 1
+expand_to_text_length = true
+
+[node name="Target2" type="LineEdit" parent="MainUi"]
+offset_left = 423.0
+offset_top = 192.0
+offset_right = 531.0
+offset_bottom = 223.0
+scale = Vector2(0.5, 0.5)
+text = "None"
+placeholder_text = "Action1"
+alignment = 1
+expand_to_text_length = true
+
 [connection signal="pressed" from="MainUi/Button" to="." method="AddCard"]
+[connection signal="text_changed" from="MainUi/Target1" to="." method="SetTarget1"]
+[connection signal="text_changed" from="MainUi/Target2" to="." method="SetTarget2"]

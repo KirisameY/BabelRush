@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 using BabelRush.Actions;
 using BabelRush.Cards.Features;
@@ -7,7 +8,7 @@ using Godot;
 
 namespace BabelRush.Cards;
 
-public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<ActionType> actions, IReadOnlyList<FeatureType> features)
+public class CommonCardType(string id, bool usable, int cost, IEnumerable<ActionType> actions, IEnumerable<FeatureType> features)
     : CardType
 {
     public override string Id { get; } = id;
@@ -16,8 +17,8 @@ public class CommonCardType(string id, bool usable, int cost, IReadOnlyList<Acti
     public override Texture2D Icon => Registers.CardRegisters.CardIcon.GetItem(Id);
     public override bool Usable { get; } = usable;
     public override int Cost { get; } = cost;
-    public override IReadOnlyList<ActionType> Actions { get; } = actions;
-    public override IReadOnlyList<FeatureType> Features { get; } = features;
+    public override IImmutableList<ActionType> Actions { get; } = actions.ToImmutableList();
+    public override IImmutableList<FeatureType> Features { get; } = features.ToImmutableList();
 
     public override Card NewInstance()
     {

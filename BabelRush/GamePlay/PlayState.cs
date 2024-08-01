@@ -20,4 +20,9 @@ public class PlayState(Mob player)
 
     private IReadOnlyList<Mob>? _allMobs;
     public IReadOnlyList<Mob> AllMobs => _allMobs ??= new CombinedListView<Mob>(Friends, Enemies);
+
+
+    //Temp
+    public void AddEnemy(Mob enemy) => _enemies.Add(enemy);
+    public void AddFriend(Mob enemy) => _friends.Add(enemy);
 }

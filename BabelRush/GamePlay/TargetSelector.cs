@@ -7,6 +7,8 @@ using BabelRush.Cards;
 using BabelRush.Gui.Mob;
 using BabelRush.Mobs;
 
+using Godot;
+
 using JetBrains.Annotations;
 
 using KirisameLib.Events;
@@ -81,7 +83,7 @@ public static class TargetSelector
         {
             if (SelectPlayer == value) return;
             _selectPlayer = value;
-            if (AutoSelected.Contains(Play.State.Player))
+            if (!AutoSelected.Contains(Play.State.Player))
                 EventBus.Publish(new MobSelectedEvent(Play.State.Player, false, value));
         }
     }
@@ -133,6 +135,7 @@ public static class TargetSelector
                         .GroupBy(pattern => pattern.GetType());
         foreach (var patterns in group)
         {
+            GD.Print(patterns.Key.Name);
             //根据组的type
             switch (patterns.Key.Name)
             {
@@ -157,14 +160,14 @@ public static class TargetSelector
             foreach (var pattern in patterns)
             {
                 if (pattern is not TargetPattern.Any any) continue;
-                range |= any.Range;
+                range &= any.Range;
             }
             CursorSelectRange = range;
         }
 
         void SetAll(IGrouping<Type, TargetPattern> patterns)
         {
-            var range = TargetRange.All;
+            var range = (TargetRange)0;
             foreach (var pattern in patterns)
             {
                 if (pattern is not TargetPattern.All all) continue;
