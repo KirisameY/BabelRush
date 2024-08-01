@@ -53,14 +53,19 @@ public partial class Game : Node
 
     private void OnCloseRequest()
     {
+        const string logProcess = "Closing";
+        Logger.Log(LogLevel.Info, logProcess, "Close Requested");
         LogManager.Dispose();
+        Logger.Log(LogLevel.Info, logProcess, "LogManager disposed");
     }
 
 
     //Public Methods
     public static void ExitGame()
     {
+        Logger.Log(LogLevel.Info, "Exiting", "Exit command received");
         Instance.PropagateNotification((int)NotificationWMCloseRequest);
+        Logger.Log(LogLevel.Info, "Exiting", "Game closed");
         Instance.GetTree().Quit();
     }
 
