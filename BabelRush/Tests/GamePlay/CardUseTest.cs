@@ -68,6 +68,7 @@ public partial class CardUseTest : Node
     public void SetTarget2(string target) =>
         TargetPatterns[1] = TargetPattern.FromString(target);
 
+    
     //Events
     [EventHandler] [UsedImplicitly]
     [SuppressMessage("Performance", "CA1822:将成员标记为 static")]

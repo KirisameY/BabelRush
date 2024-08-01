@@ -1,7 +1,3 @@
-using BabelRush.Cards;
-
-using JetBrains.Annotations;
-
 namespace BabelRush.Gui.Card;
 
 public record CardInterfaceEvent(CardInterface CardInterface) : GuiEvent;
