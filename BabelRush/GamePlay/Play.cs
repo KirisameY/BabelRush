@@ -1,6 +1,7 @@
 using System;
 
 using BabelRush.Mobs;
+using BabelRush.Scenery;
 
 using KirisameLib.Logging;
 
@@ -35,12 +36,23 @@ public class Play
     }
 
 
+    //Tick Loop
+    public static void Process(double delta) { }
+
+
     //Member
     private readonly PlayState _state;
     public static PlayState State => Instance._state;
 
-    private readonly PlayNode _node = new();
+    private readonly PlayNode _node = PlayNode.GetInstance(Process);
     public static PlayNode Node => Instance._node;
+
+    private Scene _scene;
+    public static Scene Scene
+    {
+        get => Instance._scene;
+        set => Instance._scene = value;
+    }
 
 
     //Dispose
