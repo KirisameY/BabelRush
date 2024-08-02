@@ -26,7 +26,6 @@ public partial class MobInterface : Node2D
     private static MobInterface CreateInstance()
     {
         var instance = Scene.Instantiate<MobInterface>();
-        EventHandlerRegisterer.RegisterInstance(instance);
         return instance;
     }
 
@@ -99,6 +98,16 @@ public partial class MobInterface : Node2D
             Modulate = new Color(Modulate.R, e.Selected ? 0 : 1, Modulate.B);
         else
             Modulate = new Color(Modulate.R, Modulate.G, e.Selected ? 0 : 1);
+    }
+
+    public override void _EnterTree()
+    {
+        EventHandlerRegisterer.RegisterInstance(this);
+    }
+
+    public override void _ExitTree()
+    {
+        EventHandlerRegisterer.UnregisterInstance(this);
     }
 
 

@@ -14,7 +14,7 @@ public static class EventHandlerRegisterer
 
 
     public static void RegisterInstance(object container) => RegisterInstance(container,   true);
-    public static void UnRegisterInstance(object container) => RegisterInstance(container, false);
+    public static void UnregisterInstance(object container) => RegisterInstance(container, false);
 
     private static void RegisterInstance(object container, bool register)
     {

@@ -145,7 +145,7 @@ public partial class CardField : Control
     {
         // EventBus.Unregister<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
         // EventBus.Unregister<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
-        EventHandlerRegisterer.UnRegisterInstance(this);
+        EventHandlerRegisterer.UnregisterInstance(this);
     }
 
     [EventHandler] [UsedImplicitly]
