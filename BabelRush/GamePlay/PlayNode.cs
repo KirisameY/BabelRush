@@ -8,6 +8,7 @@ namespace BabelRush.GamePlay;
 
 public partial class PlayNode : Node
 {
+    //Getter
     public static PlayNode GetInstance(Action<double> process)
     {
         // Note: Temp!
@@ -17,6 +18,7 @@ public partial class PlayNode : Node
     }
 
 
+    //Process
     private Action<double>? _process;
     public Action<double> Process
     {

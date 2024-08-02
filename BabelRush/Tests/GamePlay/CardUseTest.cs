@@ -7,6 +7,7 @@ using BabelRush.Cards;
 using BabelRush.GamePlay;
 using BabelRush.Gui.MainUI;
 using BabelRush.Gui.Mob;
+using BabelRush.Scenery;
 
 using Godot;
 
@@ -44,7 +45,7 @@ public partial class CardUseTest : Node
         enemy1.Position = GetNode<Marker2D>("Scene/Enemy1").Position;
         enemy2.Position = GetNode<Marker2D>("Scene/Enemy2").Position;
 
-        Play.Initialize(player.Mob);
+        Play.Initialize(player.Mob, new Scene());
         AddChild(Play.Node);
 
         Play.State.AddEnemy(enemy1.Mob);
@@ -68,7 +69,7 @@ public partial class CardUseTest : Node
     public void SetTarget2(string target) =>
         TargetPatterns[1] = TargetPattern.FromString(target);
 
-    
+
     //Events
     [EventHandler] [UsedImplicitly]
     [SuppressMessage("Performance", "CA1822:将成员标记为 static")]

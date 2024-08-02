@@ -10,9 +10,10 @@ namespace BabelRush.GamePlay;
 public class Play
 {
     //Singleton & Initialize
-    private Play(PlayState state) //Todo
+    private Play(PlayState state, Scene scene)
     {
         _state = state;
+        _scene = scene;
     }
 
     private static Play? _instance;
@@ -26,12 +27,12 @@ public class Play
         }
     }
 
-    public static void Initialize(Mob player)
+    public static void Initialize(Mob player, Scene scene)
     {
         const string logProcess = "Initializing";
 
         _instance?.Dispose();
-        _instance = new(new(player));
+        _instance = new(new(player), scene);
         Logger.Log(LogLevel.Info, logProcess, "Gameplay initialized successfully");
     }
 
