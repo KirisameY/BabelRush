@@ -21,8 +21,8 @@ public partial class CardUseTest : Node
 {
     public override void _Ready()
     {
-        EventHandlerRegisterer.RegisterStaticIn(Assembly.GetAssembly(typeof(CardUseTest))!);
-        EventHandlerRegisterer.RegisterInstance(this);
+        EventHandlerSubscriber.SubscribeStaticIn(Assembly.GetAssembly(typeof(CardUseTest))!);
+        EventHandlerSubscriber.InstanceSubscribe(this);
         CallDeferred(MethodName.Initialize);
     }
 

@@ -138,14 +138,14 @@ public partial class CardField : Control
     {
         // EventBus.Register<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
         // EventBus.Register<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
-        EventHandlerRegisterer.RegisterInstance(this);
+        EventHandlerSubscriber.InstanceSubscribe(this);
     }
 
     public override void _ExitTree()
     {
         // EventBus.Unregister<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
         // EventBus.Unregister<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
-        EventHandlerRegisterer.UnregisterInstance(this);
+        EventHandlerSubscriber.InstanceUnsubscribe(this);
     }
 
     [EventHandler] [UsedImplicitly]

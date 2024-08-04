@@ -11,7 +11,7 @@ public partial class EventBusTest : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        EventHandlerRegisterer.RegisterInstance(this);
+        EventHandlerSubscriber.InstanceSubscribe(this);
 
         Task.Delay(1000).ContinueWith(_ =>
         {

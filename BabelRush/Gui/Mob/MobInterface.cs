@@ -110,12 +110,12 @@ public partial class MobInterface : Node2D
 
     public override void _EnterTree()
     {
-        EventHandlerRegisterer.RegisterInstance(this);
+        EventHandlerSubscriber.InstanceSubscribe(this);
     }
 
     public override void _ExitTree()
     {
-        EventHandlerRegisterer.UnregisterInstance(this);
+        EventHandlerSubscriber.InstanceUnsubscribe(this);
     }
 
 
