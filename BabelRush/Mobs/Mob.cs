@@ -1,8 +1,10 @@
-﻿using KirisameLib.Events;
+﻿using BabelRush.Scenery;
+
+using KirisameLib.Events;
 
 namespace BabelRush.Mobs;
 
-public class Mob
+public class Mob : SceneObject
 {
     private int _maxHealth;
     private int _health;
