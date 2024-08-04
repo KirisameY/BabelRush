@@ -52,7 +52,11 @@ public class Play
     public static Scene Scene
     {
         get => Instance._scene;
-        set => Instance._scene = value;
+        set
+        {
+            Instance._scene.Dispose();
+            Instance._scene = value;
+        }
     }
 
 

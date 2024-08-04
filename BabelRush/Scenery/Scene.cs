@@ -1,12 +1,21 @@
 using System;
 using System.Collections.Generic;
 
+using BabelRush.Collision;
+
 using KirisameLib.Logging;
 
 namespace BabelRush.Scenery;
 
-public class Scene
+public sealed class Scene : IDisposable
 {
+    //Initialize&Cleanup
+    public void Dispose()
+    {
+        CollisionSpace.Dispose();
+    }
+
+
     //Rooms
     private int _leftEdge = 0;
     private int _rightEdge = 0;
@@ -35,8 +44,12 @@ public class Scene
             Logger.Log(LogLevel.Info, logProcess, $"Added room {room} to the left, new left edge: {_leftEdge}");
         }
     }
-    
+
+
+    //Collision
+    public CollisionSpace CollisionSpace { get; } = new();
+
 
     //Logging
-    private static Logger Logger { get; } = LogManager.GetLogger("Scene");
+    private static Logger Logger { get; } = LogManager.GetLogger(nameof(Scene));
 }
