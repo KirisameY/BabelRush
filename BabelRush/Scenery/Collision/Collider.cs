@@ -1,12 +1,10 @@
 using System;
 
-using BabelRush.Scenery;
-
 using JetBrains.Annotations;
 
 using KirisameLib.Events;
 
-namespace BabelRush.Collision;
+namespace BabelRush.Scenery.Collision;
 
 public sealed class Collider : IDisposable
 {

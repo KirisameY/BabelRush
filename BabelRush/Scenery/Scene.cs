@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-using BabelRush.Collision;
+using BabelRush.Scenery.Collision;
 
 using KirisameLib.Logging;
 

@@ -1,4 +1,4 @@
-using BabelRush.Collision;
+using BabelRush.Scenery.Collision;
 
 using KirisameLib.Events;
 

@@ -1,7 +1,7 @@
 using KirisameLib.Events;
 using KirisameLib.Structures;
 
-namespace BabelRush.Collision;
+namespace BabelRush.Scenery.Collision;
 
 public record CollidedEvent(UnorderedPair<Collider> Pair, bool Collided) : BaseEvent;
 

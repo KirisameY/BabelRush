@@ -6,7 +6,7 @@ using JetBrains.Annotations;
 using KirisameLib.Events;
 using KirisameLib.Structures;
 
-namespace BabelRush.Collision;
+namespace BabelRush.Scenery.Collision;
 
 public sealed class CollisionSpace : IDisposable
 {
