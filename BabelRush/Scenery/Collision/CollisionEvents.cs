@@ -1,15 +1,15 @@
 using KirisameLib.Events;
-using KirisameLib.Structures;
 
 namespace BabelRush.Scenery.Collision;
 
-public record CollidedEvent(UnorderedPair<Collider> Pair, bool Collided) : BaseEvent;
+//todo:把别的也abstract一下
+public abstract record ObjectAreaEvent(Area Area, SceneObject Object) : BaseEvent;
 
-//Collider
-public record ColliderEvent(Collider Collider) : BaseEvent;
+public sealed record ObjectEnteredEvent(Area Area, SceneObject Object) : ObjectAreaEvent(Area, Object);
 
-public record ColliderMovedEvent(Collider Collider, double OldPosition, double NewPosition) : ColliderEvent(Collider);
+public sealed record ObjectExitedEvent(Area Area, SceneObject Object) : ObjectAreaEvent(Area, Object);
 
-public record ColliderAddedEvent(Collider Collider) : ColliderEvent(Collider);
+//Area
+public abstract record AreaEvent(Area Area) : BaseEvent;
 
-public record ColliderRemovedEvent(Collider Collider) : ColliderEvent(Collider);
+public record AreaTransformedEvent(Area Area) : AreaEvent(Area);

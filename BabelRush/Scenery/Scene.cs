@@ -10,9 +10,14 @@ namespace BabelRush.Scenery;
 public sealed class Scene : IDisposable
 {
     //Initialize&Cleanup
+    public void Ready()
+    {
+        CollisionSpace.Ready();
+    }
+
     public void Dispose()
     {
-        CollisionSpace.Dispose();
+        CollisionSpace.Dispose(); 
     }
 
 

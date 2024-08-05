@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 
 using KirisameLib.Events;
-using KirisameLib.Structures;
 
 namespace BabelRush.Scenery.Collision;
 
 public sealed class CollisionSpace : IDisposable
 {
     //Init&Cleanup
-    public CollisionSpace()
+    public void Ready()
     {
         EventHandlerSubscriber.InstanceSubscribe(this);
     }
@@ -23,49 +22,81 @@ public sealed class CollisionSpace : IDisposable
 
 
     //Members
-    private List<Collider> ColliderList { get; } = [];
-    private List<UnorderedPair<Collider>> CollidingPairList { get; } = [];
+    private List<Area> AreaList { get; } = [];
+    private List<SceneObject> ObjectList { get; } = [];
+    private List<(Area, SceneObject)> CollidingList { get; } = [];
 
-    public void AddCollider(Collider collider)
+    public void AddArea(Area area)
     {
-        ColliderList.Add(collider);
-        EventBus.Publish(new ColliderAddedEvent(collider));
+        if (InSpace(area)) return;
+        AreaList.Add(area);
     }
 
-    public void RemoveCollider(Collider collider)
+    public void RemoveArea(Area area)
     {
-        ColliderList.Remove(collider);
-        EventBus.Publish(new ColliderRemovedEvent(collider));
+        AreaList.Remove(area);
     }
 
-    public bool InSpace(Collider collider)
+    public void AddObject(SceneObject obj)
     {
-        return ColliderList.Contains(collider);
+        if (InSpace(obj)) return;
+        ObjectList.Add(obj);
+    }
+
+    public void RemoveObject(SceneObject obj)
+    {
+        ObjectList.Remove(obj);
+    }
+
+    public bool InSpace(Area area)
+    {
+        return AreaList.Contains(area);
+    }
+
+    public bool InSpace(SceneObject obj)
+    {
+        return ObjectList.Contains(obj);
     }
 
 
     //EventHandlers
     [EventHandler] [UsedImplicitly]
-    private void OnColliderMoved(ColliderMovedEvent e)
+    private void OnAreaTransformed(AreaTransformedEvent e)
     {
-        if (!ColliderList.Contains(e.Collider))
-            return;
+        if (!AreaList.Contains(e.Area)) return;
 
-        foreach (var collider in ColliderList)
+        foreach (var obj in ObjectList)
         {
-            if (collider == e.Collider) continue;
+            DetectCollision(e.Area, obj);
+        }
+    }
 
-            UnorderedPair<Collider> pair = new(e.Collider, collider);
-            bool collides = collider.CollidesWith(e.Collider);
-            bool collided = CollidingPairList.Contains(pair);
-            if (!(collides ^ collided)) continue;
+    [EventHandler] [UsedImplicitly]
+    private void OnSceneObjectMoved(SceneObjectMovedEvent e)
+    {
+        if (!ObjectList.Contains(e.SceneObject)) return;
 
-            if (collides)
-                CollidingPairList.Add(pair);
-            else
-                CollidingPairList.Remove(pair);
+        foreach (var area in AreaList)
+        {
+            DetectCollision(area, e.SceneObject);
+        }
+    }
 
-            EventBus.Publish(new CollidedEvent(pair, collides));
+    private void DetectCollision(Area area, SceneObject obj)
+    {
+        bool collides = area.Contains(obj);
+        bool collided = CollidingList.Contains((area, obj));
+        if (!(collides ^ collided)) return;
+
+        if (collides)
+        {
+            CollidingList.Add((area, obj));
+            EventBus.Publish(new ObjectEnteredEvent(area, obj));
+        }
+        else
+        {
+            CollidingList.Remove((area, obj));
+            EventBus.Publish(new ObjectExitedEvent(area, obj));
         }
     }
 }
