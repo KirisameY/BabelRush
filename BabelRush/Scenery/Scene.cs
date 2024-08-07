@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 
 using BabelRush.GamePlay;
+using BabelRush.Mobs;
 using BabelRush.Scenery.Collision;
 
 using Godot;
@@ -58,6 +59,18 @@ public sealed class Scene : IDisposable
             _leftEdge -= room.Length;
             room.Position = _leftEdge;
             Logger.Log(LogLevel.Info, logProcess, $"Added room {room} to the left, new left edge: {_leftEdge}");
+        }
+        SetUpRoom(room);
+        return;
+
+        void SetUpRoom(Room r)
+        {
+            foreach ((MobType mobType, int pos) in r.Mobs)
+            {
+                var mob = mobType.GetInstance();
+                mob.Position = pos;
+                AddObject(mob);
+            }
         }
     }
 

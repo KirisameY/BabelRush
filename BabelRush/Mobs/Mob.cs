@@ -7,8 +7,11 @@ using KirisameLib.Events;
 
 namespace BabelRush.Mobs;
 
-public class Mob : SceneObject
+public class Mob(MobType type) : SceneObject
 {
+    //Properties
+    public MobType Type { get; } = type;
+
     private int _maxHealth;
     private int _health;
     public int MaxHealth
@@ -32,7 +35,7 @@ public class Mob : SceneObject
         }
     }
 
-    public static Mob Default { get; } = new();
+    public static Mob Default { get; } = new(MobType.Default);
 
 
     //Interface

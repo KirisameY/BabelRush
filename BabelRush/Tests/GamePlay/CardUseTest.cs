@@ -7,6 +7,7 @@ using BabelRush.Cards;
 using BabelRush.GamePlay;
 using BabelRush.Gui.MainUI;
 using BabelRush.Gui.Mob;
+using BabelRush.Mobs;
 using BabelRush.Scenery;
 
 using Godot;
@@ -28,10 +29,10 @@ public partial class CardUseTest : Node
 
     private void Initialize()
     {
-        var player = MobInterface.GetInstance(new Mobs.Mob { MaxHealth = 100, Health = 100 });
-        var friend1 = MobInterface.GetInstance(new Mobs.Mob { MaxHealth = 100, Health = 100 });
-        var enemy1 = MobInterface.GetInstance(new Mobs.Mob { MaxHealth = 100, Health = 100 });
-        var enemy2 = MobInterface.GetInstance(new Mobs.Mob { MaxHealth = 100, Health = 100 });
+        var player = MobInterface.GetInstance(new Mobs.Mob(MobType.Default) { MaxHealth = 100, Health = 100 });
+        var friend1 = MobInterface.GetInstance(new Mobs.Mob(MobType.Default) { MaxHealth = 100, Health = 100 });
+        var enemy1 = MobInterface.GetInstance(new Mobs.Mob(MobType.Default) { MaxHealth = 100, Health = 100 });
+        var enemy2 = MobInterface.GetInstance(new Mobs.Mob(MobType.Default) { MaxHealth = 100, Health = 100 });
 
         var scene = GetNode<Node2D>("Scene");
 
