@@ -137,7 +137,6 @@ public static class TargetSelector
                         .GroupBy(pattern => pattern.GetType());
         foreach (var patterns in group)
         {
-            GD.Print(patterns.Key.Name);
             //根据组的type
             switch (patterns.Key.Name)
             {
