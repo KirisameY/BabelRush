@@ -68,7 +68,7 @@ public sealed class Scene : IDisposable
             foreach ((MobType mobType, int pos) in r.Mobs)
             {
                 var mob = mobType.GetInstance();
-                mob.Position = pos;
+                mob.Position = pos + r.Position;
                 AddObject(mob);
             }
         }
