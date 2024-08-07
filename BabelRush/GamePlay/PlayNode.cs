@@ -17,6 +17,7 @@ public partial class PlayNode : Node
     public static PlayNode GetInstance(Action<double> process)
     {
         var result = Scene.Instantiate<PlayNode>();
+        result.Name = "Play";
         result.Process = process;
         return result;
     }

@@ -1,3 +1,5 @@
+using Godot;
+
 using KirisameLib.Events;
 
 namespace BabelRush.Scenery;
@@ -16,4 +18,6 @@ public abstract class SceneObject
             EventBus.Publish(new SceneObjectMovedEvent(this, old, Position));
         }
     }
+
+    public abstract Node CreateInterface();
 }

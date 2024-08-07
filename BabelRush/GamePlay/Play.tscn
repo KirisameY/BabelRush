@@ -6,6 +6,4 @@
 [node name="Play" type="Node"]
 script = ExtResource("1_m1udj")
 
-[node name="Scene" type="Node2D" parent="."]
-
 [node name="MainUi" parent="." instance=ExtResource("1_u20yl")]

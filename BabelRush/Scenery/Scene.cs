@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
 
+using BabelRush.GamePlay;
 using BabelRush.Scenery.Collision;
+
+using Godot;
 
 using KirisameLib.Logging;
 
@@ -13,12 +16,20 @@ public sealed class Scene : IDisposable
     public void Ready()
     {
         CollisionSpace.Ready();
+        Play.Node.AddChild(Node);
+        Play.Node.MoveChild(Node, 0);
+        Node.Name = "Scene";
     }
 
     public void Dispose()
     {
-        CollisionSpace.Dispose(); 
+        CollisionSpace.Dispose();
+        Node.QueueFree();
     }
+
+
+    //Node
+    public Node2D Node { get; } = new();
 
 
     //Rooms
@@ -53,6 +64,20 @@ public sealed class Scene : IDisposable
 
     //Collision
     public CollisionSpace CollisionSpace { get; } = new();
+
+
+    //Objects
+    public void AddObject(SceneObject obj)
+    {
+        CollisionSpace.AddObject(obj);
+        Node.AddChild(obj.CreateInterface());
+    }
+
+    public void RemoveObject(SceneObject obj)
+    {
+        CollisionSpace.RemoveObject(obj);
+        Node.RemoveChild(obj.CreateInterface());
+    }
 
 
     //Logging

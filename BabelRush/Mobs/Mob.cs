@@ -1,4 +1,7 @@
-﻿using BabelRush.Scenery;
+﻿using BabelRush.Gui.Mob;
+using BabelRush.Scenery;
+
+using Godot;
 
 using KirisameLib.Events;
 
@@ -30,4 +33,11 @@ public class Mob : SceneObject
     }
 
     public static Mob Default { get; } = new();
+
+
+    //Interface
+    public override Node CreateInterface()
+    {
+        return MobInterface.GetInstance(this);
+    }
 }
