@@ -9,10 +9,14 @@ namespace BabelRush.GamePlay;
 public partial class PlayNode : Node
 {
     //Getter
+    private PlayNode() { }
+
+    private static PackedScene? _scene;
+    private static PackedScene Scene => _scene ??= ResourceLoader.Load<PackedScene>("res://GamePlay/Play.tscn");
+
     public static PlayNode GetInstance(Action<double> process)
     {
-        // Note: Temp!
-        var result = new PlayNode();
+        var result = Scene.Instantiate<PlayNode>();
         result.Process = process;
         return result;
     }
