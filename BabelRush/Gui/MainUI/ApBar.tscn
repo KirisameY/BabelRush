@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://du070sjdbxoea"]
+[gd_scene load_steps=10 format=3 uid="uid://du070sjdbxoea"]
 
 [ext_resource type="Texture2D" uid="uid://d3tnwovqixtui" path="res://Sprites/mainui/apball_base.png" id="1_x2cbq"]
 [ext_resource type="Script" path="res://Gui/MainUI/ap_ball.gd" id="2_23tcw"]
@@ -7,6 +7,11 @@
 [ext_resource type="Texture2D" uid="uid://tvm6gry3lk00" path="res://Sprites/mainui/posbar.png" id="4_po36u"]
 [ext_resource type="SpriteFrames" uid="uid://qxg8tfxeku1v" path="res://Sprites/mainui/ap_num.tres" id="5_ordnr"]
 [ext_resource type="Texture2D" uid="uid://co75c7wrxg6h6" path="res://Sprites/mainui/posbar_border.png" id="5_y5lp0"]
+[ext_resource type="FontFile" uid="uid://bv3mttrhsnlet" path="res://Fonts/Silver.ttf" id="8_aflvc"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_j258j"]
+font = ExtResource("8_aflvc")
+font_size = 19
 
 [node name="ApBar" type="Control"]
 texture_filter = 1
@@ -85,3 +90,18 @@ position = Vector2(240, 29)
 texture = ExtResource("5_y5lp0")
 offset = Vector2(91, 0)
 flip_h = true
+
+[node name="CardNameLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -42.0
+offset_top = -12.0
+offset_right = 42.0
+offset_bottom = 9.0
+grow_horizontal = 2
+text = "卡名测试"
+label_settings = SubResource("LabelSettings_j258j")
+horizontal_alignment = 1
+vertical_alignment = 2
