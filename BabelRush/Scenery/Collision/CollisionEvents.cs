@@ -2,7 +2,6 @@ using KirisameLib.Events;
 
 namespace BabelRush.Scenery.Collision;
 
-//todo:把别的也abstract一下
 public abstract record ObjectAreaEvent(Area Area, SceneObject Object) : BaseEvent;
 
 public sealed record ObjectEnteredEvent(Area Area, SceneObject Object) : ObjectAreaEvent(Area, Object);

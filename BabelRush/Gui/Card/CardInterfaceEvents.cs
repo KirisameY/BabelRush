@@ -1,9 +1,9 @@
 namespace BabelRush.Gui.Card;
 
-public record CardInterfaceEvent(CardInterface CardInterface) : GuiEvent;
+public abstract record CardInterfaceEvent(CardInterface CardInterface) : GuiEvent;
 
-public record CardInterfaceClickedEvent(CardInterface CardInterface) : CardInterfaceEvent(CardInterface);
+public sealed record CardInterfaceClickedEvent(CardInterface CardInterface) : CardInterfaceEvent(CardInterface);
 
-public record CardInterfaceSelectedEvent(CardInterface CardInterface, bool Selected) : CardInterfaceEvent(CardInterface);
+public sealed record CardInterfaceSelectedEvent(CardInterface CardInterface, bool Selected) : CardInterfaceEvent(CardInterface);
 
-public record CardInterfacePressedEvent(CardInterface CardInterface, bool Pressed) : CardInterfaceEvent(CardInterface);
+public sealed record CardInterfacePressedEvent(CardInterface CardInterface, bool Pressed) : CardInterfaceEvent(CardInterface);
