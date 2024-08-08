@@ -7,8 +7,6 @@ using BabelRush.Cards;
 using BabelRush.Gui.Mob;
 using BabelRush.Mobs;
 
-using Godot;
-
 using JetBrains.Annotations;
 
 using KirisameLib.Events;
@@ -112,16 +110,14 @@ public static class TargetSelector
 
 
     //EventHandlers
-    [EventHandler]
-    [UsedImplicitly]
+    [EventHandler] [UsedImplicitly]
     private static void OnMobInterfaceSelected(MobInterfaceSelectedEvent e)
     {
         if (e.Selected) CursorSelected = e.Interface.Mob;
         else if (e.Interface.Mob == CursorSelected) CursorSelected = null;
     }
 
-    [EventHandler]
-    [UsedImplicitly]
+    [EventHandler] [UsedImplicitly]
     private static void OnCardPicked(CardPickedEvent e)
     {
         CursorSelectRange = 0;
@@ -176,5 +172,14 @@ public static class TargetSelector
             }
             AutoSelectRange = range;
         }
+    }
+
+    [EventHandler] [UsedImplicitly]
+    private static void OnMobListChanged(MobListChangedEvent e)
+    {
+        //取巧的刷新方法，但是够用，也许以后会重写
+        var temp = AutoSelected;
+        AutoSelected = [];
+        AutoSelected = temp;
     }
 }

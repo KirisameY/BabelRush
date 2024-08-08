@@ -7,13 +7,12 @@ using KirisameLib.Events;
 
 namespace BabelRush.Mobs;
 
-public class Mob(MobType type) : SceneObject
+public class Mob(MobType type, Alignment alignment) : SceneObject
 {
     //Properties
     public MobType Type { get; } = type;
 
     private int _maxHealth;
-    private int _health;
     public int MaxHealth
     {
         get => _maxHealth;
@@ -24,6 +23,8 @@ public class Mob(MobType type) : SceneObject
             EventBus.Publish(new MobMaxHealthChangedEvent(this, old, MaxHealth));
         }
     }
+
+    private int _health;
     public int Health
     {
         get => _health;
@@ -35,7 +36,18 @@ public class Mob(MobType type) : SceneObject
         }
     }
 
-    public static Mob Default { get; } = new(MobType.Default);
+    private Alignment _alignment = alignment;
+    public Alignment Alignment
+    {
+        get => _alignment;
+        set
+        {
+            if (Alignment == value) return;
+            var old = Alignment;
+            _alignment = value;
+            EventBus.Publish(new MobAlignmentChangedEvent(this, old, Alignment));
+        }
+    }
 
 
     //Interface
@@ -43,4 +55,8 @@ public class Mob(MobType type) : SceneObject
     {
         return MobInterface.GetInstance(this);
     }
+
+
+    //Default
+    public static Mob Default { get; } = new(MobType.Default, Alignment.Neutral);
 }

@@ -65,9 +65,9 @@ public sealed class Scene : IDisposable
 
         void SetUpRoom(Room r)
         {
-            foreach ((MobType mobType, int pos) in r.Mobs)
+            foreach ((MobType mobType, Alignment alignment, int pos) in r.Mobs)
             {
-                var mob = mobType.GetInstance();
+                var mob = mobType.GetInstance(alignment);
                 mob.Position = pos + r.Position;
                 AddObject(mob);
             }

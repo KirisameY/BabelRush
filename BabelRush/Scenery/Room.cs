@@ -12,5 +12,5 @@ public class Room
 
 
     //Content
-    public List<(MobType, int)> Mobs { get; } = [];
+    public List<(MobType, Alignment, int)> Mobs { get; } = [];
 }
