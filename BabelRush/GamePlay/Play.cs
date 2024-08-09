@@ -2,11 +2,16 @@ using System;
 
 using BabelRush.Mobs;
 using BabelRush.Scenery;
+using BabelRush.Scenery.Collision;
 
+using JetBrains.Annotations;
+
+using KirisameLib.Events;
 using KirisameLib.Logging;
 
 namespace BabelRush.GamePlay;
 
+[EventHandler]
 public class Play
 {
     //Singleton & Initialize
@@ -37,6 +42,17 @@ public class Play
     }
 
 
+    //Dispose
+    private void Dispose()
+    {
+        const string logProcess = "Disposing";
+
+        Logger.Log(LogLevel.Debug, logProcess, "Free Node...");
+        _node.QueueFree();
+        Logger.Log(LogLevel.Info, logProcess, "Old gameplay disposed");
+    }
+
+
     //Tick Loop
     public static void Process(double delta) { }
 
@@ -56,18 +72,41 @@ public class Play
         {
             Instance._scene.Dispose();
             Instance._scene = value;
+            value.CollisionSpace.AddArea(ScreenArea);
         }
     }
 
 
-    //Dispose
-    private void Dispose()
-    {
-        const string logProcess = "Disposing";
+    //ScreenArea
+    private static Area ScreenArea { get; } = new(0, Project.ViewportSize.X / 2);
 
-        Logger.Log(LogLevel.Debug, logProcess, "Free Node...");
-        _node.QueueFree();
-        Logger.Log(LogLevel.Info, logProcess, "Old gameplay disposed");
+
+    //EventHandler
+    [EventHandler] [UsedImplicitly]
+    public static void OnPlayerMoved(SceneObjectMovedEvent e)
+    {
+        if (e.SceneObject != State.Player) return;
+
+        //camera
+        Node.Camera.TargetPositionX = (float)e.NewPosition;
+
+        //screen area
+        float offset = Node.Camera.Offset.X; //temp
+        ScreenArea.Position = e.NewPosition + offset;
+    }
+
+    [EventHandler] [UsedImplicitly]
+    public static void OnEntityEnteredScreen(ObjectEnteredEvent e)
+    {
+        if (e.Object is not Mob mob) return;
+        State.AddMob(mob);
+    }
+
+    [EventHandler] [UsedImplicitly]
+    public static void OnEntityExitedScreen(ObjectExitedEvent e)
+    {
+        if (e.Object is not Mob mob) return;
+        State.RemoveMob(mob);
     }
 
 

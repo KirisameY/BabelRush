@@ -11,7 +11,7 @@ public sealed class Area(double position, double radius)
     public double Position
     {
         get => _position;
-        private set
+        set
         {
             _position = value;
             EventBus.Publish(new AreaTransformedEvent(this));

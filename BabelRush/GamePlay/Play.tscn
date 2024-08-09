@@ -6,4 +6,7 @@
 [node name="Play" type="Node"]
 script = ExtResource("1_m1udj")
 
+[node name="Camera" type="Camera2D" parent="."]
+offset = Vector2(96, 0)
+
 [node name="MainUi" parent="." instance=ExtResource("1_u20yl")]
