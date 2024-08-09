@@ -16,8 +16,10 @@ namespace BabelRush.GamePlay;
 [EventHandler]
 public class PlayState(Mob player)
 {
-    //Lists
+    //MobLists
     public Mob Player { get; } = player;
+
+    public PlayerInfo PlayerInfo { get; } = new();
 
     private readonly List<Mob> _enemies = [];
     public IReadOnlyList<Mob> Enemies => _enemies.AsReadOnly();
@@ -33,6 +35,42 @@ public class PlayState(Mob player)
 
     private IReadOnlyList<Mob>? _allMobsWithNeutral;
     public IReadOnlyList<Mob> AllMobsWithNeutral => _allMobsWithNeutral ??= new CombinedListView<Mob>(Friends, Enemies, Neutrals);
+
+    private bool TryAddToList(Mob mob, Alignment alignment)
+    {
+        if (!TryGetList(alignment, out var list)) return false;
+        if (list.Contains(mob)) return false;
+
+        list.Add(mob);
+        if (alignment == Alignment.Enemy)
+        {
+            if (list.Count == 1)
+                EventBus.Publish(new BattleStartEvent());
+            if (mob.Type.BlocksMovement && PlayerInfo.Moving)
+                PlayerInfo.Moving = false;
+        }
+        return true;
+    }
+
+    private bool TryAddToList(Mob mob) => TryAddToList(mob, mob.Alignment);
+
+    private bool TryRemoveFromList(Mob mob, Alignment alignment)
+    {
+        if (!TryGetList(alignment, out var list)) return false;
+        if (!list.Remove(mob)) return false;
+
+        if (alignment == Alignment.Enemy)
+        {
+            if (list.Count == 0)
+                EventBus.Publish(new BattleEndEvent());
+            if (list.All(m => !m.Type.BlocksMovement) && !PlayerInfo.Moving)
+                PlayerInfo.Moving = true;
+        }
+
+        return true;
+    }
+
+    private bool TryRemoveFromList(Mob mob) => TryRemoveFromList(mob, mob.Alignment);
 
     private bool TryGetList(Alignment alignment, [NotNullWhen(true)] out List<Mob>? list)
     {
@@ -55,11 +93,15 @@ public class PlayState(Mob player)
     }
 
 
+    //State
+    public bool InBattle => _enemies.Count > 0;
+
+
     //Methods
     public void AddMob(Mob mob)
     {
-        if (!TryGetList(mob.Alignment, out var list)) return;
-        list.Add(mob);
+        if (!TryAddToList(mob)) return;
+
         Logger.Log(LogLevel.Info, nameof(AddMob), $"Added mob {mob}");
         EventBus.Publish(new MobAddedEvent(mob));
     }
@@ -82,9 +124,7 @@ public class PlayState(Mob player)
             return false;
         }
 
-        if (!TryGetList(mob.Alignment, out var list)) return false;
-
-        if (!list.Remove(mob)) return false;
+        if (!TryRemoveFromList(mob)) return false;
 
         Logger.Log(LogLevel.Info, nameof(RemoveMob), $"Removed mob {mob}");
         EventBus.Publish(new MobRemovedEvent(mob));
@@ -98,8 +138,8 @@ public class PlayState(Mob player)
     {
         var state = Play.State;
         if (!state.AllMobsWithNeutral.Contains(e.Mob) || state.Player == e.Mob) return;
-        if (state.TryGetList(e.OldValue, out var oldList)) oldList.Remove(e.Mob);
-        if (state.TryGetList(e.NewValue, out var list)) list.Add(e.Mob);
+        state.TryRemoveFromList(e.Mob, e.OldValue);
+        state.TryAddToList(e.Mob, e.NewValue);
 
         EventBus.Publish(new AlignmentUpdatedEvent());
     }

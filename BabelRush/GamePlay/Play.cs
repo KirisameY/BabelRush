@@ -54,7 +54,11 @@ public class Play
 
 
     //Tick Loop
-    public static void Process(double delta) { }
+    public static void Process(double delta)
+    {
+        //player moving
+        State.Player.Position += State.PlayerInfo.MovingSpeed * delta;
+    }
 
 
     //Member
