@@ -74,6 +74,7 @@ public class Play
         get => Instance._scene;
         set
         {
+            if (value == Scene) return;
             Instance._scene.Dispose();
             Instance._scene = value;
             value.CollisionSpace.AddArea(ScreenArea);
