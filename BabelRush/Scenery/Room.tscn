@@ -1,0 +1,28 @@
+[gd_scene load_steps=2 format=3 uid="uid://cb2n4hgb0qxc7"]
+
+[ext_resource type="Script" path="res://Scenery/RoomNode.cs" id="1_cbonp"]
+
+[node name="Room" type="Node2D"]
+script = ExtResource("1_cbonp")
+
+[node name="From" type="ColorRect" parent="."]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -135.0
+offset_right = 10.0
+offset_bottom = 135.0
+grow_vertical = 2
+color = Color(1, 1, 1, 0.498039)
+
+[node name="End" type="ColorRect" parent="."]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 64.0
+offset_top = -135.0
+offset_right = 74.0
+offset_bottom = 135.0
+grow_vertical = 2
+scale = Vector2(-1, 1)
+color = Color(1, 1, 1, 0.498039)

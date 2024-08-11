@@ -60,17 +60,15 @@ public sealed class Scene : IDisposable
             room.Position = _leftEdge;
             Logger.Log(LogLevel.Info, logProcess, $"Added room {room} to the left, new left edge: {_leftEdge}");
         }
-        SetUpRoom(room);
-        return;
 
-        void SetUpRoom(Room r)
+        //setup room
+        Node.AddChild(RoomNode.GetInstance(room.Position, room.Length));
+
+        foreach ((MobType mobType1, Alignment alignment1, int pos1) in room.Mobs)
         {
-            foreach ((MobType mobType, Alignment alignment, int pos) in r.Mobs)
-            {
-                var mob = mobType.GetInstance(alignment);
-                mob.Position = pos + r.Position;
-                AddObject(mob);
-            }
+            var mob1 = mobType1.GetInstance(alignment1);
+            mob1.Position = pos1 + room.Position;
+            AddObject(mob1);
         }
     }
 
