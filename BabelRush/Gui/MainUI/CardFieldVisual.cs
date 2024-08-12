@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Godot;
@@ -25,7 +26,7 @@ public partial class CardField
     //Func
     private float[] CalculateCardXPosition()
     {
-        var count = CardList.Count;
+        var count = CardInterfaceList.Count;
 
         var posRadius = (CardInterval + CardRadius) * (count - 1);
         var lPos = Math.Max(LeftPos + CardRadius, MidPos - posRadius);
@@ -43,7 +44,7 @@ public partial class CardField
 
     private void UpdateCardPosition()
     {
-        foreach ((CardInterface card, float xPos) in CardList.Zip(CalculateCardXPosition()))
+        foreach ((CardInterface card, float xPos) in CardInterfaceList.Zip(CalculateCardXPosition()))
         {
             card.XPosTween?.Kill();
             card.XPosTween = CreateTween();
@@ -94,19 +95,35 @@ public partial class CardField
         if (Selected is not null)
         {
             var selectedIndex = SelectedCardIndex;
-            for (int i = 0; i < selectedIndex; i++)
-            {
-                CardList[i].MoveToFront();
-            }
 
-            for (int i = CardList.Count - 1; i >= selectedIndex; i--)
+            // for (int i = 0; i < selectedIndex; i++)
+            // {
+            //     CardInterfaceList[i].MoveToFront();
+            // }
+
+            // for (int i = CardInterfaceList.Count - 1; i >= selectedIndex; i--)
+            // {
+            //     CardInterfaceList[i].MoveToFront();
+            // }
+
+            int i = 0;
+            Stack<CardInterface> backStack = [];
+            foreach (var cardInterface in CardInterfaceList)
             {
-                CardList[i].MoveToFront();
+                if (i < selectedIndex)
+                    cardInterface.MoveToFront();
+                else
+                    backStack.Push(cardInterface);
+                i++;
+            }
+            foreach (var cardInterface in backStack)
+            {
+                cardInterface.MoveToFront();
             }
         }
         else
         {
-            foreach (var card in CardList)
+            foreach (var card in CardInterfaceList)
             {
                 card.MoveToFront();
             }

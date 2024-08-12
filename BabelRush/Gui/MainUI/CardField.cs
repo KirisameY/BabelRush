@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using BabelRush.Cards;
 using BabelRush.GamePlay;
@@ -10,8 +11,6 @@ using JetBrains.Annotations;
 
 using KirisameLib.Events;
 
-using CardInterface = BabelRush.Gui.Card.CardInterface;
-
 namespace BabelRush.Gui.MainUI;
 
 public partial class CardField : Control
@@ -21,7 +20,10 @@ public partial class CardField : Control
 
 
     //Member
-    private List<CardInterface> CardList { get; } = [];
+    private static CardPile Pile => Play.State.PlayerInfo.CardField;
+    private Dictionary<Cards.Card, CardInterface> CardDict { get; } = [];
+    private IReadOnlyCollection<CardInterface> CardInterfaceList => CardDict.Values;
+    private IReadOnlyCollection<Cards.Card> CardList => CardDict.Keys;
 
 
     //Process
@@ -33,30 +35,31 @@ public partial class CardField : Control
 
     //Card Operation
     //Todo: to private, use eventbus to call
-    public void AddCard(CardInterface card)
+    private void AddCard(CardInterface ci)
     {
-        CardList.Add(card);
-        AddChild(card);
-        card.Selectable = false;
+        CardDict.TryAdd(ci.Card, ci);
+        AddChild(ci);
+        ci.Selectable = false;
 
-        InsertCard(card);
+        InsertCard(ci);
         UpdateCardPosition();
     }
 
-    public void AddCard(Cards.Card card)
+    private void AddCard(Cards.Card card)
     {
         var ci = CardInterface.GetInstance(card);
         ci.GlobalPosition = new(Project.ViewportSize.X / 2, Project.ViewportSize.Y + 32);
         AddCard(ci);
     }
 
-    public void RemoveCard(CardInterface card)
+    private void RemoveCard(Cards.Card card)
     {
-        CardList.Remove(card);
-        card.QueueFree();
+        CardDict.Remove(card);
         UpdateCardPosition();
         SortCards();
     }
+
+    private void RemoveCard(CardInterface ci) => RemoveCard(ci.Card);
 
 
     //Card Select
@@ -77,7 +80,7 @@ public partial class CardField : Control
         }
     }
 
-    private int SelectedCardIndex => Selected is not null ? CardList.IndexOf(Selected) : -1;
+    private int SelectedCardIndex => Selected is not null ? CardInterfaceList.ToList().IndexOf(Selected) : -1; //ToList回头凹一下
 
 
     //Card Drag & Use
@@ -137,22 +140,18 @@ public partial class CardField : Control
     //Event handlers
     public override void _EnterTree()
     {
-        // EventBus.Register<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
-        // EventBus.Register<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
         EventHandlerSubscriber.InstanceSubscribe(this);
     }
 
     public override void _ExitTree()
     {
-        // EventBus.Unregister<CardInterfaceSelectedEvent>(OnCardInterfaceSelectedEvent);
-        // EventBus.Unregister<CardInterfacePressedEvent>(OnCardInterfacePressedEvent);
         EventHandlerSubscriber.InstanceUnsubscribe(this);
     }
 
     [EventHandler] [UsedImplicitly]
-    public void OnCardInterfaceSelectedEvent(CardInterfaceSelectedEvent e)
+    private void OnCardInterfaceSelected(CardInterfaceSelectedEvent e)
     {
-        if (!CardList.Contains(e.CardInterface)) return;
+        if (!CardInterfaceList.Contains(e.CardInterface)) return;
         if (e.Selected)
             Selected = e.CardInterface;
         else if (Selected == e.CardInterface)
@@ -160,12 +159,26 @@ public partial class CardField : Control
     }
 
     [EventHandler] [UsedImplicitly]
-    public void OnCardInterfacePressedEvent(CardInterfacePressedEvent e)
+    private void OnCardInterfacePressed(CardInterfacePressedEvent e)
     {
-        if (!CardList.Contains(e.CardInterface)) return;
+        if (!CardInterfaceList.Contains(e.CardInterface)) return;
         if (e.Pressed)
             Picked = e.CardInterface;
         else if (Picked == e.CardInterface)
             Picked = null;
+    }
+
+    [EventHandler] [UsedImplicitly]
+    private void OnCardPileInserted(CardPileInsertedEvent e)
+    {
+        if (e.CardPile != Pile) return;
+        AddCard(e.Card);
+    }
+
+    [EventHandler] [UsedImplicitly]
+    private void OnCardPileRemoved(CardPileRemovedEvent e)
+    {
+        if (e.CardPile != Pile) return;
+        RemoveCard(e.Card);
     }
 }

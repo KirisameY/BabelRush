@@ -34,27 +34,26 @@ public partial class CardUseTest : Node
         var enemy1 = MobInterface.GetInstance(new Mobs.Mob(MobType.Default,  Alignment.Enemy) { MaxHealth = 100, Health = 100 });
         var enemy2 = MobInterface.GetInstance(new Mobs.Mob(MobType.Default,  Alignment.Enemy) { MaxHealth = 100, Health = 100 });
 
-        var scene = GetNode<Node2D>("Scene");
+        Play.Initialize(player.Mob, new Scene());
+        AddChild(Play.Node);
+        Play.State.AddMobs(enemy1.Mob, enemy2.Mob, friend1.Mob);
+
+        var scene = Play.Scene.Node;
 
         scene.AddChild(player);
         scene.AddChild(friend1);
         scene.AddChild(enemy1);
         scene.AddChild(enemy2);
 
-        player.Position = GetNode<Marker2D>("Scene/Player").Position;
-        friend1.Position = GetNode<Marker2D>("Scene/Friend1").Position;
-        enemy1.Position = GetNode<Marker2D>("Scene/Enemy1").Position;
-        enemy2.Position = GetNode<Marker2D>("Scene/Enemy2").Position;
-
-        Play.Initialize(player.Mob, new Scene());
-        AddChild(Play.Node);
-        Play.State.AddMobs(enemy1.Mob, enemy2.Mob, friend1.Mob);
+        player.Mob.Position = GetNode<Marker2D>("Player").Position.X;
+        friend1.Mob.Position = GetNode<Marker2D>("Friend1").Position.X;
+        enemy1.Mob.Position = GetNode<Marker2D>("Enemy1").Position.X;
+        enemy2.Mob.Position = GetNode<Marker2D>("Enemy2").Position.X;
     }
 
     public void AddCard()
     {
-        var cardField = GetNode<CardField>("MainUi/CardField");
-        cardField.AddCard(CardType.NewInstance());
+        Play.State.PlayerInfo.CardField.AddCard(CardType.NewInstance());
     }
 
     private CardType CardType =>

@@ -1,4 +1,8 @@
+using BabelRush.Cards;
+
 using Godot;
+
+using JetBrains.Annotations;
 
 using KirisameLib.Events;
 using KirisameLib.Logging;
@@ -170,6 +174,30 @@ public partial class CardInterface : Node2D
     private void OnButtonDown() => Pressed = _prePressed = true;
     private void OnButtonUp() => Pressed = _prePressed = false;
     private void OnPressed() => EventBus.Publish(new CardInterfaceClickedEvent(this));
+
+
+    //Events
+    public override void _EnterTree()
+    {
+        EventHandlerSubscriber.InstanceSubscribe(this);
+    }
+
+    public override void _ExitTree()
+    {
+        EventHandlerSubscriber.InstanceUnsubscribe(this);
+    }
+
+    [EventHandler] [UsedImplicitly]
+    private void OnCardUsed(CardUsedEvent e)
+    {
+        if (Card != e.Card) return;
+        XPosTween?.Kill();
+        YPosTween?.Kill();
+        Selectable = false;
+        var tween = CreateTween();
+        tween.TweenProperty(this, "global_position", Project.ViewportSize / 2, 0.1f);
+        tween.TweenCallback(Callable.From(QueueFree)).SetDelay(0.15f); //temp, will be replaced by remove from tree
+    }
 
 
     //Logging

@@ -1,34 +1,31 @@
-[gd_scene load_steps=3 format=3 uid="uid://c2f23d213oqlm"]
+[gd_scene load_steps=2 format=3 uid="uid://c2f23d213oqlm"]
 
 [ext_resource type="Script" path="res://Tests/GamePlay/CardUseTest.cs" id="1_c00ik"]
-[ext_resource type="PackedScene" uid="uid://c202t6rhh7t1u" path="res://Gui/MainUI/MainUI.tscn" id="2_06bql"]
 
 [node name="CardUseTest" type="Node"]
 script = ExtResource("1_c00ik")
 
-[node name="Scene" type="Node2D" parent="."]
+[node name="Player" type="Marker2D" parent="."]
+position = Vector2(124, -22)
 
-[node name="Player" type="Marker2D" parent="Scene"]
-position = Vector2(124, 98)
+[node name="Friend1" type="Marker2D" parent="."]
+position = Vector2(51, -2)
 
-[node name="Friend1" type="Marker2D" parent="Scene"]
-position = Vector2(51, 118)
+[node name="Enemy1" type="Marker2D" parent="."]
+position = Vector2(313, -12)
 
-[node name="Enemy1" type="Marker2D" parent="Scene"]
-position = Vector2(313, 108)
+[node name="Enemy2" type="Marker2D" parent="."]
+position = Vector2(397, -13)
 
-[node name="Enemy2" type="Marker2D" parent="Scene"]
-position = Vector2(397, 107)
+[node name="TestUI" type="CanvasLayer" parent="."]
 
-[node name="MainUi" parent="." instance=ExtResource("2_06bql")]
-
-[node name="Button" type="Button" parent="MainUi"]
+[node name="Button" type="Button" parent="TestUI"]
 offset_left = 449.0
 offset_top = 218.0
 offset_right = 457.0
 offset_bottom = 226.0
 
-[node name="Target1" type="LineEdit" parent="MainUi"]
+[node name="Target1" type="LineEdit" parent="TestUI"]
 offset_left = 423.0
 offset_top = 175.0
 offset_right = 531.0
@@ -39,7 +36,7 @@ placeholder_text = "Action1"
 alignment = 1
 expand_to_text_length = true
 
-[node name="Target2" type="LineEdit" parent="MainUi"]
+[node name="Target2" type="LineEdit" parent="TestUI"]
 offset_left = 423.0
 offset_top = 192.0
 offset_right = 531.0
@@ -50,6 +47,6 @@ placeholder_text = "Action1"
 alignment = 1
 expand_to_text_length = true
 
-[connection signal="pressed" from="MainUi/Button" to="." method="AddCard"]
-[connection signal="text_changed" from="MainUi/Target1" to="." method="SetTarget1"]
-[connection signal="text_changed" from="MainUi/Target2" to="." method="SetTarget2"]
+[connection signal="pressed" from="TestUI/Button" to="." method="AddCard"]
+[connection signal="text_changed" from="TestUI/Target1" to="." method="SetTarget1"]
+[connection signal="text_changed" from="TestUI/Target2" to="." method="SetTarget2"]

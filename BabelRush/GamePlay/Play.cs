@@ -34,10 +34,15 @@ public class Play
 
     public static void Initialize(Mob player, Scene scene)
     {
-        const string logProcess = "Initializing";
+        const string logProcess = "Initializing...";
 
         _instance?.Dispose();
         _instance = new(new(player), scene);
+
+        Logger.Log(LogLevel.Info, logProcess, "Initializing Scene...");
+        Scene.CollisionSpace.AddArea(ScreenArea);
+        Node.AddChild(Scene.Node);
+
         Logger.Log(LogLevel.Info, logProcess, "Gameplay initialized successfully");
     }
 
@@ -57,7 +62,8 @@ public class Play
     public static void Process(double delta)
     {
         //player moving
-        State.Player.Position += State.PlayerInfo.MovingSpeed * delta;
+        if (State.PlayerInfo.Moving)
+            State.Player.Position += State.PlayerInfo.MovingSpeed * delta;
     }
 
 
@@ -78,6 +84,7 @@ public class Play
             Instance._scene.Dispose();
             Instance._scene = value;
             value.CollisionSpace.AddArea(ScreenArea);
+            Node.AddChild(value.Node);
         }
     }
 
@@ -91,10 +98,10 @@ public class Play
     public static void OnPlayerMoved(SceneObjectMovedEvent e)
     {
         if (e.SceneObject != State.Player) return;
-
+        
         //camera
         Node.Camera.TargetPositionX = (float)e.NewPosition;
-
+        
         //screen area
         float offset = Node.Camera.Offset.X; //temp
         ScreenArea.Position = e.NewPosition + offset;
