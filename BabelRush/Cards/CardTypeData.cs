@@ -5,8 +5,6 @@ using KirisameLib.Extensions;
 
 using BabelRush.Registers;
 
-using Godot;
-
 using Tomlyn.Model;
 
 namespace BabelRush.Cards;

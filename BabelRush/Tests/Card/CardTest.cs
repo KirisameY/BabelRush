@@ -3,7 +3,6 @@ using BabelRush.Cards;
 using Godot;
 
 using Tomlyn;
-using Tomlyn.Model;
 
 using CardInterface = BabelRush.Gui.Card.CardInterface;
 

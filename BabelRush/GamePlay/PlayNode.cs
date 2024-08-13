@@ -1,12 +1,7 @@
 using System;
 
-using BabelRush.Scenery;
-
 using Godot;
 
-using JetBrains.Annotations;
-
-using KirisameLib.Events;
 using KirisameLib.Logging;
 
 namespace BabelRush.GamePlay;
