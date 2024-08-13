@@ -28,13 +28,21 @@ public class CommonCard(CardType type) : Card
     {
         if (!TargetSelected()) return false;
 
-        EventBus.Publish(new BeforeCardUseEvent(this));
+        var useCancel = new CancelToken();
+        EventBus.Publish(new BeforeCardUseEvent(this, useCancel));
+        if (useCancel.Canceled) return false;
+
         foreach (var action in Actions)
         {
             action.Act(user, TargetSelector.GetTargets(action.Type.TargetPattern));
         }
 
-        EventBus.Publish(new CardUsedEvent(this));
+        var toExhause = new Variable<bool>(false);
+        EventBus.Publish(new CardUsedEvent(this, toExhause));
+
+        if (toExhause) EventBus.Publish(new CardExhaustEvent(this));
+        else EventBus.Publish(new CardDiscardEvent(this));
+
         return true;
     }
 }

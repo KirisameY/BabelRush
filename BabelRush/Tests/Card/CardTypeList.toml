@@ -2,13 +2,18 @@
 id = "test1"
 usable = true
 cost = 3
-features = []
+features = [
+    "asd",
+    "asdf",
+]
 
 [[cards]]
 id = "test2"
 usable = false
 cost = 0
-actions = []
+actions = [
+    "asd",
+]
 
 [[cards]]
 id = "test3"
