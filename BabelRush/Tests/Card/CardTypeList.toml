@@ -1,0 +1,16 @@
+[[cards]]
+id = "test1"
+usable = true
+cost = 3
+features = []
+
+[[cards]]
+id = "test2"
+usable = false
+cost = 0
+actions = []
+
+[[cards]]
+id = "test3"
+usable = true
+cost = 0

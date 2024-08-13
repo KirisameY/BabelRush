@@ -31,6 +31,7 @@ grow_vertical = 2
 mouse_filter = 2
 texture = SubResource("GradientTexture1D_020be")
 expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Border" type="Sprite2D" parent="."]
 texture = ExtResource("2_o5np5")
@@ -60,6 +61,7 @@ offset_bottom = 36.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+metadata/_edit_use_anchors_ = true
 
 [connection signal="button_down" from="Box" to="." method="OnButtonDown"]
 [connection signal="button_up" from="Box" to="." method="OnButtonUp"]
