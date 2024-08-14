@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+using BabelRush.Cards;
 using BabelRush.Mobs;
 
 using JetBrains.Annotations;
@@ -17,8 +18,6 @@ public class PlayState(Mob player)
 {
     //MobLists
     public Mob Player { get; } = player;
-
-    public PlayerInfo PlayerInfo { get; } = new();
 
     private readonly List<Mob> _enemies = [];
     public IReadOnlyList<Mob> Enemies => _enemies.AsReadOnly();
@@ -95,6 +94,8 @@ public class PlayState(Mob player)
     //State
     public bool InBattle => _enemies.Count > 0;
 
+    public PlayerInfo PlayerInfo { get; } = new();
+
 
     //Methods
     public void AddMob(Mob mob)
@@ -141,6 +142,24 @@ public class PlayState(Mob player)
         state.TryAddToList(e.Mob, e.NewValue);
 
         EventBus.Publish(new AlignmentUpdatedEvent());
+    }
+
+    [EventHandler] [UsedImplicitly]
+    private static void OnCardDiscard(CardDiscardEvent e)
+    {
+        var playerInfo = Play.State.PlayerInfo;
+        playerInfo.DrawPile.RemoveCard(e.Card);
+        playerInfo.CardField.RemoveCard(e.Card);
+        playerInfo.DiscardPile.AddCard(e.Card);
+    }
+
+    [EventHandler] [UsedImplicitly]
+    private static void OnCardExhaust(CardExhaustEvent e)
+    {
+        var playerInfo = Play.State.PlayerInfo;
+        playerInfo.DrawPile.RemoveCard(e.Card);
+        playerInfo.CardField.RemoveCard(e.Card);
+        playerInfo.DiscardPile.RemoveCard(e.Card);
     }
 
 

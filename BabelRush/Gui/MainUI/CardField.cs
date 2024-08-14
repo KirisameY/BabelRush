@@ -34,7 +34,6 @@ public partial class CardField : Control
 
 
     //Card Operation
-    //Todo: to private, use eventbus to call
     private void AddCard(CardInterface ci)
     {
         CardDict.TryAdd(ci.Card, ci);

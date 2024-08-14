@@ -10,20 +10,8 @@ using KirisameLib.Events;
 
 namespace BabelRush.Cards;
 
-public sealed class CardPile : IReadOnlyList<Card>, IDisposable
+public sealed class CardPile : IReadOnlyList<Card>
 {
-    //Init&Dispose
-    public CardPile()
-    {
-        EventHandlerSubscriber.InstanceSubscribe(this);
-    }
-
-    public void Dispose()
-    {
-        EventHandlerSubscriber.InstanceUnsubscribe(this);
-    }
-
-
     //List
     private List<Card> Cards { get; } = [];
 
@@ -59,28 +47,5 @@ public sealed class CardPile : IReadOnlyList<Card>, IDisposable
         if (!Cards.Remove(card)) return false;
         EventBus.Publish(new CardPileRemovedEvent(this, card));
         return true;
-    }
-
-
-    //EventHandlers
-    [EventHandler] [UsedImplicitly]
-    private void OnCardDiscard(CardDiscardEvent e)
-    {
-        if (this == Play.State.PlayerInfo.DiscardPile)
-            AddCard(e.Card);
-        else
-            RemoveCard(e.Card);
-    }
-
-    [EventHandler] [UsedImplicitly]
-    private void OnCardExhaust(CardExhaustEvent e)
-    {
-        RemoveCard(e.Card);
-    }
-
-    [EventHandler] [UsedImplicitly]
-    private void OnCardUsed(CardUsedEvent e)
-    {
-        RemoveCard(e.Card);
     }
 }
