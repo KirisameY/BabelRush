@@ -144,24 +144,6 @@ public class PlayState(Mob player)
         EventBus.Publish(new AlignmentUpdatedEvent());
     }
 
-    [EventHandler] [UsedImplicitly]
-    private static void OnCardDiscard(CardDiscardEvent e)
-    {
-        var playerInfo = Play.State.PlayerInfo;
-        playerInfo.DrawPile.RemoveCard(e.Card);
-        playerInfo.CardField.RemoveCard(e.Card);
-        playerInfo.DiscardPile.AddCard(e.Card);
-    }
-
-    [EventHandler] [UsedImplicitly]
-    private static void OnCardExhaust(CardExhaustEvent e)
-    {
-        var playerInfo = Play.State.PlayerInfo;
-        playerInfo.DrawPile.RemoveCard(e.Card);
-        playerInfo.CardField.RemoveCard(e.Card);
-        playerInfo.DiscardPile.RemoveCard(e.Card);
-    }
-
 
     //Logging
     private static Logger Logger { get; } = LogManager.GetLogger(nameof(PlayState));

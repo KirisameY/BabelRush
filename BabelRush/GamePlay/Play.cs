@@ -88,6 +88,9 @@ public class Play
         }
     }
 
+    private readonly CardManager _cardManager = new();
+    public static CardManager CardManager => Instance._cardManager;
+
 
     //ScreenArea
     private static Area ScreenArea { get; } = new(0, Project.ViewportSize.X / 2);
@@ -98,10 +101,10 @@ public class Play
     public static void OnPlayerMoved(SceneObjectMovedEvent e)
     {
         if (e.SceneObject != State.Player) return;
-        
+
         //camera
         Node.Camera.TargetPositionX = (float)e.NewPosition;
-        
+
         //screen area
         float offset = Node.Camera.Offset.X; //temp
         ScreenArea.Position = e.NewPosition + offset;

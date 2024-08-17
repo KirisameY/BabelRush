@@ -52,7 +52,7 @@ public partial class CardUseTest : Node
 
     public void AddCard()
     {
-        Play.State.PlayerInfo.CardField.AddCard(CardType.NewInstance());
+        Play.CardManager.CardField.AddCard(CardType.NewInstance());
     }
 
     private CardType CardType =>

@@ -20,7 +20,7 @@ public partial class CardField : Control
 
 
     //Member
-    private static CardPile Pile => Play.State.PlayerInfo.CardField;
+    private static CardPile Pile => Play.CardManager.CardField;
     private Dictionary<Cards.Card, CardInterface> CardDict { get; } = [];
     private IReadOnlyCollection<CardInterface> CardInterfaceList => CardDict.Values;
     private IReadOnlyCollection<Cards.Card> CardList => CardDict.Keys;

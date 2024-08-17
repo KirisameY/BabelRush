@@ -52,6 +52,7 @@ public sealed class CardPile : IReadOnlyCollection<Card>
         if (!Cards.Contains(card)) return false;
 
         if (!Cards.Remove(card)) return false;
+
         EventBus.Publish(new CardPileRemovedEvent(this, card));
         return true;
     }
@@ -103,9 +104,12 @@ public sealed class CardPile : IReadOnlyCollection<Card>
     public Card? PickCard(int index = 0, bool fromTop = true)
     {
         var node = GetNode(index, fromTop);
-        var result = node?.Value;
-        if (node is not null) Cards.Remove(node);
-        return result;
+        if (node is not null)
+        {
+            Cards.Remove(node);
+            EventBus.Publish(new CardPileRemovedEvent(this, node.Value));
+        }
+        return node?.Value;
     }
 
     public List<Card> PickCards(int count = 1, bool fromTop = true)
@@ -114,6 +118,7 @@ public sealed class CardPile : IReadOnlyCollection<Card>
         var result = nodes.Select(node =>
         {
             Cards.Remove(node);
+            EventBus.Publish(new CardPileRemovedEvent(this, node.Value));
             return node.Value;
         }).ToList();
         return result;
@@ -127,6 +132,7 @@ public sealed class CardPile : IReadOnlyCollection<Card>
         {
             Cards.Remove(node);
             cards.Add(node.Value);
+            EventBus.Publish(new CardPileRemovedEvent(this, node.Value));
             node = node.Next;
         }
         return cards;
