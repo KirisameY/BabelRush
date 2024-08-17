@@ -2,7 +2,7 @@
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BabelRush", "BabelRush\BabelRush.csproj", "{67BE5C08-C10B-4A58-8B10-34E3272B48E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KirisameLib", "..\KirisameLib\KirisameLib.csproj", "{E10077D8-2881-41FB-BD18-1C981FC98386}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KirisameLib", "..\KirisameLib\KirisameLib\KirisameLib.csproj", "{E10077D8-2881-41FB-BD18-1C981FC98386}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
