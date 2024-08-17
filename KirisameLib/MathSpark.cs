@@ -15,4 +15,7 @@ public static class MathSpark
     public static T Clamp<T>(T value, T min, T max)
         where T : INumber<T> =>
         Max(Min(value, max), min);
+
+    public static int Round(float value) => (int)(value + 0.5f);
+    public static int Round(double value) => (int)(value + 0.5d);
 }
