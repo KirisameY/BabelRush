@@ -2,7 +2,7 @@ using BabelRush.Cards;
 
 using JetBrains.Annotations;
 
-using KirisameLib.Events;
+using KirisameLib.Core.Events;
 
 namespace BabelRush.GamePlay;
 

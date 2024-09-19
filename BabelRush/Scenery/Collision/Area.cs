@@ -1,6 +1,6 @@
 using System;
 
-using KirisameLib.Events;
+using KirisameLib.Core.Events;
 
 namespace BabelRush.Scenery.Collision;
 

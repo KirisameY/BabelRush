@@ -2,8 +2,8 @@ using BabelRush.Cards.Features;
 
 using Godot;
 
-using KirisameLib.I18n;
-using KirisameLib.Register;
+using KirisameLib.Core.I18n;
+using KirisameLib.Core.Register;
 
 namespace BabelRush.Registers;
 

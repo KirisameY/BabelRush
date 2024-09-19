@@ -7,7 +7,7 @@ using BabelRush.Scenery.Collision;
 
 using Godot;
 
-using KirisameLib.Logging;
+using KirisameLib.Core.Logging;
 
 namespace BabelRush.Scenery;
 

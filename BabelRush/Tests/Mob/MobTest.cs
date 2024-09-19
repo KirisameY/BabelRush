@@ -3,7 +3,7 @@ using BabelRush.Mobs;
 
 using Godot;
 
-using KirisameLib.Events;
+using KirisameLib.Core.Events;
 
 namespace BabelRush.Tests.Mob;
 

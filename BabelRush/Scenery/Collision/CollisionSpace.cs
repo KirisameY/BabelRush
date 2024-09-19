@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
-using KirisameLib.Events;
+using KirisameLib.Core.Events;
 
 namespace BabelRush.Scenery.Collision;
 

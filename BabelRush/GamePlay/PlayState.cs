@@ -7,9 +7,9 @@ using BabelRush.Mobs;
 
 using JetBrains.Annotations;
 
-using KirisameLib.Collections;
-using KirisameLib.Events;
-using KirisameLib.Logging;
+using KirisameLib.Core.Collections;
+using KirisameLib.Core.Events;
+using KirisameLib.Core.Logging;
 
 namespace BabelRush.GamePlay;
 

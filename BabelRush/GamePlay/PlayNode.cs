@@ -2,7 +2,7 @@ using System;
 
 using Godot;
 
-using KirisameLib.Logging;
+using KirisameLib.Core.Logging;
 
 namespace BabelRush.GamePlay;
 

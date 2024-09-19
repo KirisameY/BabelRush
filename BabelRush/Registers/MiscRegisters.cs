@@ -1,6 +1,6 @@
 using BabelRush.Actions;
 
-using KirisameLib.Register;
+using KirisameLib.Core.Register;
 
 namespace BabelRush.Registers;
 

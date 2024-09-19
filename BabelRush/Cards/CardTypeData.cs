@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using KirisameLib.Extensions;
+using KirisameLib.Core.Extensions;
 
 using BabelRush.Registers;
 

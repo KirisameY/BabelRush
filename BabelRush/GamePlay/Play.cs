@@ -6,8 +6,8 @@ using BabelRush.Scenery.Collision;
 
 using JetBrains.Annotations;
 
-using KirisameLib.Events;
-using KirisameLib.Logging;
+using KirisameLib.Core.Events;
+using KirisameLib.Core.Logging;
 
 namespace BabelRush.GamePlay;
 

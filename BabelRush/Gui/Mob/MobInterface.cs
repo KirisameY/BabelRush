@@ -5,8 +5,8 @@ using Godot;
 
 using JetBrains.Annotations;
 
-using KirisameLib.Events;
-using KirisameLib.Logging;
+using KirisameLib.Core.Events;
+using KirisameLib.Core.Logging;
 
 using TheMob = BabelRush.Mobs.Mob;
 
