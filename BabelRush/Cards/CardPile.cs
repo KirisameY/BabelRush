@@ -28,6 +28,7 @@ public sealed class CardPile : IReadOnlyCollection<Card>
     public int Count => Cards.Count;
 
 
+    //Methods
     public bool AddCard(Card card, bool toTop = true)
     {
         if (Cards.Contains(card)) return false;

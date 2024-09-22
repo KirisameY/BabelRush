@@ -88,8 +88,8 @@ public class Play
         }
     }
 
-    private readonly CardManager _cardManager = new();
-    public static CardManager CardManager => Instance._cardManager;
+    private readonly CardHub _cardHub = new();
+    public static CardHub CardHub => Instance._cardHub;
 
 
     //ScreenArea

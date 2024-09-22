@@ -13,9 +13,13 @@ public sealed record BeforeCardUseEvent(Card Card, CancelToken Cancel) : CardEve
 
 public sealed record CardUsedEvent(Card Card, Variable<bool> ToExhaust) : CardEvent(Card);
 
-public sealed record CardDiscardEvent(Card Card) : CardEvent(Card);
+public sealed record BeforeCardDiscardEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
 
-public sealed record CardExhaustEvent(Card Card) : CardEvent(Card);
+public sealed record CardDiscardedEvent(Card Card) : CardEvent(Card);
+
+public sealed record BeforeCardExhaustEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
+
+public sealed record CardExhaustedEvent(Card Card) : CardEvent(Card);
 
 //CardPileEvents
 public abstract record CardPileEvent(CardPile CardPile) : BaseEvent;

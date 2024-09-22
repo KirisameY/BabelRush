@@ -40,9 +40,10 @@ public class CommonCard(CardType type) : Card
         var toExhause = new Variable<bool>(false);
         EventBus.Publish(new CardUsedEvent(this, toExhause));
 
-        if (toExhause) EventBus.Publish(new CardExhaustEvent(this));
-        else EventBus.Publish(new CardDiscardEvent(this));
+        var removed = toExhause
+                          ? Play.CardHub.ExhaustCard(this)
+                          : Play.CardHub.DiscardCard(this);
 
-        return true;
+        return removed;
     }
 }
