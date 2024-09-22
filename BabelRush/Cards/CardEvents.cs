@@ -23,6 +23,11 @@ public sealed record BeforeCardExhaustEvent(Card Card, CancelToken Cancel) : Car
 
 public sealed record CardExhaustedEvent(Card Card) : CardEvent(Card);
 
-public sealed record CardPileInsertedEvent(CardPile CardPile, Card Card) : CardEvent(Card);
+public sealed record CardInsertedToPileEvent(CardPile CardPile, Card Card) : CardEvent(Card);
 
-public sealed record CardPileRemovedEvent(CardPile CardPile, Card Card) : CardEvent(Card);
+public sealed record CardRemovedFromPileEvent(CardPile CardPile, Card Card) : CardEvent(Card);
+
+//Hub
+public sealed record CardIntoHubEvent(Card Card) : CardEvent(Card);
+
+public sealed record CardOutOfHubEvent(Card Card) : CardEvent(Card);

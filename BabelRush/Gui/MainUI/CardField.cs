@@ -159,14 +159,14 @@ public partial class CardField : Control
     }
 
     [EventHandler] [UsedImplicitly]
-    private void OnCardPileInserted(CardPileInsertedEvent e)
+    private void OnCardPileInserted(CardInsertedToPileEvent e)
     {
         if (e.CardPile != Pile) return;
         AddCard(e.Card);
     }
 
     [EventHandler] [UsedImplicitly]
-    private void OnCardPileRemoved(CardPileRemovedEvent e)
+    private void OnCardPileRemoved(CardRemovedFromPileEvent e)
     {
         if (e.CardPile != Pile) return;
         RemoveCard(e.Card);

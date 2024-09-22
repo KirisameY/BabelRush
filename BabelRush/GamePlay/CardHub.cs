@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using BabelRush.Cards;
 
@@ -15,6 +16,15 @@ public class CardHub
     public CardPile CardField { get; } = [];
     public CardPile DrawPile { get; } = [];
     public CardPile DiscardPile { get; } = [];
+    public IEnumerable<CardPile> Piles
+    {
+        get
+        {
+            yield return CardField;
+            yield return DrawPile;
+            yield return DiscardPile;
+        }
+    }
 
 
     //Public Properties
@@ -22,7 +32,7 @@ public class CardHub
     public IReadOnlyCollection<Card> CardsView =>
         _cardsView ??= new CombinedCollectionView<Card>(CardField, DrawPile, DiscardPile);
 
-    
+
     //Public Methods
     /// <returns>False if cancelled</returns>
     public bool DiscardCard(Card card, bool cancellable = true)
@@ -53,6 +63,31 @@ public class CardHub
         EventBus.Publish(new CardExhaustedEvent(card));
         return true;
     }
-    
-    //Todo:Card进出Hub的检定
+
+
+    //Card in/out hub
+    private static readonly Stack<Card> InternalMovingCardStack = [];
+    private void PrepareInternalMove(Card card) => InternalMovingCardStack.Push(card);
+
+    [EventHandler] [UsedImplicitly]
+    private static void OnCardInsertedToPile(CardInsertedToPileEvent e)
+    {
+        var hub = Play.CardHub;
+        if (!hub.Piles.Contains(e.CardPile)) return;
+
+        InternalMovingCardStack.TryPeek(out var movingCard);
+        if (movingCard is not null && movingCard == e.Card) InternalMovingCardStack.Pop();
+        else EventBus.Publish(new CardOutOfHubEvent(e.Card));
+    }
+
+    [EventHandler] [UsedImplicitly]
+    private static void OnCardRemovedFromPile(CardRemovedFromPileEvent e)
+    {
+        var hub = Play.CardHub;
+        if (!hub.Piles.Contains(e.CardPile)) return;
+
+        InternalMovingCardStack.TryPeek(out var movingCard);
+        if (movingCard is not null && movingCard == e.Card) return;
+        EventBus.Publish(new CardOutOfHubEvent(e.Card));
+    }
 }
