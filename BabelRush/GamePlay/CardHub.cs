@@ -1,7 +1,10 @@
+using System.Collections.Generic;
+
 using BabelRush.Cards;
 
 using JetBrains.Annotations;
 
+using KirisameLib.Core.Collections;
 using KirisameLib.Core.Events;
 
 namespace BabelRush.GamePlay;
@@ -14,7 +17,12 @@ public class CardHub
     public CardPile DiscardPile { get; } = [];
 
 
-    //Todo:整体列表 ，进出整体卡组记录
+    //Public Properties
+    private IReadOnlyCollection<Card>? _cardsView;
+    public IReadOnlyCollection<Card> CardsView =>
+        _cardsView ??= new CombinedCollectionView<Card>(CardField, DrawPile, DiscardPile);
+
+    
     //Public Methods
     /// <returns>False if cancelled</returns>
     public bool DiscardCard(Card card, bool cancellable = true)
@@ -45,4 +53,6 @@ public class CardHub
         EventBus.Publish(new CardExhaustedEvent(card));
         return true;
     }
+    
+    //Todo:Card进出Hub的检定
 }
