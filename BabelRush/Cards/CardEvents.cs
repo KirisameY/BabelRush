@@ -14,7 +14,9 @@ public sealed record BeforeCardUseEvent(Card Card, CancelToken Cancel) : CardEve
 
 public sealed record CardUsedEvent(Card Card, Variable<bool> ToExhaust) : CardEvent(Card);
 
-//Pile
+//Gaming
+public sealed record CardDrawnEvent(Card Card) : CardEvent(Card);
+
 public sealed record BeforeCardDiscardEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
 
 public sealed record CardDiscardedEvent(Card Card) : CardEvent(Card);
@@ -23,6 +25,7 @@ public sealed record BeforeCardExhaustEvent(Card Card, CancelToken Cancel) : Car
 
 public sealed record CardExhaustedEvent(Card Card) : CardEvent(Card);
 
+//Pile
 public sealed record CardInsertedToPileEvent(CardPile CardPile, Card Card) : CardEvent(Card);
 
 public sealed record CardRemovedFromPileEvent(CardPile CardPile, Card Card) : CardEvent(Card);

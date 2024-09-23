@@ -8,6 +8,8 @@ using JetBrains.Annotations;
 
 using KirisameLib.Core.Events;
 using KirisameLib.Core.Logging;
+using KirisameLib.Core.RandomAsteroid;
+using KirisameLib.Core.RandomAsteroid.RandomGenerators;
 
 namespace BabelRush.GamePlay;
 
@@ -15,10 +17,13 @@ namespace BabelRush.GamePlay;
 public class Play
 {
     //Singleton & Initialize
-    private Play(PlayState state, Scene scene)
+    private Play(PlayState state, Scene scene, uint randomSeed)
     {
         _state = state;
         _scene = scene;
+        if (randomSeed == 0) randomSeed = (uint)DateTime.Now.Ticks;
+        Random = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
+        _cardHub = new(Random);
     }
 
     private static Play? _instance;
@@ -32,12 +37,12 @@ public class Play
         }
     }
 
-    public static void Initialize(Mob player, Scene scene)
+    public static void Initialize(Mob player, Scene scene, uint randomSeed = 0)
     {
         const string logProcess = "Initializing...";
 
         _instance?.Dispose();
-        _instance = new(new(player), scene);
+        _instance = new(new(player), scene, randomSeed);
 
         Logger.Log(LogLevel.Info, logProcess, "Initializing Scene...");
         Scene.CollisionSpace.AddArea(ScreenArea);
@@ -74,6 +79,8 @@ public class Play
     private readonly PlayNode _node = PlayNode.GetInstance(Process);
     public static PlayNode Node => Instance._node;
 
+    public RandomBelt Random { get; }
+
     private Scene _scene;
     public static Scene Scene
     {
@@ -88,7 +95,7 @@ public class Play
         }
     }
 
-    private readonly CardHub _cardHub = new();
+    private readonly CardHub _cardHub;
     public static CardHub CardHub => Instance._cardHub;
 
 
