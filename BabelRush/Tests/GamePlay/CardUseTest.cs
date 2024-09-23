@@ -52,7 +52,7 @@ public partial class CardUseTest : Node
 
     public void AddCard()
     {
-        Play.CardHub.CardField.AddCard(CardType.NewInstance());
+        Play.CardHub.DrawPile.AddCard(CardType.NewInstance());
     }
 
     private CardType CardType =>
@@ -72,5 +72,12 @@ public partial class CardUseTest : Node
     private void OnEvent(BaseEvent e)
     {
         GD.Print(e);
+    }
+
+    [EventHandler] [UsedImplicitly]
+    [SuppressMessage("Performance", "CA1822:将成员标记为 static")]
+    private void OnCardUsed(CardUsedEvent e)
+    {
+        e.ToExhaust.Value = true;
     }
 }

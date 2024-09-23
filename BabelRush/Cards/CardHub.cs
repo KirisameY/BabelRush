@@ -7,14 +7,15 @@ using JetBrains.Annotations;
 
 using KirisameLib.Core.Collections;
 using KirisameLib.Core.Events;
-using KirisameLib.Core.Extensions;
 using KirisameLib.Core.RandomAsteroid;
 
 namespace BabelRush.GamePlay;
 
+[EventHandler]
 public class CardHub(RandomBelt Random)
 {
-    //Pile
+    #region Piles
+
     public CardPile CardField { get; } = [];
     public CardPile DrawPile { get; } = [];
     public CardPile DiscardPile { get; } = [];
@@ -28,14 +29,20 @@ public class CardHub(RandomBelt Random)
         }
     }
 
+    #endregion
 
-    //Public Properties
+
+    #region Public Properties
+
     private IReadOnlyCollection<Card>? _cardsView;
     public IReadOnlyCollection<Card> CardsView =>
         _cardsView ??= new CombinedCollectionView<Card>(CardField, DrawPile, DiscardPile);
 
+    #endregion
 
-    //Public Methods
+
+    #region Public Methods
+
     /// <returns>False if cancelled</returns>
     public bool DiscardCard(Card card, bool cancellable = true)
     {
@@ -112,13 +119,57 @@ public class CardHub(RandomBelt Random)
 
     public int DrawWithShuffleWhenNeed(int count) => Enumerable.Range(0, count).FirstOrDefault(_ => !DrawWithShuffleWhenNeed(), -1);
 
+    #endregion
 
-    //Card in/out hub
+
+    #region Auto operation
+
+    private void DetectDrawWhenPileInsert(CardInsertedToPileEvent e)
+    {
+        if (e.CardPile == DrawPile || e.CardPile == DiscardPile) DrawToMinValue();
+    }
+
+    private void DetectDrawWhenPileRemove(CardRemovedFromPileEvent e)
+    {
+        if (e.CardPile == CardField) DrawToMinValue();
+    }
+
+    private void DrawToMinValue()
+    {
+        while (CardField.Count < Play.MinCardValue)
+        {
+            if (!DrawWithShuffleWhenNeed()) break;
+        }
+    }
+
+    #endregion
+
+
+    #region Card in/out hub
+
     private readonly List<Card> _internalMovingCards = [];
     private CardPile? _internalMovingOutPile = null;
     private void PrepareInternalMove(Card card) => _internalMovingCards.Add(card);
     private void PrepareInternalMove(CardPile cardPile) => _internalMovingOutPile = cardPile;
     private void StopInternalMove() => _internalMovingOutPile = null;
+
+    private void CardInDecide(CardInsertedToPileEvent e)
+    {
+        if (_internalMovingCards.Remove(e.Card)) //if not in moving cards
+            EventBus.Publish(new CardIntoHubEvent(e.Card));
+    }
+
+    private void CardOutDecide(CardRemovedFromPileEvent e)
+    {
+        if (_internalMovingCards.Contains(e.Card)) return;
+        if (_internalMovingOutPile == e.CardPile) _internalMovingCards.Add(e.Card);
+        else EventBus.Publish(new CardOutOfHubEvent(e.Card));
+    }
+
+    #endregion
+
+
+    #region EventHandlers
 
     [EventHandler] [UsedImplicitly]
     private static void OnCardInsertedToPile(CardInsertedToPileEvent e)
@@ -126,9 +177,10 @@ public class CardHub(RandomBelt Random)
         var hub = Play.CardHub;
         if (!hub.Piles.Contains(e.CardPile)) return;
 
-        if (!hub._internalMovingCards.Remove(e.Card)) //if not in moving cards
-            EventBus.Publish(new CardIntoHubEvent(e.Card));
+        hub.CardInDecide(e);
+        hub.DetectDrawWhenPileInsert(e);
     }
+
 
     [EventHandler] [UsedImplicitly]
     private static void OnCardRemovedFromPile(CardRemovedFromPileEvent e)
@@ -136,8 +188,9 @@ public class CardHub(RandomBelt Random)
         var hub = Play.CardHub;
         if (!hub.Piles.Contains(e.CardPile)) return;
 
-        if (hub._internalMovingCards.Contains(e.Card)) return;
-        if (hub._internalMovingOutPile == e.CardPile) hub._internalMovingCards.Add(e.Card);
-        else EventBus.Publish(new CardOutOfHubEvent(e.Card));
+        hub.CardOutDecide(e);
+        hub.DetectDrawWhenPileRemove(e);
     }
+
+    #endregion
 }

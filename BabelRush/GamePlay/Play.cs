@@ -16,7 +16,8 @@ namespace BabelRush.GamePlay;
 [EventHandler]
 public class Play
 {
-    //Singleton & Initialize
+    #region Singleton & Initialize
+
     private Play(PlayState state, Scene scene, uint randomSeed)
     {
         _state = state;
@@ -51,6 +52,8 @@ public class Play
         Logger.Log(LogLevel.Info, logProcess, "Gameplay initialized successfully");
     }
 
+    #endregion
+
 
     //Dispose
     private void Dispose()
@@ -72,7 +75,8 @@ public class Play
     }
 
 
-    //Member
+    #region Public members
+
     private readonly PlayState _state;
     public static PlayState State => Instance._state;
 
@@ -98,12 +102,23 @@ public class Play
     private readonly CardHub _cardHub;
     public static CardHub CardHub => Instance._cardHub;
 
+    #endregion
+
+
+    #region Public properties
+
+    private readonly int _minCardValue = 4;
+    public static int MinCardValue => Instance._minCardValue;
+
+    #endregion
+
 
     //ScreenArea
     private static Area ScreenArea { get; } = new(0, Project.ViewportSize.X / 2);
 
 
-    //EventHandler
+    #region EventHandler
+
     [EventHandler] [UsedImplicitly]
     public static void OnPlayerMoved(SceneObjectMovedEvent e)
     {
@@ -130,6 +145,8 @@ public class Play
         if (e.Object is not Mob mob) return;
         State.RemoveMob(mob);
     }
+
+    #endregion
 
 
     //Logging
