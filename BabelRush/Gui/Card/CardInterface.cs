@@ -196,6 +196,7 @@ public partial class CardInterface : Node2D
         Selectable = false;
         var tween = CreateTween();
         tween.TweenProperty(this, "global_position", Project.ViewportSize / 2, 0.1f);
+        //tween.TweenProperty(this, "position", new Vector2(200, -108), 0.1f);
         tween.TweenCallback(Callable.From(QueueFree)).SetDelay(0.15f); //temp, will be replaced by remove from tree
     }
 

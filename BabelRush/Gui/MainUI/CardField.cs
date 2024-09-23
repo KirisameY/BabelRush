@@ -50,7 +50,7 @@ public partial class CardField : Control
     private void AddCard(Cards.Card card)
     {
         var ci = CardInterface.GetInstance(card);
-        ci.GlobalPosition = new(Project.ViewportSize.X / 2, Project.ViewportSize.Y + 32);
+        ci.Position = new(Project.ViewportSize.X / 2, Project.ViewportSize.Y + 32); //new Vector2(200,86)
         AddCard(ci);
     }
 

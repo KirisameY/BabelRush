@@ -42,8 +42,10 @@ public partial class CardField
         return result;
     }
 
-    private void UpdateCardPosition()
+    private async void UpdateCardPosition()
     {
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);//wait 1 frame
+        
         foreach ((CardInterface card, float xPos) in CardInterfaceList.Zip(CalculateCardXPosition()))
         {
             card.XPosTween?.Kill();
