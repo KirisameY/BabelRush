@@ -10,6 +10,7 @@ using Godot;
 using JetBrains.Annotations;
 
 using KirisameLib.Core.Events;
+using KirisameLib.Core.Extensions;
 
 namespace BabelRush.Gui.MainUI;
 
@@ -24,6 +25,8 @@ public partial class CardField : Control
     private Dictionary<Cards.Card, CardInterface> CardDict { get; } = [];
     private IReadOnlyCollection<CardInterface> CardInterfaceList => CardDict.Values;
     private IReadOnlyCollection<Cards.Card> CardList => CardDict.Keys;
+    //To record immediately removed card
+    private Cards.Card? _immediatelyRemoved;
 
 
     //Process
@@ -51,11 +54,12 @@ public partial class CardField : Control
         AddCard(ci);
     }
 
-    private void RemoveCard(Cards.Card card)
+    private bool RemoveCard(Cards.Card card)
     {
-        CardDict.Remove(card);
+        if (!CardDict.Remove(card)) return false;
         UpdateCardPosition();
         SortCards();
+        return true;
     }
 
     private void RemoveCard(CardInterface ci) => RemoveCard(ci.Card);
@@ -79,7 +83,7 @@ public partial class CardField : Control
         }
     }
 
-    private int SelectedCardIndex => Selected is not null ? CardInterfaceList.ToList().IndexOf(Selected) : -1; //ToList回头凹一下
+    private int SelectedCardIndex => Selected is not null ? CardInterfaceList.PositionOfFirst(Selected) : -1;
 
 
     //Card Drag & Use
@@ -162,13 +166,15 @@ public partial class CardField : Control
     private void OnCardPileInserted(CardInsertedToPileEvent e)
     {
         if (e.CardPile != Pile) return;
-        AddCard(e.Card);
+        if (e.Card == _immediatelyRemoved) _immediatelyRemoved = null;
+        else AddCard(e.Card);
     }
 
     [EventHandler] [UsedImplicitly]
     private void OnCardPileRemoved(CardRemovedFromPileEvent e)
     {
         if (e.CardPile != Pile) return;
-        RemoveCard(e.Card);
+        if (RemoveCard(e.Card)) return;
+        _immediatelyRemoved = e.Card;
     }
 }

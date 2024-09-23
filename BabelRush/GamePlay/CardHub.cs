@@ -41,6 +41,7 @@ public class CardHub
         EventBus.Publish(new BeforeCardDiscardEvent(card, cancelToken));
         if (cancellable && cancelToken.Canceled) return false;
 
+        PrepareInternalMove(card);
         CardField.RemoveCard(card);
         DrawPile.RemoveCard(card);
         DiscardPile.AddCard(card);
