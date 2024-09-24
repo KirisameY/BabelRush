@@ -75,6 +75,11 @@ public partial class MobInterface : Node2D
         if (Mob.Health != _lastHealth) HealthBar.SetDeferred(StringNameHealth,          Mob.Health);
     }
 
+    public override void _Process(double delta)
+    {
+        Position = new((float)Mob.Position, Position.Y);
+    }
+
 
     //Event
     [EventHandler] [UsedImplicitly]
@@ -99,13 +104,6 @@ public partial class MobInterface : Node2D
             Modulate = new Color(Modulate.R, e.Selected ? 0 : 1, Modulate.B);
         else
             Modulate = new Color(Modulate.R, Modulate.G, e.Selected ? 0 : 1);
-    }
-
-    [EventHandler] [UsedImplicitly]
-    private void OnSceneObjectMoved(SceneObjectMovedEvent e)
-    {
-        if (e.SceneObject != Mob) return;
-        Position = new((float)e.SceneObject.Position, Position.Y);
     }
 
     public override void _EnterTree()

@@ -9,4 +9,6 @@ public class ActionItem(ActionDelegate? actionDelegate)
     private ActionDelegate? ActionDelegate { get; } = actionDelegate;
 
     public void Act(Mob self, IReadOnlyList<Mob> targets, int value) => ActionDelegate?.Invoke(self, targets, value);
+
+    public static ActionItem Default { get; } = new(null);
 }

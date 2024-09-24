@@ -12,19 +12,22 @@ public abstract record TargetPattern //仿rust式的枚举
 
     public sealed record All(TargetRange Range) : TargetPattern;
 
-    public static TargetPattern FromString(string str) => str.ToLower().Split('.') switch
+    /// <exception cref="ArgumentOutOfRangeException"></exception>
+    public static TargetPattern FromString(string from) => from.ToLower().Split('.') switch
     {
-        ["none"]       => new None(),
-        ["self"]       => new Self(),
-        ["any", var r] => Enum.TryParse(r, true, out TargetRange range) ? new Any(range) : Default(),
-        ["all", var r] => Enum.TryParse(r, true, out TargetRange range) ? new All(range) : Default(),
-        _              => Default(),
+        ["none"] => new None(),
+        ["self"] => new Self(),
+        ["any", var r] => Enum.TryParse(r, true, out TargetRange range) ? new Any(range) :
+                              throw new ArgumentOutOfRangeException(nameof(from), from),
+        ["all", var r] => Enum.TryParse(r, true, out TargetRange range) ? new All(range) :
+                              throw new ArgumentOutOfRangeException(nameof(from), from),
+        _ => throw new ArgumentOutOfRangeException(nameof(from), from)
     };
-
-    private static None Default()
-    {
-        return new None();
-    }
+    
+    // private static None Default()
+    // {
+    //     return new None();
+    // }
 }
 
 [Flags]

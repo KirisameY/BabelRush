@@ -26,7 +26,7 @@ public record CardTypeData(string Id, bool Usable, int Cost, IEnumerable<string>
     {
         var id = (string)entry["id"];
         var usable = (bool)entry["usable"];
-        var cost = (int)(long)entry["cost"];
+        var cost = Convert.ToInt32(entry["cost"]);
 
         var actions =
             (entry.GetOrDefault("actions") as TomlArray)?.Select(x => x!.ToString()!) ?? [];
