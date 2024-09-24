@@ -20,10 +20,10 @@ public partial class CardTest : Node2D
         var cardTypesFile = FileAccess.Open("res://Tests/Card/CardTypeList.toml", FileAccess.ModeFlags.Read);
         var cardTypes = CardTypeData.FromTomlTable(Toml.ToModel(cardTypesFile.GetAsText()));
         var n = 0;
-        foreach (var cardType in cardTypes)
+        foreach (var result in cardTypes)
         {
             GD.Print($"Card.{n}");
-            var card = CardInterface.GetInstance(cardType.ToCardType().NewInstance());
+            var card = CardInterface.GetInstance(result.Result.ToModel().NewInstance());
             AddChild(card);
             card.Position = new(80 + 64 * n, 200);
             n++;
