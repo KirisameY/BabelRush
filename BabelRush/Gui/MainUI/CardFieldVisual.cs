@@ -4,6 +4,8 @@ using System.Linq;
 
 using Godot;
 
+using KirisameLib.Core.Collections;
+
 using CardInterface = BabelRush.Gui.Card.CardInterface;
 
 namespace BabelRush.Gui.MainUI;
@@ -26,7 +28,7 @@ public partial class CardField
     //Func
     private float[] CalculateCardXPosition()
     {
-        var count = CardInterfaceList.Count;
+        var count = CardInterfaces.Count;
 
         var posRadius = (CardInterval + CardRadius) * (count - 1);
         var lPos = Math.Max(LeftPos + CardRadius, MidPos - posRadius);
@@ -44,9 +46,9 @@ public partial class CardField
 
     private async void UpdateCardPosition()
     {
-        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);//wait 1 frame
-        
-        foreach ((CardInterface card, float xPos) in CardInterfaceList.Zip(CalculateCardXPosition()))
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); //wait 1 frame
+
+        foreach ((CardInterface card, float xPos) in CardInterfaces.Zip(CalculateCardXPosition()))
         {
             card.XPosTween?.Kill();
             card.XPosTween = CreateTween();
@@ -98,19 +100,9 @@ public partial class CardField
         {
             var selectedIndex = SelectedCardIndex;
 
-            // for (int i = 0; i < selectedIndex; i++)
-            // {
-            //     CardInterfaceList[i].MoveToFront();
-            // }
-
-            // for (int i = CardInterfaceList.Count - 1; i >= selectedIndex; i--)
-            // {
-            //     CardInterfaceList[i].MoveToFront();
-            // }
-
             int i = 0;
             Stack<CardInterface> backStack = [];
-            foreach (var cardInterface in CardInterfaceList)
+            foreach (var cardInterface in CardInterfaces)
             {
                 if (i < selectedIndex)
                     cardInterface.MoveToFront();
@@ -125,7 +117,7 @@ public partial class CardField
         }
         else
         {
-            foreach (var card in CardInterfaceList)
+            foreach (var card in CardInterfaces)
             {
                 card.MoveToFront();
             }

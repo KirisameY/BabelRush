@@ -7,7 +7,7 @@
 [node name="HealthBar" type="Sprite2D"]
 texture_filter = 1
 texture = ExtResource("1_kqo8e")
-offset = Vector2(-5, 0)
+offset = Vector2(-5, -1)
 script = ExtResource("2_mynsg")
 health_color = Color(1, 0, 0, 1)
 shielded_health_color = Color(0.235294, 0.352941, 0.501961, 1)
@@ -15,7 +15,7 @@ shielded_health_color = Color(0.235294, 0.352941, 0.501961, 1)
 [node name="HealthbarShield" type="Sprite2D" parent="."]
 visible = false
 texture = ExtResource("2_q45p7")
-offset = Vector2(-5, 0)
+offset = Vector2(-5, -1)
 
 [node name="LeftMarker" type="Marker2D" parent="."]
 position = Vector2(-24, 0)

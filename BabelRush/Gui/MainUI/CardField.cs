@@ -23,8 +23,8 @@ public partial class CardField : Control
     //Member
     private static CardPile Pile => Play.CardHub.CardField;
     private Dictionary<Cards.Card, CardInterface> CardDict { get; } = [];
-    private IReadOnlyCollection<CardInterface> CardInterfaceList => CardDict.Values;
-    private IReadOnlyCollection<Cards.Card> CardList => CardDict.Keys;
+    private IReadOnlyCollection<CardInterface> CardInterfaces => CardDict.Values;
+    private IReadOnlyCollection<Cards.Card> Cards => CardDict.Keys;
     //To record immediately removed card
     private Cards.Card? _immediatelyRemoved;
 
@@ -83,7 +83,7 @@ public partial class CardField : Control
         }
     }
 
-    private int SelectedCardIndex => Selected is not null ? CardInterfaceList.PositionOfFirst(Selected) : -1;
+    private int SelectedCardIndex => Selected is not null ? CardInterfaces.PositionOfFirst(Selected) : -1;
 
 
     //Card Drag & Use
@@ -145,7 +145,7 @@ public partial class CardField : Control
     [EventHandler] [UsedImplicitly]
     private void OnCardInterfaceSelected(CardInterfaceSelectedEvent e)
     {
-        if (!CardInterfaceList.Contains(e.CardInterface)) return;
+        if (!CardInterfaces.Contains(e.CardInterface)) return;
         if (e.Selected)
             Selected = e.CardInterface;
         else if (Selected == e.CardInterface)
@@ -155,7 +155,7 @@ public partial class CardField : Control
     [EventHandler] [UsedImplicitly]
     private void OnCardInterfacePressed(CardInterfacePressedEvent e)
     {
-        if (!CardInterfaceList.Contains(e.CardInterface)) return;
+        if (!CardInterfaces.Contains(e.CardInterface)) return;
         if (e.Pressed)
             Picked = e.CardInterface;
         else if (Picked == e.CardInterface)
