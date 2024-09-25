@@ -8,21 +8,23 @@ using KirisameLib.Core.Extensions;
 
 using BabelRush.Registers;
 
+using Godot.NativeInterop;
+
 using Tomlyn.Model;
 
 namespace BabelRush.Cards;
 
 public record CardTypeData(string Id, bool Usable, int Cost, IEnumerable<string> Actions, IEnumerable<string> Features)
-    : ITomlData<CardType, CardTypeData>
+    : ITomlData<CardTypeData>
 {
-    public CardType ToModel()
+    public CardType ToCardType()
     {
         var actions = Actions.Select(id => ActionRegisters.Actions.GetItem(id));
         var features = Features.Select(id => CardFeatureRegisters.Features.GetItem(id));
         return new CommonCardType(Id, Usable, Cost, actions, features);
     }
 
-    private static CardTypeData FromTomlEntry(TomlTable entry)
+    public static CardTypeData FromTomlEntry(TomlTable entry)
     {
         var id = (string)entry["id"];
         var usable = (bool)entry["usable"];
@@ -33,24 +35,5 @@ public record CardTypeData(string Id, bool Usable, int Cost, IEnumerable<string>
         var features =
             (entry.GetOrDefault("features") as TomlArray)?.Select(x => x!.ToString()!) ?? [];
         return new CardTypeData(id, usable, cost, actions, features);
-    }
-
-    public static IEnumerable<ParseResult<CardTypeData>> FromTomlTable(TomlTable table)
-    {
-        if (!table.TryGetValue("cards", out var cards)) yield break;
-        if (cards is not TomlTableArray cardList) yield break;
-        foreach (var cardEntry in cardList)
-        {
-            ParseResult<CardTypeData> result;
-            try
-            {
-                result = new(FromTomlEntry(cardEntry));
-            }
-            catch (Exception e)
-            {
-                result = new(e);
-            }
-            yield return result;
-        }
     }
 }

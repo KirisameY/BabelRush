@@ -6,10 +6,7 @@ using Tomlyn.Model;
 
 namespace BabelRush.Data;
 
-public interface ITomlData<out TModel, TSelf> : IData<TModel> where TSelf : ITomlData<TModel, TSelf>
+public interface ITomlData<out TSelf> where TSelf : ITomlData<TSelf>
 {
-    public static abstract IEnumerable<ParseResult<TSelf>> FromTomlTable(TomlTable table);
+    public static abstract TSelf FromTomlEntry(TomlTable table);
 }
-
-public interface ISavableTomlData<TModel, TSelf> : ITomlData<TModel, TSelf>, ISavableData<TModel, TSelf>
-    where TSelf : ISavableTomlData<TModel, TSelf> { }
