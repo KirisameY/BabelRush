@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6xrv85w8ybgl"
-path="res://.godot/imported/ap_nums.png-c2b76445235e684706b0d0b70bb3bb9b.ctex"
+uid="uid://cglxbdsrtetr2"
+path="res://.godot/imported/nonum.png-713f0e84b2a7ef726b4820b85018d9ca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/mainui/ap_nums.png"
-dest_files=["res://.godot/imported/ap_nums.png-c2b76445235e684706b0d0b70bb3bb9b.ctex"]
+source_file="res://resources/sprites/card/nonum.png"
+dest_files=["res://.godot/imported/nonum.png-713f0e84b2a7ef726b4820b85018d9ca.ctex"]
 
 [params]
 

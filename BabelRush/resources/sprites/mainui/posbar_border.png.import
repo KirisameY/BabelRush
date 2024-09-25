@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c03hxrsu27kje"
-path="res://.godot/imported/border.png-2bb54fe0a65cd2675c2c5d5a75992e72.ctex"
+uid="uid://co75c7wrxg6h6"
+path="res://.godot/imported/posbar_border.png-bb364939c539c8c84b4c5901c6491c18.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/card/border.png"
-dest_files=["res://.godot/imported/border.png-2bb54fe0a65cd2675c2c5d5a75992e72.ctex"]
+source_file="res://resources/sprites/mainui/posbar_border.png"
+dest_files=["res://.godot/imported/posbar_border.png-bb364939c539c8c84b4c5901c6491c18.ctex"]
 
 [params]
 

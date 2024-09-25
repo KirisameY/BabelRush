@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3tnwovqixtui"
-path="res://.godot/imported/apball_base.png-23739e2865b058f22989cdf1b38c86b4.ctex"
+uid="uid://ungwmmq5jewk"
+path="res://.godot/imported/healthbar_base.png-580782d1a76cdd85ce884f1b2427bbdf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/mainui/apball_base.png"
-dest_files=["res://.godot/imported/apball_base.png-23739e2865b058f22989cdf1b38c86b4.ctex"]
+source_file="res://resources/sprites/mainui/healthbar_base.png"
+dest_files=["res://.godot/imported/healthbar_base.png-580782d1a76cdd85ce884f1b2427bbdf.ctex"]
 
 [params]
 

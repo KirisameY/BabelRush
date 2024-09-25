@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2xgeus4eg4hw"
-path="res://.godot/imported/numbase.png-70cd4e5066f602aca4c1b713884c40e3.ctex"
+uid="uid://d3tnwovqixtui"
+path="res://.godot/imported/apball_base.png-0715c22ec373dcdfc933a686c5a85d9d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/card/numbase.png"
-dest_files=["res://.godot/imported/numbase.png-70cd4e5066f602aca4c1b713884c40e3.ctex"]
+source_file="res://resources/sprites/mainui/apball_base.png"
+dest_files=["res://.godot/imported/apball_base.png-0715c22ec373dcdfc933a686c5a85d9d.ctex"]
 
 [params]
 

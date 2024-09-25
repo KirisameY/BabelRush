@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://b1y1e3dxvo3e4"]
 
-[ext_resource type="Texture2D" uid="uid://tvm6gry3lk00" path="res://Sprites/mainui/posbar.png" id="4_pivjr"]
-[ext_resource type="Texture2D" uid="uid://co75c7wrxg6h6" path="res://Sprites/mainui/posbar_border.png" id="5_wugkc"]
+[ext_resource type="Texture2D" uid="uid://tvm6gry3lk00" path="res://resources/sprites/mainui/posbar.png" id="4_pivjr"]
+[ext_resource type="Texture2D" uid="uid://co75c7wrxg6h6" path="res://resources/sprites/mainui/posbar_border.png" id="5_wugkc"]
 
 [node name="ApPosBar" type="Control"]
 texture_filter = 1

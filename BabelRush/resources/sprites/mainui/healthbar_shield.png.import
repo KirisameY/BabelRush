@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1es1hd2h31wy"
-path="res://.godot/imported/nums.png-c438dea66369cfd4b5cc192edf201a7e.ctex"
+uid="uid://ct7rwt7uxdjim"
+path="res://.godot/imported/healthbar_shield.png-b6905ef0cee63aa5e70ecdddf296e832.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/card/nums.png"
-dest_files=["res://.godot/imported/nums.png-c438dea66369cfd4b5cc192edf201a7e.ctex"]
+source_file="res://resources/sprites/mainui/healthbar_shield.png"
+dest_files=["res://.godot/imported/healthbar_shield.png-b6905ef0cee63aa5e70ecdddf296e832.ctex"]
 
 [params]
 

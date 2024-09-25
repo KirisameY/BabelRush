@@ -1,8 +1,8 @@
 [gd_resource type="SpriteFrames" load_steps=14 format=3 uid="uid://cbvq2ohg10h52"]
 
-[ext_resource type="Texture2D" uid="uid://pejgbeyp5i87" path="res://Sprites/card/costnums.png" id="1_ce2ln"]
-[ext_resource type="Texture2D" uid="uid://c6y4yrsqnl6jp" path="res://Sprites/card/nocost.png" id="2_2wjim"]
-[ext_resource type="Texture2D" uid="uid://c7trutevbv3vu" path="res://Sprites/card/costx.png" id="3_w0ht6"]
+[ext_resource type="Texture2D" uid="uid://pejgbeyp5i87" path="res://resources/sprites/card/costnums.png" id="1_ce2ln"]
+[ext_resource type="Texture2D" uid="uid://c6y4yrsqnl6jp" path="res://resources/sprites/card/nocost.png" id="2_2wjim"]
+[ext_resource type="Texture2D" uid="uid://c7trutevbv3vu" path="res://resources/sprites/card/costx.png" id="3_w0ht6"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_enr3y"]
 atlas = ExtResource("1_ce2ln")

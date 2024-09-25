@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2sfm8pt881dp"
-path="res://.godot/imported/point0.png-4a89b8e92059c8a77c7e5adf50f5cec8.ctex"
+uid="uid://pejgbeyp5i87"
+path="res://.godot/imported/costnums.png-2dbcf2fb4790aab1a99d7e386272a1bb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/card/point0.png"
-dest_files=["res://.godot/imported/point0.png-4a89b8e92059c8a77c7e5adf50f5cec8.ctex"]
+source_file="res://resources/sprites/card/costnums.png"
+dest_files=["res://.godot/imported/costnums.png-2dbcf2fb4790aab1a99d7e386272a1bb.ctex"]
 
 [params]
 

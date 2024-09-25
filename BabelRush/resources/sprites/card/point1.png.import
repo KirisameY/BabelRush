@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b82vb622d4vba"
-path="res://.godot/imported/placeholder.png-42338c1e5fb18adb9a48f5c720e15a90.ctex"
+uid="uid://dx30a765xcfnu"
+path="res://.godot/imported/point1.png-3758e311fa8112b5102a5ca03314e956.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/card/placeholder.png"
-dest_files=["res://.godot/imported/placeholder.png-42338c1e5fb18adb9a48f5c720e15a90.ctex"]
+source_file="res://resources/sprites/card/point1.png"
+dest_files=["res://.godot/imported/point1.png-3758e311fa8112b5102a5ca03314e956.ctex"]
 
 [params]
 

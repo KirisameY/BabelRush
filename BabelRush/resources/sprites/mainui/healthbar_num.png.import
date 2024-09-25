@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c6y4yrsqnl6jp"
-path="res://.godot/imported/nocost.png-7a985ce5f3b37fea71c3b99523e9db5d.ctex"
+uid="uid://dphhn40ss3o6a"
+path="res://.godot/imported/healthbar_num.png-7e348c4473d7e17eb8a2c7d660beb83e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/card/nocost.png"
-dest_files=["res://.godot/imported/nocost.png-7a985ce5f3b37fea71c3b99523e9db5d.ctex"]
+source_file="res://resources/sprites/mainui/healthbar_num.png"
+dest_files=["res://.godot/imported/healthbar_num.png-7e348c4473d7e17eb8a2c7d660beb83e.ctex"]
 
 [params]
 

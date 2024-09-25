@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tvm6gry3lk00"
-path="res://.godot/imported/posbar.png-45ad2d2d7667da78f96b52650675620c.ctex"
+uid="uid://dcnshvjij1e1"
+path="res://.godot/imported/costbase.png-9e237aa58f687916b3142c8c51a8618f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/mainui/posbar.png"
-dest_files=["res://.godot/imported/posbar.png-45ad2d2d7667da78f96b52650675620c.ctex"]
+source_file="res://resources/sprites/card/costbase.png"
+dest_files=["res://.godot/imported/costbase.png-9e237aa58f687916b3142c8c51a8618f.ctex"]
 
 [params]
 

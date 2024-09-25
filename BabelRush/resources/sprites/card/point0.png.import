@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d23jpngj7xthl"
-path="res://.godot/imported/apball_p2.png-7ed1e207b1d6c0fac6f80cdd649cebbb.ctex"
+uid="uid://d2sfm8pt881dp"
+path="res://.godot/imported/point0.png-ec6cd4b2abcc0e2e3f2028d437b60eee.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/mainui/apball_p2.png"
-dest_files=["res://.godot/imported/apball_p2.png-7ed1e207b1d6c0fac6f80cdd649cebbb.ctex"]
+source_file="res://resources/sprites/card/point0.png"
+dest_files=["res://.godot/imported/point0.png-ec6cd4b2abcc0e2e3f2028d437b60eee.ctex"]
 
 [params]
 
