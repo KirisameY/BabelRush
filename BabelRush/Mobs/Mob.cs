@@ -1,4 +1,6 @@
-﻿using BabelRush.Gui.Mob;
+﻿using System;
+
+using BabelRush.Gui.Mob;
 using BabelRush.Scenery;
 
 using Godot;
@@ -7,7 +9,7 @@ using KirisameLib.Core.Events;
 
 namespace BabelRush.Mobs;
 
-public class Mob(MobType type, Alignment alignment) : SceneObject
+public class Mob(MobType type, Alignment alignment) : VisualObject
 {
     //Properties
     public MobType Type { get; } = type;
@@ -20,6 +22,7 @@ public class Mob(MobType type, Alignment alignment) : SceneObject
         {
             var old = MaxHealth;
             _maxHealth = value;
+            Health = Math.Max(MaxHealth, Health);
             EventBus.Publish(new MobMaxHealthChangedEvent(this, old, MaxHealth));
         }
     }
