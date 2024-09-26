@@ -81,13 +81,15 @@ public sealed class Scene : IDisposable
     public void AddObject(SceneObject obj)
     {
         CollisionSpace.AddObject(obj);
-        Node.AddChild(obj.CreateInterface());
+        if (obj is VisualObject vObj)
+            Node.AddChild(vObj.CreateInterface());
     }
 
     public void RemoveObject(SceneObject obj)
     {
         CollisionSpace.RemoveObject(obj);
-        Node.RemoveChild(obj.CreateInterface());
+        if (obj is VisualObject vObj)
+            Node.RemoveChild(vObj.CreateInterface());
     }
 
 

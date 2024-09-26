@@ -4,5 +4,5 @@ namespace BabelRush.Scenery;
 
 public abstract class VisualObject : SceneObject
 {
-    //Todo:实现这个
+    public abstract Node CreateInterface();
 }
