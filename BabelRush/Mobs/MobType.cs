@@ -1,7 +1,9 @@
 namespace BabelRush.Mobs;
 
-public class MobType(bool blocksMovement)
+public class MobType(string id, MobAnimationSet animationSet, bool blocksMovement)
 {
+    public string Id { get; } = id;
+    public MobAnimationSet AnimationSet { get; } = animationSet;
     public bool BlocksMovement { get; } = blocksMovement;
 
 
@@ -11,5 +13,5 @@ public class MobType(bool blocksMovement)
     }
 
 
-    public static MobType Default { get; } = new(true);
+    public static MobType Default { get; } = new("default", MobAnimationSet.Default, true);
 }

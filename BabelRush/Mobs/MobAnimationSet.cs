@@ -41,11 +41,25 @@ public class MobAnimationSet(
     #endregion
 
 
+    #region Static
+
+    private static MobAnimationSet? _default;
+
+    public static MobAnimationSet Default => _default ??=
+        new MobAnimationSetBuilder()
+           .AddAnimation("default",
+                         [new PlaceholderTexture2D { Size = new(48, 64) }], new(24, 32), new(48, 64))
+           .SetDefault("default")
+           .Build();
+
+    #endregion
+
+
     //Entry Info
-    public readonly struct AnimationInfo(Vector2I offset, Vector2I size, MobAnimationId? start = null, MobAnimationId? end = null)
+    public readonly struct AnimationInfo(Vector2I offset, Vector2I boxSize, MobAnimationId? start = null, MobAnimationId? end = null)
     {
         public readonly Vector2I Offset = offset;
-        public readonly Vector2I Size = size;
+        public readonly Vector2I BoxSize = boxSize;
 
         public readonly MobAnimationId? Start = start;
         public readonly MobAnimationId? End = end;

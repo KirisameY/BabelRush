@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
+using Godot;
+
 using KirisameLib.Core.Collections;
 using KirisameLib.Core.Extensions;
 
@@ -15,6 +17,7 @@ public class MobAnimationId
     private MobAnimationId(IEnumerable<string> stateParts, IEnumerable<string> actionParts, string fullName)
     {
         FullName = fullName;
+        NameId = new(fullName);
         StateParts = [..stateParts];
         ActionParts = [..actionParts];
     }
@@ -65,6 +68,7 @@ public class MobAnimationId
     public ImmutableArray<string> StateParts { get; }
     public ImmutableArray<string> ActionParts { get; }
     public string FullName { get; }
+    public StringName NameId { get; }
 
     public bool IsAction => !ActionParts.IsDefaultOrEmpty;
 
@@ -78,6 +82,8 @@ public class MobAnimationId
     public static implicit operator MobAnimationId(string fullName) => Get(fullName);
 
     public static implicit operator string(MobAnimationId id) => id.FullName;
+
+    public static implicit operator StringName(MobAnimationId id) => id.NameId;
 
     #endregion
 

@@ -13,20 +13,32 @@ public class MobAnimationSetBuilder
     private MobAnimationId? DefaultId { get; set; }
 
     public MobAnimationSetBuilder AddAnimation
-        (MobAnimationId id, IEnumerable<(Texture2D, float)> frames, Vector2I offset, Vector2I size, float speed = 1.0f)
+    (MobAnimationId id, IEnumerable<(Texture2D, float)> frames, Vector2I center, Vector2I boxSize,
+     float fps = 5.0f, MobAnimationId? beforeAnimation = null, MobAnimationId? afterAnimation = null)
     {
+        if (!id.IsAction && (beforeAnimation, afterAnimation) is not (null, null))
+            throw new InvalidOperationException("State animation cannot have before and after animations");
+
+        if (fps < 0)
+        {
+            fps = -fps;
+            frames = frames.Reverse();
+        }
+
         StringName name = new(id);
         SpriteFrames.AddAnimation(name);
-        SpriteFrames.SetAnimationSpeed(name, speed);
+        SpriteFrames.SetAnimationSpeed(name, fps);
+        SpriteFrames.SetAnimationLoop(name, !id.IsAction);
         foreach (var (frame, duration) in frames)
             SpriteFrames.AddFrame(name, frame, duration);
-        AnimationDict.Add(id, new(offset, size));
+        AnimationDict.Add(id, new(-center, boxSize, beforeAnimation, afterAnimation));
         return this;
     }
 
     public MobAnimationSetBuilder AddAnimation
-        (MobAnimationId name, IEnumerable<Texture2D> frames, Vector2I offset, Vector2I size, float speed = 1.0f) =>
-        AddAnimation(name, frames.Select((frame) => (frame, 1.0f)), offset, size, speed);
+    (MobAnimationId id, IEnumerable<Texture2D> frames, Vector2I center, Vector2I boxSize,
+     float fps = 5.0f, MobAnimationId? beforeAnimation = null, MobAnimationId? afterAnimation = null) =>
+        AddAnimation(id, frames.Select((frame) => (frame, 1.0f)), center, boxSize, fps, beforeAnimation, afterAnimation);
 
     public MobAnimationSetBuilder SetDefault(MobAnimationId name)
     {
