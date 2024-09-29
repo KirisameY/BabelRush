@@ -26,21 +26,26 @@ public partial class MobInterface : Node2D
     {
         MobInterface instance = CreateInstance();
         instance.Mob = mob;
-        instance.CallDeferred(MethodName.InitializeAnimation);
+        instance.CallDeferred(MethodName.GettingInitialize);
         return instance;
+    }
+
+    private void GettingInitialize()
+    {
+        Sprite.SpriteFrames = Mob.Type.AnimationSet.SpriteFrames;
+        _ = PlayAnimation(AnimateState);
     }
 
     private static MobInterface CreateInstance()
     {
         var instance = Scene.Instantiate<MobInterface>();
-        instance.CallDeferred(MethodName.Initialize);
+        instance.CallDeferred(MethodName.CreatingInitialize);
         return instance;
     }
 
-    private void Initialize()
+    private void CreatingInitialize()
     {
-        var shapeNode = GetNode<CollisionShape2D>("Box/Shape");
-        shapeNode.Shape = shapeNode.Shape.Duplicate() as Shape2D;
+        BoxShapeNode.Shape = BoxShapeNode.Shape.Duplicate() as Shape2D;
     }
 
     private const string ScenePath = "res://Gui/Mob/Mob.tscn";
@@ -121,11 +126,6 @@ public partial class MobInterface : Node2D
         if (Mob.Health != _lastHealth) HealthBar.SetDeferred(StringNameHealth,          Mob.Health);
     }
 
-    private void InitializeAnimation()
-    {
-        _ = PlayAnimation(AnimateState);
-    }
-
     #endregion
 
 
@@ -162,7 +162,7 @@ public partial class MobInterface : Node2D
         }
 
         //reset
-         _ = PlayAnimation(AnimateState);
+        _ = PlayAnimation(AnimateState);
 
         void PlayIt(MobAnimationId aId, MobAnimationSet.AnimationInfo aInfo)
         {

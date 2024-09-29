@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
@@ -57,13 +58,14 @@ public partial class CardUseTest : Node
 
     private CardType CardType =>
         new CommonCardType("test", true, 1, TargetPatterns.Select(pattern => new ActionType("test", pattern, [])), []);
-    private TargetPattern[] TargetPatterns { get; } = [new TargetPattern.None(), new TargetPattern.None()];
 
-    public void SetTarget1(string target) =>
-        TargetPatterns[0] = TargetPattern.FromString(target);
+    private string[] TargetPatternNames { get; } = ["None", "None"];
 
-    public void SetTarget2(string target) =>
-        TargetPatterns[1] = TargetPattern.FromString(target);
+    private IEnumerable<TargetPattern> TargetPatterns  => TargetPatternNames.Select(TargetPattern.FromString);
+
+    public void SetTarget1(string value) => TargetPatternNames[0] = value;
+
+    public void SetTarget2(string value) => TargetPatternNames[1] = value;
 
 
     //Events

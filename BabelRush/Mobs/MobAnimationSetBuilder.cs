@@ -12,7 +12,7 @@ public class MobAnimationSetBuilder
     private Dictionary<MobAnimationId, MobAnimationSet.AnimationInfo> AnimationDict { get; } = [];
     private MobAnimationId? DefaultId { get; set; }
 
-    public MobAnimationSetBuilder AddAnimation
+    public MobAnimationSetBuilder SetAnimation
     (MobAnimationId id, IEnumerable<(Texture2D, float)> frames, Vector2I center, Vector2I boxSize,
      float fps = 5.0f, MobAnimationId? beforeAnimation = null, MobAnimationId? afterAnimation = null)
     {
@@ -26,19 +26,20 @@ public class MobAnimationSetBuilder
         }
 
         StringName name = new(id);
+        if (SpriteFrames.HasAnimation(name)) SpriteFrames.RemoveAnimation(name);
         SpriteFrames.AddAnimation(name);
         SpriteFrames.SetAnimationSpeed(name, fps);
         SpriteFrames.SetAnimationLoop(name, !id.IsAction);
         foreach (var (frame, duration) in frames)
             SpriteFrames.AddFrame(name, frame, duration);
-        AnimationDict.Add(id, new(-center, boxSize, beforeAnimation, afterAnimation));
+        AnimationDict[id] = new(-center, boxSize, beforeAnimation, afterAnimation);
         return this;
     }
 
-    public MobAnimationSetBuilder AddAnimation
+    public MobAnimationSetBuilder SetAnimation
     (MobAnimationId id, IEnumerable<Texture2D> frames, Vector2I center, Vector2I boxSize,
      float fps = 5.0f, MobAnimationId? beforeAnimation = null, MobAnimationId? afterAnimation = null) =>
-        AddAnimation(id, frames.Select((frame) => (frame, 1.0f)), center, boxSize, fps, beforeAnimation, afterAnimation);
+        SetAnimation(id, frames.Select((frame) => (frame, 1.0f)), center, boxSize, fps, beforeAnimation, afterAnimation);
 
     public MobAnimationSetBuilder SetDefault(MobAnimationId name)
     {

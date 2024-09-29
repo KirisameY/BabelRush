@@ -47,8 +47,8 @@ public class MobAnimationSet(
 
     public static MobAnimationSet Default => _default ??=
         new MobAnimationSetBuilder()
-           .AddAnimation("default",
-                         [new PlaceholderTexture2D { Size = new(48, 64) }], new(24, 32), new(48, 64))
+           .SetAnimation("default",
+                         [new PlaceholderTexture2D { Size = new(48, 64) }], new(24, 64), new(48, 64))
            .SetDefault("default")
            .Build();
 
