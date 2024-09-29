@@ -1,21 +1,22 @@
-using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
-using System.Linq;
 
 using Godot;
 
-
-namespace BabelRush.Mobs;
+namespace BabelRush.Mobs.Animation;
 
 public class MobAnimationSet(
-    SpriteFrames spriteFrames, IDictionary<MobAnimationId, MobAnimationSet.AnimationInfo> animationDict, MobAnimationId defaultId)
+    string id,
+    SpriteFrames spriteFrames,
+    IDictionary<MobAnimationId, MobAnimationSet.AnimationInfo> animationDict,
+    MobAnimationId defaultAnimationId)
 {
     #region Properties
 
+    public string Id { get; } = id;
     public SpriteFrames SpriteFrames { get; } = spriteFrames;
     private FrozenDictionary<MobAnimationId, AnimationInfo> AnimationDict { get; } = animationDict.ToFrozenDictionary();
-    public MobAnimationId DefaultId { get; } = defaultId;
+    public MobAnimationId DefaultAnimationId { get; } = defaultAnimationId;
 
     #endregion
 
@@ -34,8 +35,8 @@ public class MobAnimationSet(
         {
             if (TryGetInfo(backId, out info)) return backId;
         }
-        info = this[DefaultId];
-        return DefaultId;
+        info = this[DefaultAnimationId];
+        return DefaultAnimationId;
     }
 
     #endregion
@@ -50,6 +51,7 @@ public class MobAnimationSet(
            .SetAnimation("default",
                          [new PlaceholderTexture2D { Size = new(48, 64) }], new(24, 64), new(48, 64))
            .SetDefault("default")
+           .SetId("default")
            .Build();
 
     #endregion

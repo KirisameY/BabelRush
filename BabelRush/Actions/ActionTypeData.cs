@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 using BabelRush.Cards;
@@ -12,7 +13,7 @@ using Tomlyn.Model;
 
 namespace BabelRush.Actions;
 
-public record ActionTypeData(string Id, string TargetPattern, IEnumerable<string> ActionItems) : ITomlData<ActionTypeData>
+public record ActionTypeData(string Id, string TargetPattern, ImmutableArray<string> ActionItems) : ITomlData<ActionTypeData>
 {
     public ActionType ToActionType()
     {
@@ -29,6 +30,6 @@ public record ActionTypeData(string Id, string TargetPattern, IEnumerable<string
         var actionItems =
             (entry.GetOrDefault("action_items") as TomlArray)?.Select(x => x!.ToString()!) ?? [];
 
-        return new ActionTypeData(id, targetPattern, actionItems);
+        return new ActionTypeData(id, targetPattern, [..actionItems]);
     }
 }

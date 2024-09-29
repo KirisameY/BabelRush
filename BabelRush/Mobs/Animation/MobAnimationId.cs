@@ -1,14 +1,11 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 
 using Godot;
 
-using KirisameLib.Core.Collections;
 using KirisameLib.Core.Extensions;
 
-namespace BabelRush.Mobs;
+namespace BabelRush.Mobs.Animation;
 
 public class MobAnimationId
 {

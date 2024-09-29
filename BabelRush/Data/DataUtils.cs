@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using Godot;
+
 using Tomlyn.Model;
 
 namespace BabelRush.Data;
@@ -25,5 +27,10 @@ public static class DataUtils
             }
             yield return result;
         }
+    }
+    
+    public static Vector2I GetVector2I(TomlTable table)
+    {
+        return new(Convert.ToInt32(table["x"]), Convert.ToInt32(table["y"]));
     }
 }

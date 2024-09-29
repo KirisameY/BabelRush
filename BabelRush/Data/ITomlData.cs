@@ -8,5 +8,5 @@ namespace BabelRush.Data;
 
 public interface ITomlData<out TSelf> where TSelf : ITomlData<TSelf>
 {
-    public static abstract TSelf FromTomlEntry(TomlTable table);
+    public static abstract TSelf FromTomlEntry(TomlTable entry);
 }

@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 using BabelRush.Mobs;
+using BabelRush.Mobs.Animation;
 using BabelRush.Scenery;
 
 using Godot;
@@ -95,7 +96,7 @@ public partial class MobInterface : Node2D
     private MobAnimationId? _animateState;
     private MobAnimationId AnimateState
     {
-        get { return _animateState ??= Mob.Type.AnimationSet.DefaultId; }
+        get { return _animateState ??= Mob.Type.AnimationSet.DefaultAnimationId; }
         set => _animateState = value;
     }
 

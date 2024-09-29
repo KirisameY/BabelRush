@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 using BabelRush.Data;
@@ -14,7 +15,7 @@ using Tomlyn.Model;
 
 namespace BabelRush.Cards;
 
-public record CardTypeData(string Id, bool Usable, int Cost, IEnumerable<string> Actions, IEnumerable<string> Features)
+public record CardTypeData(string Id, bool Usable, int Cost, ImmutableArray<string> Actions, ImmutableArray<string> Features)
     : ITomlData<CardTypeData>
 {
     public CardType ToCardType()
@@ -34,6 +35,6 @@ public record CardTypeData(string Id, bool Usable, int Cost, IEnumerable<string>
             (entry.GetOrDefault("actions") as TomlArray)?.Select(x => x!.ToString()!) ?? [];
         var features =
             (entry.GetOrDefault("features") as TomlArray)?.Select(x => x!.ToString()!) ?? [];
-        return new CardTypeData(id, usable, cost, actions, features);
+        return new CardTypeData(id, usable, cost, [..actions], [..features]);
     }
 }

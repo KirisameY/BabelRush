@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -61,7 +62,7 @@ public partial class CardUseTest : Node
 
     private string[] TargetPatternNames { get; } = ["None", "None"];
 
-    private IEnumerable<TargetPattern> TargetPatterns  => TargetPatternNames.Select(TargetPattern.FromString);
+    private IEnumerable<TargetPattern> TargetPatterns => TargetPatternNames.Select(TargetPattern.FromString);
 
     public void SetTarget1(string value) => TargetPatternNames[0] = value;
 
@@ -73,7 +74,7 @@ public partial class CardUseTest : Node
     [SuppressMessage("Performance", "CA1822:将成员标记为 static")]
     private void OnEvent(BaseEvent e)
     {
-        GD.Print(e);
+        GD.Print($"{DateTime.Now:hh:mm:ss.fff} Event: {e}");
     }
 
     [EventHandler] [UsedImplicitly]
