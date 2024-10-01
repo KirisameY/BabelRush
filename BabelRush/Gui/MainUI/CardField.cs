@@ -3,7 +3,7 @@ using System.Linq;
 
 using BabelRush.Cards;
 using BabelRush.GamePlay;
-using BabelRush.Gui.Card;
+using BabelRush.Gui.Cards;
 
 using Godot;
 
@@ -11,6 +11,8 @@ using JetBrains.Annotations;
 
 using KirisameLib.Core.Events;
 using KirisameLib.Core.Extensions;
+
+using CardInterface = BabelRush.Gui.Cards.CardInterface;
 
 namespace BabelRush.Gui.MainUI;
 
@@ -22,11 +24,11 @@ public partial class CardField : Control
 
     //Member
     private static CardPile Pile => Play.CardHub.CardField;
-    private Dictionary<Cards.Card, CardInterface> CardDict { get; } = [];
+    private Dictionary<Card, CardInterface> CardDict { get; } = [];
     private IReadOnlyCollection<CardInterface> CardInterfaces => CardDict.Values;
-    private IReadOnlyCollection<Cards.Card> Cards => CardDict.Keys;
+    private IReadOnlyCollection<Card> Cards => CardDict.Keys;
     //To record immediately removed card
-    private Cards.Card? _immediatelyRemoved;
+    private Card? _immediatelyRemoved;
 
 
     //Process
@@ -47,14 +49,14 @@ public partial class CardField : Control
         UpdateCardPosition();
     }
 
-    private void AddCard(Cards.Card card)
+    private void AddCard(Card card)
     {
         var ci = CardInterface.GetInstance(card);
         ci.Position = new(Project.ViewportSize.X / 2, Project.ViewportSize.Y + 32); //new Vector2(200,86)
         AddCard(ci);
     }
 
-    private bool RemoveCard(Cards.Card card)
+    private bool RemoveCard(Card card)
     {
         if (!CardDict.Remove(card)) return false;
         UpdateCardPosition();

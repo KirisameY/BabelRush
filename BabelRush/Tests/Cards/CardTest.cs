@@ -5,9 +5,9 @@ using Godot;
 
 using Tomlyn;
 
-using CardInterface = BabelRush.Gui.Card.CardInterface;
+using CardInterface = BabelRush.Gui.Cards.CardInterface;
 
-namespace BabelRush.Tests.Card;
+namespace BabelRush.Tests.Cards;
 
 public partial class CardTest : Node2D
 {

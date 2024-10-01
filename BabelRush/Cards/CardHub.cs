@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using BabelRush.Cards;
+using BabelRush.GamePlay;
 
 using JetBrains.Annotations;
 
@@ -9,7 +9,7 @@ using KirisameLib.Core.Collections;
 using KirisameLib.Core.Events;
 using KirisameLib.Core.RandomAsteroid;
 
-namespace BabelRush.GamePlay;
+namespace BabelRush.Cards;
 
 [EventHandler]
 public class CardHub(RandomBelt Random)

@@ -4,9 +4,7 @@ using System.Linq;
 
 using Godot;
 
-using KirisameLib.Core.Collections;
-
-using CardInterface = BabelRush.Gui.Card.CardInterface;
+using CardInterface = BabelRush.Gui.Cards.CardInterface;
 
 namespace BabelRush.Gui.MainUI;
 

@@ -7,7 +7,6 @@ using System.Reflection;
 using BabelRush.Actions;
 using BabelRush.Cards;
 using BabelRush.GamePlay;
-using BabelRush.Gui.Mob;
 using BabelRush.Mobs;
 using BabelRush.Scenery;
 
@@ -16,6 +15,8 @@ using Godot;
 using JetBrains.Annotations;
 
 using KirisameLib.Core.Events;
+
+using MobInterface = BabelRush.Gui.Mobs.MobInterface;
 
 namespace BabelRush.Tests.GamePlay;
 
@@ -30,10 +31,10 @@ public partial class CardUseTest : Node
 
     private void Initialize()
     {
-        var player = MobInterface.GetInstance(new Mobs.Mob(MobType.Default,  Alignment.Friend) { MaxHealth = 100, Health = 100 });
-        var friend1 = MobInterface.GetInstance(new Mobs.Mob(MobType.Default, Alignment.Friend) { MaxHealth = 100, Health = 100 });
-        var enemy1 = MobInterface.GetInstance(new Mobs.Mob(MobType.Default,  Alignment.Enemy) { MaxHealth = 100, Health = 100 });
-        var enemy2 = MobInterface.GetInstance(new Mobs.Mob(MobType.Default,  Alignment.Enemy) { MaxHealth = 100, Health = 100 });
+        var player = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Friend) { MaxHealth = 100, Health = 100 });
+        var friend1 = MobInterface.GetInstance(new Mob(MobType.Default, Alignment.Friend) { MaxHealth = 100, Health = 100 });
+        var enemy1 = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Enemy) { MaxHealth = 100, Health = 100 });
+        var enemy2 = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Enemy) { MaxHealth = 100, Health = 100 });
 
         Play.Initialize(player.Mob, new Scene());
         AddChild(Play.Node);

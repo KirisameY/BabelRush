@@ -1,9 +1,7 @@
-using System;
 using System.Threading.Tasks;
 
 using BabelRush.Mobs;
 using BabelRush.Mobs.Animation;
-using BabelRush.Scenery;
 
 using Godot;
 
@@ -12,10 +10,7 @@ using JetBrains.Annotations;
 using KirisameLib.Core.Events;
 using KirisameLib.Core.Logging;
 
-//Todo:把这玩意儿重命名了，记得改引用目录
-using TheMob = BabelRush.Mobs.Mob;
-
-namespace BabelRush.Gui.Mob;
+namespace BabelRush.Gui.Mobs;
 
 public partial class MobInterface : Node2D
 {
@@ -23,7 +18,7 @@ public partial class MobInterface : Node2D
 
     private MobInterface() { }
 
-    public static MobInterface GetInstance(TheMob mob)
+    public static MobInterface GetInstance(Mob mob)
     {
         MobInterface instance = CreateInstance();
         instance.Mob = mob;
@@ -49,7 +44,7 @@ public partial class MobInterface : Node2D
         BoxShapeNode.Shape = BoxShapeNode.Shape.Duplicate() as Shape2D;
     }
 
-    private const string ScenePath = "res://Gui/Mob/Mob.tscn";
+    private const string ScenePath = "res://Gui/Mobs/Mob.tscn";
     private static PackedScene Scene { get; } = ResourceLoader.Load<PackedScene>(ScenePath);
 
     #endregion
@@ -77,14 +72,14 @@ public partial class MobInterface : Node2D
 
     #region Properties
 
-    private TheMob? _mob;
-    public TheMob Mob
+    private Mob? _mob;
+    public Mob Mob
     {
         get
         {
             if (_mob is not null) return _mob;
             Logger.Log(LogLevel.Error, "GettingMob", $"MobInterface {this} has no mob instance reference");
-            return TheMob.Default;
+            return Mob.Default;
         }
         private set
         {

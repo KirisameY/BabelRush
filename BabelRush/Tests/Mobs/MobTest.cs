@@ -1,18 +1,20 @@
-using BabelRush.Gui.Mob;
+using BabelRush.Gui.Mobs;
 using BabelRush.Mobs;
 
 using Godot;
 
 using KirisameLib.Core.Events;
 
-namespace BabelRush.Tests.Mob;
+using MobInterface = BabelRush.Gui.Mobs.MobInterface;
+
+namespace BabelRush.Tests.Mobs;
 
 public partial class MobTest : Node2D
 {
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        MobInterface = MobInterface.GetInstance(Mobs.Mob.Default);
+        MobInterface = MobInterface.GetInstance(Mob.Default);
         AddChild(MobInterface);
         MobInterface.Position = GetNode<Marker2D>("Marker2D").Position;
         EventHandlerSubscriber.InstanceSubscribe(this);

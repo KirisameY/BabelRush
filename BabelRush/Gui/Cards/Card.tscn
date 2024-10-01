@@ -1,10 +1,10 @@
 [gd_scene load_steps=8 format=3 uid="uid://c48624bhp8kkr"]
 
-[ext_resource type="Script" path="res://Gui/Card/CardInterface.cs" id="1_i3vct"]
+[ext_resource type="Script" path="res://Gui/Cards/CardInterface.cs" id="1_i3vct"]
 [ext_resource type="Texture2D" uid="uid://c03hxrsu27kje" path="res://resources/sprites/card/border.png" id="2_o5np5"]
-[ext_resource type="PackedScene" uid="uid://b5ev2jf32dtb5" path="res://Gui/Card/i_cost.tscn" id="3_a0u5r"]
-[ext_resource type="PackedScene" uid="uid://ddk4klce5mvc0" path="res://Gui/Card/i_action.tscn" id="4_g4bhr"]
-[ext_resource type="PackedScene" uid="uid://cs244m70rkrp6" path="res://Gui/Card/i_feature.tscn" id="5_xp502"]
+[ext_resource type="PackedScene" uid="uid://b5ev2jf32dtb5" path="res://Gui/Cards/i_cost.tscn" id="3_a0u5r"]
+[ext_resource type="PackedScene" uid="uid://ddk4klce5mvc0" path="res://Gui/Cards/i_action.tscn" id="4_g4bhr"]
+[ext_resource type="PackedScene" uid="uid://cs244m70rkrp6" path="res://Gui/Cards/i_feature.tscn" id="5_xp502"]
 
 [sub_resource type="Gradient" id="Gradient_mc62r"]
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)

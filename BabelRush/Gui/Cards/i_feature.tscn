@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cs244m70rkrp6"]
 
 [ext_resource type="Texture2D" uid="uid://bkhgimgw67bn2" path="res://resources/sprites/card/feature0.png" id="1_epn03"]
-[ext_resource type="Script" path="res://Gui/Card/i_feature.gd" id="2_7r0lo"]
+[ext_resource type="Script" path="res://Gui/Cards/i_feature.gd" id="2_7r0lo"]
 [ext_resource type="Texture2D" uid="uid://3lr3v65nxrcv" path="res://resources/sprites/card/feature1.png" id="2_16or5"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_soit6"]

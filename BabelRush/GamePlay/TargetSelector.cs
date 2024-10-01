@@ -4,7 +4,7 @@ using System.Linq;
 
 using BabelRush.Actions;
 using BabelRush.Cards;
-using BabelRush.Gui.Mob;
+using BabelRush.Gui.Mobs;
 using BabelRush.Mobs;
 
 using JetBrains.Annotations;

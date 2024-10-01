@@ -1,8 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://b3tjcy4rhjdxh"]
 
-[ext_resource type="PackedScene" uid="uid://b5ev2jf32dtb5" path="res://Gui/Card/i_cost.tscn" id="1_yjupg"]
-[ext_resource type="PackedScene" uid="uid://ddk4klce5mvc0" path="res://Gui/Card/i_action.tscn" id="2_ojm8s"]
-[ext_resource type="PackedScene" uid="uid://cs244m70rkrp6" path="res://Gui/Card/i_feature.tscn" id="3_ttdgc"]
+[ext_resource type="PackedScene" uid="uid://b5ev2jf32dtb5" path="res://Gui/Cards/i_cost.tscn" id="1_yjupg"]
+[ext_resource type="PackedScene" uid="uid://ddk4klce5mvc0" path="res://Gui/Cards/i_action.tscn" id="2_ojm8s"]
+[ext_resource type="PackedScene" uid="uid://cs244m70rkrp6" path="res://Gui/Cards/i_feature.tscn" id="3_ttdgc"]
 
 [node name="CardElementTest" type="Node2D"]
 texture_filter = 1

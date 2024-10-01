@@ -1,4 +1,4 @@
-namespace BabelRush.Gui.Card;
+namespace BabelRush.Gui.Cards;
 
 public abstract record CardInterfaceEvent(CardInterface CardInterface) : GuiEvent;
 

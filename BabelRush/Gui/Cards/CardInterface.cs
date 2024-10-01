@@ -7,14 +7,14 @@ using JetBrains.Annotations;
 using KirisameLib.Core.Events;
 using KirisameLib.Core.Logging;
 
-namespace BabelRush.Gui.Card;
+namespace BabelRush.Gui.Cards;
 
 public partial class CardInterface : Node2D
 {
     //Factory
     private CardInterface() { }
 
-    public static CardInterface GetInstance(Cards.Card card)
+    public static CardInterface GetInstance(Card card)
     {
         CardInterface instance = CreateInstance();
         instance.Card = card;
@@ -27,7 +27,7 @@ public partial class CardInterface : Node2D
         return instance;
     }
 
-    private const string ScenePath = "res://Gui/Card/Card.tscn";
+    private const string ScenePath = "res://Gui/Cards/Card.tscn";
     private static PackedScene Scene { get; } = ResourceLoader.Load<PackedScene>(ScenePath);
 
 
@@ -52,14 +52,14 @@ public partial class CardInterface : Node2D
 
 
     //Property
-    private Cards.Card? _card;
-    public Cards.Card Card
+    private Card? _card;
+    public Card Card
     {
         get
         {
             if (_card is not null) return _card;
             Logger.Log(LogLevel.Error, "GettingCard", $"CardInterface {this} has no card instance reference");
-            return Cards.Card.Default;
+            return Card.Default;
         }
         private set
         {

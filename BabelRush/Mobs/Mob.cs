@@ -1,11 +1,12 @@
 ﻿using System;
 
-using BabelRush.Gui.Mob;
 using BabelRush.Scenery;
 
 using Godot;
 
 using KirisameLib.Core.Events;
+
+using MobInterface = BabelRush.Gui.Mobs.MobInterface;
 
 namespace BabelRush.Mobs;
 

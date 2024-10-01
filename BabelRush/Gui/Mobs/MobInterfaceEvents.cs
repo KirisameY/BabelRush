@@ -1,4 +1,4 @@
-namespace BabelRush.Gui.Mob;
+namespace BabelRush.Gui.Mobs;
 
 //Base
 public abstract record MobInterfaceEvent(MobInterface Interface) : GuiEvent;

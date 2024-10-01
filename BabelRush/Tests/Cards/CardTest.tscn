@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://hjl6mhe24o5x"]
 
-[ext_resource type="Script" path="res://Tests/Card/CardTest.cs" id="1_7d3yq"]
-[ext_resource type="PackedScene" uid="uid://c48624bhp8kkr" path="res://Gui/Card/Card.tscn" id="1_f2j5k"]
+[ext_resource type="Script" path="res://Tests/Cards/CardTest.cs" id="1_7d3yq"]
+[ext_resource type="PackedScene" uid="uid://c48624bhp8kkr" path="res://Gui/Cards/Card.tscn" id="1_f2j5k"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_rmhyr"]
 

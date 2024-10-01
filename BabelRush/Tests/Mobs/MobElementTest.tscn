@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c2pjaa5hwbvhv"]
 
-[ext_resource type="PackedScene" uid="uid://ivk70wynqfry" path="res://Gui/Mob/HealthBar.tscn" id="1_22iad"]
+[ext_resource type="PackedScene" uid="uid://ivk70wynqfry" path="res://Gui/Mobs/HealthBar.tscn" id="1_22iad"]
 
 [node name="MobElementTest" type="Node2D"]
 
