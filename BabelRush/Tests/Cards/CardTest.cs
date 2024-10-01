@@ -18,8 +18,8 @@ public partial class CardTest : Node2D
 
     public void Test()
     {
-        var cardTypesFile = FileAccess.Open("res://Tests/Card/CardTypeList.toml", FileAccess.ModeFlags.Read);
-        var cardTypes = DataUtils.FromTomlTable<CardTypeData>(Toml.ToModel(cardTypesFile.GetAsText()), "cards");
+        var cardTypesFile = FileAccess.Open("res://Tests/Cards/CardTypeList.toml", FileAccess.ModeFlags.Read);
+        var cardTypes = DataUtils.FromTableList<CardTypeData>(Toml.ToModel(cardTypesFile.GetAsText()), "cards");
         //CardTypeData.FromTomlTable(Toml.ToModel(cardTypesFile.GetAsText()));
         var n = 0;
         foreach (var result in cardTypes)

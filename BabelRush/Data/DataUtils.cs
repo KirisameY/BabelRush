@@ -3,23 +3,21 @@ using System.Collections.Generic;
 
 using Godot;
 
-using Tomlyn.Model;
-
 namespace BabelRush.Data;
 
 public static class DataUtils
 {
-    public static IEnumerable<ParseResult<TData>> FromTomlTable<TData>(TomlTable table, string listKey)
-        where TData : notnull, ITomlData<TData>
+    public static IEnumerable<ParseResult<TData>> FromTableList<TData>(IDictionary<string, object> table, string listKey)
+        where TData : notnull, IData<TData>
     {
         if (!table.TryGetValue(listKey, out var item)) yield break;
-        if (item is not TomlTableArray list) yield break;
+        if (item is not IEnumerable<IDictionary<string, object>> list) yield break;
         foreach (var entry in list)
         {
             ParseResult<TData> result;
             try
             {
-                result = new(TData.FromTomlEntry(entry));
+                result = new(TData.FromEntry(entry));
             }
             catch (Exception e)
             {
@@ -28,9 +26,9 @@ public static class DataUtils
             yield return result;
         }
     }
-    
-    public static Vector2I GetVector2I(TomlTable table)
+
+    public static Vector2I GetVector2I(IList<int> data)
     {
-        return new(Convert.ToInt32(table["x"]), Convert.ToInt32(table["y"]));
+        return new(Convert.ToInt32(data[0]), Convert.ToInt32(data[1]));
     }
 }

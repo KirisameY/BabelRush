@@ -1,10 +1,10 @@
-using BabelRush.Data;
+using System.Collections.Generic;
 
-using Tomlyn.Model;
+using BabelRush.Data;
 
 namespace BabelRush.Mobs;
 
-public record MobTypeData(string Id, string AnimationSet, bool BlocksMovement) : ITomlData<MobTypeData>
+public record MobTypeData(string Id, string AnimationSet, bool BlocksMovement) : IData<MobTypeData>
 {
     public MobType ToMobType()
     {
@@ -12,7 +12,7 @@ public record MobTypeData(string Id, string AnimationSet, bool BlocksMovement) :
         return new(Id, animationSet, BlocksMovement);
     }
 
-    public static MobTypeData FromTomlEntry(TomlTable entry)
+    public static MobTypeData FromEntry(IDictionary<string, object> entry)
     {
         var id = (string)entry["id"];
         var animationSet = (string)entry["animation_set"];

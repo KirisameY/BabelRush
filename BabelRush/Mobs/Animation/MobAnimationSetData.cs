@@ -10,12 +10,10 @@ using Godot;
 
 using KirisameLib.Core.Extensions;
 
-using Tomlyn.Model;
-
 namespace BabelRush.Mobs.Animation;
 
 public record MobAnimationSetData(string Id, string DefaultAnimationId, ImmutableArray<MobAnimationData> Animations)
-    : ITomlData<MobAnimationSetData>
+    : IData<MobAnimationSetData>
 {
     public MobAnimationSet ToMobAnimationSet()
     {
@@ -40,29 +38,29 @@ public record MobAnimationSetData(string Id, string DefaultAnimationId, Immutabl
         throw new NotImplementedException();
     }
 
-    public static MobAnimationSetData FromTomlEntry(TomlTable entry)
+    public static MobAnimationSetData FromEntry(IDictionary<string, object> entry)
     {
         var id = (string)entry["id"];
         var defaultAnimation = (string)entry["default_animation"];
-        var animations = DataUtils.FromTomlTable<MobAnimationData>(entry, "animations").Select(result => result.Result);
+        var animations = DataUtils.FromTableList<MobAnimationData>(entry, "animations").Select(result => result.Result);
         return new(id, defaultAnimation, [..animations]);
     }
 }
 
 public record MobAnimationData(
     string Id, ImmutableArray<string> Frames, FrozenDictionary<int, float>? FrameTimes, Vector2I Center, Vector2I BoxSize,
-    float Fps, string? BeforeAnimation, string? AfterAnimation) : ITomlData<MobAnimationData>
+    float Fps, string? BeforeAnimation, string? AfterAnimation) : IData<MobAnimationData>
 {
-    public static MobAnimationData FromTomlEntry(TomlTable entry)
+    public static MobAnimationData FromEntry(IDictionary<string, object> entry)
     {
         var id = (string)entry["id"];
-        var frames = ((TomlArray)entry["frames"]).Select(o => (string)o!);
-        var center = DataUtils.GetVector2I((TomlTable)entry["center"]);
-        var boxSize = DataUtils.GetVector2I((TomlTable)entry["box_size"]);
+        var frames = ((IList<object?>)entry["frames"]).Select(o => (string)o!);
+        var center = DataUtils.GetVector2I((IList<int>)entry["center"]);
+        var boxSize = DataUtils.GetVector2I((IList<int>)entry["box_size"]);
         var fps = Convert.ToSingle(entry["fps"]);
 
         entry.TryGetValue("frame_times", out var oFrameTimes1);
-        var oFrameTimes = oFrameTimes1 as TomlTable;
+        var oFrameTimes = oFrameTimes1 as IDictionary<string, object>;
         var frameTimes = oFrameTimes?.Aggregate
             (new Dictionary<int, float>(),
              (dict, pair) =>
