@@ -1,14 +1,21 @@
+using BabelRush.Misc;
+using BabelRush.Registers;
+
 using Godot;
 
 namespace BabelRush.Cards.Features;
 
-public abstract class FeatureType
+public class FeatureType(string id)
 {
-    public abstract string Id { get; }
-    public abstract string Name { get; }
-    public abstract string Description { get; }
-    public abstract Texture2D Icon { get; }
-    public abstract Feature NewInstance();
-    
-    public static CommonFeatureType Default { get; } = new("default");
+    public string Id { get; } = id;
+    public NameDesc NameDesc => CardFeatureRegisters.FeatureNameDesc.GetItem(Id);
+    public Texture2D Icon => CardFeatureRegisters.FeatureIcon.GetItem(id);
+
+    public Feature NewInstance()
+    {
+        var result = new Feature(this);
+        return result;
+    }
+
+    public static FeatureType Default { get; } = new("default");
 }

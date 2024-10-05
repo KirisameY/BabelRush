@@ -1,8 +1,8 @@
 namespace BabelRush.Cards.Features;
 
-public abstract class Feature
+public class Feature(FeatureType type)
 {
-    public abstract FeatureType Type { get; }
-    
-    public static CommonFeature Default { get; } = new(FeatureType.Default);
+    public FeatureType Type { get; } = type;
+
+    public static Feature Default { get; } = new(FeatureType.Default);
 }

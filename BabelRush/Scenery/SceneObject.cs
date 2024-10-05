@@ -1,5 +1,3 @@
-using Godot;
-
 using KirisameLib.Core.Events;
 
 namespace BabelRush.Scenery;

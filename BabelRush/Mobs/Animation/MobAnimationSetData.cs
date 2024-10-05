@@ -13,7 +13,6 @@ using KirisameLib.Core.Extensions;
 namespace BabelRush.Mobs.Animation;
 
 public record MobAnimationSetData(string Id, string DefaultAnimationId, ImmutableArray<MobAnimationData> Animations)
-    : IData<MobAnimationSetData>
 {
     public MobAnimationSet ToMobAnimationSet()
     {
@@ -42,21 +41,21 @@ public record MobAnimationSetData(string Id, string DefaultAnimationId, Immutabl
     {
         var id = (string)entry["id"];
         var defaultAnimation = (string)entry["default_animation"];
-        var animations = DataUtils.FromTableList<MobAnimationData>(entry, "animations").Select(result => result.Result);
+        var animations = ((IList<IDictionary<string, object>>)entry["animations"]).Select(MobAnimationData.FromEntry);
         return new(id, defaultAnimation, [..animations]);
     }
 }
 
 public record MobAnimationData(
     string Id, ImmutableArray<string> Frames, FrozenDictionary<int, float>? FrameTimes, Vector2I Center, Vector2I BoxSize,
-    float Fps, string? BeforeAnimation, string? AfterAnimation) : IData<MobAnimationData>
+    float Fps, string? BeforeAnimation, string? AfterAnimation)
 {
     public static MobAnimationData FromEntry(IDictionary<string, object> entry)
     {
         var id = (string)entry["id"];
         var frames = ((IList<object?>)entry["frames"]).Select(o => (string)o!);
-        var center = DataUtils.GetVector2I((IList<int>)entry["center"]);
-        var boxSize = DataUtils.GetVector2I((IList<int>)entry["box_size"]);
+        var center = DataUtils.GetVector2I((IDictionary<string, object>)entry["center"]);
+        var boxSize = DataUtils.GetVector2I((IDictionary<string, object>)entry["box_size"]);
         var fps = Convert.ToSingle(entry["fps"]);
 
         entry.TryGetValue("frame_times", out var oFrameTimes1);

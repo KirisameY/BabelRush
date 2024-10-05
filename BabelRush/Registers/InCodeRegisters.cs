@@ -1,0 +1,13 @@
+using BabelRush.Actions;
+using BabelRush.Registering;
+
+using KirisameLib.Core.Register;
+
+namespace BabelRush.Registers;
+
+[RegisterContainer]
+public static class InCodeRegisters
+{
+    public static IRegister<ActionDelegate> ActionDelegates { get; } =
+        new CommonRegister<ActionDelegate>(nameof(ActionDelegates), _ => (_, _, _) => { });
+}

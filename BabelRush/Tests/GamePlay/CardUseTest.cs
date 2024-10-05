@@ -59,7 +59,7 @@ public partial class CardUseTest : Node
     }
 
     private CardType CardType =>
-        new CommonCardType("test", true, 1, TargetPatterns.Select(pattern => new ActionType("test", pattern, [])), []);
+        new CardType("test", true, 1, TargetPatterns.Select(pattern => new ActionType("test", pattern, [])), []);
 
     private string[] TargetPatternNames { get; } = ["None", "None"];
 
