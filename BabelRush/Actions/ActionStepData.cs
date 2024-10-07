@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 
+using BabelRush.Data;
 using BabelRush.Registers;
 
 namespace BabelRush.Actions;
 
-public record ActionStepData(string Id, string ActionDelegate)
+public record ActionStepData(string Id, string ActionDelegate) : IData<ActionStep, ActionStepData>
 {
-    public ActionStep ToActionStep()
+    public ActionStep ToModel()
     {
         var actionDelegate = InCodeRegisters.ActionDelegates.GetItem(ActionDelegate);
         return new(actionDelegate);

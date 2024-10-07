@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace BabelRush.Misc;
+namespace BabelRush.Data;
 
 public readonly struct NameDesc(string name, string desc)
 {

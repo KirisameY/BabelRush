@@ -1,12 +1,13 @@
-using System.Collections.Frozen;
+using System;
 using System.Collections.Generic;
 
 using BabelRush.Actions;
 using BabelRush.Data;
-using BabelRush.Misc;
 using BabelRush.Registering;
 
 using Godot;
+
+using JetBrains.Annotations;
 
 using KirisameLib.Core.I18n;
 using KirisameLib.Core.Register;
@@ -51,38 +52,25 @@ internal static class ActionRegisters
 
     #region Map
 
-    [RegistrationMap]
-    private static FrozenDictionary<string, Registration.ParseAndRegisterDelegate> AssetRegisteringMap { get; } =
-        new Dictionary<string, Registration.ParseAndRegisterDelegate>
-        {
-            // Action Steps
-            ["data/action_steps"] = Registration.GetRegFunc<IDictionary<string, object>, ActionStepData>
-                (
-                 ActionStepData.FromEntry,
-                 a => ActionStepsRegister.RegisterItem(a.Id, a.ToActionStep())
-                ),
-            // Actions
-            ["data/actions"] = Registration.GetRegFunc<IDictionary<string, object>, ActionTypeData>
-                (ActionTypeData.FromEntry,
-                 a => ActionsRegister.RegisterItem(a.Id, a.ToActionType()),
-                 "data/action_steps"
-                ),
-            // Action Icons
-            ["res/textures/actions"] = null!, //todo: get it to ActionIconDefault
-        }.ToFrozenDictionary();
+    [RegistrationMap] [UsedImplicitly]
+    private static DataRegTool[] DataRegTools { get; } =
+    [
+        DataRegTool.Get<ActionStep, ActionStepData>("action_steps", ActionStepsRegister),
+        DataRegTool.Get<ActionType, ActionTypeData>("actions", ActionsRegister, "action_steps")
+    ];
 
-    [RegistrationMap]
-    private static FrozenDictionary<string, Registration.LocalizedParseAndRegisterDelegate> LocalRegisteringMap { get; } =
-        new Dictionary<string, Registration.LocalizedParseAndRegisterDelegate>
-        {
-            // Action NameDesc
-            ["lang/actions"] = Registration.GetLocalizedRegFunc<KeyValuePair<string, object>, NameDesc>
-                (DataUtils.ParseNameDescAndId,
-                 (local, id, nd) => ActionNameDescRegister.RegisterLocalizedItem(local, id, nd)
-                ),
-            // Action Icons
-            ["res/textures/actions"] = null!, //todo: get it to ActionIconLocalized
-        }.ToFrozenDictionary();
+    [RegistrationMap] [UsedImplicitly]
+    private static ResRegTool[] ResRegTools { get; } =
+    [
+        ResRegTool.Get("textures/actions", (_, _) => throw new NotImplementedException(),
+                       ActionIconDefaultRegister, ActionIconLocalizedRegister),
+    ];
+
+    [RegistrationMap] [UsedImplicitly]
+    private static LangRegTool[] LangRegTools { get; } =
+    [
+        LangRegTool.Get<NameDesc, IDictionary<string, object>>("actions", NameDesc.FromEntry, ActionNameDescRegister),
+    ];
 
     #endregion
 }

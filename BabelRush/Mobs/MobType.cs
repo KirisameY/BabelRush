@@ -1,4 +1,4 @@
-using BabelRush.Misc;
+using BabelRush.Data;
 using BabelRush.Mobs.Animation;
 using BabelRush.Registers;
 

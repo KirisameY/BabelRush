@@ -1,12 +1,13 @@
-using System.Collections.Frozen;
+using System;
 using System.Collections.Generic;
 
 using BabelRush.Cards.Features;
 using BabelRush.Data;
-using BabelRush.Misc;
 using BabelRush.Registering;
 
 using Godot;
+
+using JetBrains.Annotations;
 
 using KirisameLib.Core.I18n;
 using KirisameLib.Core.Register;
@@ -46,32 +47,24 @@ public static class CardFeatureRegisters
 
     #region Map
 
-    [RegistrationMap]
-    private static FrozenDictionary<string, Registration.ParseAndRegisterDelegate> AssetRegisteringMap { get; } =
-        new Dictionary<string, Registration.ParseAndRegisterDelegate>
-        {
-            // Card Features
-            ["data/card_features"] = Registration.GetRegFunc<IDictionary<string, object>, FeatureTypeData>
-                (FeatureTypeData.FromEntry,
-                 data => FeaturesRegister.RegisterItem(data.Id, data.ToFeatureType())
-                ),
-            // Icons
-            ["res/textures/card_features"] = null! //todo
-        }.ToFrozenDictionary();
+    [RegistrationMap] [UsedImplicitly]
+    private static DataRegTool[] DataRegTools { get; } =
+    [
+        DataRegTool.Get<FeatureType, FeatureTypeData>("card_features", FeaturesRegister),
+    ];
 
-    [RegistrationMap]
-    private static FrozenDictionary<string, Registration.LocalizedParseAndRegisterDelegate> LocalAssetRegisteringMap { get; } =
-        new Dictionary<string, Registration.LocalizedParseAndRegisterDelegate>
-        {
-            // NameDesc
-            ["lang/card_features"] = Registration.GetLocalizedRegFunc<KeyValuePair<string, object>, NameDesc>
-                (
-                 DataUtils.ParseNameDescAndId,
-                 (local, id, nameDesc) => FeatureNameDescRegister.RegisterLocalizedItem(local, id, nameDesc)
-                ),
-            //Icons
-            ["res/textures/card_features"] = null! //todo
-        }.ToFrozenDictionary();
+    [RegistrationMap] [UsedImplicitly]
+    private static ResRegTool[] ResRegTools { get; } =
+    [
+        ResRegTool.Get("textures/card_features", (_, _) => throw new NotImplementedException(),
+                       FeatureIconDefaultRegister, FeatureIconLocalizedRegister),
+    ];
+
+    [RegistrationMap] [UsedImplicitly]
+    private static LangRegTool[] LangRegTools { get; } =
+    [
+        LangRegTool.Get<NameDesc, IDictionary<string, object>>("card_features", NameDesc.FromEntry, FeatureNameDescRegister),
+    ];
 
     #endregion
 }

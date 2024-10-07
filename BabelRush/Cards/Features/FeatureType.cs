@@ -1,4 +1,4 @@
-using BabelRush.Misc;
+using BabelRush.Data;
 using BabelRush.Registers;
 
 using Godot;

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
+using BabelRush.Data;
+
 using KirisameLib.Core.Extensions;
 
 using BabelRush.Registers;
@@ -10,8 +12,9 @@ using BabelRush.Registers;
 namespace BabelRush.Cards;
 
 public record CardTypeData(string Id, bool Usable, int Cost, ImmutableArray<string> Actions, ImmutableArray<string> Features)
+    : IData<CardType, CardTypeData>
 {
-    public CardType ToCardType()
+    public CardType ToModel()
     {
         var actions = Actions.Select(id => ActionRegisters.Actions.GetItem(id));
         var features = Features.Select(id => CardFeatureRegisters.Features.GetItem(id));

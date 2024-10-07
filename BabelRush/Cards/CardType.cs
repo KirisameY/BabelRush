@@ -3,7 +3,7 @@ using System.Collections.Immutable;
 
 using BabelRush.Actions;
 using BabelRush.Cards.Features;
-using BabelRush.Misc;
+using BabelRush.Data;
 
 using Godot;
 

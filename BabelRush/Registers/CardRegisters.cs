@@ -1,12 +1,13 @@
-using System.Collections.Frozen;
+using System;
 using System.Collections.Generic;
 
 using BabelRush.Cards;
 using BabelRush.Data;
-using BabelRush.Misc;
 using BabelRush.Registering;
 
 using Godot;
+
+using JetBrains.Annotations;
 
 using KirisameLib.Core.I18n;
 using KirisameLib.Core.Register;
@@ -46,34 +47,24 @@ public static class CardRegisters
 
     #region Map
 
-    [RegistrationMap]
-    private static FrozenDictionary<string, Registration.ParseAndRegisterDelegate> RegMap { get; } =
-        new Dictionary<string, Registration.ParseAndRegisterDelegate>
-        {
-            // Cards
-            ["data/cards"] = Registration.GetRegFunc<IDictionary<string, object>, CardTypeData>
-                (CardTypeData.FromEntry,
-                 data => CardsRegister.RegisterItem(data.Id, data.ToCardType()),
-                 "data/card_features", "data/actions"
-                ),
+    [RegistrationMap] [UsedImplicitly]
+    private static DataRegTool[] DataRegTools { get; } =
+    [
+        DataRegTool.Get<CardType, CardTypeData>("cards", CardsRegister, "card_features", "actions"),
+    ];
 
-            // Card Icons
-            ["res/textures/cards"] = null! //todo
-        }.ToFrozenDictionary();
+    [RegistrationMap] [UsedImplicitly]
+    private static ResRegTool[] ResRegTools { get; } =
+    [
+        ResRegTool.Get("textures/cards", (_, _) => throw new NotImplementedException(),
+                       CardIconDefaultRegister, CardIconLocalizedRegister),
+    ];
 
-    [RegistrationMap]
-    private static FrozenDictionary<string, Registration.LocalizedParseAndRegisterDelegate> LocalRegMap { get; } =
-        new Dictionary<string, Registration.LocalizedParseAndRegisterDelegate>
-        {
-            // Card NameDesc
-            ["lang/cards"] = Registration.GetLocalizedRegFunc<KeyValuePair<string, object>, NameDesc>
-                (DataUtils.ParseNameDescAndId,
-                 (local, id, nd) => CardNameDescRegister.RegisterLocalizedItem(local, id, nd)
-                ),
-
-            // Card Icons
-            ["res/textures/cards"] = null! //todo
-        }.ToFrozenDictionary();
+    [RegistrationMap] [UsedImplicitly]
+    private static LangRegTool[] LangRegTools { get; } =
+    [
+        LangRegTool.Get<NameDesc, IDictionary<string, object>>("cards", NameDesc.FromEntry, CardNameDescRegister),
+    ];
 
     #endregion
 }

@@ -1,10 +1,12 @@
 using System.Collections.Generic;
 
+using BabelRush.Data;
+
 namespace BabelRush.Mobs;
 
-public record MobTypeData(string Id, string AnimationSet, bool BlocksMovement)
+public record MobTypeData(string Id, string AnimationSet, bool BlocksMovement):IData<MobType, MobTypeData>
 {
-    public MobType ToMobType()
+    public MobType ToModel()
     {
         var animationSet = Registers.MobRegisters.MobAnimationSets.GetItem(AnimationSet);
         return new(Id, animationSet, BlocksMovement);

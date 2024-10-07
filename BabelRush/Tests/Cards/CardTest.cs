@@ -27,7 +27,7 @@ public partial class CardTest : Node2D
         foreach (var result in cardTypes)
         {
             GD.Print($"Card.{n}");
-            var card = CardInterface.GetInstance(result.ToCardType().NewInstance());
+            var card = CardInterface.GetInstance(result.ToModel().NewInstance());
             AddChild(card);
             card.Position = new(80 + 64 * n, 200);
             n++;
