@@ -11,4 +11,11 @@ public static class DataUtils
     {
         return new(Convert.ToInt32(data["x"]), Convert.ToInt32(data["y"]));
     }
+
+    public static Image LoadImageFromPngBuffer(byte[] buffer)
+    {
+        var image = new Image();
+        image.LoadPngFromBuffer(buffer);
+        return image;
+    }
 }

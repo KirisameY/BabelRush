@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using BabelRush.Actions;
 using BabelRush.Data;
+using BabelRush.Data.ExtendBoxes;
 using BabelRush.Registering;
 
 using Godot;
@@ -55,21 +56,20 @@ internal static class ActionRegisters
     [RegistrationMap] [UsedImplicitly]
     private static DataRegTool[] DataRegTools { get; } =
     [
-        DataRegTool.Get<ActionStep, ActionStepData>("action_steps", ActionStepsRegister),
-        DataRegTool.Get<ActionType, ActionTypeData>("actions", ActionsRegister, "action_steps")
+        new DataRegTool<ActionStep, ActionStepBox>("action_steps", ActionStepsRegister),
+        new DataRegTool<ActionType, ActionTypeBox>("actions", ActionsRegister, "action_steps")
     ];
 
     [RegistrationMap] [UsedImplicitly]
     private static ResRegTool[] ResRegTools { get; } =
     [
-        ResRegTool.Get("textures/actions", (_, _) => throw new NotImplementedException(),
-                       ActionIconDefaultRegister, ActionIconLocalizedRegister),
+        new ResRegTool<Texture2D, Texture2DBox>("textures/actions", ActionIconDefaultRegister, ActionIconLocalizedRegister),
     ];
 
     [RegistrationMap] [UsedImplicitly]
     private static LangRegTool[] LangRegTools { get; } =
     [
-        LangRegTool.Get<NameDesc, IDictionary<string, object>>("actions", NameDesc.FromEntry, ActionNameDescRegister),
+        new LangRegTool<NameDesc, NameDescBox>("actions", ActionNameDescRegister),
     ];
 
     #endregion

@@ -1,19 +1,20 @@
 using System.Collections.Generic;
 
 using BabelRush.Data;
+using BabelRush.Registering.Parsing;
 using BabelRush.Registers;
 
 namespace BabelRush.Actions;
 
-public record ActionStepData(string Id, string ActionDelegate) : IData<ActionStep, ActionStepData>
+public record ActionStepBox(string Id, string ActionDelegate) : IDataBox<ActionStep, ActionStepBox>
 {
-    public ActionStep ToModel()
+    public ActionStep GetAsset()
     {
         var actionDelegate = InCodeRegisters.ActionDelegates.GetItem(ActionDelegate);
         return new(actionDelegate);
     }
 
-    public static ActionStepData FromEntry(IDictionary<string, object> entry)
+    public static ActionStepBox FromEntry(IDictionary<string, object> entry)
     {
         var id = (string)entry["id"];
         var actionDelegate = (string)entry["action_delegate"];

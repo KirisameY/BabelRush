@@ -48,7 +48,7 @@ public static class MobRegisters
     [RegistrationMap] [UsedImplicitly]
     private static DataRegTool[] DataRegTools { get; } =
     [
-        DataRegTool.Get<MobType, MobTypeData>("mobs", MobsRegister),
+        new DataRegTool<MobType, MobTypeDataBox>("mobs", MobsRegister),
     ];
 
     [RegistrationMap] [UsedImplicitly]
@@ -57,7 +57,7 @@ public static class MobRegisters
     [RegistrationMap] [UsedImplicitly]
     private static LangRegTool[] LangRegTools { get; } =
     [
-        LangRegTool.Get<NameDesc, IDictionary<string, object>>("mobs", NameDesc.FromEntry, MobNameDescRegister),
+        new LangRegTool<NameDesc, NameDescBox>("mobs", MobNameDescRegister),
     ];
 
     #endregion

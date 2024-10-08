@@ -14,4 +14,10 @@
     <ItemGroup>
         <ProjectReference Include="..\..\KirisameLib\KirisameLib.Core\KirisameLib.Core.csproj"/>
     </ItemGroup>
+    <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">
+        <Compile Remove="Tests\**"/>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Remove="Tests\**"/>
+    </ItemGroup>
 </Project>

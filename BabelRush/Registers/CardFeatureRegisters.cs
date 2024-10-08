@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using BabelRush.Cards.Features;
 using BabelRush.Data;
+using BabelRush.Data.ExtendBoxes;
 using BabelRush.Registering;
 
 using Godot;
@@ -50,20 +51,19 @@ public static class CardFeatureRegisters
     [RegistrationMap] [UsedImplicitly]
     private static DataRegTool[] DataRegTools { get; } =
     [
-        DataRegTool.Get<FeatureType, FeatureTypeData>("card_features", FeaturesRegister),
+        new DataRegTool<FeatureType, FeatureTypeBox>("card_features", FeaturesRegister),
     ];
 
     [RegistrationMap] [UsedImplicitly]
     private static ResRegTool[] ResRegTools { get; } =
     [
-        ResRegTool.Get("textures/card_features", (_, _) => throw new NotImplementedException(),
-                       FeatureIconDefaultRegister, FeatureIconLocalizedRegister),
+        new ResRegTool<Texture2D, Texture2DBox>("textures/card_features", FeatureIconDefaultRegister, FeatureIconLocalizedRegister),
     ];
 
     [RegistrationMap] [UsedImplicitly]
     private static LangRegTool[] LangRegTools { get; } =
     [
-        LangRegTool.Get<NameDesc, IDictionary<string, object>>("card_features", NameDesc.FromEntry, FeatureNameDescRegister),
+        new LangRegTool<NameDesc, NameDescBox>("card_features", FeatureNameDescRegister),
     ];
 
     #endregion

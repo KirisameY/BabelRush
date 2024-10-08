@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 
 using KirisameLib.Core.Extensions;
@@ -18,7 +19,7 @@ public static class Registration
 
 
     //Public Methods
-    public static void RegisterAssets(string[] path, object assets)
+    public static void RegisterAssets(string[] path, IEnumerable assets)
     {
         switch (path)
         {

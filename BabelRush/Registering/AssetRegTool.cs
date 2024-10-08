@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using BabelRush.Data;
+using BabelRush.Registering.Parsing;
+
 using KirisameLib.Core.Logging;
 
 namespace BabelRush.Registering;
@@ -11,23 +14,24 @@ public abstract class AssetRegTool(string path)
 {
     public string Path { get; } = path;
 
-    
+
     //Protected Methods
-    protected Queue<TData> ParseSet<TSource, TData>(Func<TSource, TData> parse, object source)
-        where TData : notnull
+    protected Queue<TBox> ParseSet<TSource, TBox, TAsset>(IEnumerable source)
+        where TBox : IBox<TSource, TBox, TAsset>
     {
         const string loggingProcessNameParsing = "ParsingAssets";
-        if (source is not IEnumerable enumerable)
+        if (source is not IEnumerable<TSource> enumerable)
         {
-            Logger.Log(LogLevel.Error, loggingProcessNameParsing, $"Source {source} is not IEnumerable, register skipped");
+            Logger.Log(LogLevel.Error, loggingProcessNameParsing,
+                       $"Source {source} is not an IEnumerable of {typeof(TSource)}, register skipped");
             return [];
         }
-        Queue<TData> items = [];
+        Queue<TBox> items = [];
         foreach (var entry in enumerable)
         {
             try
             {
-                var item = parse((TSource)entry);
+                var item = TBox.FromEntry(entry);
                 items.Enqueue(item);
             }
             catch (Exception e)
@@ -38,12 +42,12 @@ public abstract class AssetRegTool(string path)
         return items;
     }
 
-    
+
     //Public Methods(abstract)
-    public abstract Task RegisterSet(object source);
-    public abstract Task RegisterLocalizedSet(string local,object source);
-    
-    
+    public abstract Task RegisterSet(IEnumerable source);
+    public abstract Task RegisterLocalizedSet(string local, IEnumerable source);
+
+
     //Logging
     protected abstract Logger Logger { get; }
 }
