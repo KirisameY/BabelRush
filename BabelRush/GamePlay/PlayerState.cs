@@ -1,5 +1,6 @@
 using System.Linq;
 
+using BabelRush.Cards;
 using BabelRush.Mobs;
 
 using JetBrains.Annotations;
@@ -16,8 +17,14 @@ public class PlayerState
     public bool Moving { get; set; }
 
 
+    //Cost
+    public int MaxAp { get; } = 6;
+    public int Ap { get; set; }
+
+
     #region Event Handlers
 
+    //Move block
     [EventHandler] [UsedImplicitly]
     private static void OnMobAlignmentChanged(MobAlignmentChangedEvent e)
     {
@@ -40,9 +47,24 @@ public class PlayerState
     [EventHandler] [UsedImplicitly]
     private static void OnMobRemoved(MobRemovedEvent e)
     {
-        if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy 
-          && Play.BattleField.Enemies.All(mob => !mob.Type.BlocksMovement))
+        if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy
+         && Play.BattleField.Enemies.All(mob => !mob.Type.BlocksMovement))
             Play.PlayerState.Moving = true;
+    }
+
+
+    //Card - AP
+    [EventHandler] [UsedImplicitly]
+    private static void BeforeCardUse(BeforeCardUseEvent e)
+    {
+        if (e.Card.Cost > Play.PlayerState.Ap) e.Cancel.Cancel();
+    }
+
+
+    [EventHandler] [UsedImplicitly]
+    private static void OnCardUsed(CardUsedEvent e)
+    {
+        if (e.CostAp) Play.PlayerState.Ap -= e.Card.Cost;
     }
 
     #endregion

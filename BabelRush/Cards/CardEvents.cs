@@ -12,7 +12,7 @@ public sealed record CardPickedEvent(Card Card, bool Picked) : CardEvent(Card);
 
 public sealed record BeforeCardUseEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
 
-public sealed record CardUsedEvent(Card Card, Variable<bool> ToExhaust) : CardEvent(Card);
+public sealed record CardUsedEvent(Card Card, bool CostAp,Variable<bool> ToExhaust) : CardEvent(Card);
 
 //Gaming
 public sealed record CardDrawnEvent(Card Card) : CardEvent(Card);

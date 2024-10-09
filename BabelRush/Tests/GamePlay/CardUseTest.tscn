@@ -47,6 +47,14 @@ placeholder_text = "Action1"
 alignment = 1
 expand_to_text_length = true
 
+[node name="Cost" type="SpinBox" parent="TestUI"]
+offset_left = 435.0
+offset_top = 157.0
+offset_right = 518.063
+offset_bottom = 188.0
+scale = Vector2(0.5, 0.5)
+
 [connection signal="pressed" from="TestUI/Button" to="." method="AddCard"]
 [connection signal="text_changed" from="TestUI/Target1" to="." method="SetTarget1"]
 [connection signal="text_changed" from="TestUI/Target2" to="." method="SetTarget2"]
+[connection signal="value_changed" from="TestUI/Cost" to="." method="SetCost"]

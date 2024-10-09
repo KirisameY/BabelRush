@@ -39,6 +39,7 @@ public partial class CardUseTest : Node
         Play.Initialize(player.Mob, new Scene());
         AddChild(Play.Node);
         Play.BattleField.AddMobs(enemy1.Mob, enemy2.Mob, friend1.Mob);
+        Play.PlayerState.Ap = 6;
 
         var scene = Play.Scene.Node;
 
@@ -59,7 +60,7 @@ public partial class CardUseTest : Node
     }
 
     private CardType CardType =>
-        new CardType("test", true, 1, TargetPatterns.Select(pattern => new ActionType("test", pattern, [])), []);
+        new CardType("test", true, Cost, TargetPatterns.Select(pattern => new ActionType("test", pattern, [])), []);
 
     private string[] TargetPatternNames { get; } = ["None", "None"];
 
@@ -68,6 +69,9 @@ public partial class CardUseTest : Node
     public void SetTarget1(string value) => TargetPatternNames[0] = value;
 
     public void SetTarget2(string value) => TargetPatternNames[1] = value;
+
+    private int Cost { get; set; }
+    public void SetCost(int value) => Cost = value;
 
 
     //Events
