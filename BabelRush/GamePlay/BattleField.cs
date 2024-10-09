@@ -13,7 +13,7 @@ using KirisameLib.Core.Logging;
 namespace BabelRush.GamePlay;
 
 [EventHandler]
-public class PlayState(Mob player)
+public class BattleField(Mob player)
 {
     //MobLists
     public Mob Player { get; } = player;
@@ -43,8 +43,6 @@ public class PlayState(Mob player)
         {
             if (list.Count == 1)
                 EventBus.Publish(new BattleStartEvent());
-            if (mob.Type.BlocksMovement && PlayerInfo.Moving)
-                PlayerInfo.Moving = false;
         }
         return true;
     }
@@ -60,8 +58,6 @@ public class PlayState(Mob player)
         {
             if (list.Count == 0)
                 EventBus.Publish(new BattleEndEvent());
-            if (list.All(m => !m.Type.BlocksMovement) && !PlayerInfo.Moving)
-                PlayerInfo.Moving = true;
         }
 
         return true;
@@ -92,8 +88,6 @@ public class PlayState(Mob player)
 
     //State
     public bool InBattle => _enemies.Count > 0;
-
-    public PlayerInfo PlayerInfo { get; } = new();
 
 
     //Methods
@@ -135,15 +129,15 @@ public class PlayState(Mob player)
     [EventHandler] [UsedImplicitly]
     private static void OnMobAlignmentChanged(MobAlignmentChangedEvent e)
     {
-        var state = Play.State;
+        var state = Play.BattleField;
         if (!state.AllMobsWithNeutral.Contains(e.Mob) || state.Player == e.Mob) return;
-        state.TryRemoveFromList(e.Mob, e.OldValue);
-        state.TryAddToList(e.Mob, e.NewValue);
+        state.TryRemoveFromList(e.Mob, e.OldAlignment);
+        state.TryAddToList(e.Mob, e.NewAlignment);
 
         EventBus.Publish(new AlignmentUpdatedEvent());
     }
 
 
     //Logging
-    private static Logger Logger { get; } = LogManager.GetLogger(nameof(PlayState));
+    private static Logger Logger { get; } = LogManager.GetLogger(nameof(BattleField));
 }

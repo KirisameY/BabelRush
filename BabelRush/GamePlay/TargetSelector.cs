@@ -67,7 +67,7 @@ public static class TargetSelector
             var old = AutoSelected;
             _autoSelected = value;
             var unite = old.Intersect(value).ToList();
-            if (SelectPlayer) unite.Add(Play.State.Player);
+            if (SelectPlayer) unite.Add(Play.BattleField.Player);
             foreach (var mob in old.Except(unite))
                 EventBus.Publish(new MobSelectedEvent(mob, false, false));
             foreach (var mob in value.Except(unite))
@@ -83,8 +83,8 @@ public static class TargetSelector
         {
             if (SelectPlayer == value) return;
             _selectPlayer = value;
-            if (!AutoSelected.Contains(Play.State.Player))
-                EventBus.Publish(new MobSelectedEvent(Play.State.Player, false, value));
+            if (!AutoSelected.Contains(Play.BattleField.Player))
+                EventBus.Publish(new MobSelectedEvent(Play.BattleField.Player, false, value));
         }
     }
 
@@ -92,9 +92,9 @@ public static class TargetSelector
     //Methods
     public static IReadOnlyList<Mob> GetRange(TargetRange range) => range switch
     {
-        TargetRange.Friend => Play.State.Friends,
-        TargetRange.Enemy  => Play.State.Enemies,
-        TargetRange.All    => Play.State.AllMobs,
+        TargetRange.Friend => Play.BattleField.Friends,
+        TargetRange.Enemy  => Play.BattleField.Enemies,
+        TargetRange.All    => Play.BattleField.AllMobs,
         0                  => [],
         _                  => throw new ArgumentOutOfRangeException(nameof(range), range, null)
     };
@@ -102,7 +102,7 @@ public static class TargetSelector
     public static IReadOnlyList<Mob> GetTargets(TargetPattern pattern) => pattern switch
     {
         TargetPattern.None    => [],
-        TargetPattern.Self    => [Play.State.Player],
+        TargetPattern.Self    => [Play.BattleField.Player],
         TargetPattern.Any any => CursorSelected is not null && GetRange(any.Range).Contains(CursorSelected) ? [CursorSelected] : [],
         TargetPattern.All all => GetRange(all.Range),
         _                     => throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null)

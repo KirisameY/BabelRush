@@ -19,9 +19,9 @@ public class Play
 {
     #region Singleton & Initialize
 
-    private Play(PlayState state, Scene scene, uint randomSeed)
+    private Play(BattleField battleField, Scene scene, uint randomSeed)
     {
-        _state = state;
+        _battleField = battleField;
         _scene = scene;
         if (randomSeed == 0) randomSeed = (uint)DateTime.Now.Ticks;
         Random = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
@@ -71,18 +71,21 @@ public class Play
     public static void Process(double delta)
     {
         //player moving
-        if (State.PlayerInfo.Moving)
-            State.Player.Position += State.PlayerInfo.MovingSpeed * delta;
+        if (PlayerState.Moving)
+            BattleField.Player.Position += PlayerState.MovingSpeed * delta;
     }
 
 
     #region Public members
 
-    private readonly PlayState _state;
-    public static PlayState State => Instance._state;
+    private readonly BattleField _battleField;
+    public static BattleField BattleField => Instance._battleField;
 
     private readonly PlayNode _node = PlayNode.GetInstance(Process);
     public static PlayNode Node => Instance._node;
+
+    private readonly PlayerState _playerState = new();
+    public static PlayerState PlayerState => Instance._playerState;
 
     public RandomBelt Random { get; }
 
@@ -123,7 +126,7 @@ public class Play
     [EventHandler] [UsedImplicitly]
     public static void OnPlayerMoved(SceneObjectMovedEvent e)
     {
-        if (e.SceneObject != State.Player) return;
+        if (e.SceneObject != BattleField.Player) return;
 
         //camera
         Node.Camera.TargetPositionX = (float)e.NewPosition;
@@ -137,14 +140,14 @@ public class Play
     public static void OnEntityEnteredScreen(ObjectEnteredEvent e)
     {
         if (e.Object is not Mob mob) return;
-        State.AddMob(mob);
+        BattleField.AddMob(mob);
     }
 
     [EventHandler] [UsedImplicitly]
     public static void OnEntityExitedScreen(ObjectExitedEvent e)
     {
         if (e.Object is not Mob mob) return;
-        State.RemoveMob(mob);
+        BattleField.RemoveMob(mob);
     }
 
     #endregion

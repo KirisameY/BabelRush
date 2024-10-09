@@ -38,7 +38,7 @@ public partial class CardUseTest : Node
 
         Play.Initialize(player.Mob, new Scene());
         AddChild(Play.Node);
-        Play.State.AddMobs(enemy1.Mob, enemy2.Mob, friend1.Mob);
+        Play.BattleField.AddMobs(enemy1.Mob, enemy2.Mob, friend1.Mob);
 
         var scene = Play.Scene.Node;
 

@@ -21,7 +21,7 @@ public partial class Game : Node
         Instance = this;
 
         //Init logger
-    #if DEBUG
+    #if TOOLS
         const LogLevel minWriteLevel = LogLevel.Debug;
         const LogLevel minPrintLevel = LogLevel.Debug;
     #else

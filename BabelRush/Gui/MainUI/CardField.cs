@@ -103,7 +103,7 @@ public partial class CardField : Control
             if (old is not null)
             {
                 old.Selectable = false;
-                if (!oldOut || !old.Card.Use(Play.State.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
+                if (!oldOut || !old.Card.Use(Play.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
                     InsertCard(old);
                 EventBus.Publish(new CardPickedEvent(old.Card, false));
             }
