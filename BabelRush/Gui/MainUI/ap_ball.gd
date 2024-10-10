@@ -9,3 +9,6 @@ func SetValue(value:int):
 		$Num.frame = value
 	else:
 		$Num.frame = 19
+
+func SetRate(rate:float):
+	$Recoverbar.material.set_shader_parameter("rate",rate)

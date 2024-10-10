@@ -1,5 +1,6 @@
-[gd_scene load_steps=10 format=3 uid="uid://du070sjdbxoea"]
+[gd_scene load_steps=14 format=3 uid="uid://du070sjdbxoea"]
 
+[ext_resource type="Script" path="res://Gui/MainUI/ApBar.cs" id="1_mxubh"]
 [ext_resource type="Texture2D" uid="uid://d3tnwovqixtui" path="res://assets/metares/sprites/mainui/apball_base.png" id="1_x2cbq"]
 [ext_resource type="Script" path="res://Gui/MainUI/ap_ball.gd" id="2_23tcw"]
 [ext_resource type="Texture2D" uid="uid://1uodtdma74ts" path="res://assets/metares/sprites/mainui/apball_p1.png" id="2_ovrgl"]
@@ -7,7 +8,13 @@
 [ext_resource type="Texture2D" uid="uid://tvm6gry3lk00" path="res://assets/metares/sprites/mainui/posbar.png" id="4_po36u"]
 [ext_resource type="SpriteFrames" uid="uid://qxg8tfxeku1v" path="res://assets/metares/sprites/mainui/ap_num.tres" id="5_ordnr"]
 [ext_resource type="Texture2D" uid="uid://co75c7wrxg6h6" path="res://assets/metares/sprites/mainui/posbar_border.png" id="5_y5lp0"]
+[ext_resource type="Shader" path="res://assets/metares/shaders/ap_recover_bar.gdshader" id="6_x7c4e"]
+[ext_resource type="Texture2D" uid="uid://0g8nru4xyf4p" path="res://assets/metares/sprites/mainui/recoverbar.png" id="7_yxhb0"]
 [ext_resource type="FontFile" uid="uid://bv3mttrhsnlet" path="res://Fonts/Silver.ttf" id="8_aflvc"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_xj10m"]
+shader = ExtResource("6_x7c4e")
+shader_parameter/rate = 0.25
 
 [sub_resource type="LabelSettings" id="LabelSettings_j258j"]
 font = ExtResource("8_aflvc")
@@ -25,47 +32,53 @@ offset_bottom = -72.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
+script = ExtResource("1_mxubh")
 
-[node name="Apball" type="Sprite2D" parent="."]
+[node name="ApBall" type="Sprite2D" parent="."]
 position = Vector2(240, 20)
 texture = ExtResource("1_x2cbq")
 script = ExtResource("2_23tcw")
 
-[node name="Point1" type="Sprite2D" parent="Apball"]
+[node name="Point1" type="Sprite2D" parent="ApBall"]
 modulate = Color(0.26, 0.889, 1, 1)
 texture = ExtResource("2_ovrgl")
 
-[node name="Point2" type="Sprite2D" parent="Apball"]
+[node name="Point2" type="Sprite2D" parent="ApBall"]
 modulate = Color(0.26, 0.889, 1, 1)
 self_modulate = Color(0.75, 0.75, 0.75, 1)
 texture = ExtResource("3_pegct")
 
-[node name="Point3" type="Sprite2D" parent="Apball"]
+[node name="Point3" type="Sprite2D" parent="ApBall"]
 modulate = Color(0.26, 0.889, 1, 1)
 texture = ExtResource("2_ovrgl")
 flip_v = true
 
-[node name="Point4" type="Sprite2D" parent="Apball"]
+[node name="Point4" type="Sprite2D" parent="ApBall"]
 modulate = Color(0.26, 0.889, 1, 1)
 self_modulate = Color(0.75, 0.75, 0.75, 1)
 texture = ExtResource("2_ovrgl")
 flip_h = true
 flip_v = true
 
-[node name="Point5" type="Sprite2D" parent="Apball"]
+[node name="Point5" type="Sprite2D" parent="ApBall"]
 modulate = Color(0.26, 0.889, 1, 1)
 texture = ExtResource("3_pegct")
 flip_h = true
 
-[node name="Point6" type="Sprite2D" parent="Apball"]
+[node name="Point6" type="Sprite2D" parent="ApBall"]
 modulate = Color(0.26, 0.889, 1, 1)
 self_modulate = Color(0.75, 0.75, 0.75, 1)
 texture = ExtResource("2_ovrgl")
 flip_h = true
 
-[node name="Num" type="AnimatedSprite2D" parent="Apball"]
+[node name="Num" type="AnimatedSprite2D" parent="ApBall"]
 self_modulate = Color(0.25, 0.25, 0.25, 1)
 sprite_frames = ExtResource("5_ordnr")
+
+[node name="Recoverbar" type="Sprite2D" parent="ApBall"]
+self_modulate = Color(0.95, 0.791667, 0, 1)
+material = SubResource("ShaderMaterial_xj10m")
+texture = ExtResource("7_yxhb0")
 
 [node name="PosbarL" type="Sprite2D" parent="."]
 modulate = Color(0.41, 0.891833, 1, 1)
