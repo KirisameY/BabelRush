@@ -70,6 +70,9 @@ public class Play
     //Tick Loop
     public static void Process(double delta)
     {
+        //player state update
+        PlayerState.ProcessUpdate(delta);
+
         //player moving
         if (PlayerState.Moving)
             BattleField.Player.Position += PlayerState.MovingSpeed * delta;

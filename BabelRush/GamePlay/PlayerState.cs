@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 using BabelRush.Cards;
@@ -17,9 +18,48 @@ public class PlayerState
     public bool Moving { get; set; }
 
 
-    //Cost
-    public int MaxAp { get; } = 6;
-    public int Ap { get; set; }
+    //Ap
+    public int MaxAp { get; set; } = 6;
+    private int _ap;
+    public int Ap
+    {
+        get => _ap;
+        set
+        {
+            if (_ap == value) return;
+            var oldValue = _ap;
+            _ap = value;
+            EventBus.Publish(new ApChangedEvent(oldValue, _ap));
+        }
+    }
+
+    private double _apRegenerated;
+    public double ApRegenerated
+    {
+        get => _apRegenerated;
+        set
+        {
+            _apRegenerated = value;
+            if (value < 1) return;
+            if (Ap < MaxAp)
+            {
+                _apRegenerated -= 1;
+                Ap++;
+            }
+            else
+            {
+                _apRegenerated = 1;
+            }
+        }
+    }
+    public double ApRegeneration { get; set; } = 1;
+
+
+    //Update
+    public void ProcessUpdate(double delta)
+    {
+        ApRegenerated += delta * ApRegeneration;
+    }
 
 
     #region Event Handlers

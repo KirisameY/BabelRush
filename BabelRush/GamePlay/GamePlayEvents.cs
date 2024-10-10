@@ -22,3 +22,8 @@ public abstract record BattleEvent : GamePlayEvent;
 public sealed record BattleStartEvent : BattleEvent;
 
 public sealed record BattleEndEvent : BattleEvent;
+
+//Player
+public abstract record PlayerEvent : GamePlayEvent;
+
+public sealed record ApChangedEvent(int OldAp, int NewAp) : PlayerEvent;
