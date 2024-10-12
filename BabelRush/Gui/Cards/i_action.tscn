@@ -1,8 +1,8 @@
 [gd_scene load_steps=5 format=3 uid="uid://ddk4klce5mvc0"]
 
 [ext_resource type="Script" path="res://Gui/Cards/i_action.gd" id="1_cp5ue"]
-[ext_resource type="SpriteFrames" uid="uid://dfhwtd75vi4j8" path="res://assets/metares/sprites/card/num.tres" id="2_my8ck"]
-[ext_resource type="Texture2D" uid="uid://b82vb622d4vba" path="res://assets/metares/sprites/card/placeholder.png" id="3_6l5h4"]
+[ext_resource type="SpriteFrames" uid="uid://dfhwtd75vi4j8" path="res://assets/meta_res/sprites/card/num.tres" id="2_my8ck"]
+[ext_resource type="Texture2D" uid="uid://b82vb622d4vba" path="res://assets/meta_res/sprites/card/placeholder.png" id="3_6l5h4"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0dk8s"]
 
@@ -23,13 +23,15 @@ texture = SubResource("PlaceholderTexture2D_0dk8s")
 
 [node name="N0" type="AnimatedSprite2D" parent="Num"]
 self_modulate = Color(0.25, 0.25, 0.25, 1)
-position = Vector2(14.5, 0.5)
+position = Vector2(13, -3)
 sprite_frames = ExtResource("2_my8ck")
+centered = false
 
 [node name="N1" type="AnimatedSprite2D" parent="Num"]
 self_modulate = Color(0.25, 0.25, 0.25, 1)
-position = Vector2(10.5, 0.5)
+position = Vector2(9, -3)
 sprite_frames = ExtResource("2_my8ck")
+centered = false
 
 [node name="Placeholder" type="Sprite2D" parent="."]
 visible = false

@@ -1,4 +1,5 @@
 <Project Sdk="Godot.NET.Sdk/4.3.0">
+    
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net7.0</TargetFramework>
@@ -7,17 +8,27 @@
         <LangVersion>12</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="JetBrains.Annotations" Version="2023.3.0"/>
         <PackageReference Include="Tomlyn" Version="0.17.0"/>
     </ItemGroup>
+
     <ItemGroup>
         <ProjectReference Include="..\..\KirisameLib\KirisameLib.Core\KirisameLib.Core.csproj"/>
     </ItemGroup>
+
     <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">
         <Compile Remove="Tests\**"/>
     </ItemGroup>
+
     <ItemGroup>
         <EmbeddedResource Remove="Tests\**"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <None Include="**\*.tscn"/>
+        <None Include="**\*.gd"/>
+    </ItemGroup>
+
 </Project>

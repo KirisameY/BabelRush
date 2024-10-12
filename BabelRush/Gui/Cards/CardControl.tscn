@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://t13t4lu6ts7i"]
+
+[ext_resource type="PackedScene" uid="uid://c48624bhp8kkr" path="res://Gui/Cards/Card.tscn" id="1_hb0md"]
+
+[node name="CardControl" type="Control"]
+custom_minimum_size = Vector2(60, 72)
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Card" parent="." instance=ExtResource("1_hb0md")]
+position = Vector2(30, 36)

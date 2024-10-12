@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" path="res://Gui/Mobs/MobInterface.cs" id="1_22tyx"]
 [ext_resource type="PackedScene" uid="uid://ivk70wynqfry" path="res://Gui/Mobs/HealthBar.tscn" id="1_sj0tm"]
-[ext_resource type="Texture2D" uid="uid://dcnshvjij1e1" path="res://assets/metares/sprites/card/costbase.png" id="2_1ormx"]
-[ext_resource type="Texture2D" uid="uid://2xgeus4eg4hw" path="res://assets/metares/sprites/card/numbase.png" id="3_bv8i1"]
+[ext_resource type="Texture2D" uid="uid://dcnshvjij1e1" path="res://assets/meta_res/sprites/card/costbase.png" id="2_1ormx"]
+[ext_resource type="Texture2D" uid="uid://2xgeus4eg4hw" path="res://assets/meta_res/sprites/card/numbase.png" id="3_bv8i1"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_oayvn"]
 animations = [{
