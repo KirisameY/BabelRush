@@ -12,10 +12,10 @@ public class Texture2DBox(string id, Texture2D texture) : IResBox<Texture2D, Tex
 
     public Texture2D GetAsset() => texture;
 
-    public static Texture2DBox FromEntry(ResSource entry)
+    public static Texture2DBox? FromEntry(ResSource entry)
     {
-        if (entry.File is null) return new(entry.Id, new PlaceholderTexture2D());
-        var buffer = entry.File.GetBuffer((long)entry.File.GetLength());
+        if (!entry.Files.TryGetValue("png", out var file)) return null;
+        var buffer = file.GetBuffer((long)file.GetLength());
 
         var image = DataUtils.LoadImageFromPngBuffer(buffer);
         var tex = ImageTexture.CreateFromImage(image);

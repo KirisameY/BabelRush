@@ -16,9 +16,9 @@ public class NameDescBox(string id, NameDesc nameDesc) : ILangBox<NameDesc, Name
     public static NameDescBox FromEntry(KeyValuePair<string, object> entry)
     {
         var data = (IDictionary<string, object>)entry.Value;
-        var name = Convert.ToString(data["name"]); // todo: 用 convert 取代所以Box类的强转, just like this
-        var desc = data.GetOrDefault("desc") as string ?? "";
-        var quote = data.GetOrDefault("quote") as string ?? "";
+        var name = (string)data["name"];
+        var desc = Convert.ToString(data.GetOrDefault("desc")) ?? "";
+        var quote = Convert.ToString(data.GetOrDefault("quote")) ?? "";
         return new(entry.Key, new(name, desc, quote));
     }
 }

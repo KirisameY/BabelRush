@@ -17,10 +17,9 @@ namespace BabelRush.Registering;
 
 public abstract class LangRegTool(string subPath) : AssetRegTool("lang/" + subPath)
 {
-    public override Task RegisterSet(IEnumerable source)
-    {
-        throw new InvalidOperationException("Cannot register non-localized lang");
-    }
+    public string SubPath { get; } = subPath;
+    
+    public abstract Task RegisterLocalizedSet(string local, IEnumerable<Pair> source);
 
     //Logging
     protected override Logger Logger { get; } = LogManager.GetLogger($"{nameof(LangRegTool)}.{subPath}");
@@ -32,7 +31,7 @@ public class LangRegTool<TLang, TBox>(string subPath, LocalizedRegister<TLang> r
 {
     private LocalizedRegister<TLang> Register { get; } = register;
 
-    public override async Task RegisterLocalizedSet(string local, IEnumerable source)
+    public override async Task RegisterLocalizedSet(string local, IEnumerable<Pair> source)
     {
         await Task.Yield();
         Logger.Log(LogLevel.Info, nameof(RegisterLocalizedSet), $"Start parsing for local: {local}");

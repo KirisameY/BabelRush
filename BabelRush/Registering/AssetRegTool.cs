@@ -16,36 +16,28 @@ public abstract class AssetRegTool(string path)
 
 
     //Protected Methods
-    protected Queue<TBox> ParseSet<TSource, TBox, TAsset>(IEnumerable source)
+    protected Queue<TBox> ParseSet<TSource, TBox, TAsset>(IEnumerable<TSource> source)
         where TBox : IBox<TSource, TBox, TAsset>
     {
         const string loggingProcessNameParsing = "ParsingAssets";
-        if (source is not IEnumerable<TSource> enumerable)
-        {
-            Logger.Log(LogLevel.Error, loggingProcessNameParsing,
-                       $"Source {source} is not an IEnumerable of {typeof(TSource)}, register skipped");
-            return [];
-        }
         Queue<TBox> items = [];
-        foreach (var entry in enumerable)
+        foreach (var entry in source)
         {
             try
             {
                 var item = TBox.FromEntry(entry);
-                items.Enqueue(item);
+                if (item is not null)
+                    items.Enqueue(item);
+                else
+                    Logger.Log(LogLevel.Error, loggingProcessNameParsing, $"Entry {entry} is not valid, parse skipped");
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, loggingProcessNameParsing, $"Exception on Parsing, entry skipped: {e}");
+                Logger.Log(LogLevel.Error, loggingProcessNameParsing, $"Exception on Parsing, parse of entry {e} skipped");
             }
         }
         return items;
     }
-
-
-    //Public Methods(abstract)
-    public abstract Task RegisterSet(IEnumerable source);
-    public abstract Task RegisterLocalizedSet(string local, IEnumerable source);
 
 
     //Logging

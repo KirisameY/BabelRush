@@ -18,13 +18,10 @@ namespace BabelRush.Registering;
 
 public abstract class DataRegTool(string subPath) : AssetRegTool("data/" + subPath)
 {
-    protected string SubPath { get; } = subPath;
+    public string SubPath { get; } = subPath;
     protected static ConcurrentDictionary<string, TaskCompletionSource> RegisteringTasks { get; } = [];
 
-    public override Task RegisterLocalizedSet(string local, IEnumerable source)
-    {
-        throw new InvalidOperationException("Cannot register localized data");
-    }
+    public abstract Task RegisterSet(IEnumerable<Table> source);
 
     //Logging
     protected override Logger Logger { get; } = LogManager.GetLogger($"{nameof(DataRegTool)}.{subPath}");
@@ -39,7 +36,7 @@ public sealed class DataRegTool<TData, TBox>
     private ImmutableArray<string> WaitForRegisters { get; } = [..waitFor];
 
 
-    public override async Task RegisterSet(IEnumerable source)
+    public override async Task RegisterSet(IEnumerable<Table> source)
     {
         await Task.Yield();
         Logger.Log(LogLevel.Info, nameof(RegisterSet), "Start parsing");

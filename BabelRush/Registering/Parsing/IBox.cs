@@ -6,7 +6,7 @@ public interface IBox<in TSource, out TBox, out TAsset> where TBox : IBox<TSourc
 {
     string Id { get; }
     TAsset GetAsset();
-    static abstract TBox FromEntry(TSource entry);
+    static abstract TBox? FromEntry(TSource entry);
 }
 
 #region Sub-Interfaces
