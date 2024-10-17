@@ -48,23 +48,23 @@ public static class CardFeatureRegisters
 
     #region Map
 
-    [RegistrationMap] [UsedImplicitly]
-    private static DataRegTool[] DataRegTools { get; } =
-    [
-        new DataRegTool<FeatureType, FeatureTypeBox>("card_features", FeaturesRegister),
-    ];
-
-    [RegistrationMap] [UsedImplicitly]
-    private static ResRegTool[] ResRegTools { get; } =
-    [
-        new ResRegTool<Texture2D, Texture2DBox>("textures/card_features", FeatureIconDefaultRegister, FeatureIconLocalizedRegister),
-    ];
-
-    [RegistrationMap] [UsedImplicitly]
-    private static LangRegTool[] LangRegTools { get; } =
-    [
-        new LangRegTool<NameDesc, NameDescBox>("card_features", FeatureNameDescRegister),
-    ];
+    // [RegistrationMap] [UsedImplicitly]
+    // private static DataRegTool[] DataRegTools { get; } =
+    // [
+    //     new DataRegTool<FeatureType, FeatureTypeModel>("card_features", FeaturesRegister),
+    // ];
+    //
+    // [RegistrationMap] [UsedImplicitly]
+    // private static ResRegTool[] ResRegTools { get; } =
+    // [
+    //     new ResRegTool<Texture2D, Texture2DModel>("textures/card_features", FeatureIconDefaultRegister, FeatureIconLocalizedRegister),
+    // ];
+    //
+    // [RegistrationMap] [UsedImplicitly]
+    // private static LangRegTool[] LangRegTools { get; } =
+    // [
+    //     new LangRegTool<NameDesc, NameDescModel>("card_features", FeatureNameDescRegister),
+    // ];
 
     #endregion
 }

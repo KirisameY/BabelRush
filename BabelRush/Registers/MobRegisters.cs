@@ -45,20 +45,20 @@ public static class MobRegisters
 
     #region Map
 
-    [RegistrationMap] [UsedImplicitly]
-    private static DataRegTool[] DataRegTools { get; } =
-    [
-        new DataRegTool<MobType, MobTypeDataBox>("mobs", MobsRegister),
-    ];
-
-    [RegistrationMap] [UsedImplicitly]
-    private static ResRegTool[] ResRegTools { get; } = [];
-
-    [RegistrationMap] [UsedImplicitly]
-    private static LangRegTool[] LangRegTools { get; } =
-    [
-        new LangRegTool<NameDesc, NameDescBox>("mobs", MobNameDescRegister),
-    ];
+    // [RegistrationMap] [UsedImplicitly]
+    // private static DataRegTool[] DataRegTools { get; } =
+    // [
+    //     new DataRegTool<MobType, MobTypeModel>("mobs", MobsRegister),
+    // ];
+    //
+    // [RegistrationMap] [UsedImplicitly]
+    // private static ResRegTool[] ResRegTools { get; } = [];
+    //
+    // [RegistrationMap] [UsedImplicitly]
+    // private static LangRegTool[] LangRegTools { get; } =
+    // [
+    //     new LangRegTool<NameDesc, NameDescModel>("mobs", MobNameDescRegister),
+    // ];
 
     #endregion
 }

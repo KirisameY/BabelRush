@@ -53,24 +53,24 @@ internal static class ActionRegisters
 
     #region Map
 
-    [RegistrationMap] [UsedImplicitly]
-    private static DataRegTool[] DataRegTools { get; } =
-    [
-        new DataRegTool<ActionStep, ActionStepBox>("action_steps", ActionStepsRegister),
-        new DataRegTool<ActionType, ActionTypeBox>("actions", ActionsRegister, "action_steps")
-    ];
-
-    [RegistrationMap] [UsedImplicitly]
-    private static ResRegTool[] ResRegTools { get; } =
-    [
-        new ResRegTool<Texture2D, Texture2DBox>("textures/actions", ActionIconDefaultRegister, ActionIconLocalizedRegister),
-    ];
-
-    [RegistrationMap] [UsedImplicitly]
-    private static LangRegTool[] LangRegTools { get; } =
-    [
-        new LangRegTool<NameDesc, NameDescBox>("actions", ActionNameDescRegister),
-    ];
+    // [RegistrationMap] [UsedImplicitly]
+    // private static DataRegTool[] DataRegTools { get; } =
+    // [
+    //     new DataRegTool<ActionStep, ActionStepModel>("action_steps", ActionStepsRegister),
+    //     new DataRegTool<ActionType, ActionTypeModel>("actions", ActionsRegister, "action_steps")
+    // ];
+    //
+    // [RegistrationMap] [UsedImplicitly]
+    // private static ResRegTool[] ResRegTools { get; } =
+    // [
+    //     new ResRegTool<Texture2D, Texture2DModel>("textures/actions", ActionIconDefaultRegister, ActionIconLocalizedRegister),
+    // ];
+    //
+    // [RegistrationMap] [UsedImplicitly]
+    // private static LangRegTool[] LangRegTools { get; } =
+    // [
+    //     new LangRegTool<NameDesc, NameDescModel>("actions", ActionNameDescRegister),
+    // ];
 
     #endregion
 }

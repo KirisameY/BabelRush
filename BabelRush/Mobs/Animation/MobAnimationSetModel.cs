@@ -5,7 +5,6 @@ using System.Collections.Immutable;
 using System.Linq;
 
 using BabelRush.Data;
-using BabelRush.Registering.Parsing;
 
 using Godot;
 
@@ -13,25 +12,27 @@ using KirisameLib.Core.Extensions;
 
 namespace BabelRush.Mobs.Animation;
 
-public record MobAnimationSetBox(string Id, string DefaultAnimationId, ImmutableArray<MobAnimationSetBox.MobAnimationData> Animations) :
-    IResBox<MobAnimationSet, MobAnimationSetBox>
+public record MobAnimationSetModel(string Id, string DefaultAnimationId, ImmutableArray<MobAnimationSetModel.MobAnimationData> Animations) :
+    IResModel<MobAnimationSet>
 {
-    public MobAnimationSet GetAsset()
+    public MobAnimationSet Convert()
     {
-        var builder = new MobAnimationSetBuilder().SetId(Id)
-                                                  .SetDefault(DefaultAnimationId);
-        foreach (var a in Animations)
-        {
-            dynamic frames;
-            if (a.FrameTimes is null)
-                frames = a.Frames.Select(SomeMagicToGetATexture2D);
-            else
-                frames = a.Frames.Select((f, i) => (SomeMagicToGetATexture2D(f), a.FrameTimes.GetOrDefault(i, 1f)));
-            builder.SetAnimation(a.Id, frames, a.Center, a.BoxSize, a.Fps,
-                                 a.BeforeAnimation is not null ? MobAnimationId.Get(a.BeforeAnimation) : null,
-                                 a.AfterAnimation is not null ? MobAnimationId.Get(a.AfterAnimation) : null);
-        }
-        return builder.Build();
+        throw new NotImplementedException();
+
+        // var builder = new MobAnimationSetBuilder().SetId(Id)
+        //                                           .SetDefault(DefaultAnimationId);
+        // foreach (var a in Animations)
+        // {
+        //     dynamic frames;
+        //     if (a.FrameTimes is null)
+        //         frames = a.Frames.Select(SomeMagicToGetATexture2D);
+        //     else
+        //         frames = a.Frames.Select((f, i) => (SomeMagicToGetATexture2D(f), a.FrameTimes.GetOrDefault(i, 1f)));
+        //     builder.SetAnimation(a.Id, frames, a.Center, a.BoxSize, a.Fps,
+        //                          a.BeforeAnimation is not null ? MobAnimationId.Get(a.BeforeAnimation) : null,
+        //                          a.AfterAnimation is not null ? MobAnimationId.Get(a.AfterAnimation) : null);
+        // }
+        // return builder.Build();
     }
 
     private Texture2D SomeMagicToGetATexture2D(string maybeAPath)
@@ -39,7 +40,7 @@ public record MobAnimationSetBox(string Id, string DefaultAnimationId, Immutable
         throw new NotImplementedException();
     }
 
-    private static MobAnimationSetBox FromEntry(IDictionary<string, object> entry)
+    private static MobAnimationSetModel FromEntry(IDictionary<string, object> entry)
     {
         var id = (string)entry["id"];
         var defaultAnimation = (string)entry["default_animation"];
@@ -48,11 +49,13 @@ public record MobAnimationSetBox(string Id, string DefaultAnimationId, Immutable
     }
 
 
-    public static MobAnimationSetBox? FromEntry(ResSource entry)
+    public static MobAnimationSetModel? FromEntry(ResSource entry)
     {
         if (entry.Data is null) return null;
         return FromEntry(entry.Data);
     }
+
+    public static IModel<MobAnimationSet>? FromSource(ResSource source) => FromEntry(source);
 
 
     #region Sub Classes
@@ -64,10 +67,10 @@ public record MobAnimationSetBox(string Id, string DefaultAnimationId, Immutable
         public static MobAnimationData FromDataEntry(IDictionary<string, object> entry)
         {
             var id = (string)entry["id"];
-            var frames = Convert.ToInt32(entry["frames"]);
+            var frames = System.Convert.ToInt32(entry["frames"]);
             var center = DataUtils.GetVector2I((IDictionary<string, object>)entry["center"]);
             var boxSize = DataUtils.GetVector2I((IDictionary<string, object>)entry["box_size"]);
-            var fps = Convert.ToSingle(entry["fps"]);
+            var fps = System.Convert.ToSingle(entry["fps"]);
 
             entry.TryGetValue("frame_times", out var oFrameTimes1);
             var oFrameTimes = oFrameTimes1 as IDictionary<string, object>;
@@ -76,7 +79,7 @@ public record MobAnimationSetBox(string Id, string DefaultAnimationId, Immutable
                  (dict, pair) =>
                  {
                      int i = int.Parse(pair.Key);
-                     float f = Convert.ToSingle(pair.Value);
+                     float f = System.Convert.ToSingle(pair.Value);
                      dict[i] = f;
                      return dict;
                  },
