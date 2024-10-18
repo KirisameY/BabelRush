@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 using BabelRush.Data;
 using BabelRush.Mobs;
 using BabelRush.Mobs.Animation;
@@ -7,10 +5,8 @@ using BabelRush.Registering;
 
 using Godot;
 
-using JetBrains.Annotations;
-
-using KirisameLib.Core.I18n;
-using KirisameLib.Core.Register;
+using KirisameLib.Data.I18n;
+using KirisameLib.Data.Register;
 
 namespace BabelRush.Registers;
 

@@ -1,7 +1,5 @@
 using Godot;
 
-using System;
-
 using BabelRush.Cards;
 
 public partial class CardInfo : Control

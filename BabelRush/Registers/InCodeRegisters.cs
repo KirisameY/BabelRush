@@ -1,7 +1,7 @@
 using BabelRush.Actions;
 using BabelRush.Registering;
 
-using KirisameLib.Core.Register;
+using KirisameLib.Data.Register;
 
 namespace BabelRush.Registers;
 

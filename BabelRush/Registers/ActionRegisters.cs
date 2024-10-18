@@ -1,17 +1,11 @@
-using System;
-using System.Collections.Generic;
-
 using BabelRush.Actions;
 using BabelRush.Data;
-using BabelRush.Data.ExtendBoxes;
 using BabelRush.Registering;
 
 using Godot;
 
-using JetBrains.Annotations;
-
-using KirisameLib.Core.I18n;
-using KirisameLib.Core.Register;
+using KirisameLib.Data.I18n;
+using KirisameLib.Data.Register;
 
 namespace BabelRush.Registers;
 

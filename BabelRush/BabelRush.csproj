@@ -16,6 +16,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\KirisameLib\KirisameLib.Core\KirisameLib.Core.csproj"/>
+        <ProjectReference Include="..\..\KirisameLib\KirisameLib.Data\KirisameLib.Data.csproj" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">

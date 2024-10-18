@@ -8,8 +8,6 @@ using BabelRush.Data;
 
 using Godot;
 
-using KirisameLib.Core.Extensions;
-
 namespace BabelRush.Mobs.Animation;
 
 public record MobAnimationSetModel(string Id, string DefaultAnimationId, ImmutableArray<MobAnimationSetModel.MobAnimationData> Animations) :

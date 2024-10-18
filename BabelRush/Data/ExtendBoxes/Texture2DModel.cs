@@ -1,5 +1,3 @@
-using System;
-
 using Godot;
 
 namespace BabelRush.Data.ExtendBoxes;

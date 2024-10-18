@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace BabelRush.Data;
 
 public readonly struct NameDesc(string name, string desc, string quote)
