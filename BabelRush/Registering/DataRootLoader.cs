@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,26 +27,27 @@ public class DataRootLoader : CommonRootLoader<IDictionary<string, object>, Data
 
     protected override async void RegisterDirectory(RegisterInfo info)
     {
-        await Task.Yield();
-        Dictionary<string, (string id, Func<bool> register)[]> regInfos = [];
-        foreach (var pair in info.SourceDict)
-        {
-            regInfos.Add(pair.Key, info.Registrant.Parse(pair.Value, out var errorInfo));
-            if (errorInfo.ErrorCount == 0) continue;
-            Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
-                       $"{errorInfo.ErrorCount} errors found in {info.Path}/{pair.Key}, error messages:\n{errorInfo.Messages.Join('\n')}");
-        }
-
         await Task.WhenAll(info.Registrant.WaitFor.Select(wait => TaskDict.GetOrAdd(wait, _ => new()).Task));
-        foreach (var (file, regSort) in regInfos)
+
+        foreach (var (file, source) in info.SourceDict)
         {
-            foreach (var (id, register) in regSort)
+            var regInfos = info.Registrant.Parse(source, out var errorInfo);
+            if (errorInfo.ErrorCount != 0)
+            {
+                Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
+                           $"{errorInfo.ErrorCount} errors found in {info.Path}/{file}, error messages:\n"
+                         + errorInfo.Messages.Join('\n'));
+            }
+
+            foreach (var (id, register) in regInfos)
             {
                 if (register()) continue;
                 Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
-                           $"Failed to register item {id} in {info.Path}/{file},Possibly there's already a registered item with a duplicate ID.");
+                           $"Failed to register item {id} in {info.Path}/{file},"
+                         + $"Possibly there's already a registered item with a duplicate ID.");
             }
         }
+
         TaskDict.GetOrAdd(info.Path, _ => new()).SetResult();
     }
 
