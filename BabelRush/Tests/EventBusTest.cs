@@ -2,6 +2,8 @@ using System.Threading.Tasks;
 
 using Godot;
 
+using JetBrains.Annotations;
+
 using KirisameLib.Core.Events;
 
 namespace BabelRush.Tests;
@@ -22,19 +24,19 @@ public partial class EventBusTest : Node
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta) { }
 
-    [EventHandler]
+    [EventHandler] [UsedImplicitly]
     private void EventHandler(BaseEvent e)
     {
         GD.Print("E0");
     }
 
-    [EventHandler]
+    [EventHandler] [UsedImplicitly]
     private void EventHandler1(TestEvent1 e)
     {
         GD.Print("E1", e.Msg);
     }
 
-    [EventHandler]
+    [EventHandler] [UsedImplicitly]
     private void EventHandler2(TestEvent2 e)
     {
         GD.Print("E2", e.Msg, e.Msg2);

@@ -4,11 +4,11 @@ using BabelRush.Mobs;
 
 namespace BabelRush.Scenery;
 
-public class Room
+public class Room(int length)
 {
     //Properties
     public int Position { get; set; }
-    public int Length { get; }
+    public int Length { get; } = length;
 
 
     //Content

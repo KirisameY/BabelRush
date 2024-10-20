@@ -1,6 +1,8 @@
+using BabelRush.Cards;
+
 using Godot;
 
-using BabelRush.Cards;
+namespace BabelRush.Gui.Screens.Cards;
 
 public partial class CardInfo : Control
 {

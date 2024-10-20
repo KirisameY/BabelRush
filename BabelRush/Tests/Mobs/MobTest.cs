@@ -3,6 +3,8 @@ using BabelRush.Mobs;
 
 using Godot;
 
+using JetBrains.Annotations;
+
 using KirisameLib.Core.Events;
 
 using MobInterface = BabelRush.Gui.Mobs.MobInterface;
@@ -36,13 +38,13 @@ public partial class MobTest : Node2D
 
 
     //Event
-    [EventHandler]
+    [EventHandler] [UsedImplicitly]
     private void OnMobInterfaceEvent(MobInterfaceEvent e)
     {
         GD.Print(e);
     }
 
-    [EventHandler]
+    [EventHandler] [UsedImplicitly]
     private void OnMobEvent(MobEvent e)
     {
         GD.Print(e);
