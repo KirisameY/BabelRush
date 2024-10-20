@@ -8,6 +8,8 @@ using BabelRush.Data;
 
 using Godot;
 
+using KirisameLib.Data.Model;
+
 namespace BabelRush.Mobs.Animation;
 
 public record MobAnimationSetModel(string Id, string DefaultAnimationId, ImmutableArray<MobAnimationSetModel.MobAnimationData> Animations) :
@@ -52,8 +54,11 @@ public record MobAnimationSetModel(string Id, string DefaultAnimationId, Immutab
         if (entry.Data is null) return null;
         return FromEntry(entry.Data);
     }
-
-    public static IModel<MobAnimationSet>? FromSource(ResSource source) => FromEntry(source);
+    
+    public static IModel<MobAnimationSet>[] FromSource(ResSource source, out ModelParseErrorInfo errorMessages)
+    {
+        throw new NotImplementedException();
+    }
 
 
     #region Sub Classes

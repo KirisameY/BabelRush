@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 using BabelRush.Data;
 
+using KirisameLib.Data.Model;
+
 namespace BabelRush.Cards.Features;
 
 public record FeatureTypeModel(string Id) : IDataModel<FeatureType>
@@ -13,6 +15,9 @@ public record FeatureTypeModel(string Id) : IDataModel<FeatureType>
         var id = (string)entry["id"];
         return new(id);
     }
-
-    public static IModel<FeatureType> FromSource(IDictionary<string, object> source) => FromEntry(source);
+    
+    public static IModel<FeatureType>[] FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
+    {
+        throw new System.NotImplementedException();
+    }
 }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using KirisameLib.Core.Extensions;
+using KirisameLib.Data.Model;
 
 namespace BabelRush.Data;
 
@@ -18,6 +19,9 @@ public class NameDescModel(string id, NameDesc nameDesc) : ILangModel<NameDesc>
         var quote = System.Convert.ToString(data.GetOrDefault("quote")) ?? "";
         return new(entry.Key, new(name, desc, quote));
     }
-
-    public static IModel<NameDesc>? FromSource(KeyValuePair<string, object> source) => FromEntry(source);
+    
+    public static IModel<NameDesc>[] FromSource(KeyValuePair<string, object> source, out ModelParseErrorInfo errorMessages)
+    {
+        throw new System.NotImplementedException();
+    }
 }

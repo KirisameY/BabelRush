@@ -8,6 +8,8 @@ using KirisameLib.Core.Extensions;
 
 using BabelRush.Registers;
 
+using KirisameLib.Data.Model;
+
 namespace BabelRush.Cards;
 
 public record CardTypeModel(string Id, bool Usable, int Cost, ImmutableArray<string> Actions, ImmutableArray<string> Features)
@@ -33,5 +35,8 @@ public record CardTypeModel(string Id, bool Usable, int Cost, ImmutableArray<str
         return new CardTypeModel(id, usable, cost, [..actions], [..features]);
     }
     
-    public static IModel<CardType> FromSource(IDictionary<string, object> source) => FromEntry(source);
+    public static IModel<CardType>[] FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
+    {
+        throw new System.NotImplementedException();
+    }
 }

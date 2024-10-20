@@ -1,5 +1,7 @@
 using Godot;
 
+using KirisameLib.Data.Model;
+
 namespace BabelRush.Data.ExtendBoxes;
 
 public class Texture2DModel(string id, Texture2D texture) : IResModel<Texture2D>
@@ -16,6 +18,9 @@ public class Texture2DModel(string id, Texture2D texture) : IResModel<Texture2D>
         var tex = ImageTexture.CreateFromImage(image);
         return new Texture2DModel(entry.Id, tex);
     }
-
-    public static IModel<Texture2D>? FromSource(ResSource source) => FromEntry(source);
+    
+    public static IModel<Texture2D>[] FromSource(ResSource source, out ModelParseErrorInfo errorMessages)
+    {
+        throw new System.NotImplementedException();
+    }
 }

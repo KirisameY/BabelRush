@@ -6,6 +6,7 @@ using BabelRush.Data;
 using BabelRush.Registers;
 
 using KirisameLib.Core.Extensions;
+using KirisameLib.Data.Model;
 
 namespace BabelRush.Actions;
 
@@ -28,6 +29,9 @@ public record ActionTypeModel(string Id, string TargetPattern, ImmutableArray<st
 
         return new ActionTypeModel(id, targetPattern, [..actionItems]);
     }
-
-    public static IModel<ActionType> FromSource(IDictionary<string, object> source) => FromEntry(source);
+    
+    public static IModel<ActionType>[] FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
+    {
+        throw new System.NotImplementedException();
+    }
 }

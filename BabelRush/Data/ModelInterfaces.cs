@@ -1,16 +1,9 @@
 using System.Collections.Generic;
 
+using KirisameLib.Data.Model;
+
 namespace BabelRush.Data;
 
-public interface IModel<out TTarget>
-{
-    TTarget Convert();
-}
-
-public interface IModel<in TSource, out TTarget> : IModel<TTarget>
-{
-    static abstract IModel<TTarget>? FromSource(TSource source);
-}
 
 public interface IDataModel<out TTarget> : IModel<IDictionary<string, object>, TTarget>;
 

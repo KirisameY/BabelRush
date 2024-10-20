@@ -2,6 +2,8 @@ using System.Collections.Generic;
 
 using BabelRush.Data;
 
+using KirisameLib.Data.Model;
+
 namespace BabelRush.Mobs;
 
 public record MobTypeModel(string Id, string AnimationSet, bool BlocksMovement) : IDataModel<MobType>
@@ -20,6 +22,9 @@ public record MobTypeModel(string Id, string AnimationSet, bool BlocksMovement) 
 
         return new(id, animationSet, blocksMovement);
     }
-
-    public static IModel<MobType>? FromSource(IDictionary<string, object> source) => FromEntry(source);
+    
+    public static IModel<MobType>[] FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
+    {
+        throw new System.NotImplementedException();
+    }
 }
