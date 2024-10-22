@@ -16,7 +16,7 @@ public record FeatureTypeModel(string Id) : IDataModel<FeatureType>
         return new(id);
     }
     
-    public static IModel<FeatureType>[] FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
+    public static IModel<FeatureType>[] FromSource(byte[] source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

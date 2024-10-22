@@ -23,7 +23,7 @@ public record MobTypeModel(string Id, string AnimationSet, bool BlocksMovement) 
         return new(id, animationSet, blocksMovement);
     }
     
-    public static IModel<MobType>[] FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
+    public static IModel<MobType>[] FromSource(byte[] source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

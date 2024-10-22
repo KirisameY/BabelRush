@@ -35,10 +35,6 @@ public record MobAnimationSetModel(string Id, string DefaultAnimationId, Immutab
         // return builder.Build();
     }
 
-    private Texture2D SomeMagicToGetATexture2D(string maybeAPath)
-    {
-        throw new NotImplementedException();
-    }
 
     private static MobAnimationSetModel FromEntry(IDictionary<string, object> entry)
     {
@@ -49,13 +45,14 @@ public record MobAnimationSetModel(string Id, string DefaultAnimationId, Immutab
     }
 
 
-    public static MobAnimationSetModel? FromEntry(ResSource entry)
+    public static MobAnimationSetModel? FromEntry(ResSourceInfo entry)
     {
-        if (entry.Data is null) return null;
-        return FromEntry(entry.Data);
+        throw new NotImplementedException();
+        // if (entry.Data is null) return null;
+        // return FromEntry(entry.Data);
     }
-    
-    public static IModel<MobAnimationSet>[] FromSource(ResSource source, out ModelParseErrorInfo errorMessages)
+
+    public static IModel<MobAnimationSet>[] FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         throw new NotImplementedException();
     }

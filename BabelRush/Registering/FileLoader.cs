@@ -29,7 +29,7 @@ public static class FileLoader
 
     private static LinkedList<string> DirectoryStack { get; } = new();
     private static RootLoader? CurrentRootLoader { get; set; }
-    internal static string? CurrentLocal { get; private set; }
+    internal static string CurrentLocal { get; private set; } = "";
 
     #endregion
 
@@ -53,6 +53,7 @@ public static class FileLoader
         }
         else
         {
+            CurrentLocal = "";
             RootMap.TryGetValue(DirectoryStack.Join('/'), out var loader);
             CurrentRootLoader = loader;
         }
