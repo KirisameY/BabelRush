@@ -35,7 +35,8 @@ public class ResRootLoader : CommonRootLoader<ResSourceInfo, Registrant<ResSourc
             if (errorInfo.ErrorCount != 0)
             {
                 Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
-                           $"{errorInfo.ErrorCount} errors found in Res/{path}/{source.Id}, error messages:\n"
+                           $"{errorInfo.ErrorCount} errors found in Res/{path}/{source.Id} (in {FileLoader.CurrentLocalInfo}), "
+                         + $"error messages:\n"
                          + errorInfo.Messages.Join('\n'));
             }
 
@@ -44,7 +45,7 @@ public class ResRootLoader : CommonRootLoader<ResSourceInfo, Registrant<ResSourc
                 if (register()) continue;
 
                 Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
-                           $"Failed to register item {id} in Res/{path},"
+                           $"Failed to register item {id} in Res/{path} (in {FileLoader.CurrentLocalInfo}), "
                          + $"Possibly there's already a registered item with a duplicate ID.");
             }
         }
