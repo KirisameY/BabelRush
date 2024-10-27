@@ -1,9 +1,13 @@
+using System.Collections.Generic;
+
 using BabelRush.Data;
 using BabelRush.Mobs;
 using BabelRush.Mobs.Animation;
 using BabelRush.Registering;
 
 using Godot;
+
+using JetBrains.Annotations;
 
 using KirisameLib.Data.I18n;
 using KirisameLib.Data.Register;
@@ -15,9 +19,11 @@ public static class MobRegisters
 {
     #region Private Registers
 
+    [LangRegister<NameDescModel, NameDesc>("mobs")]
     private static readonly LocalizedRegister<NameDesc> MobNameDescRegister =
         new(nameof(MobNameDescRegister), "en", id => (id, ""));
 
+    [DataRegister<MobTypeModel, MobType>("mobs")]
     private static readonly CommonRegister<MobType> MobsRegister =
         new(nameof(MobsRegister), _ => MobType.Default);
 
@@ -40,6 +46,12 @@ public static class MobRegisters
 
 
     #region Map
+
+    [RegistrationMap] [UsedImplicitly]
+    private static Dictionary<string, DataRegistrant> DataRegistrants { get; } = new()
+    {
+        ["cards"] = DataRegistrant.Get<MobTypeModel, MobType>(MobsRegister),
+    };
 
     // [RegistrationMap] [UsedImplicitly]
     // private static DataRegTool[] DataRegTools { get; } =

@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KirisameLib", "..\KirisameL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KirisameLib.Data", "..\KirisameLib\KirisameLib.Data\KirisameLib.Data.csproj", "{94ADCB7F-59C9-4918-A4CD-B2108DC5FF32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BabelRush.Generator", "BabelRush.Generator\BabelRush.Generator.csproj", "{3546DC37-A022-4A5A-AA7F-07A66F1C7719}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 	Debug|Any CPU = Debug|Any CPU
@@ -31,5 +33,11 @@ Global
 		{94ADCB7F-59C9-4918-A4CD-B2108DC5FF32}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
 		{94ADCB7F-59C9-4918-A4CD-B2108DC5FF32}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
 		{94ADCB7F-59C9-4918-A4CD-B2108DC5FF32}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+		{3546DC37-A022-4A5A-AA7F-07A66F1C7719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3546DC37-A022-4A5A-AA7F-07A66F1C7719}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3546DC37-A022-4A5A-AA7F-07A66F1C7719}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3546DC37-A022-4A5A-AA7F-07A66F1C7719}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{3546DC37-A022-4A5A-AA7F-07A66F1C7719}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{3546DC37-A022-4A5A-AA7F-07A66F1C7719}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

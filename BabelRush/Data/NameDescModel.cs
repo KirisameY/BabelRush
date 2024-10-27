@@ -19,8 +19,8 @@ public class NameDescModel(string id, NameDesc nameDesc) : ILangModel<NameDesc>
         var quote = System.Convert.ToString(data.GetOrDefault("quote")) ?? "";
         return new(entry.Key, new(name, desc, quote));
     }
-    
-    public static IModel<NameDesc>[] FromSource(KeyValuePair<string, object> source, out ModelParseErrorInfo errorMessages)
+
+    public static IModel<NameDesc>[] FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }
