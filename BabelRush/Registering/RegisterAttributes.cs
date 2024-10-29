@@ -2,10 +2,6 @@ using System;
 
 using BabelRush.Data;
 
-using KirisameLib.Data.I18n;
-using KirisameLib.Data.Model;
-using KirisameLib.Data.Register;
-
 namespace BabelRush.Registering;
 
 [AttributeUsage(AttributeTargets.Class)]
@@ -16,6 +12,9 @@ public class RegisterContainerAttribute : Attribute;
 public class RegistrationMapAttribute : Attribute;
 
 #region RegisterAttributes
+
+#pragma warning disable CS9113
+// ReSharper disable UnusedTypeParameter
 
 //base
 [AttributeUsage(AttributeTargets.Field)]
@@ -30,5 +29,8 @@ public sealed class ResRegisterAttribute<TModel, TTarget>(string path) : Registe
 
 public sealed class LangRegisterAttribute<TModel, TTarget>(string path) : RegisterAttribute(path)
     where TModel : ILangModel<TTarget>;
+
+// ReSharper restore UnusedTypeParameter
+#pragma warning restore CS9113
 
 #endregion

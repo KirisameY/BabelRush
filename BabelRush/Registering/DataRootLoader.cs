@@ -9,7 +9,6 @@ using KirisameLib.Data.FileLoading;
 
 namespace BabelRush.Registering;
 
-//todo: res和lang的版本，这个优先级最高
 public class DataRootLoader : CommonRootLoader<byte[], DataRegistrant>
 {
     private static ConcurrentDictionary<string, TaskCompletionSource> TaskDict { get; } = new();

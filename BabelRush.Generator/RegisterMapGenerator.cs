@@ -12,13 +12,14 @@ public class RegisterMapGenerator : IIncrementalGenerator
     private static class Names
     {
         // ReSharper disable InconsistentNaming
+        // ReSharper disable UnusedMember.Local
         public const string RegisterContainerAttribute = "BabelRush.Registering.RegisterContainerAttribute";
         public const string RegisterAttribute = "BabelRush.Registering.RegisterAttribute";
 
         public const string LangRegisterAttribute = "BabelRush.Registering.LangRegisterAttribute<TModel, TTarget>";
         public const string ResRegisterAttribute = "BabelRush.Registering.ResRegisterAttribute<TModel, TTarget>";
         public const string DataRegisterAttribute = "BabelRush.Registering.DataRegisterAttribute<TModel, TTarget>";
-
+        
         public const string IRegister = "KirisameLib.Data.Register.IRegister<T>";
         public const string IRegisterPure = "KirisameLib.Data.Register.IRegister";
 
@@ -42,6 +43,7 @@ public class RegisterMapGenerator : IIncrementalGenerator
         public const string TargetFile = "BabelRush.RegisterMap.generated.cs";
         public const string GenerateNamespace = "BabelRushGenerated";
         public const string GeneratedClass = "RegisterMap";
+        // ReSharper restore UnusedMember.Local
         // ReSharper restore InconsistentNaming
     }
 
@@ -113,13 +115,6 @@ public class RegisterMapGenerator : IIncrementalGenerator
             select new RegisterInfo(field, attribute);
 
         return new(nameSpace, className, registerInfos.ToImmutableArray());
-    }
-
-    private static IEnumerable<IFieldSymbol> GetFieldsFromClass(INamedTypeSymbol classSymbol, string withAttribute)
-    {
-        return classSymbol.GetMembers()
-                          .OfType<IFieldSymbol>()
-                          .Where(f => f.GetAttributes().Any(a => a.AttributeClass.IsDerivedFrom(withAttribute)));
     }
 
     private static void PartialExecute(SourceProductionContext context, RegisterContainerInfo info)

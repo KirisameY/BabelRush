@@ -1,14 +1,7 @@
-using System.Collections.Generic;
-
 using BabelRush.Data;
-using BabelRush.Data.ExtendBoxes;
 using BabelRush.Mobs;
 using BabelRush.Mobs.Animation;
 using BabelRush.Registering;
-
-using Godot;
-
-using JetBrains.Annotations;
 
 using KirisameLib.Data.I18n;
 using KirisameLib.Data.Register;
