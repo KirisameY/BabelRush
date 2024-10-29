@@ -7,7 +7,7 @@ namespace BabelRush.Actions;
 public class Action(ActionType type)
 {
     public ActionType Type { get; } = type;
-    public int Value { get; set; }
+    public int Value { get; set; }//todo:this
 
     public void Act(Mob self, IReadOnlyList<Mob> targets)
     {

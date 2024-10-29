@@ -2,6 +2,6 @@ using KirisameLib.Core.Events;
 
 namespace BabelRush.Cards;
 
-public abstract record CardHubEvent() : BaseEvent;
+public abstract record CardHubEvent : BaseEvent;
 
-public sealed record CardsShuffledEvent() : CardHubEvent();
+public sealed record CardsShuffledEvent : CardHubEvent;

@@ -26,7 +26,6 @@ public partial class CardField : Control
     private static CardPile Pile => Play.CardHub.CardField;
     private Dictionary<Card, CardInterface> CardDict { get; } = [];
     private IReadOnlyCollection<CardInterface> CardInterfaces => CardDict.Values;
-    private IReadOnlyCollection<Card> Cards => CardDict.Keys;
     //To record immediately removed card
     private Card? _immediatelyRemoved;
 

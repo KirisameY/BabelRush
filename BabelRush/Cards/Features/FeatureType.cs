@@ -9,7 +9,7 @@ public class FeatureType(string id)
 {
     public string Id { get; } = id;
     public NameDesc NameDesc => CardFeatureRegisters.FeatureNameDesc.GetItem(Id);
-    public Texture2D Icon => CardFeatureRegisters.FeatureIcon.GetItem(id);
+    public Texture2D Icon => CardFeatureRegisters.FeatureIcon.GetItem(Id);
 
     public Feature NewInstance()
     {

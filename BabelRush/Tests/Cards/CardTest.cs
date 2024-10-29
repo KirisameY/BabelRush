@@ -21,13 +21,13 @@ public partial class CardTest : Node2D
     public void Test()
     {
         var cardTypesFile = FileAccess.Open("res://Tests/Cards/CardTypeList.toml", FileAccess.ModeFlags.Read);
-        var cardTypes = ((TomlTableArray)Toml.ToModel(cardTypesFile.GetAsText())["cards"]).Select(CardTypeBox.FromEntry);
+        var cardTypes = ((TomlTableArray)Toml.ToModel(cardTypesFile.GetAsText())["cards"]).Select(CardTypeModel.FromEntry);
         //CardTypeData.FromTomlTable(Toml.ToModel(cardTypesFile.GetAsText()));
         var n = 0;
         foreach (var result in cardTypes)
         {
             GD.Print($"Card.{n}");
-            var card = CardInterface.GetInstance(result.GetAsset().NewInstance());
+            var card = CardInterface.GetInstance(result.Convert().NewInstance());
             AddChild(card);
             card.Position = new(80 + 64 * n, 200);
             n++;

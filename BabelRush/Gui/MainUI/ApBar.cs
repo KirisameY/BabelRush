@@ -1,3 +1,4 @@
+using BabelRush.Cards;
 using BabelRush.GamePlay;
 
 using Godot;
@@ -14,6 +15,9 @@ public partial class ApBar : Control
 
     private Sprite2D? _apBall;
     private Sprite2D ApBall => _apBall ??= GetNode<Sprite2D>("ApBall");
+
+    private Label? _cardNameLabel;
+    private Label CardNameLabel => _cardNameLabel ??= GetNode<Label>("CardNameLabel");
 
     #endregion
 
@@ -56,5 +60,11 @@ public partial class ApBar : Control
     private void OnApChanged(ApChangedEvent e)
     {
         UpdateAp();
+    }
+
+    [EventHandler] [UsedImplicitly]
+    private void OnCardSelected(CardSelectedEvent e)
+    {
+        CardNameLabel.Text = e.Selected ? e.Card.Type.NameDesc.Name : "";
     }
 }

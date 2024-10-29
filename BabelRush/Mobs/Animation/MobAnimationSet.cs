@@ -5,7 +5,7 @@ using Godot;
 
 namespace BabelRush.Mobs.Animation;
 
-public class MobAnimationSet(
+public class MobAnimationSet( // todo: replace this with dynamic provider
     string id,
     SpriteFrames spriteFrames,
     IDictionary<MobAnimationId, MobAnimationSet.AnimationInfo> animationDict,

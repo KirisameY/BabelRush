@@ -12,7 +12,7 @@ using KirisameLib.Core.RandomAsteroid;
 namespace BabelRush.Cards;
 
 [EventHandler]
-public class CardHub(RandomBelt Random)
+public class CardHub(RandomBelt random)
 {
     #region Piles
 
@@ -105,7 +105,7 @@ public class CardHub(RandomBelt Random)
         if (DiscardPile.Count <= 0) return false;
 
         PrepareInternalMove(DiscardPile);
-        var shuffled = Random.Shuffle(DiscardPile.TakeAll());
+        var shuffled = random.Shuffle(DiscardPile.TakeAll());
         DrawPile.AddCards(shuffled);
         EventBus.Publish(new CardsShuffledEvent());
         return true;

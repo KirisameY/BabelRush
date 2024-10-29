@@ -1,0 +1,56 @@
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using KirisameLib.Core.Extensions;
+using KirisameLib.Core.Logging;
+using KirisameLib.Data.FileLoading;
+
+namespace BabelRush.Registering;
+
+public class DataRootLoader : CommonRootLoader<byte[], DataRegistrant>
+{
+    private static ConcurrentDictionary<string, TaskCompletionSource> TaskDict { get; } = new();
+
+    protected override void HandleFile(Dictionary<string, byte[]> sourceDict, string fileSubPath, byte[] fileContent)
+    {
+        sourceDict.TryAdd(fileSubPath, fileContent);
+    }
+
+    protected override async Task RegisterDirectory(DataRegistrant registrant, Dictionary<string, byte[]> sourceDict)
+    {
+        var path = CurrentPath;
+        await Task.WhenAll(registrant.WaitFor.Select(wait => TaskDict.GetOrAdd(wait, _ => new()).Task));
+
+        foreach (var (file, source) in sourceDict)
+        {
+            var regInfos = registrant.Parse(source, out var errorInfo);
+            if (errorInfo.ErrorCount != 0)
+            {
+                Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
+                           $"{errorInfo.ErrorCount} errors found in Data/{path}/{file}, error messages:\n"
+                         + errorInfo.Messages.Join('\n'));
+            }
+
+            foreach (var (id, register) in regInfos)
+            {
+                if (register()) continue;
+                Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
+                           $"Failed to register item {id} in Data/{path}/{file},"
+                         + $"Possibly there's already a registered item with a duplicate ID.");
+            }
+        }
+
+        TaskDict.GetOrAdd(path, _ => new()).SetResult();
+    }
+
+    protected override void EndUp()
+    {
+        Task.WhenAll(TaskDict.Values.Select(x => x.Task)).Wait();
+    }
+
+
+    //Logging
+    private static Logger Logger { get; } = LogManager.GetLogger(nameof(DataRootLoader));
+}
