@@ -10,17 +10,27 @@ public static class FileLoader
 {
     #region Map
 
+    private static DataRootLoader DataRoot { get; } = new();
+    private static ResRootLoader DefaultResRoot { get; } = new();
+    private static ResRootLoader LocalResRoot { get; } = new();
+    private static LangRootLoader LangRoot { get; } = new();
+
     private static Dictionary<string, RootLoader?> RootMap { get; } = new()
     {
-        [""] = null
+        ["data"] = DataRoot,
+        // ["script"] = null,
+        ["res"] = DefaultResRoot,
     };
     private static Dictionary<string, RootLoader?> LocalRootMap { get; } = new()
     {
-        [""] = null
+        ["res"] = LocalResRoot,
+        ["lang"] = LangRoot,
     };
 
-    internal static bool RegisterRoot(string rootPath, RootLoader rootLoader) => RootMap.TryAdd(rootPath, rootLoader);
-    internal static bool RegisterLocalRoot(string rootPath, RootLoader rootLoader) => LocalRootMap.TryAdd(rootPath, rootLoader);
+    public static void AddDataRegistrant(string path, DataRegistrant registrant) => DataRoot.AddRegistrant(path, registrant);
+    public static void AddDefaultResRegistrant(string path, ResRegistrant registrant) => DefaultResRoot.AddRegistrant(path, registrant);
+    public static void AddLocalResRegistrant(string path, ResRegistrant registrant) => LocalResRoot.AddRegistrant(path, registrant);
+    public static void AddLangRegistrant(string path, LangRegistrant registrant) => LangRoot.AddRegistrant(path, registrant);
 
     #endregion
 

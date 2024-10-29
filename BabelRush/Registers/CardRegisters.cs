@@ -1,5 +1,6 @@
 using BabelRush.Cards;
 using BabelRush.Data;
+using BabelRush.Data.ExtendBoxes;
 using BabelRush.Registering;
 
 using Godot;
@@ -10,55 +11,17 @@ using KirisameLib.Data.Register;
 namespace BabelRush.Registers;
 
 [RegisterContainer]
-public static class CardRegisters
+public static partial class CardRegisters
 {
-    #region Private Registers
-
+    [LangRegister<NameDescModel, NameDesc>("cards")]
     private static readonly LocalizedRegister<NameDesc> CardNameDescRegister =
         new(nameof(CardNameDescRegister), "en", id => (id, ""));
 
-    private static readonly CommonRegister<Texture2D> CardIconDefaultRegister =
-        new(nameof(CardIconDefaultRegister), _ => new PlaceholderTexture2D());
+    [ResRegister<Texture2DModel, Texture2D>("textures/cards")]
+    private static readonly CommonRegister<Texture2D> CardIconRegister =
+        new(nameof(CardIconRegister), _ => new PlaceholderTexture2D());
 
-    private static readonly LocalizedRegister<Texture2D> CardIconLocalizedRegister =
-        new(nameof(CardIconLocalizedRegister), CardIconDefaultRegister);
-
+    [DataRegister<CardTypeModel, CardType>("cards", "card_features", "actions")]
     private static readonly CommonRegister<CardType> CardsRegister =
         new(nameof(CardsRegister), _ => CardType.Default);
-
-    #endregion
-
-
-    #region Public Registers
-
-    public static IRegister<NameDesc> CardNameDesc => CardNameDescRegister;
-
-    public static IRegister<Texture2D> CardIcon => CardIconLocalizedRegister;
-
-    public static IRegister<CardType> Cards => CardsRegister;
-
-    #endregion
-
-
-    #region Map
-
-    // [RegistrationMap] [UsedImplicitly]
-    // private static DataRegTool[] DataRegTools { get; } =
-    // [
-    //     new DataRegTool<CardType, CardTypeModel>("cards", CardsRegister, "card_features", "actions"),
-    // ];
-    //
-    // [RegistrationMap] [UsedImplicitly]
-    // private static ResRegTool[] ResRegTools { get; } =
-    // [
-    //     new ResRegTool<Texture2D, Texture2DModel>("textures/cards", CardIconDefaultRegister, CardIconLocalizedRegister),
-    // ];
-    //
-    // [RegistrationMap] [UsedImplicitly]
-    // private static LangRegTool[] LangRegTools { get; } =
-    // [
-    //     new LangRegTool<NameDesc, NameDescModel>("cards", CardNameDescRegister),
-    // ];
-
-    #endregion
 }

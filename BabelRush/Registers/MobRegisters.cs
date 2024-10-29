@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using BabelRush.Data;
+using BabelRush.Data.ExtendBoxes;
 using BabelRush.Mobs;
 using BabelRush.Mobs.Animation;
 using BabelRush.Registering;
@@ -15,58 +16,26 @@ using KirisameLib.Data.Register;
 namespace BabelRush.Registers;
 
 [RegisterContainer]
-public static class MobRegisters
+public static partial class MobRegisters
 {
-    #region Private Registers
-
     [LangRegister<NameDescModel, NameDesc>("mobs")]
     private static readonly LocalizedRegister<NameDesc> MobNameDescRegister =
         new(nameof(MobNameDescRegister), "en", id => (id, ""));
+
+    [ResRegister<MobAnimationSetModel, MobAnimationSet>("textures/mobs/data")]
+    private static readonly CommonRegister<MobAnimationSet> MobAnimationSetsRegister =
+        new(nameof(MobAnimationSetsRegister), _ => MobAnimationSet.Default);
 
     [DataRegister<MobTypeModel, MobType>("mobs")]
     private static readonly CommonRegister<MobType> MobsRegister =
         new(nameof(MobsRegister), _ => MobType.Default);
 
-    #endregion
 
+    // public static IRegister<NameDesc> MobNameDesc => MobNameDescRegister;
+    // public static IRegister<MobType> Mobs => MobsRegister;
 
-    #region Public Registers
-
-    public static IRegister<NameDesc> MobNameDesc => MobNameDescRegister;
-    public static IRegister<MobType> Mobs => MobsRegister;
-
-    #endregion
-
-
-    //todo: make this available
-    public static IRegister<MobAnimationSet> MobAnimationSets { get; } =
-        new CommonRegister<MobAnimationSet>(nameof(MobAnimationSets), _ => MobAnimationSet.Default);
-    public static IRegister<Texture2D> MobAnimationTextures { get; } =
-        new CommonRegister<Texture2D>(nameof(MobAnimationTextures), _ => new PlaceholderTexture2D());
-
-
-    #region Map
-
-    [RegistrationMap] [UsedImplicitly]
-    private static Dictionary<string, DataRegistrant> DataRegistrants { get; } = new()
-    {
-        ["cards"] = DataRegistrant.Get<MobTypeModel, MobType>(MobsRegister),
-    };
-
-    // [RegistrationMap] [UsedImplicitly]
-    // private static DataRegTool[] DataRegTools { get; } =
-    // [
-    //     new DataRegTool<MobType, MobTypeModel>("mobs", MobsRegister),
-    // ];
-    //
-    // [RegistrationMap] [UsedImplicitly]
-    // private static ResRegTool[] ResRegTools { get; } = [];
-    //
-    // [RegistrationMap] [UsedImplicitly]
-    // private static LangRegTool[] LangRegTools { get; } =
-    // [
-    //     new LangRegTool<NameDesc, NameDescModel>("mobs", MobNameDescRegister),
-    // ];
-
-    #endregion
+    // public static IRegister<MobAnimationSet> MobAnimationSets { get; } =
+    //     new CommonRegister<MobAnimationSet>(nameof(MobAnimationSets), _ => MobAnimationSet.Default);
+    // public static IRegister<Texture2D> MobAnimationTextures { get; } =
+    //     new CommonRegister<Texture2D>(nameof(MobAnimationTextures), _ => new PlaceholderTexture2D());
 }

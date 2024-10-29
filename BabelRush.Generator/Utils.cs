@@ -14,20 +14,4 @@ public static class Utils
         }
         return false;
     }
-    
-    public static string GetProjectRootNamespace(INamedTypeSymbol namedTypeSymbol)
-    {
-        var namespaceSymbol = namedTypeSymbol.ContainingNamespace;
-        string rootNamespace = string.Empty;
-
-        // 循环查找直到找到根命名空间
-        while (namespaceSymbol != null && !namespaceSymbol.IsGlobalNamespace)
-        {
-            rootNamespace = namespaceSymbol.ToDisplayString();
-            namespaceSymbol = namespaceSymbol.ContainingNamespace;
-        }
-
-        // 返回最后找到的命名空间（即根命名空间）
-        return rootNamespace;
-    }
 }
