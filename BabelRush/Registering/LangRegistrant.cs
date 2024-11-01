@@ -7,7 +7,7 @@ using KirisameLib.Data.Registration;
 
 namespace BabelRush.Registering;
 
-public class LangRegistrant(Registrant<IDictionary<string, object>> innerRegistrant) : Registrant<IDictionary<string, object>>
+public class LangRegistrant(IRegistrant<IDictionary<string, object>> innerRegistrant) : IRegistrant<IDictionary<string, object>>
 {
     //Getter
 
@@ -18,7 +18,7 @@ public class LangRegistrant(Registrant<IDictionary<string, object>> innerRegistr
 
     //Implement
 
-    public override (string id, Func<bool> register)[] Parse(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
+    public (string id, Func<bool> register)[] Parse(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
     {
         return innerRegistrant.Parse(source, out errorMessages);
     }

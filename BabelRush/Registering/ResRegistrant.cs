@@ -9,7 +9,7 @@ using KirisameLib.Data.Registration;
 
 namespace BabelRush.Registering;
 
-public class ResRegistrant(Registrant<ResSourceInfo> innerRegistrant) : Registrant<ResSourceInfo>
+public class ResRegistrant(IRegistrant<ResSourceInfo> innerRegistrant) : IRegistrant<ResSourceInfo>
 {
     //Getter
 
@@ -26,7 +26,7 @@ public class ResRegistrant(Registrant<ResSourceInfo> innerRegistrant) : Registra
 
     //Implement
 
-    public override (string id, Func<bool> register)[] Parse(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
+    public (string id, Func<bool> register)[] Parse(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         return innerRegistrant.Parse(source, out errorMessages);
     }

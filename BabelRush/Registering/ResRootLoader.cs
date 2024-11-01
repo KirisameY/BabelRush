@@ -11,7 +11,7 @@ using KirisameLib.Data.Registration;
 
 namespace BabelRush.Registering;
 
-public class ResRootLoader : CommonRootLoader<ResSourceInfo, Registrant<ResSourceInfo>>
+public class ResRootLoader : CommonRootLoader<ResSourceInfo, IRegistrant<ResSourceInfo>>
 {
     protected override void HandleFile(Dictionary<string, ResSourceInfo> sourceDict, string fileSubPath, byte[] fileContent)
     {
@@ -24,7 +24,7 @@ public class ResRootLoader : CommonRootLoader<ResSourceInfo, Registrant<ResSourc
         source.Files.TryAdd(extension, fileContent);
     }
 
-    protected override async Task RegisterDirectory(Registrant<ResSourceInfo> registrant, Dictionary<string, ResSourceInfo> sourceDict)
+    protected override async Task RegisterDirectory(IRegistrant<ResSourceInfo> registrant, Dictionary<string, ResSourceInfo> sourceDict)
     {
         var path = CurrentPath;
         await Task.Yield();

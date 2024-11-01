@@ -9,7 +9,7 @@ using KirisameLib.Data.Registration;
 
 namespace BabelRush.Registering;
 
-public class DataRegistrant(Registrant<byte[]> innerRegistrant, params string[] waitFor) : Registrant<byte[]>
+public class DataRegistrant(IRegistrant<byte[]> innerRegistrant, params string[] waitFor) : IRegistrant<byte[]>
 {
     //Getter
 
@@ -23,7 +23,6 @@ public class DataRegistrant(Registrant<byte[]> innerRegistrant, params string[] 
 
 
     //Implement
-
-    public override (string id, Func<bool> register)[] Parse(byte[] source, out ModelParseErrorInfo errorMessages) =>
+    public (string id, Func<bool> register)[] Parse(byte[] source, out ModelParseErrorInfo errorMessages) =>
         innerRegistrant.Parse(source, out errorMessages);
 }
