@@ -7,13 +7,9 @@ using KirisameLib.Data.Registration;
 
 namespace BabelRush.Registering;
 
-public class LangRegistrant : Registrant<IDictionary<string, object>>
+public class LangRegistrant(Registrant<IDictionary<string, object>> innerRegistrant) : Registrant<IDictionary<string, object>>
 {
     //Getter
-    private LangRegistrant(Registrant<IDictionary<string, object>> registrant)
-    {
-        _registrant = registrant;
-    }
 
     public static LangRegistrant Get<TModel, TTarget>(LocalizedRegister<TTarget> register)
         where TModel : IModel<IDictionary<string, object>, TTarget> =>
@@ -21,10 +17,9 @@ public class LangRegistrant : Registrant<IDictionary<string, object>>
 
 
     //Implement
-    private readonly Registrant<IDictionary<string, object>> _registrant;
 
     public override (string id, Func<bool> register)[] Parse(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
     {
-        return _registrant.Parse(source, out errorMessages);
+        return innerRegistrant.Parse(source, out errorMessages);
     }
 }

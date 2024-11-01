@@ -9,14 +9,9 @@ using KirisameLib.Data.Registration;
 
 namespace BabelRush.Registering;
 
-public class DataRegistrant : Registrant<byte[]>
+public class DataRegistrant(Registrant<byte[]> innerRegistrant, params string[] waitFor) : Registrant<byte[]>
 {
     //Getter
-    private DataRegistrant(Registrant<byte[]> registrant, params string[] waitFor)
-    {
-        _registrant = registrant;
-        WaitFor = waitFor.ToImmutableArray();
-    }
 
     public static DataRegistrant Get<TModel, TTarget>(CommonRegister<TTarget> register, params string[] waitFor)
         where TModel : IDataModel<TTarget> =>
@@ -24,12 +19,11 @@ public class DataRegistrant : Registrant<byte[]>
 
 
     //Properties
-    public ImmutableArray<string> WaitFor { get; }
+    public ImmutableArray<string> WaitFor { get; } = waitFor.ToImmutableArray();
 
 
     //Implement
-    private readonly Registrant<byte[]> _registrant;
 
     public override (string id, Func<bool> register)[] Parse(byte[] source, out ModelParseErrorInfo errorMessages) =>
-        _registrant.Parse(source, out errorMessages);
+        innerRegistrant.Parse(source, out errorMessages);
 }

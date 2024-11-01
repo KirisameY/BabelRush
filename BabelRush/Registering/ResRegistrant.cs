@@ -9,13 +9,9 @@ using KirisameLib.Data.Registration;
 
 namespace BabelRush.Registering;
 
-public class ResRegistrant : Registrant<ResSourceInfo>
+public class ResRegistrant(Registrant<ResSourceInfo> innerRegistrant) : Registrant<ResSourceInfo>
 {
     //Getter
-    private ResRegistrant(Registrant<ResSourceInfo> registrant)
-    {
-        _registrant = registrant;
-    }
 
     public static ResRegistrant Get<TModel, TTarget>(CommonRegister<TTarget> register) where TModel : IModel<ResSourceInfo, TTarget>
     {
@@ -29,10 +25,9 @@ public class ResRegistrant : Registrant<ResSourceInfo>
 
 
     //Implement
-    private readonly Registrant<ResSourceInfo> _registrant;
 
     public override (string id, Func<bool> register)[] Parse(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
-        return _registrant.Parse(source, out errorMessages);
+        return innerRegistrant.Parse(source, out errorMessages);
     }
 }
