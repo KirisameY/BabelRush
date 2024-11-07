@@ -19,7 +19,7 @@ public class RegisterMapGenerator : IIncrementalGenerator
         public const string LangRegisterAttribute = "BabelRush.Registering.LangRegisterAttribute<TModel, TTarget>";
         public const string ResRegisterAttribute = "BabelRush.Registering.ResRegisterAttribute<TModel, TTarget>";
         public const string DataRegisterAttribute = "BabelRush.Registering.DataRegisterAttribute<TModel, TTarget>";
-        
+
         public const string IRegister = "KirisameLib.Data.Register.IRegister<T>";
         public const string IRegisterPure = "KirisameLib.Data.Register.IRegister";
 
@@ -64,7 +64,7 @@ public class RegisterMapGenerator : IIncrementalGenerator
         //generate partial class
         //todo:.net9发布了之后，要改成让用户定义公共接口，脚本生成file的支持字段
         var partialExecutionProvider = checkedClassesProvider
-                                      .Select(GetRegisterContainerInfo);
+           .Select(GetRegisterContainerInfo);
         context.RegisterSourceOutput(partialExecutionProvider, PartialExecute);
 
         //generate global class
@@ -199,6 +199,7 @@ public class RegisterMapGenerator : IIncrementalGenerator
                          .AppendLine("{");
             using (sourceBuilder.Indent())
             {
+                //遍历注册表信息，生成向文件加载器添加注册器的方法
                 foreach (var registerInfo in checkedInfos)
                 {
                     var register = registerInfo.Register;
@@ -232,8 +233,15 @@ public class RegisterMapGenerator : IIncrementalGenerator
                             break;
                     }
                 }
+                sourceBuilder.AppendLine("")
+                             .AppendLine("//manually register")
+                             .AppendLine("_Register();");
             }
             sourceBuilder.AppendLine("}");
+            
+            sourceBuilder.AppendLine("")
+                         .AppendLine("//manually register method")
+                         .AppendLine("static partial void _Register();");
         }
         sourceBuilder.AppendLine("}");
 

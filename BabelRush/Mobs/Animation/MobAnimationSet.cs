@@ -1,22 +1,24 @@
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using Godot;
 
 namespace BabelRush.Mobs.Animation;
 
-public class MobAnimationSet( // todo: replace this with dynamic provider
+public class MobAnimationSet(
     string id,
     SpriteFrames spriteFrames,
-    IDictionary<MobAnimationId, MobAnimationSet.AnimationInfo> animationDict,
-    MobAnimationId defaultAnimationId)
+    IDictionary<MobAnimationId, MobAnimationSet.AnimationInfo> animationDict
+    // MobAnimationId defaultAnimationId
+)
 {
     #region Properties
 
     public string Id { get; } = id;
     public SpriteFrames SpriteFrames { get; } = spriteFrames;
     private FrozenDictionary<MobAnimationId, AnimationInfo> AnimationDict { get; } = animationDict.ToFrozenDictionary();
-    public MobAnimationId DefaultAnimationId { get; } = defaultAnimationId;
+    // public MobAnimationId DefaultAnimationId { get; } = defaultAnimationId;
 
     #endregion
 
@@ -35,8 +37,8 @@ public class MobAnimationSet( // todo: replace this with dynamic provider
         {
             if (TryGetInfo(backId, out info)) return backId;
         }
-        info = this[DefaultAnimationId];
-        return DefaultAnimationId;
+        info = this[MobAnimationId.Default];
+        return MobAnimationId.Default;
     }
 
     #endregion
@@ -48,9 +50,9 @@ public class MobAnimationSet( // todo: replace this with dynamic provider
 
     public static MobAnimationSet Default => _default ??=
         new MobAnimationSetBuilder()
-           .SetAnimation("default",
+           .SetAnimation("idle",
                          [new PlaceholderTexture2D { Size = new(48, 64) }], new(24, 64), new(48, 64))
-           .SetDefault("default")
+           // .SetDefault("default")
            .SetId("default")
            .Build();
 

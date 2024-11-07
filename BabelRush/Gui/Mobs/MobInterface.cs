@@ -91,7 +91,7 @@ public partial class MobInterface : Node2D
     private MobAnimationId? _animateState;
     private MobAnimationId AnimateState
     {
-        get { return _animateState ??= Mob.Type.AnimationSet.DefaultAnimationId; }
+        get { return _animateState ??= MobAnimationId.Default; }
         set => _animateState = value;
     }
 

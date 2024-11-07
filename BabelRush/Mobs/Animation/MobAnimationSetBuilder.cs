@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using BabelRush.Registers;
+
 using Godot;
 
 namespace BabelRush.Mobs.Animation;
@@ -11,7 +13,6 @@ public class MobAnimationSetBuilder
     private string? Id { get; set; }
     private SpriteFrames SpriteFrames { get; } = new();
     private Dictionary<MobAnimationId, MobAnimationSet.AnimationInfo> AnimationDict { get; } = [];
-    private MobAnimationId? DefaultAnimationId { get; set; }
 
     public MobAnimationSetBuilder SetId(string id)
     {
@@ -46,19 +47,16 @@ public class MobAnimationSetBuilder
     public MobAnimationSetBuilder SetAnimation
     (MobAnimationId id, IEnumerable<Texture2D> frames, Vector2I center, Vector2I boxSize,
      float fps = 5.0f, MobAnimationId? beforeAnimation = null, MobAnimationId? afterAnimation = null) =>
-        SetAnimation(id, frames.Select((frame) => (frame, 1.0f)), center, boxSize, fps, beforeAnimation, afterAnimation);
+        SetAnimation(id, frames.Select(frame => (frame, 1.0f)), center, boxSize, fps, beforeAnimation, afterAnimation);
 
-    public MobAnimationSetBuilder SetDefault(MobAnimationId id)
-    {
-        DefaultAnimationId = id;
-        return this;
-    }
+    public MobAnimationSetBuilder SetAnimation(MobAnimationModel model) =>
+        throw new NotImplementedException();
 
     public MobAnimationSet Build()
     {
         if (Id is null) throw new InvalidOperationException("Id is not set");
-        if (DefaultAnimationId is null) throw new InvalidOperationException("Default animation is not set");
-        if (!AnimationDict.ContainsKey(DefaultAnimationId)) throw new InvalidOperationException("Default animation does not exist");
-        return new(Id, SpriteFrames, AnimationDict, DefaultAnimationId);
+        if (!AnimationDict.ContainsKey(MobAnimationId.Default))
+            throw new InvalidOperationException($"Animation \"{MobAnimationId.Default}\" does not exist");
+        return new(Id, SpriteFrames, AnimationDict);
     }
 }
