@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace BabelRush.Generator;
+namespace BabelRush.Generator.Generators;
 
 [Generator(LanguageNames.CSharp)]
 public class RegisterMapGenerator : IIncrementalGenerator
@@ -72,6 +72,7 @@ public class RegisterMapGenerator : IIncrementalGenerator
                                              .Combine(checkedClassesProvider.Collect());
         context.RegisterSourceOutput(globalExecutionProvider, (c, info) => GlobalExecute(c, info.Left, info.Right));
     }
+
 
     #region Select Classes
 
@@ -238,7 +239,7 @@ public class RegisterMapGenerator : IIncrementalGenerator
                              .AppendLine("_Register();");
             }
             sourceBuilder.AppendLine("}");
-            
+
             sourceBuilder.AppendLine("")
                          .AppendLine("//manually register method")
                          .AppendLine("static partial void _Register();");

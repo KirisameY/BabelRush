@@ -2,7 +2,7 @@ using Godot;
 
 using KirisameLib.Data.Model;
 
-namespace BabelRush.Data.ExtendBoxes;
+namespace BabelRush.Data.ExtendModels;
 
 public class Texture2DModel(string id, Texture2D texture) : IResModel<Texture2D>
 {

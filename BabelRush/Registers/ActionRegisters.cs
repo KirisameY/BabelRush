@@ -1,6 +1,6 @@
 using BabelRush.Actions;
 using BabelRush.Data;
-using BabelRush.Data.ExtendBoxes;
+using BabelRush.Data.ExtendModels;
 using BabelRush.Registering;
 
 using Godot;
