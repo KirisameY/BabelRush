@@ -1,42 +1,49 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 using BabelRush.Data;
 using BabelRush.Registers;
 
 using KirisameLib.Data.Model;
 
+using Tomlyn;
+using Tomlyn.Syntax;
+
 namespace BabelRush.Actions;
 
-public record ActionStepModel(string Id, string ActionDelegate) : IDataModel<ActionStep>
+public class ActionStepModel : IDataModel<ActionStep>
 {
+    public string Id { get; init; } = "";
+    public string ActionDelegate { get; init; } = "";
+
     public ActionStep Convert()
     {
         var actionDelegate = InCodeRegisters.ActionDelegates.GetItem(ActionDelegate);
         return new(actionDelegate);
     }
 
-    public static bool FromEntry(IDictionary<string, object> entry,
-                                 [MaybeNullWhen(false)] out ActionStepModel model,
-                                 [NotNullWhen(false)] out string? errorMessage)
-    {
-        model = null;
-        errorMessage = null;
-
-        try
-        {
-            var id = (string)entry["id"];
-            var actionDelegate = (string)entry["action_delegate"];
-            model = new(id, actionDelegate);
-        }
-        catch (Exception e)
-        {
-            errorMessage = e.ToString();
-        }
-
-        return errorMessage is null;
-    }
+    // public static bool FromEntry(IDictionary<string, object> entry,
+    //                              [MaybeNullWhen(false)] out ActionStepModel model,
+    //                              [NotNullWhen(false)] out string? errorMessage)
+    // {
+    //     model = null;
+    //     errorMessage = null;
+    //
+    //     try
+    //     {
+    //         var id = (string)entry["id"];
+    //         var actionDelegate = (string)entry["action_delegate"];
+    //         model = new(id, actionDelegate);
+    //     }
+    //     catch (Exception e)
+    //     {
+    //         errorMessage = e.ToString();
+    //     }
+    //
+    //     return errorMessage is null;
+    // }
 
     // public static IModel<ActionStep>[] FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
     // {
@@ -66,8 +73,17 @@ public record ActionStepModel(string Id, string ActionDelegate) : IDataModel<Act
     //     return models.ToArray();
     // }
 
-    public static IModel<ActionStep>[] FromSource(byte[] source, out ModelParseErrorInfo errorMessages)
+    public static IModel<ActionStep>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
-        throw new NotImplementedException();
+        //todo:这里要改成集合模型类
+        source.TryToModel<List<ActionStepModel>>(out var model, out var diagnostics);
+        errorMessages = new(diagnostics.Count, diagnostics.Select(msg => msg.ToString()).ToArray());
+        return model?.OfType<IModel<ActionStep>>().ToArray() ?? [];
+    }
+
+    public void Deconstruct(out string id, out string actionDelegate)
+    {
+        id = this.Id;
+        actionDelegate = this.ActionDelegate;
     }
 }

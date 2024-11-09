@@ -8,6 +8,8 @@ using BabelRush.Registers;
 using KirisameLib.Core.Extensions;
 using KirisameLib.Data.Model;
 
+using Tomlyn.Syntax;
+
 namespace BabelRush.Actions;
 
 public record ActionTypeModel(string Id, string TargetPattern, ImmutableArray<string> ActionItems) : IDataModel<ActionType>
@@ -19,19 +21,18 @@ public record ActionTypeModel(string Id, string TargetPattern, ImmutableArray<st
         return new(Id, targetPattern, actionItems);
     }
 
-    public static ActionTypeModel FromEntry(IDictionary<string, object> entry)
-    {
-        var id = (string)entry["id"];
-        var targetPattern = (string)entry["target_pattern"];
+    // public static ActionTypeModel FromEntry(IDictionary<string, object> entry)
+    // {
+    //     var id = (string)entry["id"];
+    //     var targetPattern = (string)entry["target_pattern"];
+    //
+    //     var actionItems =
+    //         (entry.GetOrDefault("action_items") as IList<object?>)?.Select(x => x!.ToString()!) ?? [];
+    //
+    //     return new ActionTypeModel(id, targetPattern, [..actionItems]);
+    // }
 
-        var actionItems =
-            (entry.GetOrDefault("action_items") as IList<object?>)?.Select(x => x!.ToString()!) ?? [];
-
-        return new ActionTypeModel(id, targetPattern, [..actionItems]);
-    }
-    
-
-    public static IModel<ActionType>[] FromSource(byte[] source, out ModelParseErrorInfo errorMessages)
+    public static IModel<ActionType>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

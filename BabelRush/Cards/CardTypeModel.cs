@@ -10,6 +10,8 @@ using BabelRush.Registers;
 
 using KirisameLib.Data.Model;
 
+using Tomlyn.Syntax;
+
 namespace BabelRush.Cards;
 
 public record CardTypeModel(string Id, bool Usable, int Cost, ImmutableArray<string> Actions, ImmutableArray<string> Features)
@@ -22,20 +24,20 @@ public record CardTypeModel(string Id, bool Usable, int Cost, ImmutableArray<str
         return new CardType(Id, Usable, Cost, actions, features);
     }
 
-    public static CardTypeModel FromEntry(IDictionary<string, object> entry)
-    {
-        var id = (string)entry["id"];
-        var usable = (bool)entry["usable"];
-        var cost = System.Convert.ToInt32(entry["cost"]);
-
-        var actions =
-            (entry.GetOrDefault("actions") as IList<object?>)?.Select(x => x!.ToString()!) ?? [];
-        var features =
-            (entry.GetOrDefault("features") as IList<object?>)?.Select(x => x!.ToString()!) ?? [];
-        return new CardTypeModel(id, usable, cost, [..actions], [..features]);
-    }
+    // public static CardTypeModel FromEntry(IDictionary<string, object> entry)
+    // {
+    //     var id = (string)entry["id"];
+    //     var usable = (bool)entry["usable"];
+    //     var cost = System.Convert.ToInt32(entry["cost"]);
+    //
+    //     var actions =
+    //         (entry.GetOrDefault("actions") as IList<object?>)?.Select(x => x!.ToString()!) ?? [];
+    //     var features =
+    //         (entry.GetOrDefault("features") as IList<object?>)?.Select(x => x!.ToString()!) ?? [];
+    //     return new CardTypeModel(id, usable, cost, [..actions], [..features]);
+    // }
     
-    public static IModel<CardType>[] FromSource(byte[] source, out ModelParseErrorInfo errorMessages)
+    public static IModel<CardType>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

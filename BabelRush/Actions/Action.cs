@@ -4,6 +4,7 @@ using BabelRush.Mobs;
 
 namespace BabelRush.Actions;
 
+//todo:叫Action不合适，改个名儿
 public class Action(ActionType type)
 {
     public ActionType Type { get; } = type;

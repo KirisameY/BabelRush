@@ -7,15 +7,17 @@ using KirisameLib.Data.Model;
 using KirisameLib.Data.Register;
 using KirisameLib.Data.Registration;
 
+using Tomlyn.Syntax;
+
 namespace BabelRush.Registering;
 
-public class DataRegistrant(IRegistrant<byte[]> innerRegistrant, params string[] waitFor) : IRegistrant<byte[]>
+public class DataRegistrant(IRegistrant<DocumentSyntax> innerRegistrant, params string[] waitFor) : IRegistrant<DocumentSyntax>
 {
     //Getter
 
     public static DataRegistrant Get<TModel, TTarget>(CommonRegister<TTarget> register, params string[] waitFor)
         where TModel : IDataModel<TTarget> =>
-        new(new CommonRegistrant<byte[], TModel, TTarget>(register), waitFor);
+        new(new CommonRegistrant<DocumentSyntax, TModel, TTarget>(register), waitFor);
 
 
     //Properties
@@ -23,6 +25,6 @@ public class DataRegistrant(IRegistrant<byte[]> innerRegistrant, params string[]
 
 
     //Implement
-    public (string id, Func<bool> register)[] Parse(byte[] source, out ModelParseErrorInfo errorMessages) =>
+    public (string id, Func<bool> register)[] Parse(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
         innerRegistrant.Parse(source, out errorMessages);
 }

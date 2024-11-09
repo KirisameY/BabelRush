@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,18 +9,29 @@ using KirisameLib.Core.Extensions;
 using KirisameLib.Core.Logging;
 using KirisameLib.Data.FileLoading;
 
+using Tomlyn;
+using Tomlyn.Syntax;
+
 namespace BabelRush.Registering;
 
-public class DataRootLoader : CommonRootLoader<byte[], DataRegistrant>
+public class DataRootLoader : CommonRootLoader<DocumentSyntax, DataRegistrant>
 {
     private static ConcurrentDictionary<string, TaskCompletionSource> TaskDict { get; } = new();
 
-    protected override void HandleFile(Dictionary<string, byte[]> sourceDict, string fileSubPath, byte[] fileContent)
+    protected override void HandleFile(Dictionary<string, DocumentSyntax> sourceDict, string fileSubPath, byte[] fileContent)
     {
-        sourceDict.TryAdd(fileSubPath, fileContent);
+        var extension = Path.GetExtension(fileSubPath);
+        if (extension != ".toml")
+        {
+            Logger.Log(LogLevel.Warning, nameof(HandleFile),
+                       $"Unexpected file type {extension} in Data/{CurrentPath}/{fileSubPath}");
+            return;
+        }
+        var syntax = Toml.Parse(fileContent);
+        sourceDict.TryAdd(fileSubPath, syntax);
     }
 
-    protected override async Task RegisterDirectory(DataRegistrant registrant, Dictionary<string, byte[]> sourceDict)
+    protected override async Task RegisterDirectory(DataRegistrant registrant, Dictionary<string, DocumentSyntax> sourceDict)
     {
         var path = CurrentPath;
         await Task.WhenAll(registrant.WaitFor.Select(wait => TaskDict.GetOrAdd(wait, _ => new()).Task));

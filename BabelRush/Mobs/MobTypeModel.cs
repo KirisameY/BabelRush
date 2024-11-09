@@ -4,6 +4,8 @@ using BabelRush.Data;
 
 using KirisameLib.Data.Model;
 
+using Tomlyn.Syntax;
+
 namespace BabelRush.Mobs;
 
 public record MobTypeModel(string Id, string AnimationSet, bool BlocksMovement) : IDataModel<MobType>
@@ -14,16 +16,16 @@ public record MobTypeModel(string Id, string AnimationSet, bool BlocksMovement) 
         return new(Id, animationSet, BlocksMovement);
     }
 
-    public static MobTypeModel FromEntry(IDictionary<string, object> entry)
-    {
-        var id = (string)entry["id"];
-        var animationSet = (string)entry["animation_set"];
-        var blocksMovement = (bool)entry["blocks_movement"];
+    // public static MobTypeModel FromEntry(IDictionary<string, object> entry)
+    // {
+    //     var id = (string)entry["id"];
+    //     var animationSet = (string)entry["animation_set"];
+    //     var blocksMovement = (bool)entry["blocks_movement"];
+    //
+    //     return new(id, animationSet, blocksMovement);
+    // }
 
-        return new(id, animationSet, blocksMovement);
-    }
-    
-    public static IModel<MobType>[] FromSource(byte[] source, out ModelParseErrorInfo errorMessages)
+    public static IModel<MobType>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }
