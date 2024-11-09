@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 
+using BabelRush.Mobs.Animation;
+
 using JetBrains.Annotations;
 
 using KirisameLib.Core.Events;
 using KirisameLib.Data.I18n;
 using KirisameLib.Data.Register;
 
-namespace BabelRush.Mobs.Animation;
+namespace BabelRush.Registering.Misc;
 
 [EventHandler]
 internal class MobAnimationSetRegister : IRegister<MobAnimationSet>

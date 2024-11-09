@@ -2,6 +2,7 @@ using BabelRush.Data;
 using BabelRush.Mobs;
 using BabelRush.Mobs.Animation;
 using BabelRush.Registering;
+using BabelRush.Registering.Misc;
 
 using KirisameLib.Data.I18n;
 using KirisameLib.Data.Register;

@@ -2,12 +2,12 @@ using System;
 using System.Linq;
 
 using BabelRush.Data;
-using BabelRush.Registering;
+using BabelRush.Mobs.Animation;
 
 using KirisameLib.Data.Model;
 using KirisameLib.Data.Registration;
 
-namespace BabelRush.Mobs.Animation;
+namespace BabelRush.Registering.Misc;
 
 internal class MobAnimationDefaultRegistrant(MobAnimationSetRegister register) : IRegistrant<ResSourceInfo>
 {
