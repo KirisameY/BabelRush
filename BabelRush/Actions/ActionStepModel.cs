@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,7 +14,8 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Actions;
 
-public class ActionStepModel : IDataModel<ActionStep>
+[ModelSet("ActionStep")]
+public partial class ActionStepModel : IDataModel<ActionStep>
 {
     public string Id { get; init; } = "";
     public string ActionDelegate { get; init; } = "";
@@ -76,7 +78,7 @@ public class ActionStepModel : IDataModel<ActionStep>
     public static IModel<ActionStep>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
         //todo:这里要改成集合模型类
-        source.TryToModel<List<ActionStepModel>>(out var model, out var diagnostics);
+        source.TryToModel<ModelSet>(out var model, out var diagnostics);
         errorMessages = new(diagnostics.Count, diagnostics.Select(msg => msg.ToString()).ToArray());
         return model?.OfType<IModel<ActionStep>>().ToArray() ?? [];
     }

@@ -247,7 +247,8 @@ public class RegisterMapGenerator : IIncrementalGenerator
         sourceBuilder.AppendLine("}");
 
         //add to source
-        context.AddSource($"{info.ClassName}{Names.PartialFileSuffix}", sourceBuilder.ToString());
+        var classFullName = info.NameSpace is null or "" ? info.ClassName : $"{info.NameSpace}.{info.ClassName}";
+        context.AddSource($"{classFullName}{Names.PartialFileSuffix}", sourceBuilder.ToString());
     }
 
     #endregion

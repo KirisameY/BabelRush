@@ -14,7 +14,7 @@ public class IndentStringBuilder(string indentContent)
 
     private void UpdateCurrent() =>
         _current = string.Concat(Enumerable.Repeat(indentContent, _currentLevel));
-    
+
     public void IncreaseIndent()
     {
         _currentLevel++;
@@ -60,6 +60,8 @@ public class IndentStringBuilder(string indentContent)
         _currentLineIntended = false;
         return this;
     }
+
+    public IndentStringBuilder AppendLine() => AppendLine(string.Empty);
 
     public override string ToString() => _builder.ToString();
 }
