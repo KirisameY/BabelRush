@@ -25,7 +25,7 @@ public record MobTypeModel(string Id, string AnimationSet, bool BlocksMovement) 
     //     return new(id, animationSet, blocksMovement);
     // }
 
-    public static IModel<MobType>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<MobType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

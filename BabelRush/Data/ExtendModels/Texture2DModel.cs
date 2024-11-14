@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 using Godot;
 
 using KirisameLib.Data.Model;
@@ -19,7 +21,7 @@ public class Texture2DModel(string id, Texture2D texture) : IResModel<Texture2D>
         return new Texture2DModel(entry.Id, tex);
     }
     
-    public static IModel<Texture2D>[] FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<Texture2D>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

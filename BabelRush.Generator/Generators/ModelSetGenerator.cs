@@ -17,6 +17,10 @@ public class ModelSetGenerator : IIncrementalGenerator
         public const string IEnumeratorG = "System.Collections.Generic.IEnumerator";
         public const string IReadOnlyCollectionG = "System.Collections.Generic.IReadOnlyCollection";
         public const string ListG = "System.Collections.Generic.List";
+
+        public const string NameSpaceLinq = "System.Linq";
+
+        public const string TargetFileSuffix = "_ModelSet.generated.cs";
         // ReSharper restore InconsistentNaming
     }
 
@@ -70,27 +74,48 @@ public class ModelSetGenerator : IIncrementalGenerator
     private static void Execute(SourceProductionContext context, ModelSetInfo info)
     {
         IndentStringBuilder sourceBuilder = new();
-        sourceBuilder.AppendLine($"namespace {info.Namespace};")
+        sourceBuilder.AppendLine($"using {Names.NameSpaceLinq};")
                      .AppendLine()
-                     .AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
+                     .AppendLine($"namespace {info.Namespace};")
+                     .AppendLine()
                      .AppendLine($"public partial class {info.ClassName}")
                      .AppendLine("{");
         using (sourceBuilder.Indent())
         {
-            sourceBuilder.AppendLine($"private class ModelSet : global::{Names.IReadOnlyCollectionG}<{info.ClassName}>")
+            sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
+                         .AppendLine($"private class ModelSet //: global::{Names.IReadOnlyCollectionG}<{info.ClassName}>")
                          .AppendLine("{");
             using (sourceBuilder.Indent())
             {
                 sourceBuilder.AppendLine($"public {Names.ListG}<{info.ClassName}> {info.SetName} {{ get; set; }} = [];")
                              .AppendLine()
-                             .AppendLine($"public {Names.IEnumeratorG}<{info.ClassName}> GetEnumerator() => {info.SetName}.GetEnumerator();")
-                             .AppendLine($"{Names.IEnumerator} {Names.IEnumerable}.GetEnumerator() => {info.SetName}.GetEnumerator();")
-                             .AppendLine($"public int Count => {info.SetName}.Count;");
+                             .AppendLine($"//public {Names.IEnumeratorG}<{info.ClassName}> GetEnumerator() => {info.SetName}.GetEnumerator();")
+                             .AppendLine($"//{Names.IEnumerator} {Names.IEnumerable}.GetEnumerator() => {info.SetName}.GetEnumerator();")
+                             .AppendLine($"//public int Count => {info.SetName}.Count;");
+                sourceBuilder.AppendLine()
+                             .AppendLine($"public global::{Names.IReadOnlyCollectionG}<{info.ClassName}> CheckAll(out string[] errors)")
+                             .AppendLine("{");
+                using (sourceBuilder.Indent())
+                {
+                    sourceBuilder.AppendLine($"global::{Names.ListG}<{info.ClassName}> result = [];")
+                                 .AppendLine($"global::{Names.ListG}<(string id, string[] messages)> errorList = [];")
+                                 .AppendLine($"foreach (var item in {info.SetName})")
+                                 .AppendLine("{");
+                    using (sourceBuilder.Indent())
+                    {
+                        sourceBuilder.AppendLine("if (item.Check(out var error)) result.Add(item);")
+                                     .AppendLine("errorList.Add((item.Id, error));");
+                    }
+                    sourceBuilder.AppendLine("}");
+                    sourceBuilder.AppendLine("errors = errorList.SelectMany(t => t.messages, (t, m) => $\"in ID {t.id}: {m}\").ToArray();");
+                    sourceBuilder.AppendLine("return result;");
+                }
+                sourceBuilder.AppendLine("}");
             }
             sourceBuilder.AppendLine("}");
         }
         sourceBuilder.AppendLine("}");
 
-        context.AddSource($"{info.ClassFullName}_ModelSet.generated.cs", sourceBuilder.ToString());
+        context.AddSource($"{info.ClassFullName}{Names.TargetFileSuffix}", sourceBuilder.ToString());
     }
 }

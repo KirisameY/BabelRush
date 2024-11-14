@@ -32,7 +32,7 @@ public record ActionTypeModel(string Id, string TargetPattern, ImmutableArray<st
     //     return new ActionTypeModel(id, targetPattern, [..actionItems]);
     // }
 
-    public static IModel<ActionType>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<ActionType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

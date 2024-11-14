@@ -37,7 +37,7 @@ public record CardTypeModel(string Id, bool Usable, int Cost, ImmutableArray<str
     //     return new CardTypeModel(id, usable, cost, [..actions], [..features]);
     // }
     
-    public static IModel<CardType>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<CardType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

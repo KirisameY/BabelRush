@@ -18,7 +18,7 @@ public record FeatureTypeModel(string Id) : IDataModel<FeatureType>
     //     return new(id);
     // }
 
-    public static IModel<FeatureType>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<FeatureType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

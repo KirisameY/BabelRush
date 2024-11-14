@@ -20,7 +20,7 @@ public class NameDescModel(string id, NameDesc nameDesc) : ILangModel<NameDesc>
         return new(entry.Key, new(name, desc, quote));
     }
 
-    public static IModel<NameDesc>[] FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<NameDesc>> FromSource(IDictionary<string, object> source, out ModelParseErrorInfo errorMessages)
     {
         throw new System.NotImplementedException();
     }

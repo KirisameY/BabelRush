@@ -103,7 +103,7 @@ public record MobAnimationModel(
 
     public MobAnimationModel Convert() => this;
 
-    public static IModel<MobAnimationModel>[] FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<MobAnimationModel>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         List<string> errors = [];
 

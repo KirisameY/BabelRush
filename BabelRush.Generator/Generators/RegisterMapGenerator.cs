@@ -166,8 +166,7 @@ public class RegisterMapGenerator : IIncrementalGenerator
 
         sourceBuilder.AppendLine($"namespace {info.NameSpace};")
                      .AppendLine("");
-        sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
-                     .AppendLine($"static partial class {info.ClassName}")
+        sourceBuilder.AppendLine($"static partial class {info.ClassName}")
                      .AppendLine("{");
         using (sourceBuilder.Indent())
         {
@@ -182,9 +181,11 @@ public class RegisterMapGenerator : IIncrementalGenerator
 
                 if (attribute.AttributeClass!.OriginalDefinition.ToDisplayString() == Names.ResRegisterAttribute)
                 {
-                    sourceBuilder.AppendLine($"private static global::{Names.LocalizedRegisterPure}<{targetType}> "
+                    sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
+                                 .AppendLine($"private static global::{Names.LocalizedRegisterPure}<{targetType}> "
                                            + $"{registerName}LocalizedRegister = new(\"{registerName}LocalizedRegister\", {register.Name});");
-                    sourceBuilder.AppendLine($"public static global::{Names.IRegisterPure}<{targetType}> "
+                    sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
+                                 .AppendLine($"public static global::{Names.IRegisterPure}<{targetType}> "
                                            + $"{registerName} => {registerName}LocalizedRegister;");
                 }
                 else
@@ -196,7 +197,8 @@ public class RegisterMapGenerator : IIncrementalGenerator
 
             sourceBuilder.AppendLine("")
                          .AppendLine("//register method");
-            sourceBuilder.AppendLine("internal static void Register()")
+            sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
+                         .AppendLine("internal static void Register()")
                          .AppendLine("{");
             using (sourceBuilder.Indent())
             {

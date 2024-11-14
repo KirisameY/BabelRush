@@ -1,4 +1,5 @@
 using System;
+using System.CodeDom.Compiler;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -7,6 +8,7 @@ using System.Linq;
 using BabelRush.Data;
 using BabelRush.Registers;
 
+using KirisameLib.Core.Extensions;
 using KirisameLib.Data.Model;
 
 using Tomlyn;
@@ -17,8 +19,10 @@ namespace BabelRush.Actions;
 [ModelSet("ActionStep")]
 public partial class ActionStepModel : IDataModel<ActionStep>
 {
-    public string Id { get; init; } = "";
-    public string ActionDelegate { get; init; } = "";
+    [NecessaryProperty]
+    public partial string Id { get; set; } = "";
+    [NecessaryProperty]
+    public partial string ActionDelegate { get; set; } = "";
 
     public ActionStep Convert()
     {
@@ -75,17 +79,19 @@ public partial class ActionStepModel : IDataModel<ActionStep>
     //     return models.ToArray();
     // }
 
-    public static IModel<ActionStep>[] FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<ActionStep>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
     {
-        //todo:这里要改成集合模型类
         source.TryToModel<ModelSet>(out var model, out var diagnostics);
-        errorMessages = new(diagnostics.Count, diagnostics.Select(msg => msg.ToString()).ToArray());
-        return model?.OfType<IModel<ActionStep>>().ToArray() ?? [];
+        string[] checkErrors = [];
+        IReadOnlyCollection<ActionStepModel> result = model?.CheckAll(out checkErrors) ?? [];
+        var errors = diagnostics.Select(msg => msg.ToString()).Concat(checkErrors).ToArray();
+        errorMessages = new(errors.Length, errors);
+        return result;
     }
 
     public void Deconstruct(out string id, out string actionDelegate)
     {
-        id = this.Id;
-        actionDelegate = this.ActionDelegate;
+        id = Id;
+        actionDelegate = ActionDelegate;
     }
 }

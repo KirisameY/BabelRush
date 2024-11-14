@@ -15,16 +15,18 @@ public class IndentStringBuilder(string indentContent)
     private void UpdateCurrent() =>
         _current = string.Concat(Enumerable.Repeat(indentContent, _currentLevel));
 
-    public void IncreaseIndent()
+    public IndentStringBuilder IncreaseIndent()
     {
         _currentLevel++;
         UpdateCurrent();
+        return this;
     }
 
-    public void DecreaseIndent()
+    public IndentStringBuilder DecreaseIndent()
     {
         _currentLevel--;
         UpdateCurrent();
+        return this;
     }
 
     public readonly struct IndentDisposable(IndentStringBuilder builder) : IDisposable
