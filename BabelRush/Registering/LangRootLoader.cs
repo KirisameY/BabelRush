@@ -29,7 +29,6 @@ public class LangRootLoader : RootLoader<IDictionary<string, object>, LangRegist
         RootLoaderExitedException.ThrowIf(Exited);
 
         var filePath = SubPathLink.Append(fileName).Join('/');
-        //todo:Schema检验
         var table = Toml.Parse(fileContent).ToModel();
         foreach (var (key, value) in table)
         {

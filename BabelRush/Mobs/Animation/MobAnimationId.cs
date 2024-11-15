@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 using Godot;
 
@@ -78,11 +79,14 @@ public class MobAnimationId
 
     public override string ToString() => FullName;
 
-    public static implicit operator MobAnimationId(string fullName) => Get(fullName);
+    [return: NotNullIfNotNull("fullName")]
+    public static implicit operator MobAnimationId?(string? fullName) => fullName is null ? null : Get(fullName);
 
-    public static implicit operator string(MobAnimationId id) => id.FullName;
+    [return: NotNullIfNotNull("id")]
+    public static implicit operator string?(MobAnimationId? id) => id?.FullName;
 
-    public static implicit operator StringName(MobAnimationId id) => id.NameId;
+    [return: NotNullIfNotNull("id")]
+    public static implicit operator StringName?(MobAnimationId? id) => id?.NameId;
 
     #endregion
 

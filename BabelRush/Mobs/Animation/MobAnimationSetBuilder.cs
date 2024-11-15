@@ -2,9 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using BabelRush.Data;
 using BabelRush.Registers;
 
 using Godot;
+
+using KirisameLib.Core.Extensions;
 
 namespace BabelRush.Mobs.Animation;
 
@@ -21,8 +24,11 @@ internal class MobAnimationSetBuilder
     }
 
     public MobAnimationSetBuilder SetAnimation
-    (MobAnimationId id, IEnumerable<(Texture2D, float)> frames, Vector2I center, Vector2I boxSize,
-     float fps = 5.0f, MobAnimationId? beforeAnimation = null, MobAnimationId? afterAnimation = null)
+    (MobAnimationId id, IEnumerable<Texture2D> frames,
+     Vector2I center, Vector2I boxSize, float fps = 5.0f,
+     Dictionary<int, float>? timeScales = null,
+     MobAnimationId? beforeAnimation = null,
+     MobAnimationId? afterAnimation = null)
     {
         if (!id.IsAction && (beforeAnimation, afterAnimation) is not (null, null))
             throw new InvalidOperationException("State animation cannot have before and after animations");
@@ -38,19 +44,19 @@ internal class MobAnimationSetBuilder
         SpriteFrames.AddAnimation(name);
         SpriteFrames.SetAnimationSpeed(name, fps);
         SpriteFrames.SetAnimationLoop(name, !id.IsAction);
-        foreach (var (frame, duration) in frames)
-            SpriteFrames.AddFrame(name, frame, duration);
+        timeScales ??= [];
+        frames.Select((frame, index) => (timeScale: timeScales.GetOrDefault(index, 1.0f), frame))
+              .ForEach(t => SpriteFrames.AddFrame(name, t.frame, t.timeScale));
         AnimationDict[id] = new(-center, boxSize, beforeAnimation, afterAnimation);
         return this;
     }
 
-    public MobAnimationSetBuilder SetAnimation
-    (MobAnimationId id, IEnumerable<Texture2D> frames, Vector2I center, Vector2I boxSize,
-     float fps = 5.0f, MobAnimationId? beforeAnimation = null, MobAnimationId? afterAnimation = null) =>
-        SetAnimation(id, frames.Select(frame => (frame, 1.0f)), center, boxSize, fps, beforeAnimation, afterAnimation);
-
     public MobAnimationSetBuilder SetAnimation(MobAnimationModel model) =>
-        throw new NotImplementedException();
+        SetAnimation(model.Id,
+                     DataUtils.CutAtlasTexture(model.FrameAtlas, model.Columns, model.Rows),
+                     model.FrameCenter, model.BoxSize, model.Fps,
+                     model.FrameTimeScale,
+                     model.BeforeAnimation, model.AfterAnimation);
 
     public MobAnimationSet Build()
     {
