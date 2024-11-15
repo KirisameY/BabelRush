@@ -9,7 +9,7 @@ using Tomlyn.Syntax;
 namespace BabelRush.Mobs;
 
 [ModelSet("Mob")]
-public partial class MobTypeModel : IDataModel<MobType>
+internal partial class MobTypeModel : IDataModel<MobType>
 {
     [NecessaryProperty]
     public partial string Id { get; set; }

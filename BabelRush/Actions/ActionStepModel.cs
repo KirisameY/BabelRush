@@ -10,7 +10,7 @@ using Tomlyn.Syntax;
 namespace BabelRush.Actions;
 
 [ModelSet("ActionStep")]
-public partial class ActionStepModel : IDataModel<ActionStep>
+internal partial class ActionStepModel : IDataModel<ActionStep>
 {
     [NecessaryProperty]
     public partial string Id { get; set; }

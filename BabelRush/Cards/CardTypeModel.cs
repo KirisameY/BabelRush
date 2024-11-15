@@ -13,7 +13,7 @@ using Tomlyn.Syntax;
 namespace BabelRush.Cards;
 
 [ModelSet("Card")]
-public partial class CardTypeModel : IDataModel<CardType>
+internal partial class CardTypeModel : IDataModel<CardType>
 {
     [NecessaryProperty]
     public partial string Id { get; set; }

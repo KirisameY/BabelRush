@@ -9,7 +9,7 @@ using Tomlyn.Syntax;
 namespace BabelRush.Cards.Features;
 
 [ModelSet("Feature")]
-public partial class FeatureTypeModel : IDataModel<FeatureType>
+internal partial class FeatureTypeModel : IDataModel<FeatureType>
 {
     [NecessaryProperty]
     public partial string Id { get; set; }

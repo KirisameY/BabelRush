@@ -80,7 +80,7 @@ public class ModelSetGenerator : IIncrementalGenerator
                      .AppendLine()
                      .AppendLine($"namespace {info.Namespace};")
                      .AppendLine()
-                     .AppendLine($"public partial class {info.ClassName}")
+                     .AppendLine($"partial class {info.ClassName}")
                      .AppendLine("{");
         using (sourceBuilder.Indent())
         {

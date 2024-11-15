@@ -13,7 +13,7 @@ using Tomlyn.Syntax;
 namespace BabelRush.Actions;
 
 [ModelSet("Action")]
-public partial class ActionTypeModel : IDataModel<ActionType>
+internal partial class ActionTypeModel : IDataModel<ActionType>
 {
     [NecessaryProperty]
     public partial string Id { get; set; }

@@ -70,7 +70,7 @@ namespace BabelRush.Mobs.Animation;
 // }
 
 [Model]
-public partial class MobAnimationModel : IResModel<MobAnimationModel>
+internal partial class MobAnimationModel : IResModel<MobAnimationModel>
 {
     [NecessaryProperty]
     public partial string Id { get; set; }

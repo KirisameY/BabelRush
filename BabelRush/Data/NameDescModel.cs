@@ -5,7 +5,7 @@ using KirisameLib.Data.Model;
 
 namespace BabelRush.Data;
 
-public class NameDescModel(string id, NameDesc nameDesc) : ILangModel<NameDesc>
+internal class NameDescModel(string id, NameDesc nameDesc) : ILangModel<NameDesc>
 {
     public string Id { get; } = id;
 

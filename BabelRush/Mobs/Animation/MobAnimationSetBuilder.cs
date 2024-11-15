@@ -8,7 +8,7 @@ using Godot;
 
 namespace BabelRush.Mobs.Animation;
 
-public class MobAnimationSetBuilder
+internal class MobAnimationSetBuilder
 {
     private string? Id { get; set; }
     private SpriteFrames SpriteFrames { get; } = new();
