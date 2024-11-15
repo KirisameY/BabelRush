@@ -1,19 +1,27 @@
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 using BabelRush.Data;
 using BabelRush.Registers;
 
-using KirisameLib.Core.Extensions;
+using JetBrains.Annotations;
+
 using KirisameLib.Data.Model;
 
 using Tomlyn.Syntax;
 
 namespace BabelRush.Actions;
 
-public record ActionTypeModel(string Id, string TargetPattern, ImmutableArray<string> ActionItems) : IDataModel<ActionType>
+[ModelSet("Action")]
+public partial class ActionTypeModel : IDataModel<ActionType>
 {
+    [NecessaryProperty]
+    public partial string Id { get; set; }
+    [NecessaryProperty]
+    public partial string TargetPattern { get; set; }
+    [UsedImplicitly]
+    public List<string> ActionItems { get; set; } = [];
+
     public ActionType Convert()
     {
         var targetPattern = Actions.TargetPattern.FromString(TargetPattern);
@@ -21,19 +29,6 @@ public record ActionTypeModel(string Id, string TargetPattern, ImmutableArray<st
         return new(Id, targetPattern, actionItems);
     }
 
-    // public static ActionTypeModel FromEntry(IDictionary<string, object> entry)
-    // {
-    //     var id = (string)entry["id"];
-    //     var targetPattern = (string)entry["target_pattern"];
-    //
-    //     var actionItems =
-    //         (entry.GetOrDefault("action_items") as IList<object?>)?.Select(x => x!.ToString()!) ?? [];
-    //
-    //     return new ActionTypeModel(id, targetPattern, [..actionItems]);
-    // }
-
-    public static IReadOnlyCollection<IModel<ActionType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
-    {
-        throw new System.NotImplementedException();
-    }
+    public static IReadOnlyCollection<IModel<ActionType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
+        IDataModel<ActionType>.ParseFromSource<ModelSet>(source, out errorMessages);
 }

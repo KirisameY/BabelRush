@@ -1,24 +1,15 @@
-using System;
-using System.CodeDom.Compiler;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 
 using BabelRush.Data;
 using BabelRush.Registers;
 
-using JetBrains.Annotations;
-
-using KirisameLib.Core.Extensions;
 using KirisameLib.Data.Model;
 
-using Tomlyn;
 using Tomlyn.Syntax;
 
 namespace BabelRush.Actions;
 
-[ModelSet("ActionStep")] [UsedImplicitly]
+[ModelSet("ActionStep")]
 public partial class ActionStepModel : IDataModel<ActionStep>
 {
     [NecessaryProperty]
@@ -29,6 +20,7 @@ public partial class ActionStepModel : IDataModel<ActionStep>
     public ActionStep Convert()
     {
         var actionDelegate = InCodeRegisters.ActionDelegates.GetItem(ActionDelegate);
+        
         return new(actionDelegate);
     }
 

@@ -1,12 +1,10 @@
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 using BabelRush.Data;
-
-using KirisameLib.Core.Extensions;
-
 using BabelRush.Registers;
+
+using JetBrains.Annotations;
 
 using KirisameLib.Data.Model;
 
@@ -14,9 +12,20 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Cards;
 
-public record CardTypeModel(string Id, bool Usable, int Cost, ImmutableArray<string> Actions, ImmutableArray<string> Features)
-    : IDataModel<CardType>
+[ModelSet("Card")]
+public partial class CardTypeModel : IDataModel<CardType>
 {
+    [NecessaryProperty]
+    public partial string Id { get; set; }
+    [NecessaryProperty]
+    public partial bool Usable { get; set; }
+    [NecessaryProperty]
+    public partial int Cost { get; set; }
+    [UsedImplicitly]
+    public List<string> Actions { get; set; } = [];
+    [UsedImplicitly]
+    public List<string> Features { get; set; } = [];
+
     public CardType Convert()
     {
         var actions = Actions.Select(id => ActionRegisters.Actions.GetItem(id));
@@ -24,21 +33,6 @@ public record CardTypeModel(string Id, bool Usable, int Cost, ImmutableArray<str
         return new CardType(Id, Usable, Cost, actions, features);
     }
 
-    // public static CardTypeModel FromEntry(IDictionary<string, object> entry)
-    // {
-    //     var id = (string)entry["id"];
-    //     var usable = (bool)entry["usable"];
-    //     var cost = System.Convert.ToInt32(entry["cost"]);
-    //
-    //     var actions =
-    //         (entry.GetOrDefault("actions") as IList<object?>)?.Select(x => x!.ToString()!) ?? [];
-    //     var features =
-    //         (entry.GetOrDefault("features") as IList<object?>)?.Select(x => x!.ToString()!) ?? [];
-    //     return new CardTypeModel(id, usable, cost, [..actions], [..features]);
-    // }
-    
-    public static IReadOnlyCollection<IModel<CardType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
-    {
-        throw new System.NotImplementedException();
-    }
+    public static IReadOnlyCollection<IModel<CardType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
+        IDataModel<CardType>.ParseFromSource<ModelSet>(source, out errorMessages);
 }

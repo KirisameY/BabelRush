@@ -5,8 +5,11 @@ using System.Collections.Immutable;
 using System.Linq;
 
 using BabelRush.Data;
+using BabelRush.Data.ExtendModels;
 
 using Godot;
+
+using JetBrains.Annotations;
 
 using KirisameLib.Data.Model;
 
@@ -66,12 +69,24 @@ namespace BabelRush.Mobs.Animation;
 //     #endregion
 // }
 
-public record MobAnimationModel(
-    string Id, int Frames, FrozenDictionary<int, float>? FrameTimes, Vector2I Center, Vector2I BoxSize,
-    float Fps, string? BeforeAnimation, string? AfterAnimation
-)
-    : IResModel<MobAnimationModel>
+[Model]
+public partial class MobAnimationModel : IResModel<MobAnimationModel>
 {
+    [NecessaryProperty]
+    public partial string Id { get; set; }
+    [NecessaryProperty]
+    public partial int Frames { get; set; }
+    [NecessaryProperty]
+    public partial Vector2IModel Center { get; set; }
+    [NecessaryProperty]
+    public partial Vector2IModel BoxSize { get; set; }
+    [NecessaryProperty]
+    public partial float Fps { get; set; }
+    
+    public Dictionary<int, float> FrameTimes { get; set; } = [];
+    public string? BeforeAnimation { get; set; }
+    public string? AfterAnimation { get; set; }
+
     // public static MobAnimationModel FromDataEntry(IDictionary<string, object> entry)
     // {
     //     var id = (string)entry["id"];

@@ -8,25 +8,22 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Mobs;
 
-public record MobTypeModel(string Id, string AnimationSet, bool BlocksMovement) : IDataModel<MobType>
+[ModelSet("Mob")]
+public partial class MobTypeModel : IDataModel<MobType>
 {
+    [NecessaryProperty]
+    public partial string Id { get; set; }
+    [NecessaryProperty]
+    public partial string AnimationSet { get; set; }
+    [NecessaryProperty]
+    public partial bool BlocksMovement { get; set; }
+
     public MobType Convert()
     {
         var animationSet = Registers.MobRegisters.MobAnimationSets.GetItem(AnimationSet);
         return new(Id, animationSet, BlocksMovement);
     }
 
-    // public static MobTypeModel FromEntry(IDictionary<string, object> entry)
-    // {
-    //     var id = (string)entry["id"];
-    //     var animationSet = (string)entry["animation_set"];
-    //     var blocksMovement = (bool)entry["blocks_movement"];
-    //
-    //     return new(id, animationSet, blocksMovement);
-    // }
-
-    public static IReadOnlyCollection<IModel<MobType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
-    {
-        throw new System.NotImplementedException();
-    }
+    public static IReadOnlyCollection<IModel<MobType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
+        IDataModel<MobType>.ParseFromSource<ModelSet>(source, out errorMessages);
 }

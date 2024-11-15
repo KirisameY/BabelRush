@@ -8,18 +8,17 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Cards.Features;
 
-public record FeatureTypeModel(string Id) : IDataModel<FeatureType>
+[ModelSet("Feature")]
+public partial class FeatureTypeModel : IDataModel<FeatureType>
 {
-    public FeatureType Convert() => new(Id);
+    [NecessaryProperty]
+    public partial string Id { get; set; }
 
-    // public static FeatureTypeModel FromEntry(IDictionary<string, object> entry)
-    // {
-    //     var id = (string)entry["id"];
-    //     return new(id);
-    // }
-
-    public static IReadOnlyCollection<IModel<FeatureType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages)
+    public FeatureType Convert()
     {
-        throw new System.NotImplementedException();
+        return new FeatureType(Id);
     }
+
+    public static IReadOnlyCollection<IModel<FeatureType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
+        IDataModel<FeatureType>.ParseFromSource<ModelSet>(source, out errorMessages);
 }

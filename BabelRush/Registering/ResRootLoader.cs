@@ -16,10 +16,11 @@ public class ResRootLoader : CommonRootLoader<ResSourceInfo, IRegistrant<ResSour
     protected override void HandleFile(Dictionary<string, ResSourceInfo> sourceDict, string fileSubPath, byte[] fileContent)
     {
         var extension = Path.GetExtension(fileSubPath);
-        var name = fileSubPath.Remove(fileSubPath.Length - extension.Length);
+        var pathName = fileSubPath.Remove(fileSubPath.Length - extension.Length);
+        var name = Path.GetFileNameWithoutExtension(fileSubPath);
 
-        if (!sourceDict.TryGetValue(name, out var source))
-            sourceDict.Add(name, source = new ResSourceInfo(name));
+        if (!sourceDict.TryGetValue(pathName, out var source))
+            sourceDict.Add(pathName, source = new ResSourceInfo(name));
 
         source.Files.TryAdd(extension, fileContent);
     }
