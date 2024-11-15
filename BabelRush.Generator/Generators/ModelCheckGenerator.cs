@@ -110,8 +110,13 @@ public class ModelCheckGenerator : IIncrementalGenerator
                              .AppendLine("{");
                 using (sourceBuilder.Indent())
                 {
-                    sourceBuilder.AppendLine(isRefType ? $"get => field ?? throw new global::{Names.ModelDidNotInitializeException}();"
-                                                 : "get => field;");
+                    sourceBuilder.AppendLine("get")
+                                 .AppendLine("{")
+                                 .IncreaseIndent()
+                                 .AppendLine($"if (!_initialized_{name}) throw new global::{Names.ModelDidNotInitializeException}();")
+                                 .AppendLine("return field;")
+                                 .DecreaseIndent()
+                                 .AppendLine("}");
                     sourceBuilder.AppendLine("set")
                                  .AppendLine("{")
                                  .IncreaseIndent()
@@ -136,13 +141,7 @@ public class ModelCheckGenerator : IIncrementalGenerator
                 {
                     var name = property.Name;
                     sourceBuilder.AppendLine($"if (!_initialized_{name}) errorList.Add(\"Property {name} did not initialized\");");
-                    // sourceBuilder.AppendLine()
-                    //              .Append(first ? $"    _initialized_{name}" : $" && _initialized_{name}");
-                    // first = false;
                 }
-                // sourceBuilder.AppendLine(";")
-                //              .AppendLine()
-                //              .AppendLine("return result;");
                 sourceBuilder.AppendLine()
                              .AppendLine("errors = errorList.ToArray();")
                              .AppendLine("return errorList.Count == 0;");

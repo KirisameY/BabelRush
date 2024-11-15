@@ -12,6 +12,8 @@ public class ModelSetGenerator : IIncrementalGenerator
         // ReSharper disable InconsistentNaming
         public const string ModelSetAttribute = "BabelRush.Data.ModelSetAttribute";
 
+        public const string IModelSetG = "BabelRush.Data.IModelSet";
+
         public const string IEnumerable = "System.Collections.IEnumerable";
         public const string IEnumerator = "System.Collections.IEnumerator";
         public const string IEnumeratorG = "System.Collections.Generic.IEnumerator";
@@ -83,15 +85,12 @@ public class ModelSetGenerator : IIncrementalGenerator
         using (sourceBuilder.Indent())
         {
             sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
-                         .AppendLine($"private class ModelSet //: global::{Names.IReadOnlyCollectionG}<{info.ClassName}>")
+                         .AppendLine($"private partial class ModelSet : {Names.IModelSetG}<{info.ClassName}>")
                          .AppendLine("{");
             using (sourceBuilder.Indent())
             {
-                sourceBuilder.AppendLine($"public {Names.ListG}<{info.ClassName}> {info.SetName} {{ get; set; }} = [];")
-                             .AppendLine()
-                             .AppendLine($"//public {Names.IEnumeratorG}<{info.ClassName}> GetEnumerator() => {info.SetName}.GetEnumerator();")
-                             .AppendLine($"//{Names.IEnumerator} {Names.IEnumerable}.GetEnumerator() => {info.SetName}.GetEnumerator();")
-                             .AppendLine($"//public int Count => {info.SetName}.Count;");
+                sourceBuilder.AppendLine($"public {Names.ListG}<{info.ClassName}> {info.SetName} {{ get; set; }} = [];");
+
                 sourceBuilder.AppendLine()
                              .AppendLine($"public global::{Names.IReadOnlyCollectionG}<{info.ClassName}> CheckAll(out string[] errors)")
                              .AppendLine("{");
@@ -99,18 +98,30 @@ public class ModelSetGenerator : IIncrementalGenerator
                 {
                     sourceBuilder.AppendLine($"global::{Names.ListG}<{info.ClassName}> result = [];")
                                  .AppendLine($"global::{Names.ListG}<(string id, string[] messages)> errorList = [];")
-                                 .AppendLine($"foreach (var item in {info.SetName})")
+                                  //.AppendLine($"foreach (var item in {info.SetName})")
+                                 .AppendLine($"for (int i = 0; i < {info.SetName}.Count; i++)")
                                  .AppendLine("{");
                     using (sourceBuilder.Indent())
                     {
-                        sourceBuilder.AppendLine("if (item.Check(out var error)) result.Add(item);")
+                        sourceBuilder.AppendLine($"var item = {info.SetName}[i];")
+                                     .AppendLine("bool @checked = item.Check(out var error);")
                                      .AppendLine("errorList.Add((item.Id, error));");
+                        sourceBuilder.AppendLine("if (@checked)")
+                                     .AppendLine("{")
+                                     .IncreaseIndent()
+                                     .AppendLine("AfterCheck(ref item, errorList);")
+                                     .AppendLine("result.Add(item);")
+                                     .DecreaseIndent()
+                                     .AppendLine("}");
                     }
                     sourceBuilder.AppendLine("}");
                     sourceBuilder.AppendLine("errors = errorList.SelectMany(t => t.messages, (t, m) => $\"in ID {t.id}: {m}\").ToArray();");
                     sourceBuilder.AppendLine("return result;");
                 }
                 sourceBuilder.AppendLine("}");
+
+                sourceBuilder.AppendLine($"partial void AfterCheck(ref {info.ClassName} item, "
+                                       + $"{Names.ListG}<(string id, string[] messages)> errorList);");
             }
             sourceBuilder.AppendLine("}");
         }
