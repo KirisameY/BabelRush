@@ -19,13 +19,13 @@ func SetValue(value: int) -> void:
 	elif(value<10):
 		N1.visible = false
 		N0.visible = true
-		N0.position.x = 12.5
+		N0.position.x = 11
 		Icon.position.x = 0
 		N0.frame = value
 	else:
 		N1.visible = true
 		N0.visible = true
-		N0.position.x = 14.5
+		N0.position.x = 13
 		Icon.position.x = 0
 		N0.frame = value %10
 		N1.frame = (value/10) %10

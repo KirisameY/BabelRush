@@ -34,5 +34,5 @@ internal partial class CardTypeModel : IDataModel<CardType>
     }
 
     public static IReadOnlyCollection<IModel<CardType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
-        IDataModel<CardType>.ParseFromSource<ModelSet>(source, out errorMessages);
+        ModelUtils.ParseFromSource<ModelSet, CardType>(source, out errorMessages);
 }

@@ -30,5 +30,5 @@ internal partial class ActionTypeModel : IDataModel<ActionType>
     }
 
     public static IReadOnlyCollection<IModel<ActionType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
-        IDataModel<ActionType>.ParseFromSource<ModelSet>(source, out errorMessages);
+        ModelUtils.ParseFromSource<ModelSet, ActionType>(source, out errorMessages);
 }

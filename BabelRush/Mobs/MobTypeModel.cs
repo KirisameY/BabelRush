@@ -25,5 +25,5 @@ internal partial class MobTypeModel : IDataModel<MobType>
     }
 
     public static IReadOnlyCollection<IModel<MobType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
-        IDataModel<MobType>.ParseFromSource<ModelSet>(source, out errorMessages);
+        ModelUtils.ParseFromSource<ModelSet, MobType>(source, out errorMessages);
 }

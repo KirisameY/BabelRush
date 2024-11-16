@@ -1,4 +1,4 @@
-[[cards]]
+[[card]]
 id = "test1"
 usable = true
 cost = 3
@@ -7,7 +7,7 @@ features = [
     "asdf",
 ]
 
-[[cards]]
+[[card]]
 id = "test2"
 usable = false
 cost = 0
@@ -15,7 +15,7 @@ actions = [
     "asd",
 ]
 
-[[cards]]
+[[card]]
 id = "test3"
 usable = true
 cost = 0

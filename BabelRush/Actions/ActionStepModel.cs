@@ -25,5 +25,5 @@ internal partial class ActionStepModel : IDataModel<ActionStep>
     }
 
     public static IReadOnlyCollection<IModel<ActionStep>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
-        IDataModel<ActionStep>.ParseFromSource<ModelSet>(source, out errorMessages);
+        ModelUtils.ParseFromSource<ModelSet, ActionStep>(source, out errorMessages);
 }

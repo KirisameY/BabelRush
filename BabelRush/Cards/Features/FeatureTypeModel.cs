@@ -20,5 +20,5 @@ internal partial class FeatureTypeModel : IDataModel<FeatureType>
     }
 
     public static IReadOnlyCollection<IModel<FeatureType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
-        IDataModel<FeatureType>.ParseFromSource<ModelSet>(source, out errorMessages);
+        ModelUtils.ParseFromSource<ModelSet, FeatureType>(source, out errorMessages);
 }
