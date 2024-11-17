@@ -16,7 +16,7 @@ public class ActionType(string id, TargetPattern targetPattern, IEnumerable<Acti
     public TargetPattern TargetPattern { get; } = targetPattern;
     public IImmutableList<ActionStep> ActionItems { get; } = actionItems.ToImmutableList();
 
-    public Action NewInstance() => new(this);
+    public ActionInstance NewInstance(int value) => new(this, value);
 
     public static ActionType Default { get; } = new("default", new TargetPattern.None(), []);
 }

@@ -10,7 +10,7 @@ public abstract class Card
 {
     public abstract CardType Type { get; }
     public abstract int Cost { get; }
-    public abstract IList<Action> Actions { get; }
+    public abstract IList<ActionInstance> Actions { get; }
     public abstract IList<Feature> Features { get; }
     public abstract bool TargetSelected();
     public abstract bool Use(Mob user);

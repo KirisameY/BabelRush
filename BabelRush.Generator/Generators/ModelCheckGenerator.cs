@@ -143,10 +143,15 @@ public class ModelCheckGenerator : IIncrementalGenerator
                     sourceBuilder.AppendLine($"if (!_initialized_{name}) errorList.Add(\"Property {name} did not initialized\");");
                 }
                 sourceBuilder.AppendLine()
+                             .AppendLine("CustomCheck(errorList);");
+                sourceBuilder.AppendLine()
                              .AppendLine("errors = errorList.ToArray();")
                              .AppendLine("return errorList.Count == 0;");
             }
             sourceBuilder.AppendLine("}");
+
+            sourceBuilder.AppendLine("//custom check")
+                         .AppendLine($"partial void CustomCheck(global::{Names.ListG}<string> errorList);");
         }
         sourceBuilder.AppendLine("}");
 

@@ -60,7 +60,7 @@ public partial class CardUseTest : Node
     }
 
     private CardType CardType =>
-        new CardType("test", true, Cost, TargetPatterns.Select(pattern => new ActionType("test", pattern, [])), []);
+        new CardType("test", true, Cost, TargetPatterns.Select(pattern => (new ActionType("test", pattern, []), 1)), []);
 
     private string[] TargetPatternNames { get; } = ["None", "None"];
 

@@ -4,11 +4,10 @@ using BabelRush.Mobs;
 
 namespace BabelRush.Actions;
 
-//todo:叫Action不合适，改个名儿
-public class Action(ActionType type)
+public class ActionInstance(ActionType type, int value)
 {
     public ActionType Type { get; } = type;
-    public int Value { get; set; }//todo:this
+    public int Value { get; set; } = value;
 
     public void Act(Mob self, IReadOnlyList<Mob> targets)
     {

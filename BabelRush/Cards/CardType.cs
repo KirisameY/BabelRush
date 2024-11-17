@@ -9,14 +9,14 @@ using Godot;
 
 namespace BabelRush.Cards;
 
-public class CardType(string id, bool usable, int cost, IEnumerable<ActionType> actions, IEnumerable<FeatureType> features)
+public class CardType(string id, bool usable, int cost, IEnumerable<(ActionType, int)> actions, IEnumerable<FeatureType> features)
 {
     public string Id { get; } = id;
     public NameDesc NameDesc => Registers.CardRegisters.CardNameDesc.GetItem(Id);
     public Texture2D Icon => Registers.CardRegisters.CardIcon.GetItem(Id);
     public bool Usable { get; } = usable;
     public int Cost { get; } = cost;
-    public IImmutableList<ActionType> Actions { get; } = actions.ToImmutableList();
+    public IImmutableList<(ActionType type, int value)> Actions { get; } = actions.ToImmutableList();
     public IImmutableList<FeatureType> Features { get; } = features.ToImmutableList();
     public Card NewInstance() => new CommonCard(this);
 

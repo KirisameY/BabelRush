@@ -12,10 +12,21 @@ id = "test2"
 usable = false
 cost = 0
 actions = [
-    "asd",
+    {id = "asd", value = 1},
 ]
 
 [[card]]
 id = "test3"
 usable = true
 cost = 0
+
+[[card]]
+id = "test4"
+usable = true
+cost = 12
+[[card.actions]]
+id = "asd"
+value = 46
+[[card.actions]]
+id = "asd"
+value = -1

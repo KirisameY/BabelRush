@@ -14,7 +14,7 @@ public class CommonCard(CardType type) : Card
 {
     public override CardType Type { get; } = type;
     public override int Cost => Type.Usable ? Type.Cost : -1;
-    public override IList<Action> Actions { get; } = type.Actions.Select(actionType => actionType.NewInstance()).ToList();
+    public override IList<ActionInstance> Actions { get; } = type.Actions.Select(t => t.type.NewInstance(t.value)).ToList();
     public override IList<Feature> Features { get; } = type.Features.Select(featureType => featureType.NewInstance()).ToList();
 
     public override bool TargetSelected() =>
