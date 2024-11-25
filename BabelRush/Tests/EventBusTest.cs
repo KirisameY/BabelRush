@@ -2,41 +2,40 @@ using System.Threading.Tasks;
 
 using Godot;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
 
 namespace BabelRush.Tests;
 
+[EventHandlerContainer]
 public partial class EventBusTest : Node
 {
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        EventHandlerSubscriber.InstanceSubscribe(this);
+        SubscribeInstanceHandler(Game.EventBus);
 
         Task.Delay(1000).ContinueWith(_ =>
         {
-            EventBus.Publish(new TestEvent2("msg1", "msg22"));
+            Game.EventBus.Publish(new TestEvent2("msg1", "msg22"));
         });
     }
 
     // Called every frame. 'delta' is the elapsed time since the previous frame.
     public override void _Process(double delta) { }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void EventHandler(BaseEvent e)
     {
         GD.Print("E0");
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void EventHandler1(TestEvent1 e)
     {
         GD.Print("E1", e.Msg);
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void EventHandler2(TestEvent2 e)
     {
         GD.Print("E2", e.Msg, e.Msg2);

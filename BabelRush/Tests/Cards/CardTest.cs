@@ -1,8 +1,6 @@
-using System;
 using System.Linq;
 
 using BabelRush.Cards;
-using BabelRush.Data;
 using BabelRush.Gui.Cards;
 
 using Godot;
@@ -10,7 +8,6 @@ using Godot;
 using KirisameLib.Core.Extensions;
 
 using Tomlyn;
-using Tomlyn.Model;
 
 namespace BabelRush.Tests.Cards;
 

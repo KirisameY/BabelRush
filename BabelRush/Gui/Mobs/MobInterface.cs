@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using BabelRush.Mobs;
@@ -5,13 +6,12 @@ using BabelRush.Mobs.Animation;
 
 using Godot;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
 using KirisameLib.Core.Logging;
 
 namespace BabelRush.Gui.Mobs;
 
+[EventHandlerContainer]
 public partial class MobInterface : Node2D
 {
     #region Factory
@@ -72,27 +72,27 @@ public partial class MobInterface : Node2D
 
     #region Properties
 
-    private Mob? _mob;
+    [field: AllowNull, MaybeNull]
     public Mob Mob
     {
         get
         {
-            if (_mob is not null) return _mob;
+            if (field is not null) return field;
             Logger.Log(LogLevel.Error, "GettingMob", $"MobInterface {this} has no mob instance reference");
             return Mob.Default;
         }
         private set
         {
-            _mob = value;
+            field = value;
             Refresh();
         }
     }
 
-    private MobAnimationId? _animateState;
+    [field: AllowNull, MaybeNull]
     private MobAnimationId AnimateState
     {
-        get { return _animateState ??= MobAnimationId.Default; }
-        set => _animateState = value;
+        get { return field ??= MobAnimationId.Default; }
+        set;
     }
 
     #endregion
@@ -174,21 +174,21 @@ public partial class MobInterface : Node2D
 
     #region Event Handlers
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnMobMaxHealthChanged(MobMaxHealthChangedEvent e)
     {
         if (e.Mob != Mob) return;
         HealthBar.SetDeferred(StringNameMaxHealth, e.NewValue);
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnMobHealthChanged(MobHealthChangedEvent e)
     {
         if (e.Mob != Mob) return;
         HealthBar.SetDeferred(StringNameHealth, e.NewValue);
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnMobSelected(MobSelectedEvent e)
     {
         if (e.Mob != Mob) return;
@@ -199,12 +199,12 @@ public partial class MobInterface : Node2D
 
     public override void _EnterTree()
     {
-        EventHandlerSubscriber.InstanceSubscribe(this);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     public override void _ExitTree()
     {
-        EventHandlerSubscriber.InstanceUnsubscribe(this);
+        UnsubscribeInstanceHandler(Game.EventBus);
     }
 
     #endregion
@@ -214,12 +214,12 @@ public partial class MobInterface : Node2D
 
     private void OnMouseEntered()
     {
-        EventBus.Publish(new MobInterfaceSelectedEvent(this, true));
+        Game.EventBus.Publish(new MobInterfaceSelectedEvent(this, true));
     }
 
     private void OnMouseExited()
     {
-        EventBus.Publish(new MobInterfaceSelectedEvent(this, false));
+        Game.EventBus.Publish(new MobInterfaceSelectedEvent(this, false));
     }
 
     #endregion

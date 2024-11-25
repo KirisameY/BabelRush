@@ -8,7 +8,7 @@ using CardInterface = BabelRush.Gui.Cards.CardInterface;
 
 namespace BabelRush.Gui.MainUI;
 
-public partial class CardField
+partial class CardField
 {
     //Const
     private const float LeftPos = 0;

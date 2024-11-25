@@ -44,7 +44,7 @@ internal class MobAnimationSetBuilder
         SpriteFrames.SetAnimationSpeed(name, fps);
         SpriteFrames.SetAnimationLoop(name, !id.IsAction);
         timeScales ??= [];
-        frames.Select((frame, index) => (timeScale: timeScales.GetOrDefault(index, 1.0f), frame))
+        frames.Select((frame, index) => (timeScale: timeScales.GetValueOrDefault(index, 1.0f), frame))
               .ForEach(t => SpriteFrames.AddFrame(name, t.frame, t.timeScale));
         AnimationDict[id] = new(-center, boxSize, beforeAnimation, afterAnimation);
         return this;

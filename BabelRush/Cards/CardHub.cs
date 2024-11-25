@@ -1,9 +1,8 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using BabelRush.GamePlay;
-
-using JetBrains.Annotations;
 
 using KirisameLib.Core.Collections;
 using KirisameLib.Core.Events;
@@ -11,8 +10,8 @@ using KirisameLib.Core.RandomAsteroid;
 
 namespace BabelRush.Cards;
 
-[EventHandler]
-public class CardHub(RandomBelt random)
+[EventHandlerContainer]
+public partial class CardHub(RandomBelt random)
 {
     #region Piles
 
@@ -34,9 +33,9 @@ public class CardHub(RandomBelt random)
 
     #region Public Properties
 
-    private IReadOnlyCollection<Card>? _cardsView;
+    [field: AllowNull, MaybeNull]
     public IReadOnlyCollection<Card> CardsView =>
-        _cardsView ??= new CombinedCollectionView<Card>(CardField, DrawPile, DiscardPile);
+        field ??= new CombinedCollectionView<Card>(CardField, DrawPile, DiscardPile);
 
     #endregion
 
@@ -47,7 +46,7 @@ public class CardHub(RandomBelt random)
     public bool DiscardCard(Card card, bool cancellable = true)
     {
         CancelToken cancelToken = new CancelToken();
-        EventBus.Publish(new BeforeCardDiscardEvent(card, cancelToken));
+        Game.EventBus.Publish(new BeforeCardDiscardEvent(card, cancelToken));
         if (cancellable && cancelToken.Canceled) return false;
 
         PrepareInternalMove(card);
@@ -55,7 +54,7 @@ public class CardHub(RandomBelt random)
         DrawPile.RemoveCard(card);
         DiscardPile.AddCard(card);
 
-        EventBus.Publish(new CardDiscardedEvent(card));
+        Game.EventBus.Publish(new CardDiscardedEvent(card));
         return true;
     }
 
@@ -63,14 +62,14 @@ public class CardHub(RandomBelt random)
     public bool ExhaustCard(Card card, bool cancellable = true)
     {
         CancelToken cancelToken = new CancelToken();
-        EventBus.Publish(new BeforeCardExhaustEvent(card, cancelToken));
+        Game.EventBus.Publish(new BeforeCardExhaustEvent(card, cancelToken));
         if (cancellable && cancelToken.Canceled) return false;
 
         CardField.RemoveCard(card);
         DrawPile.RemoveCard(card);
         DiscardPile.RemoveCard(card);
 
-        EventBus.Publish(new CardExhaustedEvent(card));
+        Game.EventBus.Publish(new CardExhaustedEvent(card));
         return true;
     }
 
@@ -87,7 +86,7 @@ public class CardHub(RandomBelt random)
 
         DrawPile.PickCard();
         CardField.AddCard(card);
-        EventBus.Publish(new CardDrawnEvent(card));
+        Game.EventBus.Publish(new CardDrawnEvent(card));
 
         StopInternalMove();
         return true;
@@ -107,7 +106,7 @@ public class CardHub(RandomBelt random)
         PrepareInternalMove(DiscardPile);
         var shuffled = random.Shuffle(DiscardPile.TakeAll());
         DrawPile.AddCards(shuffled);
-        EventBus.Publish(new CardsShuffledEvent());
+        Game.EventBus.Publish(new CardsShuffledEvent());
         return true;
     }
 
@@ -156,14 +155,14 @@ public class CardHub(RandomBelt random)
     private void CardInDecide(CardInsertedToPileEvent e)
     {
         if (_internalMovingCards.Remove(e.Card)) //if not in moving cards
-            EventBus.Publish(new CardIntoHubEvent(e.Card));
+            Game.EventBus.Publish(new CardIntoHubEvent(e.Card));
     }
 
     private void CardOutDecide(CardRemovedFromPileEvent e)
     {
         if (_internalMovingCards.Contains(e.Card)) return;
         if (_internalMovingOutPile == e.CardPile) _internalMovingCards.Add(e.Card);
-        else EventBus.Publish(new CardOutOfHubEvent(e.Card));
+        else Game.EventBus.Publish(new CardOutOfHubEvent(e.Card));
     }
 
     #endregion
@@ -171,7 +170,7 @@ public class CardHub(RandomBelt random)
 
     #region EventHandlers
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnCardInsertedToPile(CardInsertedToPileEvent e)
     {
         var hub = Play.CardHub;
@@ -182,7 +181,7 @@ public class CardHub(RandomBelt random)
     }
 
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnCardRemovedFromPile(CardRemovedFromPileEvent e)
     {
         var hub = Play.CardHub;

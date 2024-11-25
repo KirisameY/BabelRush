@@ -3,14 +3,12 @@ using System.Linq;
 using BabelRush.Cards;
 using BabelRush.Mobs;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
 
 namespace BabelRush.GamePlay;
 
-[EventHandler]
-public class PlayerState
+[EventHandlerContainer]
+public partial class PlayerState
 {
     //Action
     public double MovingSpeed { get; set; } = 16;
@@ -19,35 +17,33 @@ public class PlayerState
 
     //Ap
     public int MaxAp { get; set; } = 6;
-    private int _ap;
     public int Ap
     {
-        get => _ap;
+        get;
         set
         {
-            if (_ap == value) return;
-            var oldValue = _ap;
-            _ap = value;
-            EventBus.Publish(new ApChangedEvent(oldValue, _ap));
+            if (field == value) return;
+            var oldValue = field;
+            field = value;
+            Game.EventBus.Publish(new ApChangedEvent(oldValue, field));
         }
     }
 
-    private double _apRegenerated;
     public double ApRegenerated
     {
-        get => _apRegenerated;
+        get;
         set
         {
-            _apRegenerated = value;
+            field = value;
             if (value < 1) return;
             if (Ap < MaxAp)
             {
-                _apRegenerated -= 1;
+                field -= 1;
                 Ap++;
             }
             else
             {
-                _apRegenerated = 1;
+                field = 1;
             }
         }
     }
@@ -64,7 +60,7 @@ public class PlayerState
     #region Event Handlers
 
     //Move block
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnMobAlignmentChanged(MobAlignmentChangedEvent e)
     {
         if (e.Mob.Type.BlocksMovement == false) return;
@@ -76,14 +72,14 @@ public class PlayerState
         };
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnMobAdded(MobAddedEvent e)
     {
         if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy)
             Play.PlayerState.Moving = false;
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnMobRemoved(MobRemovedEvent e)
     {
         if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy
@@ -93,14 +89,14 @@ public class PlayerState
 
 
     //Card - AP
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void BeforeCardUse(BeforeCardUseEvent e)
     {
         if (e.Card.Cost > Play.PlayerState.Ap) e.Cancel.Cancel();
     }
 
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnCardUsed(CardUsedEvent e)
     {
         if (e.CostAp) Play.PlayerState.Ap -= e.Card.Cost;

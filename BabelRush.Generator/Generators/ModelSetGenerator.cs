@@ -10,11 +10,14 @@ public class ModelSetGenerator : IIncrementalGenerator
     private static class Names
     {
         // ReSharper disable InconsistentNaming
+        // ReSharper disable UnusedMember.Local
         public const string ModelSetAttribute = "BabelRush.Data.ModelSetAttribute";
 
         public const string IModelSetG = "BabelRush.Data.IModelSet";
 
+        
         public const string IEnumerable = "System.Collections.IEnumerable";
+        
         public const string IEnumerator = "System.Collections.IEnumerator";
         public const string IEnumeratorG = "System.Collections.Generic.IEnumerator";
         public const string IReadOnlyCollectionG = "System.Collections.Generic.IReadOnlyCollection";
@@ -23,6 +26,7 @@ public class ModelSetGenerator : IIncrementalGenerator
         public const string NameSpaceLinq = "System.Linq";
 
         public const string TargetFileSuffix = "_ModelSet.generated.cs";
+        // ReSharper restore UnusedMember.Local
         // ReSharper restore InconsistentNaming
     }
 

@@ -1,23 +1,22 @@
 using System;
 using System.Collections.Generic;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
 
 namespace BabelRush.Scenery.Collision;
 
-public sealed class CollisionSpace : IDisposable
+[EventHandlerContainer]
+public sealed partial class CollisionSpace : IDisposable
 {
     //Init&Cleanup
     public void Ready()
     {
-        EventHandlerSubscriber.InstanceSubscribe(this);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     public void Dispose()
     {
-        EventHandlerSubscriber.InstanceUnsubscribe(this);
+        UnsubscribeInstanceHandler(Game.EventBus);
     }
 
 
@@ -60,7 +59,7 @@ public sealed class CollisionSpace : IDisposable
 
 
     //EventHandlers
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnAreaTransformed(AreaTransformedEvent e)
     {
         if (!AreaList.Contains(e.Area)) return;
@@ -71,7 +70,7 @@ public sealed class CollisionSpace : IDisposable
         }
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnSceneObjectMoved(SceneObjectMovedEvent e)
     {
         if (!ObjectList.Contains(e.SceneObject)) return;
@@ -91,12 +90,12 @@ public sealed class CollisionSpace : IDisposable
         if (collides)
         {
             CollidingList.Add((area, obj));
-            EventBus.Publish(new ObjectEnteredEvent(area, obj));
+            Game.EventBus.Publish(new ObjectEnteredEvent(area, obj));
         }
         else
         {
             CollidingList.Remove((area, obj));
-            EventBus.Publish(new ObjectExitedEvent(area, obj));
+            Game.EventBus.Publish(new ObjectExitedEvent(area, obj));
         }
     }
 }

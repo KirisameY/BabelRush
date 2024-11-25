@@ -3,12 +3,11 @@ using BabelRush.GamePlay;
 
 using Godot;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
 
 namespace BabelRush.Gui.MainUI;
 
+[EventHandlerContainer]
 public partial class ApBar : Control
 {
     #region Sub nodes
@@ -45,24 +44,24 @@ public partial class ApBar : Control
 
     public override void _EnterTree()
     {
-        EventHandlerSubscriber.InstanceSubscribe(this);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     public override void _ExitTree()
     {
-        EventHandlerSubscriber.InstanceUnsubscribe(this);
+        UnsubscribeInstanceHandler(Game.EventBus);
     }
 
 
     //Event Handlers
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnApChanged(ApChangedEvent e)
     {
         UpdateAp();
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnCardSelected(CardSelectedEvent e)
     {
         CardNameLabel.Text = e.Selected ? e.Card.Type.NameDesc.Name : "";

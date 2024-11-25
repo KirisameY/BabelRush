@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reflection;
 
 using BabelRush.Actions;
 using BabelRush.Cards;
@@ -12,20 +10,20 @@ using BabelRush.Scenery;
 
 using Godot;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
+using KirisameLib.Core.Events.Generated;
 
 using MobInterface = BabelRush.Gui.Mobs.MobInterface;
 
 namespace BabelRush.Tests.GamePlay;
 
+[EventHandlerContainer]
 public partial class CardUseTest : Node
 {
     public override void _Ready()
     {
-        EventHandlerSubscriber.SubscribeStaticIn(Assembly.GetAssembly(typeof(CardUseTest))!);
-        EventHandlerSubscriber.InstanceSubscribe(this);
+        GlobalEventHandlersSubscriber.Subscribe(Game.EventBus);
+        SubscribeInstanceHandler(Game.EventBus);
         CallDeferred(MethodName.Initialize);
     }
 
@@ -75,15 +73,13 @@ public partial class CardUseTest : Node
 
 
     //Events
-    [EventHandler] [UsedImplicitly]
-    [SuppressMessage("Performance", "CA1822:将成员标记为 static")]
+    [EventHandler]
     private void OnEvent(BaseEvent e)
     {
         GD.Print($"{DateTime.Now:hh:mm:ss.fff} Event: {e}");
     }
 
-    [EventHandler] [UsedImplicitly]
-    [SuppressMessage("Performance", "CA1822:将成员标记为 static")]
+    [EventHandler]
     private void OnCardUsed(CardUsedEvent e)
     {
         e.ToExhaust.Value = true;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,8 +8,6 @@ using BabelRush.Gui.Cards;
 
 using Godot;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
 using KirisameLib.Core.Extensions;
 
@@ -16,6 +15,7 @@ using CardInterface = BabelRush.Gui.Cards.CardInterface;
 
 namespace BabelRush.Gui.MainUI;
 
+[EventHandlerContainer]
 public partial class CardField : Control
 {
     //Init
@@ -79,8 +79,8 @@ public partial class CardField : Control
             _selected = value;
 
             OnSelectChanged(old, @new);
-            if (old is not null) EventBus.Publish(new CardSelectedEvent(old.Card,   false));
-            if (@new is not null) EventBus.Publish(new CardSelectedEvent(@new.Card, true));
+            if (old is not null) Game.EventBus.Publish(new CardSelectedEvent(old.Card,   false));
+            if (@new is not null) Game.EventBus.Publish(new CardSelectedEvent(@new.Card, true));
         }
     }
 
@@ -104,13 +104,13 @@ public partial class CardField : Control
                 old.Selectable = false;
                 if (!oldOut || !old.Card.Use(Play.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
                     InsertCard(old);
-                EventBus.Publish(new CardPickedEvent(old.Card, false));
+                Game.EventBus.Publish(new CardPickedEvent(old.Card, false));
             }
 
             if (@new is not null)
             {
                 PickUpCard(@new);
-                EventBus.Publish(new CardPickedEvent(@new.Card, true));
+                Game.EventBus.Publish(new CardPickedEvent(@new.Card, true));
             }
         }
     }
@@ -135,15 +135,15 @@ public partial class CardField : Control
     //Event handlers
     public override void _EnterTree()
     {
-        EventHandlerSubscriber.InstanceSubscribe(this);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     public override void _ExitTree()
     {
-        EventHandlerSubscriber.InstanceUnsubscribe(this);
+        UnsubscribeInstanceHandler(Game.EventBus);
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnCardInterfaceSelected(CardInterfaceSelectedEvent e)
     {
         if (!CardInterfaces.Contains(e.CardInterface)) return;
@@ -153,7 +153,7 @@ public partial class CardField : Control
             Selected = null;
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnCardInterfacePressed(CardInterfacePressedEvent e)
     {
         if (!CardInterfaces.Contains(e.CardInterface)) return;
@@ -163,7 +163,7 @@ public partial class CardField : Control
             Picked = null;
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnCardPileInserted(CardInsertedToPileEvent e)
     {
         if (e.CardPile != Pile) return;
@@ -171,7 +171,7 @@ public partial class CardField : Control
         else AddCard(e.Card);
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnCardPileRemoved(CardRemovedFromPileEvent e)
     {
         if (e.CardPile != Pile) return;

@@ -2,15 +2,11 @@ using System.Collections.Generic;
 
 using BabelRush.Mobs.Animation;
 
-using JetBrains.Annotations;
-
-using KirisameLib.Core.Events;
 using KirisameLib.Data.I18n;
 using KirisameLib.Data.Register;
 
 namespace BabelRush.Registering.Misc;
 
-[EventHandler]
 internal class MobAnimationSetRegister : IRegister<MobAnimationSet>
 {
     private readonly MobAnimationSet _defaultSet;
@@ -18,7 +14,7 @@ internal class MobAnimationSetRegister : IRegister<MobAnimationSet>
     public MobAnimationSetRegister(MobAnimationSet defaultSet)
     {
         _defaultSet = defaultSet;
-        EventHandlerSubscriber.InstanceSubscribe(this);
+        LocalizedRegister.LocalChangedEvent += OnLocalChanged;
     }
 
     private Dictionary<string, List<MobAnimationModel>> BaseRegDict { get; } = new();
@@ -69,9 +65,9 @@ internal class MobAnimationSetRegister : IRegister<MobAnimationSet>
         sort.Add(animation);
         return true;
     }
-
-    [EventHandler] [UsedImplicitly]
-    private void OnLocalChanged(LocalChangedEvent e)
+    
+    //EventHandler
+    private void OnLocalChanged(string prev, string next)
     {
         foreach (var id in Cache.Keys)
         {

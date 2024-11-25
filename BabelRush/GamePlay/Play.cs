@@ -5,8 +5,6 @@ using BabelRush.Mobs;
 using BabelRush.Scenery;
 using BabelRush.Scenery.Collision;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
 using KirisameLib.Core.Logging;
 using KirisameLib.Core.RandomAsteroid;
@@ -14,8 +12,8 @@ using KirisameLib.Core.RandomAsteroid.RandomGenerators;
 
 namespace BabelRush.GamePlay;
 
-[EventHandler]
-public class Play
+[EventHandlerContainer]
+public partial class Play
 {
     #region Singleton & Initialize
 
@@ -126,7 +124,7 @@ public class Play
 
     #region EventHandler
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     public static void OnPlayerMoved(SceneObjectMovedEvent e)
     {
         if (e.SceneObject != BattleField.Player) return;
@@ -139,14 +137,14 @@ public class Play
         ScreenArea.Position = e.NewPosition + offset;
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     public static void OnEntityEnteredScreen(ObjectEnteredEvent e)
     {
         if (e.Object is not Mob mob) return;
         BattleField.AddMob(mob);
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     public static void OnEntityExitedScreen(ObjectExitedEvent e)
     {
         if (e.Object is not Mob mob) return;

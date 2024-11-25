@@ -1,7 +1,9 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Godot;
 
+using KirisameLib.Core.Events;
 using KirisameLib.Core.Logging;
 
 namespace BabelRush;
@@ -9,11 +11,11 @@ namespace BabelRush;
 public partial class Game : Node
 {
     //Singleton & Initialize
-    private static Game? _instance;
+    [field: AllowNull, MaybeNull]
     public static Game Instance
     {
-        get => _instance ?? throw new GameNotInitializedException();
-        private set => _instance = value;
+        get => field ?? throw new GameNotInitializedException();
+        private set;
     }
 
     private Game()
@@ -55,7 +57,7 @@ public partial class Game : Node
     {
         const string logProcess = "Game closing...";
         Logger.Log(LogLevel.Info, logProcess, "Close Requested");
-        
+
         Logger.Log(LogLevel.Info, logProcess, "LogManager disposing...");
         LogManager.Dispose();
     }
@@ -68,6 +70,10 @@ public partial class Game : Node
         Instance.PropagateNotification((int)NotificationWMCloseRequest);
         Instance.GetTree().Quit();
     }
+
+
+    //Event
+    public static EventBus EventBus { get; } = new ImmediateEventBus();
 
 
     //Logging

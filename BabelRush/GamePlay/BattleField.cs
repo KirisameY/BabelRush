@@ -4,16 +4,14 @@ using System.Linq;
 
 using BabelRush.Mobs;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Collections;
 using KirisameLib.Core.Events;
 using KirisameLib.Core.Logging;
 
 namespace BabelRush.GamePlay;
 
-[EventHandler]
-public class BattleField(Mob player)
+[EventHandlerContainer]
+public partial class BattleField(Mob player)
 {
     //MobLists
     public Mob Player { get; } = player;
@@ -27,11 +25,11 @@ public class BattleField(Mob player)
     private readonly List<Mob> _neutrals = [];
     public IReadOnlyList<Mob> Neutrals => _neutrals.AsReadOnly();
 
-    private IReadOnlyList<Mob>? _allMobs;
-    public IReadOnlyList<Mob> AllMobs => _allMobs ??= new CombinedListView<Mob>(Friends, Enemies);
+    [field: AllowNull, MaybeNull]
+    public IReadOnlyList<Mob> AllMobs => field ??= new CombinedListView<Mob>(Friends, Enemies);
 
-    private IReadOnlyList<Mob>? _allMobsWithNeutral;
-    public IReadOnlyList<Mob> AllMobsWithNeutral => _allMobsWithNeutral ??= new CombinedListView<Mob>(Friends, Enemies, Neutrals);
+    [field: AllowNull, MaybeNull]
+    public IReadOnlyList<Mob> AllMobsWithNeutral => field ??= new CombinedListView<Mob>(Friends, Enemies, Neutrals);
 
     private bool TryAddToList(Mob mob, Alignment alignment)
     {
@@ -42,7 +40,7 @@ public class BattleField(Mob player)
         if (alignment == Alignment.Enemy)
         {
             if (list.Count == 1)
-                EventBus.Publish(new BattleStartEvent());
+                Game.EventBus.Publish(new BattleStartEvent());
         }
         return true;
     }
@@ -57,7 +55,7 @@ public class BattleField(Mob player)
         if (alignment == Alignment.Enemy)
         {
             if (list.Count == 0)
-                EventBus.Publish(new BattleEndEvent());
+                Game.EventBus.Publish(new BattleEndEvent());
         }
 
         return true;
@@ -96,7 +94,7 @@ public class BattleField(Mob player)
         if (!TryAddToList(mob)) return;
 
         Logger.Log(LogLevel.Info, nameof(AddMob), $"Added mob {mob}");
-        EventBus.Publish(new MobAddedEvent(mob));
+        Game.EventBus.Publish(new MobAddedEvent(mob));
     }
 
     public void AddMobs(IEnumerable<Mob> mobs)
@@ -120,13 +118,13 @@ public class BattleField(Mob player)
         if (!TryRemoveFromList(mob)) return false;
 
         Logger.Log(LogLevel.Info, nameof(RemoveMob), $"Removed mob {mob}");
-        EventBus.Publish(new MobRemovedEvent(mob));
+        Game.EventBus.Publish(new MobRemovedEvent(mob));
         return true;
     }
 
 
     //EventHandlers
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnMobAlignmentChanged(MobAlignmentChangedEvent e)
     {
         var state = Play.BattleField;
@@ -134,7 +132,7 @@ public class BattleField(Mob player)
         state.TryRemoveFromList(e.Mob, e.OldAlignment);
         state.TryAddToList(e.Mob, e.NewAlignment);
 
-        EventBus.Publish(new AlignmentUpdatedEvent());
+        Game.EventBus.Publish(new AlignmentUpdatedEvent());
     }
 
 

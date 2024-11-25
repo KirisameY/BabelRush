@@ -1,14 +1,15 @@
+using System.Diagnostics.CodeAnalysis;
+
 using BabelRush.Cards;
 
 using Godot;
-
-using JetBrains.Annotations;
 
 using KirisameLib.Core.Events;
 using KirisameLib.Core.Logging;
 
 namespace BabelRush.Gui.Cards;
 
+[EventHandlerContainer]
 public partial class CardInterface : Node2D
 {
     //Factory
@@ -52,18 +53,18 @@ public partial class CardInterface : Node2D
 
 
     //Property
-    private Card? _card;
+    [field: AllowNull, MaybeNull]
     public Card Card
     {
         get
         {
-            if (_card is not null) return _card;
+            if (field is not null) return field;
             Logger.Log(LogLevel.Error, "GettingCard", $"CardInterface {this} has no card instance reference");
             return Card.Default;
         }
         private set
         {
-            _card = value;
+            field = value;
             CallDeferred(MethodName.Refresh);
         }
     }
@@ -149,7 +150,7 @@ public partial class CardInterface : Node2D
             if (!Selectable && value) return;
 
             _selected = value;
-            EventBus.Publish(new CardInterfaceSelectedEvent(this, _selected));
+            Game.EventBus.Publish(new CardInterfaceSelectedEvent(this, _selected));
         }
     }
 
@@ -163,7 +164,7 @@ public partial class CardInterface : Node2D
             if (!Selectable && value) return;
 
             _pressed = value;
-            EventBus.Publish(new CardInterfacePressedEvent(this, _pressed));
+            Game.EventBus.Publish(new CardInterfacePressedEvent(this, _pressed));
         }
     }
 
@@ -173,21 +174,21 @@ public partial class CardInterface : Node2D
     private void OnMouseExited() => Selected = _preSelected = false;
     private void OnButtonDown() => Pressed = _prePressed = true;
     private void OnButtonUp() => Pressed = _prePressed = false;
-    private void OnPressed() => EventBus.Publish(new CardInterfaceClickedEvent(this));
+    private void OnPressed() => Game.EventBus.Publish(new CardInterfaceClickedEvent(this));
 
 
     //Events
     public override void _EnterTree()
     {
-        EventHandlerSubscriber.InstanceSubscribe(this);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     public override void _ExitTree()
     {
-        EventHandlerSubscriber.InstanceUnsubscribe(this);
+        UnsubscribeInstanceHandler(Game.EventBus);
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnCardUsed(CardUsedEvent e)
     {
         if (Card != e.Card) return;

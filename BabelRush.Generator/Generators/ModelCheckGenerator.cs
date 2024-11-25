@@ -16,7 +16,6 @@ public class ModelCheckGenerator : IIncrementalGenerator
 
         public const string AllowNull = "System.Diagnostics.CodeAnalysis.AllowNull";
         public const string MaybeNull = "System.Diagnostics.CodeAnalysis.MaybeNull";
-        public const string MaybeNullWhen = "System.Diagnostics.CodeAnalysis.MaybeNullWhen";
 
         public const string ListG = "System.Collections.Generic.List";
 

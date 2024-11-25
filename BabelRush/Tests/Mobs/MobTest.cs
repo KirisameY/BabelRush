@@ -3,14 +3,13 @@ using BabelRush.Mobs;
 
 using Godot;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
 
 using MobInterface = BabelRush.Gui.Mobs.MobInterface;
 
 namespace BabelRush.Tests.Mobs;
 
+[EventHandlerContainer]
 public partial class MobTest : Node2D
 {
     // Called when the node enters the scene tree for the first time.
@@ -19,7 +18,7 @@ public partial class MobTest : Node2D
         MobInterface = MobInterface.GetInstance(Mob.Default);
         AddChild(MobInterface);
         MobInterface.Position = GetNode<Marker2D>("Marker2D").Position;
-        EventHandlerSubscriber.InstanceSubscribe(this);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
 
@@ -38,13 +37,13 @@ public partial class MobTest : Node2D
 
 
     //Event
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnMobInterfaceEvent(MobInterfaceEvent e)
     {
         GD.Print(e);
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private void OnMobEvent(MobEvent e)
     {
         GD.Print(e);

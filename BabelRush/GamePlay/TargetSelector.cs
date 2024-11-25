@@ -7,84 +7,77 @@ using BabelRush.Cards;
 using BabelRush.Gui.Mobs;
 using BabelRush.Mobs;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Core.Events;
 
 namespace BabelRush.GamePlay;
 
-[EventHandler]
-public static class TargetSelector
+[EventHandlerContainer]
+public partial class TargetSelector
 {
     //Members
-    private static TargetRange _cursorSelectRange;
     private static TargetRange CursorSelectRange
     {
-        get => _cursorSelectRange;
+        get;
         set
         {
             if (CursorSelectRange == value) return;
-            _cursorSelectRange = value;
+            field = value;
             if (!GetRange(value).Contains(CursorSelected)) CursorSelected = null;
         }
     }
 
-    private static TargetRange _autoSelectRange;
     private static TargetRange AutoSelectRange
     {
-        get => _autoSelectRange;
+        get;
         set
         {
             if (AutoSelectRange == value) return;
-            _autoSelectRange = value;
+            field = value;
             AutoSelected = GetRange(value);
         }
     }
 
-    private static Mob? _cursorSelected;
     private static Mob? CursorSelected
     {
-        get => _cursorSelected;
+        get;
         set
         {
             if (value == CursorSelected) return;
             if (value is not null && !GetRange(CursorSelectRange).Contains(value)) return;
             var old = CursorSelected;
-            _cursorSelected = value;
+            field = value;
             if (old is not null)
-                EventBus.Publish(new MobSelectedEvent(old, true, false));
+                Game.EventBus.Publish(new MobSelectedEvent(old, true, false));
             if (value is not null)
-                EventBus.Publish(new MobSelectedEvent(value, true, true));
+                Game.EventBus.Publish(new MobSelectedEvent(value, true, true));
         }
     }
 
-    private static IReadOnlyList<Mob> _autoSelected = [];
     private static IReadOnlyList<Mob> AutoSelected
     {
-        get => _autoSelected;
+        get;
         set
         {
             var old = AutoSelected;
-            _autoSelected = value;
+            field = value;
             var unite = old.Intersect(value).ToList();
             if (SelectPlayer) unite.Add(Play.BattleField.Player);
             foreach (var mob in old.Except(unite))
-                EventBus.Publish(new MobSelectedEvent(mob, false, false));
+                Game.EventBus.Publish(new MobSelectedEvent(mob, false, false));
             foreach (var mob in value.Except(unite))
-                EventBus.Publish(new MobSelectedEvent(mob, false, true));
+                Game.EventBus.Publish(new MobSelectedEvent(mob, false, true));
         }
-    }
+    } = [];
 
-    private static bool _selectPlayer;
     private static bool SelectPlayer
     {
-        get => _selectPlayer;
+        get;
         set
         {
             if (SelectPlayer == value) return;
-            _selectPlayer = value;
+            field = value;
             if (!AutoSelected.Contains(Play.BattleField.Player))
-                EventBus.Publish(new MobSelectedEvent(Play.BattleField.Player, false, value));
+                Game.EventBus.Publish(new MobSelectedEvent(Play.BattleField.Player, false, value));
         }
     }
 
@@ -110,14 +103,14 @@ public static class TargetSelector
 
 
     //EventHandlers
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnMobInterfaceSelected(MobInterfaceSelectedEvent e)
     {
         if (e.Selected) CursorSelected = e.Interface.Mob;
         else if (e.Interface.Mob == CursorSelected) CursorSelected = null;
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnCardPicked(CardPickedEvent e)
     {
         CursorSelectRange = 0;
@@ -174,7 +167,7 @@ public static class TargetSelector
         }
     }
 
-    [EventHandler] [UsedImplicitly]
+    [EventHandler]
     private static void OnMobListChanged(MobListChangedEvent e)
     {
         //取巧的刷新方法，但是够用，也许以后会重写

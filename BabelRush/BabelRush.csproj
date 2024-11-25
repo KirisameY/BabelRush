@@ -20,7 +20,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj"
+                          OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <ProjectReference Include="..\..\KirisameLib\KirisameLib.Core.SourceGenerator\KirisameLib.Core.SourceGenerator.csproj"
+                          OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">

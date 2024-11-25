@@ -1,33 +1,29 @@
 using System;
 
-using KirisameLib.Core.Events;
-
 namespace BabelRush.Scenery.Collision;
 
 public sealed class Area(double position, double radius)
 {
     //Members
-    private double _position = position;
     public double Position
     {
-        get => _position;
+        get;
         set
         {
-            _position = value;
-            EventBus.Publish(new AreaTransformedEvent(this));
+            field = value;
+            Game.EventBus.Publish(new AreaTransformedEvent(this));
         }
-    }
+    } = position;
 
-    private double _radius = Math.Abs(radius);
     public double Radius
     {
-        get => _radius;
+        get;
         set
         {
-            _radius = value;
-            EventBus.Publish(new AreaTransformedEvent(this));
+            field = value;
+            Game.EventBus.Publish(new AreaTransformedEvent(this));
         }
-    }
+    } = Math.Abs(radius);
 
 
     //Methods

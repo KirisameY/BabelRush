@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 using Godot;
 
@@ -11,8 +12,8 @@ public partial class PlayNode : Node
     //Getter
     private PlayNode() { }
 
-    private static PackedScene? _scene;
-    private static PackedScene Scene => _scene ??= ResourceLoader.Load<PackedScene>("res://GamePlay/Play.tscn");
+    [field: AllowNull, MaybeNull]
+    private static PackedScene Scene => field ??= ResourceLoader.Load<PackedScene>("res://GamePlay/Play.tscn");
 
     public static PlayNode GetInstance(Action<double> process)
     {
@@ -24,16 +25,16 @@ public partial class PlayNode : Node
 
 
     //Process
-    private Action<double>? _process;
+    [field: AllowNull, MaybeNull]
     public Action<double> Process
     {
         get
         {
-            if (_process is not null) return _process;
+            if (field is not null) return field;
             Logger.Log(LogLevel.Error, "Process", "Process is null! This should not happen!");
             throw new InvalidOperationException("Process is null! This should not happen!");
         }
-        set => _process = value;
+        set;
     }
 
     public override void _Process(double delta)
