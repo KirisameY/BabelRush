@@ -25,7 +25,7 @@ public partial class PlayerState
             if (field == value) return;
             var oldValue = field;
             field = value;
-            Game.EventBus.Publish(new ApChangedEvent(oldValue, field));
+            GameNode.EventBus.Publish(new ApChangedEvent(oldValue, field));
         }
     }
 

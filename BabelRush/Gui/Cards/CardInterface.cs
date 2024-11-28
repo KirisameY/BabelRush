@@ -150,7 +150,7 @@ public partial class CardInterface : Node2D
             if (!Selectable && value) return;
 
             _selected = value;
-            Game.EventBus.Publish(new CardInterfaceSelectedEvent(this, _selected));
+            GameNode.EventBus.Publish(new CardInterfaceSelectedEvent(this, _selected));
         }
     }
 
@@ -164,7 +164,7 @@ public partial class CardInterface : Node2D
             if (!Selectable && value) return;
 
             _pressed = value;
-            Game.EventBus.Publish(new CardInterfacePressedEvent(this, _pressed));
+            GameNode.EventBus.Publish(new CardInterfacePressedEvent(this, _pressed));
         }
     }
 
@@ -174,18 +174,18 @@ public partial class CardInterface : Node2D
     private void OnMouseExited() => Selected = _preSelected = false;
     private void OnButtonDown() => Pressed = _prePressed = true;
     private void OnButtonUp() => Pressed = _prePressed = false;
-    private void OnPressed() => Game.EventBus.Publish(new CardInterfaceClickedEvent(this));
+    private void OnPressed() => GameNode.EventBus.Publish(new CardInterfaceClickedEvent(this));
 
 
     //Events
     public override void _EnterTree()
     {
-        SubscribeInstanceHandler(Game.EventBus);
+        SubscribeInstanceHandler(GameNode.EventBus);
     }
 
     public override void _ExitTree()
     {
-        UnsubscribeInstanceHandler(Game.EventBus);
+        UnsubscribeInstanceHandler(GameNode.EventBus);
     }
 
     [EventHandler]

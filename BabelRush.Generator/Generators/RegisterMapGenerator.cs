@@ -58,6 +58,7 @@ public class RegisterMapGenerator : IIncrementalGenerator
 
         //check source class
         //todo:加入代码检查器，不合法的情况报错，不建议的情况警告
+        // ReSharper disable once UnusedVariable
         var invalidClassedProvider = classSymbolsProvider;
         var checkedClassesProvider = classSymbolsProvider;
 

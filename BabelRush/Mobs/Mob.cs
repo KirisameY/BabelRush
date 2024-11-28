@@ -21,7 +21,7 @@ public class Mob(MobType type, Alignment alignment) : VisualObject
             var old = MaxHealth;
             field = value;
             Health = Math.Max(MaxHealth, Health);
-            Game.EventBus.Publish(new MobMaxHealthChangedEvent(this, old, MaxHealth));
+            GameNode.EventBus.Publish(new MobMaxHealthChangedEvent(this, old, MaxHealth));
         }
     }
 
@@ -32,7 +32,7 @@ public class Mob(MobType type, Alignment alignment) : VisualObject
         {
             var old = Health;
             field = value;
-            Game.EventBus.Publish(new MobHealthChangedEvent(this, old, Health));
+            GameNode.EventBus.Publish(new MobHealthChangedEvent(this, old, Health));
         }
     }
 
@@ -44,7 +44,7 @@ public class Mob(MobType type, Alignment alignment) : VisualObject
             if (Alignment == value) return;
             var old = Alignment;
             field = value;
-            Game.EventBus.Publish(new MobAlignmentChangedEvent(this, old, Alignment));
+            GameNode.EventBus.Publish(new MobAlignmentChangedEvent(this, old, Alignment));
         }
     } = alignment;
 

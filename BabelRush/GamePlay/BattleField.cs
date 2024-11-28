@@ -40,7 +40,7 @@ public partial class BattleField(Mob player)
         if (alignment == Alignment.Enemy)
         {
             if (list.Count == 1)
-                Game.EventBus.Publish(new BattleStartEvent());
+                GameNode.EventBus.Publish(new BattleStartEvent());
         }
         return true;
     }
@@ -55,7 +55,7 @@ public partial class BattleField(Mob player)
         if (alignment == Alignment.Enemy)
         {
             if (list.Count == 0)
-                Game.EventBus.Publish(new BattleEndEvent());
+                GameNode.EventBus.Publish(new BattleEndEvent());
         }
 
         return true;
@@ -94,7 +94,7 @@ public partial class BattleField(Mob player)
         if (!TryAddToList(mob)) return;
 
         Logger.Log(LogLevel.Info, nameof(AddMob), $"Added mob {mob}");
-        Game.EventBus.Publish(new MobAddedEvent(mob));
+        GameNode.EventBus.Publish(new MobAddedEvent(mob));
     }
 
     public void AddMobs(IEnumerable<Mob> mobs)
@@ -118,7 +118,7 @@ public partial class BattleField(Mob player)
         if (!TryRemoveFromList(mob)) return false;
 
         Logger.Log(LogLevel.Info, nameof(RemoveMob), $"Removed mob {mob}");
-        Game.EventBus.Publish(new MobRemovedEvent(mob));
+        GameNode.EventBus.Publish(new MobRemovedEvent(mob));
         return true;
     }
 
@@ -132,7 +132,7 @@ public partial class BattleField(Mob player)
         state.TryRemoveFromList(e.Mob, e.OldAlignment);
         state.TryAddToList(e.Mob, e.NewAlignment);
 
-        Game.EventBus.Publish(new AlignmentUpdatedEvent());
+        GameNode.EventBus.Publish(new AlignmentUpdatedEvent());
     }
 
 

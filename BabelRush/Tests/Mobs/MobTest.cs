@@ -18,7 +18,7 @@ public partial class MobTest : Node2D
         MobInterface = MobInterface.GetInstance(Mob.Default);
         AddChild(MobInterface);
         MobInterface.Position = GetNode<Marker2D>("Marker2D").Position;
-        SubscribeInstanceHandler(Game.EventBus);
+        SubscribeInstanceHandler(GameNode.EventBus);
     }
 
 

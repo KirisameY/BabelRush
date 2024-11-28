@@ -44,12 +44,12 @@ public partial class ApBar : Control
 
     public override void _EnterTree()
     {
-        SubscribeInstanceHandler(Game.EventBus);
+        SubscribeInstanceHandler(GameNode.EventBus);
     }
 
     public override void _ExitTree()
     {
-        UnsubscribeInstanceHandler(Game.EventBus);
+        UnsubscribeInstanceHandler(GameNode.EventBus);
     }
 
 

@@ -29,7 +29,7 @@ public class CommonCard(CardType type) : Card
         if (!TargetSelected()) return false;
 
         var useCancel = new CancelToken();
-        Game.EventBus.Publish(new BeforeCardUseEvent(this, useCancel));
+        GameNode.EventBus.Publish(new BeforeCardUseEvent(this, useCancel));
         if (useCancel.Canceled) return false;
 
         foreach (var action in Actions)
@@ -38,7 +38,7 @@ public class CommonCard(CardType type) : Card
         }
 
         var toExhause = new Variable<bool>(false);
-        Game.EventBus.Publish(new CardUsedEvent(this, true, toExhause));
+        GameNode.EventBus.Publish(new CardUsedEvent(this, true, toExhause));
 
         var removed = toExhause
             ? Play.CardHub.ExhaustCard(this)

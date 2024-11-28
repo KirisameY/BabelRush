@@ -22,8 +22,8 @@ public partial class CardUseTest : Node
 {
     public override void _Ready()
     {
-        GlobalEventHandlersSubscriber.Subscribe(Game.EventBus);
-        SubscribeInstanceHandler(Game.EventBus);
+        GlobalEventHandlersSubscriber.Subscribe(GameNode.EventBus);
+        SubscribeInstanceHandler(GameNode.EventBus);
         CallDeferred(MethodName.Initialize);
     }
 

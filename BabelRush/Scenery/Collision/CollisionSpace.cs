@@ -11,12 +11,12 @@ public sealed partial class CollisionSpace : IDisposable
     //Init&Cleanup
     public void Ready()
     {
-        SubscribeInstanceHandler(Game.EventBus);
+        SubscribeInstanceHandler(GameNode.EventBus);
     }
 
     public void Dispose()
     {
-        UnsubscribeInstanceHandler(Game.EventBus);
+        UnsubscribeInstanceHandler(GameNode.EventBus);
     }
 
 
@@ -90,12 +90,12 @@ public sealed partial class CollisionSpace : IDisposable
         if (collides)
         {
             CollidingList.Add((area, obj));
-            Game.EventBus.Publish(new ObjectEnteredEvent(area, obj));
+            GameNode.EventBus.Publish(new ObjectEnteredEvent(area, obj));
         }
         else
         {
             CollidingList.Remove((area, obj));
-            Game.EventBus.Publish(new ObjectExitedEvent(area, obj));
+            GameNode.EventBus.Publish(new ObjectExitedEvent(area, obj));
         }
     }
 }
