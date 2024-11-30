@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using KirisameLib.Core.Extensions;
 using KirisameLib.Core.Logging;
 using KirisameLib.Data.FileLoading;
+using KirisameLib.Logging;
 
 using Tomlyn;
 using Tomlyn.Syntax;

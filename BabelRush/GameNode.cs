@@ -3,8 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 
 using Godot;
 
-using KirisameLib.Core.Events;
-using KirisameLib.Core.Logging;
+using KirisameLib.Event;
+using KirisameLib.Logging;
 
 namespace BabelRush;
 
