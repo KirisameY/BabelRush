@@ -5,8 +5,8 @@ using System.Linq;
 using BabelRush.Mobs;
 
 using KirisameLib.Core.Collections;
-using KirisameLib.Core.Events;
-using KirisameLib.Core.Logging;
+using KirisameLib.Event;
+using KirisameLib.Logging;
 
 namespace BabelRush.GamePlay;
 
@@ -40,7 +40,7 @@ public partial class BattleField(Mob player)
         if (alignment == Alignment.Enemy)
         {
             if (list.Count == 1)
-                GameNode.EventBus.Publish(new BattleStartEvent());
+                Game.EventBus.Publish(new BattleStartEvent());
         }
         return true;
     }
@@ -55,7 +55,7 @@ public partial class BattleField(Mob player)
         if (alignment == Alignment.Enemy)
         {
             if (list.Count == 0)
-                GameNode.EventBus.Publish(new BattleEndEvent());
+                Game.EventBus.Publish(new BattleEndEvent());
         }
 
         return true;
@@ -94,7 +94,7 @@ public partial class BattleField(Mob player)
         if (!TryAddToList(mob)) return;
 
         Logger.Log(LogLevel.Info, nameof(AddMob), $"Added mob {mob}");
-        GameNode.EventBus.Publish(new MobAddedEvent(mob));
+        Game.EventBus.Publish(new MobAddedEvent(mob));
     }
 
     public void AddMobs(IEnumerable<Mob> mobs)
@@ -118,7 +118,7 @@ public partial class BattleField(Mob player)
         if (!TryRemoveFromList(mob)) return false;
 
         Logger.Log(LogLevel.Info, nameof(RemoveMob), $"Removed mob {mob}");
-        GameNode.EventBus.Publish(new MobRemovedEvent(mob));
+        Game.EventBus.Publish(new MobRemovedEvent(mob));
         return true;
     }
 
@@ -132,10 +132,10 @@ public partial class BattleField(Mob player)
         state.TryRemoveFromList(e.Mob, e.OldAlignment);
         state.TryAddToList(e.Mob, e.NewAlignment);
 
-        GameNode.EventBus.Publish(new AlignmentUpdatedEvent());
+        Game.EventBus.Publish(new AlignmentUpdatedEvent());
     }
 
 
     //Logging
-    private static Logger Logger { get; } = LogManager.GetLogger(nameof(BattleField));
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(BattleField));
 }

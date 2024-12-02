@@ -3,7 +3,7 @@ using BabelRush.Mobs;
 
 using Godot;
 
-using KirisameLib.Core.Events;
+using KirisameLib.Event;
 
 using MobInterface = BabelRush.Gui.Mobs.MobInterface;
 
@@ -18,7 +18,7 @@ public partial class MobTest : Node2D
         MobInterface = MobInterface.GetInstance(Mob.Default);
         AddChild(MobInterface);
         MobInterface.Position = GetNode<Marker2D>("Marker2D").Position;
-        SubscribeInstanceHandler(GameNode.EventBus);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
 

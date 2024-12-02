@@ -6,8 +6,8 @@ using BabelRush.Mobs.Animation;
 
 using Godot;
 
-using KirisameLib.Core.Events;
-using KirisameLib.Core.Logging;
+using KirisameLib.Event;
+using KirisameLib.Logging;
 
 namespace BabelRush.Gui.Mobs;
 
@@ -199,12 +199,12 @@ public partial class MobInterface : Node2D
 
     public override void _EnterTree()
     {
-        SubscribeInstanceHandler(GameNode.EventBus);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     public override void _ExitTree()
     {
-        UnsubscribeInstanceHandler(GameNode.EventBus);
+        UnsubscribeInstanceHandler(Game.EventBus);
     }
 
     #endregion
@@ -214,17 +214,17 @@ public partial class MobInterface : Node2D
 
     private void OnMouseEntered()
     {
-        GameNode.EventBus.Publish(new MobInterfaceSelectedEvent(this, true));
+        Game.EventBus.Publish(new MobInterfaceSelectedEvent(this, true));
     }
 
     private void OnMouseExited()
     {
-        GameNode.EventBus.Publish(new MobInterfaceSelectedEvent(this, false));
+        Game.EventBus.Publish(new MobInterfaceSelectedEvent(this, false));
     }
 
     #endregion
 
 
     //Logging
-    private static Logger Logger { get; } = LogManager.GetLogger(nameof(MobInterface));
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(MobInterface));
 }

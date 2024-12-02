@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 using KirisameLib.Core.Extensions;
-using KirisameLib.Core.Logging;
 using KirisameLib.Data.FileLoading;
+using KirisameLib.Logging;
 
 using Tomlyn;
 using Tomlyn.Model;
@@ -87,5 +87,5 @@ public class LangRootLoader : RootLoader<IDictionary<string, object>, LangRegist
 
 
     //Logging
-    private Logger Logger { get; } = LogManager.GetLogger(nameof(LangRootLoader));
+    private Logger Logger { get; } = Game.LogBus.GetLogger(nameof(LangRootLoader));
 }

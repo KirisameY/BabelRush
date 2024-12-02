@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading.Tasks;
 
 using BabelRush.GamePlay;
 
 using KirisameLib.Core.Collections;
-using KirisameLib.Core.Events;
+using KirisameLib.Event;
 using KirisameLib.Core.RandomAsteroid;
 
 namespace BabelRush.Cards;
@@ -43,33 +44,35 @@ public partial class CardHub(RandomBelt random)
     #region Public Methods
 
     /// <returns>False if cancelled</returns>
-    public bool DiscardCard(Card card, bool cancellable = true)
+    public async ValueTask<bool> DiscardCard(Card card, bool cancellable = true)
     {
-        CancelToken cancelToken = new CancelToken();
-        GameNode.EventBus.Publish(new BeforeCardDiscardEvent(card, cancelToken));
-        if (cancellable && cancelToken.Canceled) return false;
+        var canceled = (
+            await Game.EventBus.PublishAndWaitFor(new BeforeCardDiscardEvent(card, new()))
+        ).Cancel.Canceled;
+        if (cancellable && canceled) return false;
 
         PrepareInternalMove(card);
         CardField.RemoveCard(card);
         DrawPile.RemoveCard(card);
         DiscardPile.AddCard(card);
 
-        GameNode.EventBus.Publish(new CardDiscardedEvent(card));
+        Game.EventBus.Publish(new CardDiscardedEvent(card));
         return true;
     }
 
     /// <returns>False if cancelled</returns>
-    public bool ExhaustCard(Card card, bool cancellable = true)
+    public async ValueTask<bool> ExhaustCard(Card card, bool cancellable = true)
     {
-        CancelToken cancelToken = new CancelToken();
-        GameNode.EventBus.Publish(new BeforeCardExhaustEvent(card, cancelToken));
-        if (cancellable && cancelToken.Canceled) return false;
+        var canceled = (
+            await Game.EventBus.PublishAndWaitFor(new BeforeCardExhaustEvent(card, new()))
+        ).Cancel.Canceled;
+        if (cancellable && canceled) return false;
 
         CardField.RemoveCard(card);
         DrawPile.RemoveCard(card);
         DiscardPile.RemoveCard(card);
 
-        GameNode.EventBus.Publish(new CardExhaustedEvent(card));
+        Game.EventBus.Publish(new CardExhaustedEvent(card));
         return true;
     }
 
@@ -86,7 +89,7 @@ public partial class CardHub(RandomBelt random)
 
         DrawPile.PickCard();
         CardField.AddCard(card);
-        GameNode.EventBus.Publish(new CardDrawnEvent(card));
+        Game.EventBus.Publish(new CardDrawnEvent(card));
 
         StopInternalMove();
         return true;
@@ -106,7 +109,7 @@ public partial class CardHub(RandomBelt random)
         PrepareInternalMove(DiscardPile);
         var shuffled = random.Shuffle(DiscardPile.TakeAll());
         DrawPile.AddCards(shuffled);
-        GameNode.EventBus.Publish(new CardsShuffledEvent());
+        Game.EventBus.Publish(new CardsShuffledEvent());
         return true;
     }
 
@@ -155,14 +158,14 @@ public partial class CardHub(RandomBelt random)
     private void CardInDecide(CardInsertedToPileEvent e)
     {
         if (_internalMovingCards.Remove(e.Card)) //if not in moving cards
-            GameNode.EventBus.Publish(new CardIntoHubEvent(e.Card));
+            Game.EventBus.Publish(new CardIntoHubEvent(e.Card));
     }
 
     private void CardOutDecide(CardRemovedFromPileEvent e)
     {
         if (_internalMovingCards.Contains(e.Card)) return;
         if (_internalMovingOutPile == e.CardPile) _internalMovingCards.Add(e.Card);
-        else GameNode.EventBus.Publish(new CardOutOfHubEvent(e.Card));
+        else Game.EventBus.Publish(new CardOutOfHubEvent(e.Card));
     }
 
     #endregion

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using KirisameLib.Core.Extensions;
-using KirisameLib.Core.Logging;
 using KirisameLib.Data.FileLoading;
 using KirisameLib.Logging;
 
@@ -65,5 +64,5 @@ public class DataRootLoader : CommonRootLoader<DocumentSyntax, DataRegistrant>
 
 
     //Logging
-    private static Logger Logger { get; } = LogManager.GetLogger(nameof(DataRootLoader));
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(DataRootLoader));
 }

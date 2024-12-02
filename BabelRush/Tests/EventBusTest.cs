@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 
 using Godot;
 
-using KirisameLib.Core.Events;
+using KirisameLib.Event;
 
 namespace BabelRush.Tests;
 
@@ -12,11 +12,11 @@ public partial class EventBusTest : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        SubscribeInstanceHandler(GameNode.EventBus);
+        SubscribeInstanceHandler(Game.EventBus);
 
         Task.Delay(1000).ContinueWith(_ =>
         {
-            GameNode.EventBus.Publish(new TestEvent2("msg1", "msg22"));
+            Game.EventBus.Publish(new TestEvent2("msg1", "msg22"));
         });
     }
 

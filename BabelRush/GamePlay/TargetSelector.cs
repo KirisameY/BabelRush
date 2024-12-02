@@ -7,7 +7,7 @@ using BabelRush.Cards;
 using BabelRush.Gui.Mobs;
 using BabelRush.Mobs;
 
-using KirisameLib.Core.Events;
+using KirisameLib.Event;
 
 namespace BabelRush.GamePlay;
 
@@ -47,9 +47,9 @@ public partial class TargetSelector
             var old = CursorSelected;
             field = value;
             if (old is not null)
-                GameNode.EventBus.Publish(new MobSelectedEvent(old, true, false));
+                Game.EventBus.Publish(new MobSelectedEvent(old, true, false));
             if (value is not null)
-                GameNode.EventBus.Publish(new MobSelectedEvent(value, true, true));
+                Game.EventBus.Publish(new MobSelectedEvent(value, true, true));
         }
     }
 
@@ -63,9 +63,9 @@ public partial class TargetSelector
             var unite = old.Intersect(value).ToList();
             if (SelectPlayer) unite.Add(Play.BattleField.Player);
             foreach (var mob in old.Except(unite))
-                GameNode.EventBus.Publish(new MobSelectedEvent(mob, false, false));
+                Game.EventBus.Publish(new MobSelectedEvent(mob, false, false));
             foreach (var mob in value.Except(unite))
-                GameNode.EventBus.Publish(new MobSelectedEvent(mob, false, true));
+                Game.EventBus.Publish(new MobSelectedEvent(mob, false, true));
         }
     } = [];
 
@@ -77,7 +77,7 @@ public partial class TargetSelector
             if (SelectPlayer == value) return;
             field = value;
             if (!AutoSelected.Contains(Play.BattleField.Player))
-                GameNode.EventBus.Publish(new MobSelectedEvent(Play.BattleField.Player, false, value));
+                Game.EventBus.Publish(new MobSelectedEvent(Play.BattleField.Player, false, value));
         }
     }
 

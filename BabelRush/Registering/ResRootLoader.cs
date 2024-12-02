@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using BabelRush.Data;
 
 using KirisameLib.Core.Extensions;
-using KirisameLib.Core.Logging;
 using KirisameLib.Data.FileLoading;
 using KirisameLib.Data.Registration;
+using KirisameLib.Logging;
 
 namespace BabelRush.Registering;
 
@@ -56,5 +56,5 @@ public class ResRootLoader : CommonRootLoader<ResSourceInfo, IRegistrant<ResSour
 
 
     //Logger
-    private static Logger Logger { get; } = LogManager.GetLogger(nameof(ResRootLoader));
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(ResRootLoader));
 }

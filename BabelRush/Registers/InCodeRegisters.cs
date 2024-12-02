@@ -9,5 +9,5 @@ namespace BabelRush.Registers;
 public static partial class InCodeRegisters
 {
     public static IRegister<ActionDelegate> ActionDelegates { get; } =
-        new CommonRegister<ActionDelegate>(nameof(ActionDelegates), _ => (_, _, _) => { });
+        new CommonRegister<ActionDelegate>(_ => (_, _, _) => { });
 }

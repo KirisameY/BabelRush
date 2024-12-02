@@ -1,4 +1,4 @@
-using KirisameLib.Core.Events;
+using KirisameLib.Event;
 
 namespace BabelRush.Gui;
 

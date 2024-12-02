@@ -45,7 +45,7 @@ public partial class Game : SceneTree
         LogInitialize();
 
         base._Initialize();
-        
+
         Logger.Log(LogLevel.Info, "Initializing", "Game class loaded");
     }
 
@@ -91,6 +91,10 @@ public partial class Game : SceneTree
 
         LogBus.Dispose();
     }
+
+
+    //Public Methods
+    public static void Quit() => Instance.Quit(0);
 
 
     //Logging

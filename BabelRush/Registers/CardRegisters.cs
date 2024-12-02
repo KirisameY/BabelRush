@@ -15,13 +15,13 @@ public static partial class CardRegisters
 {
     [LangRegister<NameDescModel, NameDesc>("cards")]
     private static readonly LocalizedRegister<NameDesc> CardNameDescRegister =
-        new(nameof(CardNameDescRegister), "en", id => (id, ""));
+        new("en", id => (id, ""));
 
     [ResRegister<Texture2DModel, Texture2D>("textures/cards")]
     private static readonly CommonRegister<Texture2D> CardIconRegister =
-        new(nameof(CardIconRegister), _ => new PlaceholderTexture2D());
+        new(_ => new PlaceholderTexture2D());
 
     [DataRegister<CardTypeModel, CardType>("cards", "card_features", "actions")]
     private static readonly CommonRegister<CardType> CardsRegister =
-        new(nameof(CardsRegister), _ => CardType.Default);
+        new(_ => CardType.Default);
 }

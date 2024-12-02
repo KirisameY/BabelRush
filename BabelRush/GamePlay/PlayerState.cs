@@ -3,7 +3,7 @@ using System.Linq;
 using BabelRush.Cards;
 using BabelRush.Mobs;
 
-using KirisameLib.Core.Events;
+using KirisameLib.Event;
 
 namespace BabelRush.GamePlay;
 
@@ -25,7 +25,7 @@ public partial class PlayerState
             if (field == value) return;
             var oldValue = field;
             field = value;
-            GameNode.EventBus.Publish(new ApChangedEvent(oldValue, field));
+            Game.EventBus.Publish(new ApChangedEvent(oldValue, field));
         }
     }
 

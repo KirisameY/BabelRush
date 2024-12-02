@@ -10,8 +10,8 @@ using BabelRush.Scenery;
 
 using Godot;
 
-using KirisameLib.Core.Events;
-using KirisameLib.Core.Events.Generated;
+using KirisameLib.Event;
+using KirisameLib.Event.Generated;
 
 using MobInterface = BabelRush.Gui.Mobs.MobInterface;
 
@@ -22,8 +22,8 @@ public partial class CardUseTest : Node
 {
     public override void _Ready()
     {
-        GlobalEventHandlersSubscriber.Subscribe(GameNode.EventBus);
-        SubscribeInstanceHandler(GameNode.EventBus);
+        GlobalEventHandlersSubscriber.Subscribe(Game.EventBus);
+        SubscribeInstanceHandler(Game.EventBus);
         CallDeferred(MethodName.Initialize);
     }
 

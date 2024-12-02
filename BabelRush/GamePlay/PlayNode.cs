@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using Godot;
 
-using KirisameLib.Core.Logging;
+using KirisameLib.Logging;
 
 namespace BabelRush.GamePlay;
 
@@ -49,5 +49,5 @@ public partial class PlayNode : Node
 
 
     //Logging
-    private static Logger Logger { get; } = LogManager.GetLogger("PlayNode");
+    private static Logger Logger { get; } = Game.LogBus.GetLogger("PlayNode");
 }

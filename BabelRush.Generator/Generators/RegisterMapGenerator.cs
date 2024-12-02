@@ -184,7 +184,7 @@ public class RegisterMapGenerator : IIncrementalGenerator
                 {
                     sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
                                  .AppendLine($"private static global::{Names.LocalizedRegisterPure}<{targetType}> "
-                                           + $"{registerName}LocalizedRegister = new(\"{registerName}LocalizedRegister\", {register.Name});");
+                                           + $"{registerName}LocalizedRegister = new({register.Name});");
                     sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
                                  .AppendLine($"public static global::{Names.IRegisterPure}<{targetType}> "
                                            + $"{registerName} => {registerName}LocalizedRegister;");

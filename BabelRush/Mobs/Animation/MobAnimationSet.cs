@@ -51,7 +51,7 @@ public class MobAnimationSet(
         new MobAnimationSetBuilder()
            .SetAnimation("idle",
                          [new PlaceholderTexture2D { Size = new(48, 64) }], new(24, 64), new(48, 64))
-           // .SetDefault("default")
+            // .SetDefault("default")
            .SetId("default")
            .Build();
 

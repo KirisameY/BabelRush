@@ -4,8 +4,8 @@ using BabelRush.Cards;
 
 using Godot;
 
-using KirisameLib.Core.Events;
-using KirisameLib.Core.Logging;
+using KirisameLib.Event;
+using KirisameLib.Logging;
 
 namespace BabelRush.Gui.Cards;
 
@@ -150,7 +150,7 @@ public partial class CardInterface : Node2D
             if (!Selectable && value) return;
 
             _selected = value;
-            GameNode.EventBus.Publish(new CardInterfaceSelectedEvent(this, _selected));
+            Game.EventBus.Publish(new CardInterfaceSelectedEvent(this, _selected));
         }
     }
 
@@ -164,7 +164,7 @@ public partial class CardInterface : Node2D
             if (!Selectable && value) return;
 
             _pressed = value;
-            GameNode.EventBus.Publish(new CardInterfacePressedEvent(this, _pressed));
+            Game.EventBus.Publish(new CardInterfacePressedEvent(this, _pressed));
         }
     }
 
@@ -174,18 +174,18 @@ public partial class CardInterface : Node2D
     private void OnMouseExited() => Selected = _preSelected = false;
     private void OnButtonDown() => Pressed = _prePressed = true;
     private void OnButtonUp() => Pressed = _prePressed = false;
-    private void OnPressed() => GameNode.EventBus.Publish(new CardInterfaceClickedEvent(this));
+    private void OnPressed() => Game.EventBus.Publish(new CardInterfaceClickedEvent(this));
 
 
     //Events
     public override void _EnterTree()
     {
-        SubscribeInstanceHandler(GameNode.EventBus);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     public override void _ExitTree()
     {
-        UnsubscribeInstanceHandler(GameNode.EventBus);
+        UnsubscribeInstanceHandler(Game.EventBus);
     }
 
     [EventHandler]
@@ -203,5 +203,5 @@ public partial class CardInterface : Node2D
 
 
     //Logging
-    private static Logger Logger { get; } = LogManager.GetLogger(nameof(CardInterface));
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(CardInterface));
 }

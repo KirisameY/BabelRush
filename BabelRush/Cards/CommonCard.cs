@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using BabelRush.Actions;
 using BabelRush.Cards.Features;
 using BabelRush.GamePlay;
 using BabelRush.Mobs;
-
-using KirisameLib.Core.Events;
 
 namespace BabelRush.Cards;
 
@@ -24,25 +23,27 @@ public class CommonCard(CardType type) : Card
                  TargetSelector.GetTargets(action.Type.TargetPattern).Count > 0
             );
 
-    public override bool Use(Mob user)
+    public override async ValueTask<bool> Use(Mob user)
     {
         if (!TargetSelected()) return false;
-
-        var useCancel = new CancelToken();
-        GameNode.EventBus.Publish(new BeforeCardUseEvent(this, useCancel));
-        if (useCancel.Canceled) return false;
 
         foreach (var action in Actions)
         {
             action.Act(user, TargetSelector.GetTargets(action.Type.TargetPattern));
         }
 
-        var toExhause = new Variable<bool>(false);
-        GameNode.EventBus.Publish(new CardUsedEvent(this, true, toExhause));
+        var canceled = (
+            await Game.EventBus.PublishAndWaitFor(new BeforeCardUseEvent(this, new()))
+        ).Cancel.Canceled;
+        if (canceled) return false;
+
+        var toExhause = (
+            await Game.EventBus.PublishAndWaitFor(new CardUsedEvent(this, true, false))
+        ).ToExhaust;
 
         var removed = toExhause
-            ? Play.CardHub.ExhaustCard(this)
-            : Play.CardHub.DiscardCard(this);
+            ? await Play.CardHub.ExhaustCard(this)
+            : await Play.CardHub.DiscardCard(this);
 
         return removed;
     }

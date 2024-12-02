@@ -58,7 +58,7 @@ public class MobAnimationId
         return result;
     }
 
-    public static MobAnimationId Default => Get("Idle");
+    public static MobAnimationId Default => Get("idle");
 
     #endregion
 

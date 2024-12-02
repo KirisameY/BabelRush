@@ -7,7 +7,7 @@ using BabelRush.Scenery.Collision;
 
 using Godot;
 
-using KirisameLib.Core.Logging;
+using KirisameLib.Logging;
 
 namespace BabelRush.Scenery;
 
@@ -94,5 +94,5 @@ public sealed class Scene : IDisposable
 
 
     //Logging
-    private static Logger Logger { get; } = LogManager.GetLogger(nameof(Scene));
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(Scene));
 }

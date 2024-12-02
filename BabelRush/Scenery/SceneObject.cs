@@ -10,7 +10,7 @@ public abstract class SceneObject
         {
             var old = Position;
             field = value;
-            GameNode.EventBus.Publish(new SceneObjectMovedEvent(this, old, Position));
+            Game.EventBus.Publish(new SceneObjectMovedEvent(this, old, Position));
         }
     }
 }

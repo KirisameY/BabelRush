@@ -5,10 +5,10 @@ using BabelRush.Mobs;
 using BabelRush.Scenery;
 using BabelRush.Scenery.Collision;
 
-using KirisameLib.Core.Events;
-using KirisameLib.Core.Logging;
 using KirisameLib.Core.RandomAsteroid;
 using KirisameLib.Core.RandomAsteroid.RandomGenerators;
+using KirisameLib.Event;
+using KirisameLib.Logging;
 
 namespace BabelRush.GamePlay;
 
@@ -155,7 +155,7 @@ public partial class Play
 
 
     //Logging
-    private static Logger Logger { get; } = LogManager.GetLogger("GamePlay");
+    private static Logger Logger { get; } = Game.LogBus.GetLogger("GamePlay");
 
 
     //Exception

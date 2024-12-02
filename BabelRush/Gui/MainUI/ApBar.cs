@@ -3,7 +3,7 @@ using BabelRush.GamePlay;
 
 using Godot;
 
-using KirisameLib.Core.Events;
+using KirisameLib.Event;
 
 namespace BabelRush.Gui.MainUI;
 
@@ -44,12 +44,12 @@ public partial class ApBar : Control
 
     public override void _EnterTree()
     {
-        SubscribeInstanceHandler(GameNode.EventBus);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     public override void _ExitTree()
     {
-        UnsubscribeInstanceHandler(GameNode.EventBus);
+        UnsubscribeInstanceHandler(Game.EventBus);
     }
 
 

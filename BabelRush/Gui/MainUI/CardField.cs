@@ -7,8 +7,8 @@ using BabelRush.Gui.Cards;
 
 using Godot;
 
-using KirisameLib.Core.Events;
 using KirisameLib.Core.Extensions;
+using KirisameLib.Event;
 
 using CardInterface = BabelRush.Gui.Cards.CardInterface;
 
@@ -25,8 +25,6 @@ public partial class CardField : Control
     private static CardPile Pile => Play.CardHub.CardField;
     private Dictionary<Card, CardInterface> CardDict { get; } = [];
     private IReadOnlyCollection<CardInterface> CardInterfaces => CardDict.Values;
-    //To record immediately removed card
-    private Card? _immediatelyRemoved;
 
 
     //Process
@@ -78,8 +76,8 @@ public partial class CardField : Control
             _selected = value;
 
             OnSelectChanged(old, @new);
-            if (old is not null) GameNode.EventBus.Publish(new CardSelectedEvent(old.Card,   false));
-            if (@new is not null) GameNode.EventBus.Publish(new CardSelectedEvent(@new.Card, true));
+            if (old is not null) Game.EventBus.Publish(new CardSelectedEvent(old.Card,   false));
+            if (@new is not null) Game.EventBus.Publish(new CardSelectedEvent(@new.Card, true));
         }
     }
 
@@ -98,21 +96,28 @@ public partial class CardField : Control
             var @new = value;
             _picked = value;
 
-            if (old is not null)
-            {
-                old.Selectable = false;
-                if (!oldOut || !old.Card.Use(Play.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
-                    InsertCard(old);
-                GameNode.EventBus.Publish(new CardPickedEvent(old.Card, false));
-            }
-
-            if (@new is not null)
-            {
-                PickUpCard(@new);
-                GameNode.EventBus.Publish(new CardPickedEvent(@new.Card, true));
-            }
+            OnPickedChanged(old, oldOut, @new);
         }
     }
+
+    private async void OnPickedChanged(CardInterface? old, bool oldOut, CardInterface? @new)
+    {
+        if (old is not null)
+        {
+            old.Selectable = false;
+            Game.EventBus.Publish(new CardPickedEvent(old.Card, false));
+            if (!oldOut || !await old.Card.Use(Play.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
+                InsertCard(old);
+            
+        }
+
+        if (@new is not null)
+        {
+            PickUpCard(@new);
+            Game.EventBus.Publish(new CardPickedEvent(@new.Card, true));
+        }
+    }
+
     private Vector2 PickOffset { get; set; }
 
     private bool PickedCardOutField => Picked?.Position.Y < 0;
@@ -134,12 +139,12 @@ public partial class CardField : Control
     //Event handlers
     public override void _EnterTree()
     {
-        SubscribeInstanceHandler(GameNode.EventBus);
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     public override void _ExitTree()
     {
-        UnsubscribeInstanceHandler(GameNode.EventBus);
+        UnsubscribeInstanceHandler(Game.EventBus);
     }
 
     [EventHandler]
@@ -166,15 +171,13 @@ public partial class CardField : Control
     private void OnCardPileInserted(CardInsertedToPileEvent e)
     {
         if (e.CardPile != Pile) return;
-        if (e.Card == _immediatelyRemoved) _immediatelyRemoved = null;
-        else AddCard(e.Card);
+        AddCard(e.Card);
     }
 
     [EventHandler]
     private void OnCardPileRemoved(CardRemovedFromPileEvent e)
     {
         if (e.CardPile != Pile) return;
-        if (RemoveCard(e.Card)) return;
-        _immediatelyRemoved = e.Card;
+        RemoveCard(e.Card);
     }
 }
