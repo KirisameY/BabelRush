@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 
 using BabelRush.Data;
 
+using KirisameLib.Core.Asynchronous;
 using KirisameLib.Core.Extensions;
 using KirisameLib.Data.FileLoading;
 using KirisameLib.Data.Registration;
@@ -28,7 +29,7 @@ public class ResRootLoader : CommonRootLoader<ResSourceInfo, IRegistrant<ResSour
     protected override async Task RegisterDirectory(IRegistrant<ResSourceInfo> registrant, Dictionary<string, ResSourceInfo> sourceDict)
     {
         var path = CurrentPath;
-        await Task.Yield();
+        await AsyncOrrery.SwitchContext();
 
         foreach (var source in sourceDict.Values)
         {
