@@ -7,6 +7,7 @@ using System.Text;
 using Godot;
 
 using KirisameLib.Event;
+using KirisameLib.Event.Generated;
 using KirisameLib.Logging;
 using KirisameLib.Godot.IO;
 
@@ -43,6 +44,9 @@ public partial class Game : SceneTree
     {
         Instance = this;
         LogInitialize();
+
+        Logger.Log(LogLevel.Info, "Initializing", "Subscribing default static event handlers...");
+        GlobalEventHandlersSubscriber.Subscribe(EventBus);
 
         base._Initialize();
 

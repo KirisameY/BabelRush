@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://pjy34a30fsx1"]
+
+[ext_resource type="Script" path="res://Tests/UI/Screen/CardListTest.cs" id="1_6p25j"]
+[ext_resource type="PackedScene" uid="uid://cooc3twixj7f3" path="res://Gui/Screens/Cards/CardListScreen.tscn" id="2_wvqbu"]
+
+[node name="CardListTest" type="Node"]
+script = ExtResource("1_6p25j")
+
+[node name="CardListScreen" parent="." instance=ExtResource("2_wvqbu")]

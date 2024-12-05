@@ -1,39 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://cooc3twixj7f3"]
+[gd_scene load_steps=2 format=3 uid="uid://daswddgunjnpc"]
 
-[ext_resource type="PackedScene" uid="uid://smrj6tit4ukr" path="res://Gui/Screens/Cards/CardInfo.tscn" id="1_dacwr"]
-[ext_resource type="PackedScene" uid="uid://t13t4lu6ts7i" path="res://Gui/Cards/CardControl.tscn" id="2_2g0ai"]
+[ext_resource type="Script" path="res://Gui/Screens/Cards/CardList.cs" id="1_t1yyo"]
 
-[node name="CardList" type="Control"]
-layout_mode = 3
+[node name="CardList" type="ScrollContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="HSplitContainer" type="HSplitContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-split_offset = 260
-dragger_visibility = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="HSplitContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 8
-
-[node name="CardInfo" parent="HSplitContainer/MarginContainer" instance=ExtResource("1_dacwr")]
-layout_mode = 2
-
-[node name="ScrollContainer" type="ScrollContainer" parent="HSplitContainer"]
-layout_mode = 2
 horizontal_scroll_mode = 3
 vertical_scroll_mode = 2
+script = ExtResource("1_t1yyo")
 
-[node name="MarginContainer" type="MarginContainer" parent="HSplitContainer/ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 8
@@ -41,57 +20,9 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 
-[node name="GridContainer" type="GridContainer" parent="HSplitContainer/ScrollContainer/MarginContainer"]
+[node name="GridContainer" type="GridContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/h_separation = 8
 theme_override_constants/v_separation = 6
 columns = 3
-
-[node name="CardControl" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl2" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl3" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl4" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl5" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl6" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl7" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl8" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl9" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl10" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl11" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl12" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl13" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl14" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl15" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2
-
-[node name="CardControl16" parent="HSplitContainer/ScrollContainer/MarginContainer/GridContainer" instance=ExtResource("2_2g0ai")]
-layout_mode = 2

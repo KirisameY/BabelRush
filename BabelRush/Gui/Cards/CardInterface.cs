@@ -112,11 +112,6 @@ public partial class CardInterface : Node2D
     }
 
 
-    //Extend
-    public void SetPositionX(float x) => Position = new(x, Position.Y);
-    public void SetPositionY(float y) => Position = new(Position.X, y);
-
-
     //Select
     private bool _preSelected, _prePressed;
     private bool _selectable;
@@ -177,7 +172,7 @@ public partial class CardInterface : Node2D
     private void OnPressed() => Game.EventBus.Publish(new CardInterfaceClickedEvent(this));
 
 
-    //Events
+    //Scene Tree
     public override void _EnterTree()
     {
         SubscribeInstanceHandler(Game.EventBus);
@@ -186,8 +181,12 @@ public partial class CardInterface : Node2D
     public override void _ExitTree()
     {
         UnsubscribeInstanceHandler(Game.EventBus);
+        XPosTween?.Kill();
+        YPosTween?.Kill();
     }
 
+
+    //Event Handlers
     [EventHandler]
     private void OnCardUsed(CardUsedEvent e)
     {
@@ -199,6 +198,14 @@ public partial class CardInterface : Node2D
         tween.TweenProperty(this, "global_position", Project.ViewportSize / 2, 0.1f);
         //tween.TweenProperty(this, "position", new Vector2(200, -108), 0.1f);
         tween.TweenCallback(Callable.From(QueueFree)).SetDelay(0.15f); //temp, will be replaced by remove from tree
+    }
+
+
+    //Names
+    public static class NodePaths
+    {
+        public static readonly NodePath PositionX = "position:x";
+        public static readonly NodePath PositionY = "position:y";
     }
 
 

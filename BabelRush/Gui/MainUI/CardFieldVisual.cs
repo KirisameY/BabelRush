@@ -49,9 +49,9 @@ partial class CardField
         foreach ((CardInterface card, float xPos) in CardInterfaces.Zip(CalculateCardXPosition()))
         {
             card.XPosTween?.Kill();
-            card.XPosTween = CreateTween();
-            card.XPosTween.TweenMethod(Callable.From((float x) => card.SetPositionX(x)), card.Position.X, xPos, MoveInterval)
-                .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
+            var tween = card.XPosTween = CreateTween();
+            tween.TweenProperty(card, CardInterface.NodePaths.PositionX, xPos, MoveInterval)
+                 .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
         }
     }
 
@@ -59,7 +59,7 @@ partial class CardField
     {
         card.YPosTween?.Kill();
         var tween = card.YPosTween = CreateTween();
-        tween.TweenMethod(Callable.From((float y) => card.SetPositionY(y)), card.Position.Y, CardYOffset, InsertInterval)
+        tween.TweenProperty(card, CardInterface.NodePaths.PositionY, CardYOffset, InsertInterval)
              .SetTrans(Tween.TransitionType.Quart)
              .SetEase(Tween.EaseType.Out);
         tween.TweenCallback(Callable.From(() => card.Selectable = true));
@@ -72,22 +72,20 @@ partial class CardField
         if (old is not null && old.Selectable)
         {
             old.YPosTween?.Kill();
-            old.YPosTween = CreateTween();
-            old.YPosTween
-               .TweenMethod(Callable.From((float y) => old.SetPositionY(y)), old.Position.Y, CardYOffset, SelectInterval)
-               .SetTrans(Tween.TransitionType.Quart)
-               .SetEase(Tween.EaseType.In);
+            var tween = old.YPosTween = CreateTween();
+            tween.TweenProperty(old, CardInterface.NodePaths.PositionY, CardYOffset, SelectInterval)
+                 .SetTrans(Tween.TransitionType.Quart)
+                 .SetEase(Tween.EaseType.In);
             old.YPosTween.TweenCallback(Callable.From(SortCards));
         }
 
         if (@new is not null)
         {
             @new.YPosTween?.Kill();
-            @new.YPosTween = CreateTween();
-            @new.YPosTween
-                .TweenMethod(Callable.From((float y) => @new.SetPositionY(y)), @new.Position.Y, SelectedCardYOffset, SelectInterval)
-                .SetTrans(Tween.TransitionType.Back)
-                .SetEase(Tween.EaseType.Out);
+            var tween = @new.YPosTween = CreateTween();
+            tween.TweenProperty(@new, CardInterface.NodePaths.PositionY, SelectedCardYOffset, SelectInterval)
+                 .SetTrans(Tween.TransitionType.Back)
+                 .SetEase(Tween.EaseType.Out);
             SortCards();
         }
     }
