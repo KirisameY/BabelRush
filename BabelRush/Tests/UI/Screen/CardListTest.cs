@@ -6,6 +6,8 @@ using BabelRush.Gui.Screens.Cards;
 
 using Godot;
 
+using KirisameLib.Event;
+
 namespace BabelRush.Tests.UI.Screen;
 
 public partial class CardListTest : Node
@@ -17,6 +19,8 @@ public partial class CardListTest : Node
 
     public override void _Ready()
     {
-        CardListScreen.AddRange(Enumerable.Repeat<Card>(Card.Default, 5));
+        Game.EventBus.Subscribe<BaseEvent>(e => GD.Print(e));
+
+        CardListScreen.AddRange(Enumerable.Repeat(Card.Default, 5));
     }
 }

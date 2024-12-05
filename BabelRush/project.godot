@@ -35,6 +35,15 @@ window/stretch/scale_mode="integer"
 project/assembly_name="BabelRush"
 project/solution_directory=".."
 
+[file_customization]
+
+folder_colors={
+"res://Gui/": "pink",
+"res://Tests/": "teal",
+"res://assets/": "red",
+"res://licenses/": "gray"
+}
+
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0

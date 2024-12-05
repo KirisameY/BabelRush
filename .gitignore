@@ -1,6 +1,9 @@
 # Design files
 .design/
 
+# Built files
+.build/
+
 # Project Logs
 BabelRush/logs/*.log
 

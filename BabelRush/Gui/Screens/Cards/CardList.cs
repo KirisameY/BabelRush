@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-using BabelRush.Cards;
 using BabelRush.Gui.Cards;
 
 using Godot;
@@ -14,37 +13,39 @@ using KirisameLib.Godot.Extensions;
 namespace BabelRush.Gui.Screens.Cards;
 
 [EventHandlerContainer]
-public partial class CardList : Control
+internal partial class CardList : Control
 {
     // Sub nodes & fields
     [field: AllowNull, MaybeNull]
     private GridContainer Container => field ??= GetNode<GridContainer>("MarginContainer/GridContainer");
 
-    private readonly HashSet<CardInterface> _cards = [];
+    private readonly Dictionary<CardInterface, CardControl> _cardDict = new();
 
 
     // Public
     public event Action<CardInterface?>? CardSelected;
 
-    public void Add(CardInterface card)
+    public void Add(CardInterface ci)
     {
-        if (!_cards.Add(card)) return;
+        if (_cardDict.ContainsKey(ci)) return;
 
-        Container.AddChild(card);
+        ci.Selectable = true;
+        var cc = _cardDict[ci] = new CardControl(ci);
+        Container.AddChild(cc);
     }
 
     public void AddRange(IEnumerable<CardInterface> cards) => cards.ForEach(Add);
 
-    public void Remove(CardInterface card)
+    public void Remove(CardInterface ci)
     {
-        if (!_cards.Remove(card)) return;
+        if (!_cardDict.Remove(ci, out var cc)) return;
 
-        Container.RemoveChild(card);
+        Container.RemoveChild(cc);
     }
 
     public void Clear()
     {
-        _cards.Clear();
+        _cardDict.Clear();
         Container.RemoveChildren();
     }
 
@@ -64,18 +65,19 @@ public partial class CardList : Control
     private void OnCardInterfaceSelected(CardInterfaceSelectedEvent e)
     {
         var ci = e.CardInterface;
-        if (!_cards.Contains(ci)) return;
+        if (!_cardDict.ContainsKey(ci)) return;
 
+        //todo: temp visual effect, to be replaced
         ci.YPosTween?.Kill();
         var tween = ci.YPosTween = CreateTween();
-        tween.TweenProperty(ci, CardInterface.NodePaths.PositionY, e.Selected ? -16 : 0, 0.1f);
+        tween.TweenProperty(ci, CardInterface.NodePaths.PositionY, e.Selected ? 34 : 36, 0.1f);
     }
 
     [EventHandler]
     private void OnCardInterfaceClicked(CardInterfaceClickedEvent e)
     {
         var ci = e.CardInterface;
-        if (!_cards.Contains(ci)) return;
+        if (!_cardDict.ContainsKey(ci)) return;
 
         CardSelected?.Invoke(ci);
     }

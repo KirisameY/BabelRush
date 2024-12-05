@@ -11,7 +11,6 @@ using BabelRush.Scenery;
 using Godot;
 
 using KirisameLib.Event;
-using KirisameLib.Event.Generated;
 
 using MobInterface = BabelRush.Gui.Mobs.MobInterface;
 

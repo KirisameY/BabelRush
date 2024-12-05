@@ -4,8 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BabelRush.I18n;
+
 using Godot;
 
+using KirisameLib.Data.I18n;
 using KirisameLib.Event;
 using KirisameLib.Event.Generated;
 using KirisameLib.Logging;
@@ -37,6 +40,20 @@ public partial class Game : SceneTree
 
     private static readonly DelayedEventBus InnerEventBus = new();
     public static EventBus EventBus => InnerEventBus;
+
+    public static class Localization
+    {
+        static Localization()
+        {
+            LocalizedRegister.LocalChangedEvent += static (prev, current) => EventBus.Publish(new LocalChangedEvent(prev, current));
+        }
+
+        public static string Local
+        {
+            get => LocalizedRegister.Local;
+            set => LocalizedRegister.Local = value;
+        }
+    }
 
 
     //Initialization
@@ -80,7 +97,13 @@ public partial class Game : SceneTree
     {
         var result = base._Process(delta);
 
-        InnerEventBus.HandleEvent();
+        //Event Cycle
+        try { InnerEventBus.HandleEvent(); }
+        catch (QueueEventHandlingException e)
+        {
+            Logger.Log(LogLevel.Error, "EventHandling", e.Message);
+            Logger.Log(LogLevel.Debug, "EventHandling", e.StackTrace ?? "no stack trace");
+        }
 
         return result;
     }

@@ -1,5 +1,10 @@
+using System.Diagnostics.CodeAnalysis;
+
 using BabelRush.Cards;
 using BabelRush.GamePlay;
+using BabelRush.Gui.Misc;
+using BabelRush.I18n;
+using BabelRush.Registers;
 
 using Godot;
 
@@ -12,11 +17,11 @@ public partial class ApBar : Control
 {
     #region Sub nodes
 
-    private Sprite2D? _apBall;
-    private Sprite2D ApBall => _apBall ??= GetNode<Sprite2D>("ApBall");
+    [field: AllowNull, MaybeNull]
+    private Sprite2D ApBall => field ??= GetNode<Sprite2D>("ApBall");
 
-    private Label? _cardNameLabel;
-    private Label CardNameLabel => _cardNameLabel ??= GetNode<Label>("CardNameLabel");
+    [field: AllowNull, MaybeNull]
+    private Label CardNameLabel => field ??= GetNode<Label>("CardNameLabel");
 
     #endregion
 
@@ -25,6 +30,21 @@ public partial class ApBar : Control
     private static readonly StringName StringNameSetValue = "SetValue";
     private static readonly StringName StringNameSetRate = "SetRate";
 
+    private bool _ready = false;
+
+    private void UpdateAll()
+    {
+        UpdateAp();
+        UpdateApRate();
+        UpdateFont();
+    }
+
+    private void UpdateFont()
+    {
+        var fontInfo = LocalInfoRegisters.FontInfo.GetItem("title");
+        CardNameLabel.LabelSettings.Font = fontInfo.Font;
+        CardNameLabel.LabelSettings.FontSize = fontInfo.Size;
+    }
 
     private void UpdateAp() => ApBall.Call(StringNameSetValue,    Play.PlayerState.Ap);
     private void UpdateApRate() => ApBall.Call(StringNameSetRate, Play.PlayerState.ApRegenerated);
@@ -33,8 +53,8 @@ public partial class ApBar : Control
     //Override
     public override void _Ready()
     {
-        UpdateAp();
-        UpdateApRate();
+        UpdateAll();
+        _ready = true;
     }
 
     public override void _Process(double delta)
@@ -45,6 +65,7 @@ public partial class ApBar : Control
     public override void _EnterTree()
     {
         SubscribeInstanceHandler(Game.EventBus);
+        if (_ready) UpdateAll();
     }
 
     public override void _ExitTree()
@@ -65,5 +86,11 @@ public partial class ApBar : Control
     private void OnCardSelected(CardSelectedEvent e)
     {
         CardNameLabel.Text = e.Selected ? e.Card.Type.NameDesc.Name : "";
+    }
+
+    [EventHandler]
+    private void OnLocalChanged(LocalChangedEvent e)
+    {
+        UpdateFont();
     }
 }

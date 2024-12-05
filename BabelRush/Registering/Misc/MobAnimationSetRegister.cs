@@ -1,20 +1,23 @@
+using System;
 using System.Collections.Generic;
 
+using BabelRush.I18n;
 using BabelRush.Mobs.Animation;
 
-using KirisameLib.Data.I18n;
 using KirisameLib.Data.Register;
+using KirisameLib.Event;
 
 namespace BabelRush.Registering.Misc;
 
-internal class MobAnimationSetRegister : IRegister<MobAnimationSet>
+[EventHandlerContainer]
+internal sealed partial class MobAnimationSetRegister : IRegister<MobAnimationSet>
 {
     private readonly MobAnimationSet _defaultSet;
 
     public MobAnimationSetRegister(MobAnimationSet defaultSet)
     {
         _defaultSet = defaultSet;
-        LocalizedRegister.LocalChangedEvent += OnLocalChanged;
+        SubscribeInstanceHandler(Game.EventBus);
     }
 
     private Dictionary<string, List<MobAnimationModel>> BaseRegDict { get; } = new();
@@ -23,7 +26,7 @@ internal class MobAnimationSetRegister : IRegister<MobAnimationSet>
 
     public MobAnimationSet GetItem(string id)
     {
-        string local = LocalizedRegister.Local;
+        string local = Game.Localization.Local;
 
         if (Cache.TryGetValue(id, out var cache) && !cache.dirty) return cache.value;
 
@@ -45,7 +48,7 @@ internal class MobAnimationSetRegister : IRegister<MobAnimationSet>
     public bool ItemRegistered(string id)
     {
         return BaseRegDict.ContainsKey(id) ||
-            (LocalRegDict.TryGetValue(LocalizedRegister.Local, out var reg) && reg.ContainsKey(id));
+            (LocalRegDict.TryGetValue(Game.Localization.Local, out var reg) && reg.ContainsKey(id));
     }
 
     public bool RegisterDefault(string id, MobAnimationModel animation)
@@ -65,9 +68,10 @@ internal class MobAnimationSetRegister : IRegister<MobAnimationSet>
         sort.Add(animation);
         return true;
     }
-    
+
     //EventHandler
-    private void OnLocalChanged(string prev, string next)
+    [EventHandler]
+    private void OnLocalChanged(LocalChangedEvent e)
     {
         foreach (var id in Cache.Keys)
         {

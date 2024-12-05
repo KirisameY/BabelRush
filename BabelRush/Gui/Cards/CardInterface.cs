@@ -19,6 +19,7 @@ public partial class CardInterface : Node2D
     {
         CardInterface instance = CreateInstance();
         instance.Card = card;
+        instance.Selectable = false;
         return instance;
     }
 
@@ -114,15 +115,14 @@ public partial class CardInterface : Node2D
 
     //Select
     private bool _preSelected, _prePressed;
-    private bool _selectable;
     public bool Selectable
     {
-        get => _selectable;
+        get;
         set
         {
-            if (_selectable == value) return;
-            _selectable = value;
-            if (_selectable)
+            if (field == value) return;
+            field = value;
+            if (field)
             {
                 Selected = _preSelected;
                 Pressed = _prePressed;

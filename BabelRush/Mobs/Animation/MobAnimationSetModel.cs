@@ -17,8 +17,8 @@ namespace BabelRush.Mobs.Animation;
 [Model]
 internal partial class MobAnimationModel : IResModel<MobAnimationModel>
 {
-    [NecessaryProperty]
-    public partial string Id { get; set; }
+    [IgnoreDataMember]
+    public string Id { get; private set; } = "";
     [NecessaryProperty]
     public partial int Columns { get; set; }
     [NecessaryProperty]
@@ -41,10 +41,10 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
     public Dictionary<int, float> FrameTimeScale { get; set; } = [];
     public string? BeforeAnimation { get; set; }
     public string? AfterAnimation { get; set; }
-    
+
 
     public MobAnimationModel Convert() => this;
-    
+
     public static IReadOnlyCollection<IModel<MobAnimationModel>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         List<string> errors = [];
@@ -67,12 +67,14 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
         }
         if (!model.Check(out var checkErrors))
         {
-            errorMessages = new(errors.Count, errors.ToArray());
             errors.AddRange(checkErrors);
+            errorMessages = new(errors.Count, errors.ToArray());
+            return [];
         }
 
-        model.FrameAtlas = ImageTexture.CreateFromImage(DataUtils.LoadImageFromPngBuffer(pngFile!));
         errorMessages = new(errors.Count, errors.ToArray());
+        model.FrameAtlas = ImageTexture.CreateFromImage(DataUtils.LoadImageFromPngBuffer(pngFile!));
+        model.Id = source.Id;
         return [model];
     }
 }
