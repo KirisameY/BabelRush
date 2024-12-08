@@ -1,0 +1,14 @@
+[gd_resource type="LabelSettings" load_steps=3 format=3 uid="uid://ccjqynydavp3x"]
+
+[ext_resource type="FontFile" uid="uid://bv3mttrhsnlet" path="res://meta_res/fonts/Silver.ttf" id="1_i3sul"]
+
+[sub_resource type="FontVariation" id="FontVariation_fyjyf"]
+base_font = ExtResource("1_i3sul")
+spacing_top = 1
+spacing_bottom = -7
+
+[resource]
+font = SubResource("FontVariation_fyjyf")
+font_size = 19
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)

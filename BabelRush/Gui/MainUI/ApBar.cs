@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Cards;
 using BabelRush.GamePlay;
-using BabelRush.Gui.Misc;
 using BabelRush.I18n;
 using BabelRush.Registers;
 

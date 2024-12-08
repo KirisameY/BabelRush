@@ -1,7 +1,0 @@
-[gd_resource type="LabelSettings" load_steps=2 format=3 uid="uid://bui2dgy7av84u"]
-
-[ext_resource type="FontFile" uid="uid://bv3mttrhsnlet" path="res://assets/meta_res/fonts/Silver.ttf" id="1_lmrop"]
-
-[resource]
-font = ExtResource("1_lmrop")
-font_size = 19
