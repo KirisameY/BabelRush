@@ -6,7 +6,7 @@ using BabelRush.Data;
 
 using Godot;
 
-using KirisameLib.Core.Extensions;
+using KirisameLib.Extensions;
 
 namespace BabelRush.Mobs.Animation;
 

@@ -6,7 +6,7 @@ using BabelRush.Gui.Cards;
 
 using Godot;
 
-using KirisameLib.Core.Extensions;
+using KirisameLib.Extensions;
 
 namespace BabelRush.Gui.Screens.Cards;
 

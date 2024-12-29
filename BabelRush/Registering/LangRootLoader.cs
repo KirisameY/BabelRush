@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using KirisameLib.Core.Extensions;
+using KirisameLib.Extensions;
 using KirisameLib.Data.FileLoading;
 using KirisameLib.Logging;
 

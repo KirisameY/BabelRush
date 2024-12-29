@@ -4,7 +4,7 @@ using System.Linq;
 
 using BabelRush.Mobs;
 
-using KirisameLib.Core.Collections;
+using KirisameLib.Collections;
 using KirisameLib.Event;
 using KirisameLib.Logging;
 

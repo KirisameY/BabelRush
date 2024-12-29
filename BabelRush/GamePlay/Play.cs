@@ -5,8 +5,8 @@ using BabelRush.Mobs;
 using BabelRush.Scenery;
 using BabelRush.Scenery.Collision;
 
-using KirisameLib.Core.RandomAsteroid;
-using KirisameLib.Core.RandomAsteroid.RandomGenerators;
+using KirisameLib.Randomization;
+using KirisameLib.Randomization.RandomGenerators;
 using KirisameLib.Event;
 using KirisameLib.Logging;
 

@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 using BabelRush.Data;
 
-using KirisameLib.Core.Asynchronous;
-using KirisameLib.Core.Extensions;
+using KirisameLib.Asynchronous;
+using KirisameLib.Extensions;
 using KirisameLib.Data.FileLoading;
 using KirisameLib.Data.Registration;
 using KirisameLib.Logging;

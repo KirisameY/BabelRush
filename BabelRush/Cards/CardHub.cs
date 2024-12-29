@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 using BabelRush.GamePlay;
 
-using KirisameLib.Core.Collections;
+using KirisameLib.Collections;
 using KirisameLib.Event;
-using KirisameLib.Core.RandomAsteroid;
+using KirisameLib.Randomization;
 
 namespace BabelRush.Cards;
 
