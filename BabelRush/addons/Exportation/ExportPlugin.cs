@@ -18,7 +18,7 @@ public partial class ExportPlugin : EditorExportPlugin
 
     //Exporting
     private const string ResPath = "res://assets/";
-    private const string ResPackPath = "resources.zip";
+    private const string ResPackPath = "assets.zip";
 
     private ZipArchive _resPack = null!;
 
