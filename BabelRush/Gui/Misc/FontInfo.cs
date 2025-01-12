@@ -35,7 +35,7 @@ internal partial class FontInfoModel : IResModel<FontInfo>
 
     public static IReadOnlyCollection<IModel<FontInfo>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
-        if (!source.Files.TryGetValue("toml", out var toml))
+        if (!source.Files.TryGetValue(".toml", out var toml))
         {
             errorMessages = new(1, ["toml file not found"]);
             return [];

@@ -28,19 +28,19 @@ size_flags_horizontal = 3
 size_flags_vertical = 6
 bbcode_enabled = true
 text = "[font size=4] [/font]
-[outline_size=4][font name=res://assets/meta_res/fonts/Silver.ttf size=19 top=1 bt=-7][center]Card Name[/center][/font][/outline_size]
+[outline_size=4][font name=res://meta_res/fonts/Silver.ttf size=19 top=1 bt=-7][center]Card Name[/center][/font][/outline_size]
 [font size=8] [/font]
-[outline_size=2][font name=res://assets/meta_res/fonts/MuzaiPixel.ttf size=12 top=1 bt=1][img height=10 width=10]res://assets/meta_res/sprites/card/costx.png[/img] [color=#ffff00]feature_name[/color] 12[/font][/outline_size]
-[outline_size=1][font name=res://assets/meta_res/fonts/QuanPixel.ttf size=8 top=2][color=e0e0e0]Description lorem ipsum dolor sit amet, vel ea dissentiet liberavisse, per inermis corpora insolens cu. At veritus delicata corrumpit per.[/color][/font][/outline_size]
+[outline_size=2][font name=res://meta_res/fonts/MuzaiPixel.ttf size=12 top=1 bt=1][img height=10 width=10]res://meta_res/sprites/card/costx.png[/img] [color=#ffff00]feature_name[/color] 12[/font][/outline_size]
+[outline_size=1][font name=res://meta_res/fonts/QuanPixel.ttf size=8 top=2][color=e0e0e0]Description lorem ipsum dolor sit amet, vel ea dissentiet liberavisse, per inermis corpora insolens cu. At veritus delicata corrumpit per.[/color][/font][/outline_size]
 [font size=4] [/font]
-[outline_size=2][font name=res://assets/meta_res/fonts/MuzaiPixel.ttf size=12 top=1 bt=1][img height=10 width=10]res://assets/meta_res/sprites/card/costx.png[/img] [color=#ffff00]feature_name[/color] 12[/font][/outline_size]
-[outline_size=1][font name=res://assets/meta_res/fonts/QuanPixel.ttf size=8 top=2][color=e0e0e0]仅丝及迫语劳望副银术置来。否务西这共垂！蛋乐封任镇控少财进起雷等分。装岩类冷消理。态历省又你例齐阿测，委包对要营先。侵川那二及素，压类受怀沙巴散女类许飞。[/color][/font][/outline_size]
+[outline_size=2][font name=res://meta_res/fonts/MuzaiPixel.ttf size=12 top=1 bt=1][img height=10 width=10]res://meta_res/sprites/card/costx.png[/img] [color=#ffff00]feature_name[/color] 12[/font][/outline_size]
+[outline_size=1][font name=res://meta_res/fonts/QuanPixel.ttf size=8 top=2][color=e0e0e0]仅丝及迫语劳望副银术置来。否务西这共垂！蛋乐封任镇控少财进起雷等分。装岩类冷消理。态历省又你例齐阿测，委包对要营先。侵川那二及素，压类受怀沙巴散女类许飞。[/color][/font][/outline_size]
 [font size=4] [/font]
-[outline_size=2][font name=res://assets/meta_res/fonts/MuzaiPixel.ttf size=12 top=1 bt=1][img height=10 width=10]res://assets/meta_res/sprites/card/costx.png[/img] [color=#00ffff]action_name[/color] 14[/font][/outline_size]
-[outline_size=1][font name=res://assets/meta_res/fonts/QuanPixel.ttf size=8 top=2][color=e0e0e0]断理誕果上定良色見静富掲毎斉碁使研。高外中像著日強共買医地時図能。北次保着極最変検新神包辞子尾離質守流罪。相飲大検祭県冬人上企嘘犯持新惜構文。[/color][/font][/outline_size]
+[outline_size=2][font name=res://meta_res/fonts/MuzaiPixel.ttf size=12 top=1 bt=1][img height=10 width=10]res://meta_res/sprites/card/costx.png[/img] [color=#00ffff]action_name[/color] 14[/font][/outline_size]
+[outline_size=1][font name=res://meta_res/fonts/QuanPixel.ttf size=8 top=2][color=e0e0e0]断理誕果上定良色見静富掲毎斉碁使研。高外中像著日強共買医地時図能。北次保着極最変検新神包辞子尾離質守流罪。相飲大検祭県冬人上企嘘犯持新惜構文。[/color][/font][/outline_size]
 [font size=4] [/font]
-[outline_size=2][font name=res://assets/meta_res/fonts/MuzaiPixel.ttf size=12 top=1 bt=1][img height=10 width=10]res://assets/meta_res/sprites/card/costx.png[/img] [color=#00ffff]action_name[/color] 14[/font][/outline_size]
-[outline_size=1][font name=res://assets/meta_res/fonts/QuanPixel.ttf size=8 top=2][color=e0e0e0]業とやべ近血ウキシミ城多んぎ込修ロ述索ア本府た会建就アタ竹一よぜ段1万コ王画ばラい字39撤でてくす以税づん賞針ばづます芸逃テレヲナ志勤ど。[/color][/font][/outline_size]
+[outline_size=2][font name=res://meta_res/fonts/MuzaiPixel.ttf size=12 top=1 bt=1][img height=10 width=10]res://meta_res/sprites/card/costx.png[/img] [color=#00ffff]action_name[/color] 14[/font][/outline_size]
+[outline_size=1][font name=res://meta_res/fonts/QuanPixel.ttf size=8 top=2][color=e0e0e0]業とやべ近血ウキシミ城多んぎ込修ロ述索ア本府た会建就アタ竹一よぜ段1万コ王画ばラい字39撤でてくす以税づん賞針ばづます芸逃テレヲナ志勤ど。[/color][/font][/outline_size]
 [font size=8] [/font]"
 fit_content = true
 scroll_active = false

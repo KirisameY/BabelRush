@@ -50,8 +50,8 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
         List<string> errors = [];
 
         //check file existence
-        if (!source.Files.TryGetValue("toml", out var tomlFile)) errors.Add("Missing toml configuration file");
-        if (!source.Files.TryGetValue("png",  out var pngFile)) errors.Add("Missing png resource file");
+        if (!source.Files.TryGetValue(".toml", out var tomlFile)) errors.Add("Missing toml configuration file");
+        if (!source.Files.TryGetValue(".png",  out var pngFile)) errors.Add("Missing png resource file");
         if (errors.Count > 0)
         {
             errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());

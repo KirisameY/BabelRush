@@ -1,16 +1,20 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
 using BabelRush.I18n;
+using BabelRush.Registering;
 
 using Godot;
 
 using KirisameLib.Data.I18n;
 using KirisameLib.Event;
 using KirisameLib.Event.Generated;
+using KirisameLib.FileSys;
 using KirisameLib.Logging;
 using KirisameLib.Godot.IO;
 
@@ -68,6 +72,11 @@ public partial class Game : SceneTree
         base._Initialize();
 
         Logger.Log(LogLevel.Info, "Initializing", "Game class loaded");
+
+        // 回头可以把这个拿走到单独的地方，但现在为了不叠不必要的任务栈影响开发，先这样
+        Logger.Log(LogLevel.Info, "Initializing", "Loading assets...");
+        LoadAssets();
+        Logger.Log(LogLevel.Info, "Initializing", "Assets loading completed");
     }
 
     private static void LogInitialize()
@@ -89,6 +98,58 @@ public partial class Game : SceneTree
         LogBus = new WriterLogBus(Project.Logging.MinLogLevel,
                                   new StreamWriter(logFile, Encoding.UTF8),
                                   new GdConsoleWriter());
+    }
+
+    private static void LoadAssets()
+    {
+        BabelRushGenerated.BabelRush.RegisterMap.Register();
+
+    #if TOOLS
+        var root = new DirectoryInfo("./assets").ToReadableDirectory();
+        if (!root.Exists)
+        {
+            Logger.Log(LogLevel.Error, "LoadingAssets", "Assets directory not found");
+            return;
+        }
+    #else
+        var zipInfo = new FileInfo("./assets.zip");
+        if (!zipInfo.Exists)
+        {
+            Logger.Log(LogLevel.Error, "LoadingAssets", "Assets zip file not found");
+            return;
+        }
+        using var zip = ZipFile.OpenRead(zipInfo.FullName);
+        var root = zip.ToReadableDirectory(zipInfo.FullName);
+    #endif
+
+        Stack<(IReadableDirectory dir, IEnumerator<IReadableDirectory> children)> dirStack = new();
+        // ReSharper disable once GenericEnumeratorNotDisposed
+        dirStack.Push((root, root.Directories.GetEnumerator()));
+        using MemoryStream buffer = new();
+        while (dirStack.TryPeek(out var info))
+        {
+            var (dir, children) = info;
+            if (children.MoveNext())
+            {
+                // ReSharper disable once GenericEnumeratorNotDisposed
+                FileLoader.EnterDirectory(children.Current.Name);
+                dirStack.Push((children.Current, children.Current.Directories.GetEnumerator()));
+                continue;
+            }
+
+            foreach (var file in dir.Files)
+            {
+                buffer.SetLength(0);
+                buffer.Position = 0;
+                using var fileStream = file.OpenRead();
+                fileStream.CopyTo(buffer);
+                FileLoader.LoadFile(file.Name, buffer.ToArray());
+            }
+
+            FileLoader.ExitDirectory();
+            children.Dispose();
+            dirStack.Pop();
+        }
     }
 
 

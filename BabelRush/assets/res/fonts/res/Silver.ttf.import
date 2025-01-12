@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://b8dpsxsp5jmx2"
-path="res://.godot/imported/Silver.ttf-79d10de8ef00c10c97012358d7c3cf70.fontdata"
+path="res://.godot/imported/Silver.ttf-82bd1853dd647ea90b66f04e9dfc41cc.fontdata"
 
 [deps]
 
-source_file="res://assets/res/fonts/Silver.ttf"
-dest_files=["res://.godot/imported/Silver.ttf-79d10de8ef00c10c97012358d7c3cf70.fontdata"]
+source_file="res://assets/res/fonts/res/Silver.ttf"
+dest_files=["res://.godot/imported/Silver.ttf-82bd1853dd647ea90b66f04e9dfc41cc.fontdata"]
 
 [params]
 

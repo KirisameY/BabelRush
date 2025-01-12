@@ -37,7 +37,7 @@ public static class FileLoader
 
     #region State
 
-    private static LinkedList<string> DirectoryStack { get; } = new();
+    private static LinkedList<string> DirectoryStack { get; } = [];
     private static RootLoader? CurrentRootLoader { get; set; }
     internal static string CurrentLocal { get; private set; } = "";
     internal static string CurrentLocalInfo => CurrentLocal == "" ? "general directory" : $"local: {CurrentLocal}";
@@ -72,6 +72,8 @@ public static class FileLoader
 
     public static void ExitDirectory()
     {
+        if (DirectoryStack.Count == 0) return;
+
         if (CurrentRootLoader is null)
         {
             DirectoryStack.RemoveLast();

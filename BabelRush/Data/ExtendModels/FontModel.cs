@@ -19,7 +19,7 @@ public class FontModel(string id, Font font) : IResModel<Font>
     public static IReadOnlyCollection<IModel<Font>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         Font font;
-        switch (source.Files.TryGetValue("ttf", out var ttf), source.Files.TryGetValue("otf", out var otf))
+        switch (source.Files.TryGetValue(".ttf", out var ttf), source.Files.TryGetValue(".otf", out var otf))
         {
             case (true, true):
                 errorMessages = new(1, ["both otf and ttf file found"]);
@@ -35,7 +35,7 @@ public class FontModel(string id, Font font) : IResModel<Font>
                 break;
         }
 
-        if (!source.Files.TryGetValue("toml", out var toml))
+        if (!source.Files.TryGetValue(".toml", out var toml))
         {
             errorMessages = ModelParseErrorInfo.Empty;
             return [new FontModel(source.Id, font)];

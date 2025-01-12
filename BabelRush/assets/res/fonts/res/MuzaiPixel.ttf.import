@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://bkh7avl5g215y"
-path="res://.godot/imported/MuzaiPixel.ttf-e4bf3655f62243ac24a7454b25b959cb.fontdata"
+path="res://.godot/imported/MuzaiPixel.ttf-80139b6f1268e6ad518190d692d03041.fontdata"
 
 [deps]
 
-source_file="res://assets/res/fonts/MuzaiPixel.ttf"
-dest_files=["res://.godot/imported/MuzaiPixel.ttf-e4bf3655f62243ac24a7454b25b959cb.fontdata"]
+source_file="res://assets/res/fonts/res/MuzaiPixel.ttf"
+dest_files=["res://.godot/imported/MuzaiPixel.ttf-80139b6f1268e6ad518190d692d03041.fontdata"]
 
 [params]
 

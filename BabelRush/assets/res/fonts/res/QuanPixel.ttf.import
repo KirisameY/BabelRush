@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://7g7qigh1frso"
-path="res://.godot/imported/QuanPixel.ttf-f89e89bddf49dbc2738dec11220e5273.fontdata"
+path="res://.godot/imported/QuanPixel.ttf-60a67fbb620f2122facb6276e00abe48.fontdata"
 
 [deps]
 
-source_file="res://assets/res/fonts/QuanPixel.ttf"
-dest_files=["res://.godot/imported/QuanPixel.ttf-f89e89bddf49dbc2738dec11220e5273.fontdata"]
+source_file="res://assets/res/fonts/res/QuanPixel.ttf"
+dest_files=["res://.godot/imported/QuanPixel.ttf-60a67fbb620f2122facb6276e00abe48.fontdata"]
 
 [params]
 

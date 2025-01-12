@@ -14,7 +14,7 @@ public class Texture2DModel(string id, Texture2D texture) : IResModel<Texture2D>
 
     public static IReadOnlyCollection<IModel<Texture2D>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
-        if (!source.Files.TryGetValue("png", out var file))
+        if (!source.Files.TryGetValue(".png", out var file))
         {
             errorMessages = new(1, ["png file not found"]);
             return [];
