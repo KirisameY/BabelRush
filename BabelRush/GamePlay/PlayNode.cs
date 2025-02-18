@@ -31,8 +31,8 @@ public partial class PlayNode : Node
         get
         {
             if (field is not null) return field;
-            Logger.Log(LogLevel.Error, "Process", "Process is null! This should not happen!");
-            throw new InvalidOperationException("Process is null! This should not happen!");
+            Logger.Log(LogLevel.Error, "Process", "Process delegate is null! This should not happen!");
+            throw new InvalidOperationException("Process delegate is null! This should not happen!");
         }
         set;
     }

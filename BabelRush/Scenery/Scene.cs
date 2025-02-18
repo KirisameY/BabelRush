@@ -13,7 +13,8 @@ namespace BabelRush.Scenery;
 
 public sealed class Scene : IDisposable
 {
-    //Initialize&Cleanup
+    #region Initialize&Cleanup
+
     public void Ready()
     {
         CollisionSpace.Ready();
@@ -28,9 +29,11 @@ public sealed class Scene : IDisposable
         Node.QueueFree();
     }
 
+    #endregion
+
 
     //Node
-    public Node2D Node { get; } = new();
+    public Node2D Node { get; } = new(); //todo: Remove this shit
 
 
     //Rooms
@@ -89,7 +92,7 @@ public sealed class Scene : IDisposable
     {
         CollisionSpace.RemoveObject(obj);
         if (obj is VisualObject vObj)
-            Node.RemoveChild(vObj.CreateInterface());
+            Node.RemoveChild(vObj.CreateInterface()); //todo: WHAT THE FUCK?
     }
 
 

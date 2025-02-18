@@ -15,17 +15,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\KirisameLib\KirisameLib.Core\KirisameLib.Core.csproj"/>
-        <ProjectReference Include="..\..\KirisameLib\KirisameLib.Data\KirisameLib.Data.csproj"/>
-        <ProjectReference Include="..\..\KirisameLib\KirisameLib.Event\KirisameLib.Event.csproj"/>
-        <ProjectReference Include="..\..\KirisameLib\KirisameLib.Logging\KirisameLib.Logging.csproj"/>
-        <ProjectReference Include="..\..\KirisameLib\KirisameLib.Godot\KirisameLib.Godot.csproj"/>
+        <PackageReference Include="KirisameLib.Core" Version="0.1.0"/>
+        <PackageReference Include="KirisameLib.Data" Version="0.1.1" />
+        <PackageReference Include="KirisameLib.Event" Version="0.1.1" />
+        <PackageReference Include="KirisameLib.Godot" Version="0.1.0" />
+        <PackageReference Include="KirisameLib.Logging" Version="0.1.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj"
-                          OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
-        <ProjectReference Include="..\..\KirisameLib\KirisameLib.Event.SourceGenerator\KirisameLib.Event.SourceGenerator.csproj"
                           OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 

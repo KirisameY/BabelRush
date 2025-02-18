@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text;
 
@@ -131,8 +130,8 @@ public partial class Game : SceneTree
             var (dir, children) = info;
             if (children.MoveNext())
             {
-                // ReSharper disable once GenericEnumeratorNotDisposed
                 FileLoader.EnterDirectory(children.Current.Name);
+                // ReSharper disable once GenericEnumeratorNotDisposed
                 dirStack.Push((children.Current, children.Current.Directories.GetEnumerator()));
                 continue;
             }
