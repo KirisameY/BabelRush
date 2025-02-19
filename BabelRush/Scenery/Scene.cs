@@ -65,7 +65,7 @@ public sealed class Scene : IDisposable
         }
 
         //setup room
-        Node.AddChild(RoomNode.GetInstance(room.Position, room.Length));
+        Node.AddChild(Gui.Scenery.RoomInterface.GetInstance(room.Position, room.Length));
 
         foreach ((MobType mobType1, Alignment alignment1, int pos1) in room.Mobs)
         {
@@ -81,18 +81,25 @@ public sealed class Scene : IDisposable
 
 
     //Objects
+    private readonly Dictionary<VisualObject, Node> _objectInterfaces = new();
+
     public void AddObject(SceneObject obj)
     {
         CollisionSpace.AddObject(obj);
-        if (obj is VisualObject vObj)
-            Node.AddChild(vObj.CreateInterface());
+
+        if (obj is not VisualObject vObj) return;
+        var objI = vObj.CreateInterface();
+        if (_objectInterfaces.TryAdd(vObj, objI))
+            Node.AddChild(objI);
     }
 
     public void RemoveObject(SceneObject obj)
     {
         CollisionSpace.RemoveObject(obj);
-        if (obj is VisualObject vObj)
-            Node.RemoveChild(vObj.CreateInterface()); //todo: WHAT THE FUCK?
+
+        if (obj is not VisualObject vObj) return;
+        if (_objectInterfaces.Remove(vObj, out var objI))
+            Node.RemoveChild(objI);
     }
 
 

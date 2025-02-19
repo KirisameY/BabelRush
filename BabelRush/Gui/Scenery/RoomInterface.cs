@@ -1,16 +1,16 @@
 using Godot;
 
-namespace BabelRush.Scenery;
+namespace BabelRush.Gui.Scenery;
 
-public partial class RoomNode : Node2D
+public partial class RoomInterface : Node2D
 {
     //Getter
-    private RoomNode() { }
-    private static PackedScene Scene { get; } = ResourceLoader.Load<PackedScene>("res://Scenery/Room.tscn");
+    private RoomInterface() { }
+    private static PackedScene Scene { get; } = ResourceLoader.Load<PackedScene>("res://Gui/Scenery/Room.tscn");
 
-    public static RoomNode GetInstance(int position, int size)
+    public static RoomInterface GetInstance(int position, int size)
     {
-        var instance = Scene.Instantiate<RoomNode>();
+        var instance = Scene.Instantiate<RoomInterface>();
         instance.Position = new(position, 0);
         instance.Size = size;
         return instance;
@@ -18,6 +18,7 @@ public partial class RoomNode : Node2D
 
 
     //Properties
+    // temp display
     private Control? _endNode;
     private Control EndNode => _endNode ??= GetNode<Control>("End");
 
