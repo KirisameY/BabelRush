@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using BabelRush.GamePlay;
 using BabelRush.Mobs;
 using BabelRush.Scenery.Collision;
+using BabelRush.Scenery.Rooms;
 
 using Godot;
 
@@ -46,32 +47,33 @@ public sealed class Scene : IDisposable
     /// </summary>
     /// <param name="room">The room to be added.</param>
     /// <param name="toRight">Indicates whether the room should be added to the right or left of the current rooms.</param>
-    public void AddRoom(Room room, bool toRight)
+    public void AddRoom(RoomTemplate room, bool toRight)
     {
         const string logProcess = "AddingRoom";
+        var r = room.CreateRoom();
         if (toRight)
         {
-            _rooms.AddLast(room);
-            room.Position = _rightEdge;
-            _rightEdge += room.Length;
-            Logger.Log(LogLevel.Info, logProcess, $"Added room {room} to the right, new right edge: {_rightEdge}");
+            _rooms.AddLast(r);
+            r.Position = _rightEdge;
+            _rightEdge += r.Length;
+            Logger.Log(LogLevel.Info, logProcess, $"Added room {r} to the right, new right edge: {_rightEdge}");
         }
         else
         {
-            _rooms.AddFirst(room);
-            _leftEdge -= room.Length;
-            room.Position = _leftEdge;
-            Logger.Log(LogLevel.Info, logProcess, $"Added room {room} to the left, new left edge: {_leftEdge}");
+            _rooms.AddFirst(r);
+            _leftEdge -= r.Length;
+            r.Position = _leftEdge;
+            Logger.Log(LogLevel.Info, logProcess, $"Added room {r} to the left, new left edge: {_leftEdge}");
         }
 
         //setup room
-        Node.AddChild(Gui.Scenery.RoomInterface.GetInstance(room.Position, room.Length));
+        Node.AddChild(Gui.Scenery.RoomInterface.GetInstance(r.Position, r.Length));
 
-        foreach ((MobType mobType1, Alignment alignment1, int pos1) in room.Mobs)
+        foreach ((Func<SceneObject> newObj, int pos) in room.Objects)
         {
-            var mob1 = mobType1.GetInstance(alignment1);
-            mob1.Position = pos1 + room.Position;
-            AddObject(mob1);
+            var obj = newObj();
+            obj.Position = pos + r.Position;
+            AddObject(obj);
         }
     }
 
