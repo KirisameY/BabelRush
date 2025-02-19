@@ -15,11 +15,11 @@ public sealed class Scene : IDisposable
 {
     #region Initialize&Cleanup
 
-    public void Ready()
+    public void Ready(Node parent)
     {
         CollisionSpace.Ready();
-        Play.Node.AddChild(Node);
-        Play.Node.MoveChild(Node, 0);
+        parent.AddChild(Node);
+        parent.MoveChild(Node, 0);
         Node.Name = "Scene";
     }
 

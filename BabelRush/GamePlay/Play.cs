@@ -13,7 +13,7 @@ using KirisameLib.Logging;
 namespace BabelRush.GamePlay;
 
 [EventHandlerContainer]
-public partial class Play
+public sealed partial class Play
 {
     #region Singleton & Initialize
 
@@ -100,7 +100,7 @@ public partial class Play
             Instance._scene.Dispose();
             Instance._scene = value;
             value.CollisionSpace.AddArea(ScreenArea);
-            Node.AddChild(value.Node);
+            value.Ready(Node);
         }
     }
 
