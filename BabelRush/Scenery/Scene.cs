@@ -69,9 +69,9 @@ public sealed class Scene : IDisposable
         //setup room
         Node.AddChild(Gui.Scenery.RoomInterface.GetInstance(r.Position, r.Length));
 
-        foreach ((Func<SceneObject> newObj, int pos) in room.Objects)
+        foreach ((RoomObject roomObj, double pos) in room.Objects)
         {
-            var obj = newObj();
+            var obj = roomObj.CreateObject();
             obj.Position = pos + r.Position;
             AddObject(obj);
         }
