@@ -10,6 +10,7 @@
         <option value="$PROJECT_DIR$/BabelRush.Generator/obj" />
         <option value="$PROJECT_DIR$/BabelRush.Generator/bin" />
         <option value="$PROJECT_DIR$/KirisameLib/obj" />
+        <option value="$PROJECT_DIR$/.build" />
       </list>
     </option>
   </component>
