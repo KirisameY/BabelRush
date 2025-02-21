@@ -1,9 +1,7 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Numerics;
 using BabelRush.Scenery;
-using BabelRush.Utils;
 
 using Godot;
 
@@ -14,7 +12,7 @@ namespace BabelRush.Mobs;
 public class Mob(MobType type, Alignment alignment) : VisualObject
 {
     //Properties
-    public MobType Type { get; } = type;
+    public MobType Type => type;
 
     [field: AllowNull, MaybeNull]
     public Numeric<int> MaxHealth => field ??=
