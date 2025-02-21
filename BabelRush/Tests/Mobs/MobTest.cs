@@ -27,12 +27,12 @@ public partial class MobTest : Node2D
 
     public void SetMobMaxHealth(int value)
     {
-        if (MobInterface is not null) MobInterface.Mob.MaxHealth = value;
+        if (MobInterface is not null) MobInterface.Mob.MaxHealth.BaseValue = value;
     }
 
     public void SetMobHealth(int value)
     {
-        if (MobInterface is not null) MobInterface.Mob.Health = value;
+        if (MobInterface is not null) MobInterface.Mob.Health.BaseValue = value;
     }
 
 

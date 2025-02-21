@@ -17,11 +17,13 @@ internal partial class MobTypeModel : IDataModel<MobType>
     public partial string AnimationSet { get; set; }
     [NecessaryProperty]
     public partial bool BlocksMovement { get; set; }
+    [NecessaryProperty]
+    public partial int Health { get; set; }
 
     public MobType Convert()
     {
         var animationSet = Registers.MobRegisters.MobAnimationSets.GetItem(AnimationSet);
-        return new(Id, animationSet, BlocksMovement);
+        return new(Id, animationSet, BlocksMovement, Health);
     }
 
     public static IReadOnlyCollection<IModel<MobType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>

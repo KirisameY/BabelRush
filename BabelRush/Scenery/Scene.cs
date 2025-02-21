@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using BabelRush.GamePlay;
-using BabelRush.Mobs;
 using BabelRush.Scenery.Collision;
 using BabelRush.Scenery.Rooms;
 

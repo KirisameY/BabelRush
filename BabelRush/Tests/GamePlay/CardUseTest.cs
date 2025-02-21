@@ -27,10 +27,10 @@ public partial class CardUseTest : Node
 
     private void Initialize()
     {
-        var player = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Friend) { MaxHealth = 100, Health = 100 });
-        var friend1 = MobInterface.GetInstance(new Mob(MobType.Default, Alignment.Friend) { MaxHealth = 100, Health = 100 });
-        var enemy1 = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Enemy) { MaxHealth = 100, Health = 100 });
-        var enemy2 = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Enemy) { MaxHealth = 100, Health = 100 });
+        var player = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Friend));
+        var friend1 = MobInterface.GetInstance(new Mob(MobType.Default, Alignment.Friend));
+        var enemy1 = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Enemy));
+        var enemy2 = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Enemy));
 
         Play.Initialize(player.Mob, new Scene());
         AddChild(Play.Node);

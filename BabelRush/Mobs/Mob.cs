@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
+using BabelRush.Numerics;
 using BabelRush.Scenery;
+using BabelRush.Utils;
 
 using Godot;
 
@@ -13,28 +16,16 @@ public class Mob(MobType type, Alignment alignment) : VisualObject
     //Properties
     public MobType Type { get; } = type;
 
-    public int MaxHealth
-    {
-        get;
-        set
-        {
-            var old = MaxHealth;
-            field = value;
-            Health = Math.Max(MaxHealth, Health);
-            Game.EventBus.Publish(new MobMaxHealthChangedEvent(this, old, MaxHealth));
-        }
-    }
+    [field: AllowNull, MaybeNull]
+    public Numeric<int> MaxHealth => field ??=
+        new Numeric<int>(type.Health)
+           .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.EventBus.Publish(new MobHealthChangedEvent(this, oldValue, newValue)))
+           .WithFinalValueUpdatedHandler((_, _, newValue) => Health.Clamp = (0, newValue));
 
-    public int Health
-    {
-        get;
-        set
-        {
-            var old = Health;
-            field = value;
-            Game.EventBus.Publish(new MobHealthChangedEvent(this, old, Health));
-        }
-    }
+    [field: AllowNull, MaybeNull]
+    public Numeric<int> Health => field ??=
+        new Numeric<int>(MaxHealth) { Clamp = (0, MaxHealth) }
+           .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.EventBus.Publish(new MobMaxHealthChangedEvent(this, oldValue, newValue)));
 
     public Alignment Alignment
     {

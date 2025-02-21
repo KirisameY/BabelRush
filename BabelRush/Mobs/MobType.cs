@@ -4,12 +4,13 @@ using BabelRush.Registers;
 
 namespace BabelRush.Mobs;
 
-public class MobType(string id, MobAnimationSet animationSet, bool blocksMovement)
+public class MobType(string id, MobAnimationSet animationSet, bool blocksMovement, int health)
 {
-    public string Id { get; } = id;
+    public string Id => id;
     public NameDesc NameDesc => MobRegisters.MobNameDesc.GetItem(Id);
-    public MobAnimationSet AnimationSet { get; } = animationSet;
-    public bool BlocksMovement { get; } = blocksMovement;
+    public MobAnimationSet AnimationSet => animationSet;
+    public bool BlocksMovement => blocksMovement;
+    public int Health => health;
 
 
     public Mob GetInstance(Alignment alignment)
@@ -18,5 +19,5 @@ public class MobType(string id, MobAnimationSet animationSet, bool blocksMovemen
     }
 
 
-    public static MobType Default { get; } = new("default", MobAnimationSet.Default, true);
+    public static MobType Default { get; } = new("default", MobAnimationSet.Default, true, 50);
 }
