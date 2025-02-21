@@ -32,3 +32,17 @@ layout_mode = 2
 
 [node name="CardList" parent="HSplitContainer" instance=ExtResource("2_hp4rv")]
 layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="."]
+custom_minimum_size = Vector2(12, 12)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -20.0
+offset_top = 4.0
+offset_right = -8.0
+offset_bottom = 12.0
+grow_horizontal = 0
+
+[connection signal="pressed" from="CloseButton" to="." method="OnCloseRequest"]

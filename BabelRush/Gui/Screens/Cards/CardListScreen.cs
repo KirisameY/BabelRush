@@ -2,9 +2,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Cards;
+using BabelRush.GamePlay;
 using BabelRush.Gui.Cards;
 
 using Godot;
+
+using JetBrains.Annotations;
 
 using KirisameLib.Extensions;
 
@@ -62,10 +65,24 @@ public partial class CardListScreen : Control
     }
 
 
+    //Signals
+    [Signal] public delegate void CloseRequestEventHandler();
+
+
     //Event Handlers
     private void OnListCardSelected(CardInterface? ci)
     {
         if (ci is null) CardInfoText.Clear();
         else CardInfoText.SetCard(ci.Card);
     }
+
+
+    //Gd Methods
+    [UsedImplicitly] private void OnCloseRequest() => EmitSignal(nameof(CloseRequest));
+    [UsedImplicitly] private void SetAsPile(string pile) => ReplaceWith(pile switch
+    {
+        "discard" => Play.CardHub.DiscardPile,
+        "draw" => Play.CardHub.DrawPile,
+        "all" => Play.CardHub.CardsView
+    });
 }

@@ -1,11 +1,27 @@
-[gd_scene load_steps=3 format=3 uid="uid://c202t6rhh7t1u"]
+[gd_scene load_steps=8 format=3 uid="uid://c202t6rhh7t1u"]
 
 [ext_resource type="PackedScene" uid="uid://du070sjdbxoea" path="res://Gui/MainUI/ApBar.tscn" id="1_rf203"]
 [ext_resource type="PackedScene" uid="uid://by3365nec5rra" path="res://Gui/MainUI/CardField.tscn" id="1_sk4ac"]
+[ext_resource type="PackedScene" uid="uid://cooc3twixj7f3" path="res://Gui/Screens/Cards/CardListScreen.tscn" id="3_14unp"]
+
+[sub_resource type="Gradient" id="Gradient_46cdg"]
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_10vlu"]
+gradient = SubResource("Gradient_46cdg")
+width = 24
+height = 24
+
+[sub_resource type="Gradient" id="Gradient_rog8f"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_d70il"]
+gradient = SubResource("Gradient_rog8f")
+width = 24
+height = 24
 
 [node name="MainUi" type="CanvasLayer"]
 
-[node name="DrawPile" type="ColorRect" parent="."]
+[node name="DrawPile" type="TextureButton" parent="."]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -14,8 +30,10 @@ offset_top = -32.0
 offset_right = 32.0
 offset_bottom = -8.0
 grow_vertical = 0
+texture_normal = SubResource("GradientTexture2D_10vlu")
+texture_pressed = SubResource("GradientTexture2D_d70il")
 
-[node name="DiscardPile" type="ColorRect" parent="."]
+[node name="DiscardPile" type="TextureButton" parent="."]
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
@@ -24,7 +42,26 @@ offset_top = -32.0
 offset_right = 472.0
 offset_bottom = -8.0
 grow_vertical = 0
+texture_normal = SubResource("GradientTexture2D_10vlu")
+texture_pressed = SubResource("GradientTexture2D_d70il")
 
 [node name="ApBar" parent="." instance=ExtResource("1_rf203")]
 
 [node name="CardField" parent="." instance=ExtResource("1_sk4ac")]
+
+[node name="CardListScreenPanel" type="Panel" parent="."]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CardListScreen" parent="CardListScreenPanel" instance=ExtResource("3_14unp")]
+layout_mode = 1
+
+[connection signal="pressed" from="DrawPile" to="CardListScreenPanel" method="show"]
+[connection signal="pressed" from="DrawPile" to="CardListScreenPanel/CardListScreen" method="SetAsPile" binds= ["draw"]]
+[connection signal="pressed" from="DiscardPile" to="CardListScreenPanel" method="show"]
+[connection signal="pressed" from="DiscardPile" to="CardListScreenPanel/CardListScreen" method="SetAsPile" binds= ["discard"]]
+[connection signal="CloseRequest" from="CardListScreenPanel/CardListScreen" to="CardListScreenPanel" method="hide"]
