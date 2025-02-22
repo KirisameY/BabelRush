@@ -47,6 +47,8 @@ public sealed partial class Play
         Logger.Log(LogLevel.Info, logProcess, "Initializing Scene...");
         Scene.CollisionSpace.AddArea(ScreenArea);
         Node.AddChild(Scene.Node);
+        Logger.Log(LogLevel.Debug, logProcess, "Subscribing process event...");
+        Game.Process += Process;
 
         Logger.Log(LogLevel.Info, logProcess, "Gameplay initialized successfully");
     }
@@ -59,6 +61,8 @@ public sealed partial class Play
     {
         const string logProcess = "Disposing";
 
+        Logger.Log(LogLevel.Debug, logProcess, "Unsubscribing process event...");
+        Game.Process -= Process;
         Logger.Log(LogLevel.Debug, logProcess, "Free Node...");
         _node.QueueFree();
         Logger.Log(LogLevel.Info, logProcess, "Old gameplay disposed");
@@ -82,7 +86,7 @@ public sealed partial class Play
     private readonly BattleField _battleField;
     public static BattleField BattleField => Instance._battleField;
 
-    private readonly PlayNode _node = PlayNode.GetInstance(Process);
+    private readonly PlayNode _node = PlayNode.GetInstance();
     public static PlayNode Node => Instance._node;
 
     private readonly PlayerState _playerState = new();

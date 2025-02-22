@@ -153,8 +153,12 @@ public partial class Game : SceneTree
 
 
     //Process
+    public static event Action<double>? Process;
+
     public override bool _Process(double delta)
     {
+        Process?.Invoke(delta);
+
         var result = base._Process(delta);
 
         //Event Cycle

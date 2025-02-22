@@ -15,31 +15,11 @@ public partial class PlayNode : Node
     [field: AllowNull, MaybeNull]
     private static PackedScene Scene => field ??= ResourceLoader.Load<PackedScene>("res://GamePlay/Play.tscn");
 
-    public static PlayNode GetInstance(Action<double> process)
+    public static PlayNode GetInstance()
     {
         var result = Scene.Instantiate<PlayNode>();
         result.Name = "Play";
-        result.Process = process;
         return result;
-    }
-
-
-    //Process
-    [field: AllowNull, MaybeNull]
-    public Action<double> Process
-    {
-        get
-        {
-            if (field is not null) return field;
-            Logger.Log(LogLevel.Error, "Process", "Process delegate is null! This should not happen!");
-            throw new InvalidOperationException("Process delegate is null! This should not happen!");
-        }
-        set;
-    }
-
-    public override void _Process(double delta)
-    {
-        Process.Invoke(delta);
     }
 
 
