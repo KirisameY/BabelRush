@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -47,6 +48,7 @@ public partial class CardListScreen : Control
 
     public void Clear()
     {
+        CardInfoText.Clear();
         _cardDict.Clear();
         CardList.Clear();
     }
@@ -79,10 +81,12 @@ public partial class CardListScreen : Control
 
     //Gd Methods
     [UsedImplicitly] private void OnCloseRequest() => EmitSignal(nameof(CloseRequest));
+
     [UsedImplicitly] private void SetAsPile(string pile) => ReplaceWith(pile switch
     {
         "discard" => Play.CardHub.DiscardPile,
-        "draw" => Play.CardHub.DrawPile,
-        "all" => Play.CardHub.CardsView
+        "draw"    => Play.CardHub.DrawPile,
+        "all"     => Play.CardHub.CardsView,
+        _         => throw new ArgumentOutOfRangeException(nameof(pile), pile, null)
     });
 }
