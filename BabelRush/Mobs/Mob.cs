@@ -12,6 +12,8 @@ namespace BabelRush.Mobs;
 public class Mob(MobType type, Alignment alignment) : VisualObject
 {
     //Properties
+    public override bool Collidable => true;
+
     public MobType Type => type;
 
     [field: AllowNull, MaybeNull]

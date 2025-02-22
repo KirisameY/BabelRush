@@ -81,25 +81,44 @@ public sealed class Scene : IDisposable
 
 
     //Objects
-    private readonly Dictionary<VisualObject, Node> _objectInterfaces = new();
+    private readonly HashSet<SceneObject> _objects = new();
+    private readonly Dictionary<SceneObject, Node> _objectInterfaces = new();
 
     public void AddObject(SceneObject obj)
     {
-        CollisionSpace.AddObject(obj);
+        if (!_objects.Add(obj)) return;
 
-        if (obj is not VisualObject vObj) return;
-        var objI = vObj.CreateInterface();
-        if (_objectInterfaces.TryAdd(vObj, objI))
-            Node.AddChild(objI);
+        if (obj.Scene is { } scene) scene.RemoveObject(obj);
+        obj.Scene = this;
+
+        switch (obj)
+        {
+            case { Collidable: true }:
+                CollisionSpace.AddObject(obj);
+                break;
+
+            case VisualObject vObj:
+                var objI = vObj.CreateInterface();
+                if (_objectInterfaces.TryAdd(vObj, objI))
+                    Node.AddChild(objI);
+                break;
+        }
+
+        obj.EnterScene();
     }
 
     public void RemoveObject(SceneObject obj)
     {
+        if (!_objects.Remove(obj)) return;
+
+        obj.ExitScene();
+
         CollisionSpace.RemoveObject(obj);
 
-        if (obj is not VisualObject vObj) return;
-        if (_objectInterfaces.Remove(vObj, out var objI))
+        if (_objectInterfaces.Remove(obj, out var objI))
             Node.RemoveChild(objI);
+
+        obj.Scene = null;
     }
 
 

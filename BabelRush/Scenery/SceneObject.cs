@@ -13,4 +13,18 @@ public abstract class SceneObject
             Game.EventBus.Publish(new SceneObjectMovedEvent(this, old, Position));
         }
     }
+    public virtual bool Collidable => false;
+
+    protected virtual void _EnterScene() { }
+    protected virtual void _ExitScene() { }
+
+    internal void EnterScene()
+    {
+        _EnterScene();
+    }
+
+    internal void ExitScene()
+    {
+        _ExitScene();
+    }
 }
