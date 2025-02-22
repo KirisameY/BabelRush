@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://c2pjaa5hwbvhv"]
+[gd_scene load_steps=3 format=3 uid="uid://c2pjaa5hwbvhv"]
 
 [ext_resource type="PackedScene" uid="uid://ivk70wynqfry" path="res://Gui/Mobs/HealthBar.tscn" id="1_22iad"]
+[ext_resource type="PackedScene" uid="uid://bfk14p07770m2" path="res://Gui/Mobs/ActionBar.tscn" id="2_ch1ds"]
 
 [node name="MobElementTest" type="Node2D"]
 
@@ -27,7 +28,31 @@ offset_bottom = 62.0
 min_value = 1.0
 value = 100.0
 
+[node name="Actionbar" parent="." instance=ExtResource("2_ch1ds")]
+position = Vector2(20, 80)
+
+[node name="HSlider3" type="HSlider" parent="."]
+offset_left = 2.0
+offset_top = 97.0
+offset_right = 143.0
+offset_bottom = 113.0
+max_value = 1.0
+step = 0.0
+
+[node name="HSlider4" type="SpinBox" parent="."]
+offset_left = 60.0
+offset_top = 65.0
+offset_right = 143.063
+offset_bottom = 96.0
+min_value = -1.0
+max_value = 1000.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+
 [connection signal="toggled" from="CheckButton" to="HealthBar" method="set_shielded"]
 [connection signal="value_changed" from="VSlider" to="HealthBar" method="set_health"]
 [connection signal="value_changed" from="VSlider2" to="HealthBar" method="set_max_health"]
 [connection signal="value_changed" from="VSlider2" to="VSlider" method="set_max"]
+[connection signal="value_changed" from="HSlider3" to="Actionbar" method="set_progress"]
+[connection signal="value_changed" from="HSlider4" to="Actionbar" method="set_action_value"]

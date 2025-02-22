@@ -52,20 +52,23 @@ public partial class MobInterface : Node2D
 
     #region Sub nodes
 
-    private Node2D? _healthBar;
-    private Node2D HealthBar => _healthBar ??= GetNode<Node2D>("HealthBar");
+    [field: AllowNull, MaybeNull]
+    private Node2D HealthBar => field ??= GetNode<Node2D>("HealthBar");
 
-    private AnimatedSprite2D? _sprite;
-    private AnimatedSprite2D Sprite => _sprite ??= GetNode<AnimatedSprite2D>("Sprite");
+    [field: AllowNull, MaybeNull]
+    private Node2D ActionBar => field ??= GetNode<Node2D>("Actionbar");
 
-    private Area2D? _box;
-    private Area2D Box => _box ??= GetNode<Area2D>("Box");
+    [field: AllowNull, MaybeNull]
+    private AnimatedSprite2D Sprite => field ??= GetNode<AnimatedSprite2D>("Sprite");
 
-    private CollisionShape2D? _boxShapeNode;
-    private CollisionShape2D BoxShapeNode => _boxShapeNode ??= GetNode<CollisionShape2D>("Box/Shape");
+    [field: AllowNull, MaybeNull]
+    private Area2D Box => field ??= GetNode<Area2D>("Box");
 
-    private RectangleShape2D? _boxShape;
-    private RectangleShape2D BoxShape => _boxShape ??= (RectangleShape2D)BoxShapeNode.Shape;
+    [field: AllowNull, MaybeNull]
+    private CollisionShape2D BoxShapeNode => field ??= GetNode<CollisionShape2D>("Box/Shape");
+
+    [field: AllowNull, MaybeNull]
+    private RectangleShape2D BoxShape => field ??= (RectangleShape2D)BoxShapeNode.Shape;
 
     #endregion
 
@@ -100,8 +103,11 @@ public partial class MobInterface : Node2D
 
     #region Update
 
-    private static readonly StringName StringNameMaxHealth = "max_health";
+    private static readonly StringName StringNameMaxHealth = "max_health"; //todo: 修正一下所有组件（包括文件名）的命名格式，按卡牌的版本来，这些也放在内部静态类里
     private static readonly StringName StringNameHealth = "health";
+    private static readonly StringName StringNameActionValue = "action_value";
+    private static readonly StringName StringNameSetProgress = "set_progress";
+    private static readonly StringName StringNameSetIcon = "set_icon";
 
     private int _lastMaxHealth;
     private int _lastHealth;
@@ -114,12 +120,27 @@ public partial class MobInterface : Node2D
     private void Refresh()
     {
         CallDeferred(MethodName.UpdateHealthBar);
+        CallDeferred(MethodName.UpdateActionBar);
     }
 
     private void UpdateHealthBar()
     {
         if (Mob.MaxHealth != _lastMaxHealth) HealthBar.SetDeferred(StringNameMaxHealth, Mob.MaxHealth.FinalValue);
         if (Mob.Health != _lastHealth) HealthBar.SetDeferred(StringNameHealth,          Mob.Health.FinalValue);
+    }
+
+    private void UpdateActionBar() //todo: 要有一个mob更新action的事件，然后把这个注册上去
+    {
+        if (Mob.NextAction is not { } action)
+        {
+            ActionBar.Visible = false;
+            return;
+        }
+
+        ActionBar.Visible = true;
+        ActionBar.SetDeferred(StringNameActionValue, action.Value);
+        //ActionBar.CallDeferred(StringNameSetProgress, action.Progress); todo: 这里得等倒计时的实现
+        ActionBar.CallDeferred(StringNameSetIcon, action.Type.Icon);
     }
 
     #endregion
@@ -136,7 +157,7 @@ public partial class MobInterface : Node2D
         if (!id.IsAction)
         {
             AnimateState = id;
-            PlayIt(id, info);
+            PlayIt(this, id, info);
             return;
         }
 
@@ -148,7 +169,7 @@ public partial class MobInterface : Node2D
         }
 
         //Play this
-        PlayIt(id, info);
+        PlayIt(this, id, info);
         await ToSignal(Sprite, AnimatedSprite2D.SignalName.AnimationFinished);
 
         //play after
@@ -160,12 +181,15 @@ public partial class MobInterface : Node2D
         //reset
         _ = PlayAnimation(AnimateState);
 
-        void PlayIt(MobAnimationId aId, MobAnimationSet.AnimationInfo aInfo)
+        return;
+
+
+        static void PlayIt(MobInterface mob, MobAnimationId aId, MobAnimationSet.AnimationInfo aInfo)
         {
-            BoxShape.Size = aInfo.BoxSize;
-            BoxShapeNode.Position = new(0, -aInfo.BoxSize.Y / 2f);
-            Sprite.Offset = aInfo.Offset;
-            Sprite.Play(aId);
+            mob.BoxShape.Size = aInfo.BoxSize;
+            mob.BoxShapeNode.Position = new(0, -aInfo.BoxSize.Y / 2f);
+            mob.Sprite.Offset = aInfo.Offset;
+            mob.Sprite.Play(aId);
         }
     }
 

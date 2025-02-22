@@ -9,7 +9,7 @@ public partial class TestFileReadToPng : Node2D
     {
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); //wait 1 frame
 
-        var file = FileAccess.Open("res://assets/metares/sprites/mainui/healthbar_shield.png", FileAccess.ModeFlags.Read);
+        var file = FileAccess.Open("res://meta_res/sprites/mob/healthbar_shield.png", FileAccess.ModeFlags.Read);
         var buffer = file.GetBuffer((long)file.GetLength());
         file.Close();
 
