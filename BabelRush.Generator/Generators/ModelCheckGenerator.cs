@@ -40,7 +40,7 @@ public class ModelCheckGenerator : IIncrementalGenerator
 
     private record struct ModelClassInfo(
         string? Namespace, string ClassName, string ClassFullName,
-        IReadOnlyCollection<IPropertySymbol> NecessaryProperties
+        IReadOnlyCollection<IPropertySymbol> ModelProperties, IReadOnlyCollection<IPropertySymbol> NecessaryProperties
     );
 
     private static bool SyntaxPredicate(SyntaxNode s, CancellationToken _) =>
@@ -68,17 +68,21 @@ public class ModelCheckGenerator : IIncrementalGenerator
         var nameSpace = classSymbol.ContainingNamespace?.ToDisplayString();
         var className = classSymbol.Name;
         var classFullName = classSymbol.ToDisplayString();
-        var necessaryProperties =
+        var properties =
             classSymbol.GetMembers()
                        .OfType<IPropertySymbol>()
-                       .Where(static p =>
-                                  !p.IsStatic
-                               && p.GetAttributes().Any(static a => a.AttributeClass.IsDerivedFrom(Names.NecessaryPropertyAttribute))
-                               && p is { GetMethod: not null, SetMethod: not null }
-                             )
-                       .ToImmutableArray();
+                       .Where(static p => !p.IsStatic && p is { GetMethod: not null, SetMethod: not null });
+        List<IPropertySymbol> modelProperties = [],
+                              necessaryProperties = [];
+        foreach (var property in properties)
+        {
+            if (property.Type.GetAttributes().Any(static a => a.AttributeClass.IsDerivedFrom(Names.ModelAttribute)))
+                modelProperties.Add(property);
+            else if (property.GetAttributes().Any(static a => a.AttributeClass.IsDerivedFrom(Names.NecessaryPropertyAttribute)))
+                necessaryProperties.Add(property);
+        }
 
-        return new(nameSpace, className, classFullName, necessaryProperties);
+        return new(nameSpace, className, classFullName, modelProperties, necessaryProperties);
     }
 
     #endregion
@@ -128,7 +132,7 @@ public class ModelCheckGenerator : IIncrementalGenerator
                              .AppendLine();
             }
 
-            sourceBuilder.AppendLine("//check necessary properties")
+            sourceBuilder.AppendLine("//check properties")
                          .AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
                          .AppendLine("private bool Check(out string[] errors)")
                          .AppendLine("{");
@@ -139,7 +143,14 @@ public class ModelCheckGenerator : IIncrementalGenerator
                 foreach (var property in info.NecessaryProperties)
                 {
                     var name = property.Name;
-                    sourceBuilder.AppendLine($"if (!_initialized_{name}) errorList.Add(\"Property {name} did not initialized\");");
+                    sourceBuilder.AppendLine($"if (!_initialized_{name}) errorList.Add(\"Property {name} of {info.ClassName} did not initialized\");");
+                }
+                sourceBuilder.AppendLine()
+                             .AppendLine("string[] errorsArray;");
+                foreach (var property in info.ModelProperties)
+                {
+                    var name = property.Name;
+                    sourceBuilder.AppendLine($"if (!{name}.Check(out errorsArray)) errorList.AddRange(errorsArray);");
                 }
                 sourceBuilder.AppendLine()
                              .AppendLine("CustomCheck(errorList);");
