@@ -33,7 +33,7 @@ public partial class BattleField(Mob player)
 
     private bool TryAddToList(Mob mob, Alignment alignment)
     {
-        if (!TryGetList(alignment, out var list)) return false;
+        var list = GetList(alignment);
         if (list.Contains(mob)) return false;
 
         list.Add(mob);
@@ -49,7 +49,7 @@ public partial class BattleField(Mob player)
 
     private bool TryRemoveFromList(Mob mob, Alignment alignment)
     {
-        if (!TryGetList(alignment, out var list)) return false;
+        var list = GetList(alignment);
         if (!list.Remove(mob)) return false;
 
         if (alignment == Alignment.Enemy)
@@ -63,23 +63,16 @@ public partial class BattleField(Mob player)
 
     private bool TryRemoveFromList(Mob mob) => TryRemoveFromList(mob, mob.Alignment);
 
-    private bool TryGetList(Alignment alignment, [NotNullWhen(true)] out List<Mob>? list)
+    private List<Mob> GetList(Alignment alignment)
     {
         switch (alignment)
         {
-            case Alignment.Neutral:
-                list = _neutrals;
-                return true;
-            case Alignment.Friend:
-                list = _friends;
-                return true;
-            case Alignment.Enemy:
-                list = _enemies;
-                return true;
+            case Alignment.Neutral: return _neutrals;
+            case Alignment.Friend:  return _friends;
+            case Alignment.Enemy:   return _enemies;
             default:
-                Logger.Log(LogLevel.Error, nameof(TryGetList), $"Unexpected alignment: {alignment}");
-                list = [];
-                return false;
+                Logger.Log(LogLevel.Error, nameof(GetList), $"Unexpected alignment: {alignment}");
+                return [];
         }
     }
 
@@ -89,6 +82,15 @@ public partial class BattleField(Mob player)
 
 
     //Methods
+    public IReadOnlyList<Mob> GetMobs(Alignment alignment) => GetList(alignment).AsReadOnly();
+
+    public IReadOnlyList<Mob> GetOppositeMobs(Alignment alignment) => alignment switch
+    {
+        Alignment.Friend => Enemies,
+        Alignment.Enemy  => Friends,
+        _                => []
+    };
+
     public void AddMob(Mob mob)
     {
         if (!TryAddToList(mob)) return;

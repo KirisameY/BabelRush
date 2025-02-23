@@ -7,11 +7,15 @@ using BabelRush.Scenery;
 
 using Godot;
 
+using KirisameLib.Event;
+
+using MobActionInterruptedEvent = BabelRush.Mobs.Actions.MobActionInterruptedEvent;
 using MobInterface = BabelRush.Gui.Mobs.MobInterface;
 
 namespace BabelRush.Mobs;
 
-public class Mob(MobType type, Alignment alignment) : VisualObject
+[EventHandlerContainer]
+public partial class Mob(MobType type, Alignment alignment) : VisualObject
 {
     #region Properties
 
@@ -30,7 +34,7 @@ public class Mob(MobType type, Alignment alignment) : VisualObject
         new Numeric<int>(MaxHealth) { Clamp = (0, MaxHealth) }
            .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.EventBus.Publish(new MobMaxHealthChangedEvent(this, oldValue, newValue)));
 
-    public MobAction? NextAction { get; } = new(ActionType.Default.NewInstance(0), 5); //todo: 未实现
+    public MobAction? CurrentAction { get; private set; } = null; //todo: 未实现
 
     public Alignment Alignment
     {
@@ -47,6 +51,44 @@ public class Mob(MobType type, Alignment alignment) : VisualObject
     #endregion
 
 
+    #region Update&Register
+
+    protected override void _EnterScene()
+    {
+        SubscribeInstanceHandler(Game.EventBus);
+        Game.Process += Process;
+    }
+
+    protected override void _ExitScene()
+    {
+        UnsubscribeInstanceHandler(Game.EventBus);
+        Game.Process -= Process;
+    }
+
+    private void Process(double delta)
+    {
+        // UpdateAction
+        if (CurrentAction is not null)
+        {
+            CurrentAction.Progress += delta;
+        }
+    }
+
+    #endregion
+
+
+    #region Public Methods
+
+    public void SetAction(MobAction? action)
+    {
+        if (CurrentAction is not null) Game.EventBus.Publish(new MobActionInterruptedEvent(this, CurrentAction));
+        CurrentAction = action;
+        if (action is not null) Game.EventBus.Publish(new MobActionStartedEvent(this, action));
+    }
+
+    #endregion
+
+
     //Interface
     public override Node CreateInterface()
     {
@@ -56,4 +98,25 @@ public class Mob(MobType type, Alignment alignment) : VisualObject
 
     //Default
     public static Mob Default { get; } = new(MobType.Default, Alignment.Neutral);
+
+
+    #region Event Handlers
+
+    [EventHandler]
+    private void OnMobActionExecuted(MobActionExecutedEvent e)
+    {
+        if (e.Mob != this) return;
+        CurrentAction = null;
+        //todo: 获取下一动作
+    }
+
+    [EventHandler]
+    private void OnMobActionCancelled(MobActionCanceledEvent e)
+    {
+        if (e.Mob != this) return;
+        CurrentAction = null;
+        //todo: 获取下一动作
+    }
+
+    #endregion
 }

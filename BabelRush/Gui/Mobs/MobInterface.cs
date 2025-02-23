@@ -116,6 +116,7 @@ public partial class MobInterface : Node2D
     public override void _Process(double delta)
     {
         Position = new((float)Mob.Position, Position.Y);
+        UpdateActionBarProgress();
     }
 
     private void Refresh()
@@ -132,7 +133,7 @@ public partial class MobInterface : Node2D
 
     private void UpdateActionBar() //todo: 要有一个mob更新action的事件，然后把这个注册上去
     {
-        if (Mob.NextAction is not { } action)
+        if (Mob.CurrentAction is not { } action)
         {
             ActionBar.Visible = false;
             return;
@@ -141,12 +142,12 @@ public partial class MobInterface : Node2D
         ActionBar.Visible = true;
         ActionBar.SetDeferred(StringNameActionValue, action.Action.Value);
         ActionBar.CallDeferred(StringNameSetIcon, action.Action.Type.Icon);
-        UpdateActionBarProgress(action);
+        UpdateActionBarProgress();
     }
 
-    private void UpdateActionBarProgress(MobAction action) //todo: 这个应该持续更新
+    private void UpdateActionBarProgress()
     {
-        if (!ActionBar.Visible) return;
+        if (!ActionBar.Visible || Mob.CurrentAction is not { } action) return;
         ActionBar.CallDeferred(StringNameSetProgress, action.Progress / action.Time);
     }
 

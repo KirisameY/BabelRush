@@ -8,5 +8,5 @@ public class MobActionTemplate(ActionType actionType, int value, double time)
     public int Value => value;
     public double Time => time;
 
-    public MobAction NewInstance => new(actionType.NewInstance(value), time);
+    public MobAction NewInstance(Mob mob) => new(mob, actionType.NewInstance(value), time);
 }

@@ -22,7 +22,7 @@ script/source = "extends Sprite2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	material = material.duplicate()
+	material = material.duplicate() # todo: 换4.4了改用instance uniform即可
 	pass # Replace with function body.
 "
 
@@ -48,6 +48,7 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = SubResource("GradientTexture2D_hrjsc")
 expand_mode = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="Progress" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_hn0t7")
