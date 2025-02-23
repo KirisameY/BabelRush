@@ -27,27 +27,25 @@ public partial class CardUseTest : Node
 
     private void Initialize()
     {
-        var player = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Friend));
-        var friend1 = MobInterface.GetInstance(new Mob(MobType.Default, Alignment.Friend));
-        var enemy1 = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Enemy));
-        var enemy2 = MobInterface.GetInstance(new Mob(MobType.Default,  Alignment.Enemy));
+        var player = new Mob(MobType.Default,  Alignment.Friend);
+        var friend1 = new Mob(MobType.Default, Alignment.Friend);
+        var enemy1 = new Mob(MobType.Default,  Alignment.Enemy);
+        var enemy2 = new Mob(MobType.Default,  Alignment.Enemy);
 
-        Play.Initialize(player.Mob, new Scene());
+        Play.Initialize(player, new Scene());
         AddChild(Play.Node);
-        Play.BattleField.AddMobs(enemy1.Mob, enemy2.Mob, friend1.Mob);
+        Play.BattleField.AddMobs(enemy1, enemy2, friend1);
         Play.PlayerState.Ap = 6;
 
-        var scene = Play.Scene.Node;
+        Play.Scene.AddObject(player);
+        Play.Scene.AddObject(friend1);
+        Play.Scene.AddObject(enemy1);
+        Play.Scene.AddObject(enemy2);
 
-        scene.AddChild(player);
-        scene.AddChild(friend1);
-        scene.AddChild(enemy1);
-        scene.AddChild(enemy2);
-
-        player.Mob.Position = GetNode<Marker2D>("Player").Position.X;
-        friend1.Mob.Position = GetNode<Marker2D>("Friend1").Position.X;
-        enemy1.Mob.Position = GetNode<Marker2D>("Enemy1").Position.X;
-        enemy2.Mob.Position = GetNode<Marker2D>("Enemy2").Position.X;
+        player.Position = GetNode<Marker2D>("Player").Position.X;
+        friend1.Position = GetNode<Marker2D>("Friend1").Position.X;
+        enemy1.Position = GetNode<Marker2D>("Enemy1").Position.X;
+        enemy2.Position = GetNode<Marker2D>("Enemy2").Position.X;
     }
 
     public void AddCard()

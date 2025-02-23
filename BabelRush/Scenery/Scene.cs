@@ -91,17 +91,14 @@ public sealed class Scene : IDisposable
         if (obj.Scene is { } scene) scene.RemoveObject(obj);
         obj.Scene = this;
 
-        switch (obj)
-        {
-            case { Collidable: true }:
-                CollisionSpace.AddObject(obj);
-                break;
+        if (obj is { Collidable: true })
+            CollisionSpace.AddObject(obj);
 
-            case VisualObject vObj:
-                var objI = vObj.CreateInterface();
-                if (_objectInterfaces.TryAdd(vObj, objI))
-                    Node.AddChild(objI);
-                break;
+        if (obj is VisualObject vObj)
+        {
+            var objI = vObj.CreateInterface();
+            if (_objectInterfaces.TryAdd(vObj, objI))
+                Node.AddChild(objI);
         }
 
         obj.EnterScene();
