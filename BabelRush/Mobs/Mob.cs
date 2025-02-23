@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Actions;
+using BabelRush.Mobs.Actions;
 using BabelRush.Numerics;
 using BabelRush.Scenery;
 
@@ -29,7 +30,7 @@ public class Mob(MobType type, Alignment alignment) : VisualObject
         new Numeric<int>(MaxHealth) { Clamp = (0, MaxHealth) }
            .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.EventBus.Publish(new MobMaxHealthChangedEvent(this, oldValue, newValue)));
 
-    public ActionInstance? NextAction => new ActionInstance(ActionType.Default, 0); //todo: 未实现
+    public MobAction? NextAction { get; } = new(ActionType.Default.NewInstance(0), 5); //todo: 未实现
 
     public Alignment Alignment
     {

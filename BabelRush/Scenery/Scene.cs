@@ -32,7 +32,7 @@ public sealed class Scene : IDisposable
 
 
     //Node
-    public Node2D Node { get; } = new(); //todo: Remove this shit
+    public Node2D Node { get; } = new();
 
 
     //Rooms

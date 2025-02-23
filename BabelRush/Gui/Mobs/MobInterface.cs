@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using BabelRush.Mobs;
+using BabelRush.Mobs.Actions;
 using BabelRush.Mobs.Animation;
 
 using Godot;
@@ -138,9 +139,15 @@ public partial class MobInterface : Node2D
         }
 
         ActionBar.Visible = true;
-        ActionBar.SetDeferred(StringNameActionValue, action.Value);
-        //ActionBar.CallDeferred(StringNameSetProgress, action.Progress); todo: 这里得等倒计时的实现
-        ActionBar.CallDeferred(StringNameSetIcon, action.Type.Icon);
+        ActionBar.SetDeferred(StringNameActionValue, action.Action.Value);
+        ActionBar.CallDeferred(StringNameSetIcon, action.Action.Type.Icon);
+        UpdateActionBarProgress(action);
+    }
+
+    private void UpdateActionBarProgress(MobAction action) //todo: 这个应该持续更新
+    {
+        if (!ActionBar.Visible) return;
+        ActionBar.CallDeferred(StringNameSetProgress, action.Progress / action.Time);
     }
 
     #endregion
