@@ -1,6 +1,6 @@
 shader_type canvas_item;
 
-uniform float rate : hint_range(0.0, 1.0) = 0.25;
+instance uniform float rate : hint_range(0.0, 1.0) = 0.25;
 
 void fragment() {
 	// Called for every pixel the material is visible on.

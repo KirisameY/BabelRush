@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://du070sjdbxoea"]
+[gd_scene load_steps=13 format=3 uid="uid://du070sjdbxoea"]
 
 [ext_resource type="Script" uid="uid://1kcyig72cxyk" path="res://Gui/MainUI/ApBar.cs" id="1_mxubh"]
 [ext_resource type="Texture2D" uid="uid://d3tnwovqixtui" path="res://meta_res/sprites/mainui/apball_base.png" id="1_x2cbq"]
@@ -14,18 +14,6 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_xj10m"]
 shader = ExtResource("6_x7c4e")
-shader_parameter/rate = 0.25
-
-[sub_resource type="GDScript" id="GDScript_2yrgm"]
-resource_name = "Recoverbar"
-script/source = "extends Sprite2D
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	material = material.duplicate()
-	pass # Replace with function body.
-"
 
 [node name="ApBar" type="Control"]
 texture_filter = 1
@@ -86,7 +74,6 @@ sprite_frames = ExtResource("5_ordnr")
 self_modulate = Color(0.95, 0.791667, 0, 1)
 material = SubResource("ShaderMaterial_xj10m")
 texture = ExtResource("7_yxhb0")
-script = SubResource("GDScript_2yrgm")
 
 [node name="PosbarL" type="Sprite2D" parent="."]
 modulate = Color(0.41, 0.891833, 1, 1)

@@ -38,7 +38,7 @@ func _draw():
 
 
 func set_progress(value: float):
-	(progress_node.material as ShaderMaterial).set_shader_parameter("rate", value)
+	progress_node.set_instance_shader_parameter("rate", value)
 
 func set_icon(icon: Texture2D):
 	($Sprite2D as TextureRect).texture = icon

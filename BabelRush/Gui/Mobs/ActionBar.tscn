@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bfk14p07770m2"]
+[gd_scene load_steps=9 format=3 uid="uid://bfk14p07770m2"]
 
 [ext_resource type="Texture2D" uid="uid://bljqsqqf1ij5w" path="res://meta_res/sprites/mob/actionbar_base.png" id="1_2x3ya"]
 [ext_resource type="Script" uid="uid://dbfk06gm4ybol" path="res://Gui/Mobs/action_bar.gd" id="2_uqkws"]
@@ -13,18 +13,6 @@ gradient = SubResource("Gradient_ilkob")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_hn0t7"]
 shader = ExtResource("2_vnqw1")
-shader_parameter/rate = 0.35
-
-[sub_resource type="GDScript" id="GDScript_s3djy"]
-resource_name = "actionbar_progress"
-script/source = "extends Sprite2D
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	material = material.duplicate() # todo: 换4.4了改用instance uniform即可
-	pass # Replace with function body.
-"
 
 [node name="Actionbar" type="Sprite2D"]
 process_mode = 4
@@ -53,4 +41,3 @@ metadata/_edit_use_anchors_ = true
 [node name="Progress" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_hn0t7")
 texture = ExtResource("3_jgf53")
-script = SubResource("GDScript_s3djy")
