@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://daswddgunjnpc"]
 
-[ext_resource type="Script" path="res://Gui/Screens/Cards/CardList.cs" id="1_t1yyo"]
+[ext_resource type="Script" uid="uid://6q53qjo70216" path="res://Gui/Screens/Cards/CardList.cs" id="1_t1yyo"]
 
 [node name="CardList" type="ScrollContainer"]
 anchors_preset = 15

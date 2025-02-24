@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cooc3twixj7f3"]
 
 [ext_resource type="PackedScene" uid="uid://smrj6tit4ukr" path="res://Gui/Screens/Cards/CardInfoText.tscn" id="1_dacwr"]
-[ext_resource type="Script" path="res://Gui/Screens/Cards/CardListScreen.cs" id="1_p15rf"]
+[ext_resource type="Script" uid="uid://didmcbhm8tx53" path="res://Gui/Screens/Cards/CardListScreen.cs" id="1_p15rf"]
 [ext_resource type="PackedScene" uid="uid://daswddgunjnpc" path="res://Gui/Screens/Cards/CardList.tscn" id="2_hp4rv"]
 
 [node name="CardListScreen" type="Control"]

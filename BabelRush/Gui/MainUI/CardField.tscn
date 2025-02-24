@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://by3365nec5rra"]
 
-[ext_resource type="Script" path="res://Gui/MainUI/CardField.cs" id="1_swruo"]
+[ext_resource type="Script" uid="uid://cyhlq1prlrcw2" path="res://Gui/MainUI/CardField.cs" id="1_swruo"]
 
 [node name="CardField" type="Control"]
 layout_mode = 3

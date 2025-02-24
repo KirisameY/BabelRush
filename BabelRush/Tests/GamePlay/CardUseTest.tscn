@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c2f23d213oqlm"]
 
-[ext_resource type="Script" path="res://Tests/GamePlay/CardUseTest.cs" id="1_c00ik"]
+[ext_resource type="Script" uid="uid://dcflx6amhcwsp" path="res://Tests/GamePlay/CardUseTest.cs" id="1_c00ik"]
 
 [node name="CardUseTest" type="Node"]
 script = ExtResource("1_c00ik")

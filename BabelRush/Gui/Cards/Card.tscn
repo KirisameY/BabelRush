@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://c48624bhp8kkr"]
 
-[ext_resource type="Script" path="res://Gui/Cards/CardInterface.cs" id="1_i3vct"]
+[ext_resource type="Script" uid="uid://01n8gob68nx1" path="res://Gui/Cards/CardInterface.cs" id="1_i3vct"]
 [ext_resource type="Texture2D" uid="uid://c03hxrsu27kje" path="res://meta_res/sprites/card/border.png" id="2_o5np5"]
 [ext_resource type="PackedScene" uid="uid://b5ev2jf32dtb5" path="res://Gui/Cards/i_cost.tscn" id="3_a0u5r"]
 [ext_resource type="PackedScene" uid="uid://ddk4klce5mvc0" path="res://Gui/Cards/i_action.tscn" id="4_g4bhr"]

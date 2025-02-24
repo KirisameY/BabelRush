@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://smrj6tit4ukr"]
 
-[ext_resource type="Script" path="res://Gui/Screens/Cards/i_card_info_text.gd" id="1_48ngw"]
-[ext_resource type="Script" path="res://Gui/Screens/Cards/CardInfoText.cs" id="1_k7qux"]
+[ext_resource type="Script" uid="uid://bvphgys6ydohd" path="res://Gui/Screens/Cards/i_card_info_text.gd" id="1_48ngw"]
+[ext_resource type="Script" uid="uid://3yuxak6wknrf" path="res://Gui/Screens/Cards/CardInfoText.cs" id="1_k7qux"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i2hur"]
 content_margin_left = 8.0

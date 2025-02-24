@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://cv0ylp4dqbds1"]
 
-[ext_resource type="Script" path="res://Tests/UI/Mainscene/MainSceneUiTest.cs" id="1_d5lrs"]
+[ext_resource type="Script" uid="uid://csft5v6rs2uuf" path="res://Tests/UI/Mainscene/MainSceneUiTest.cs" id="1_d5lrs"]
 [ext_resource type="PackedScene" uid="uid://c202t6rhh7t1u" path="res://Gui/MainUI/MainUI.tscn" id="2_fl4i0"]
 
 [node name="MainSceneUiTest" type="Control"]
