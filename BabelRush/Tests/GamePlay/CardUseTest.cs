@@ -12,8 +12,6 @@ using Godot;
 
 using KirisameLib.Event;
 
-using MobInterface = BabelRush.Gui.Mobs.MobInterface;
-
 namespace BabelRush.Tests.GamePlay;
 
 [EventHandlerContainer]

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using BabelRush.Data;
+using BabelRush.Mobs.Actions;
 
 using KirisameLib.Data.Model;
 
@@ -23,7 +24,7 @@ internal partial class MobTypeModel : IDataModel<MobType>
     public MobType Convert()
     {
         var animationSet = Registers.MobRegisters.MobAnimationSets.GetItem(AnimationSet);
-        return new(Id, animationSet, BlocksMovement, Health);
+        return new(Id, animationSet, BlocksMovement, Health, MobActionStrategy.Default); //todo: 加入MobActionStrategy字段
     }
 
     public static IReadOnlyCollection<IModel<MobType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>

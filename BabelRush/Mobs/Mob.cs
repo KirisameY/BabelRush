@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-using BabelRush.Actions;
+using BabelRush.GamePlay;
 using BabelRush.Mobs.Actions;
 using BabelRush.Numerics;
 using BabelRush.Scenery;
@@ -34,7 +34,10 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
         new Numeric<int>(MaxHealth) { Clamp = (0, MaxHealth) }
            .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.EventBus.Publish(new MobMaxHealthChangedEvent(this, oldValue, newValue)));
 
-    public MobAction? CurrentAction { get; private set; } = null; //todo: 未实现
+    [field: AllowNull, MaybeNull]
+    public MobActionStrategizer ActionStrategizer => field ??= Type.ActionStrategy.NewInstance(this);
+
+    public MobAction? CurrentAction { get; private set; } = null;
 
     public Alignment Alignment
     {
@@ -57,6 +60,8 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
     {
         SubscribeInstanceHandler(Game.EventBus);
         Game.Process += Process;
+
+        _ = ActionStrategizer; // initialize strategizer
     }
 
     protected override void _ExitScene()
@@ -107,7 +112,7 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
     {
         if (e.Mob != this) return;
         CurrentAction = null;
-        //todo: 获取下一动作
+        SetAction(ActionStrategizer.GetNextAction());
     }
 
     [EventHandler]
@@ -115,7 +120,21 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
     {
         if (e.Mob != this) return;
         CurrentAction = null;
-        //todo: 获取下一动作
+        SetAction(ActionStrategizer.GetNextAction());
+    }
+
+    [EventHandler]
+    private void OnInBattleMobAdded(InBattleMobAddedEvent e)
+    {
+        if (e.Mob != this) return;
+        if (CurrentAction is null) SetAction(ActionStrategizer.GetNextAction());
+    }
+
+    [EventHandler]
+    private void OnInBattleMobRemoved(InBattleMobRemovedEvent e)
+    {
+        if (e.Mob != this) return;
+        SetAction(null);
     }
 
     #endregion

@@ -96,7 +96,7 @@ public partial class BattleField(Mob player)
         if (!TryAddToList(mob)) return;
 
         Logger.Log(LogLevel.Info, nameof(AddMob), $"Added mob {mob}");
-        Game.EventBus.Publish(new MobAddedEvent(mob));
+        Game.EventBus.Publish(new InBattleMobAddedEvent(mob));
     }
 
     public void AddMobs(IEnumerable<Mob> mobs)
@@ -120,7 +120,7 @@ public partial class BattleField(Mob player)
         if (!TryRemoveFromList(mob)) return false;
 
         Logger.Log(LogLevel.Info, nameof(RemoveMob), $"Removed mob {mob}");
-        Game.EventBus.Publish(new MobRemovedEvent(mob));
+        Game.EventBus.Publish(new InBattleMobRemovedEvent(mob));
         return true;
     }
 

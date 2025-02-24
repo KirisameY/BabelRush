@@ -2,7 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using BabelRush.Mobs;
-using BabelRush.Mobs.Actions;
 using BabelRush.Mobs.Animation;
 
 using Godot;

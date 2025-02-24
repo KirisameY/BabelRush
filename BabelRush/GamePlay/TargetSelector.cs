@@ -168,7 +168,7 @@ public partial class TargetSelector
     }
 
     [EventHandler]
-    private static void OnMobListChanged(MobListChangedEvent e)
+    private static void OnInBattleMobListChanged(InBattleMobListChangedEvent e)
     {
         //取巧的刷新方法，但是够用，也许以后会重写
         var temp = AutoSelected;

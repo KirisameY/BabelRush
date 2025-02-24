@@ -73,14 +73,14 @@ public partial class PlayerState
     }
 
     [EventHandler]
-    private static void OnMobAdded(MobAddedEvent e)
+    private static void OnInBattleMobAdded(InBattleMobAddedEvent e)
     {
         if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy)
             Play.PlayerState.Moving = false;
     }
 
     [EventHandler]
-    private static void OnMobRemoved(MobRemovedEvent e)
+    private static void OnInBattleMobRemoved(InBattleMobRemovedEvent e)
     {
         if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy
          && Play.BattleField.Enemies.All(mob => !mob.Type.BlocksMovement))
