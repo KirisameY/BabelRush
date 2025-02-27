@@ -11,7 +11,9 @@ public partial class MobActionTemplateModel
     public int Value { get; set; } = -1;
     [NecessaryProperty]
     public partial double Time { get; set; }
+    public double Weight { get; set; } = 1;
+    public string? ConvertState { get; set; }
 
 
-    public MobActionTemplate Convert() => new(ActionRegisters.Actions[ActionId], Value, Time);
+    public MobActionTemplate Convert() => new(ActionRegisters.Actions[ActionId], Value, Time, Weight, ConvertState);
 }

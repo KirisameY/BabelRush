@@ -22,8 +22,8 @@ public sealed partial class Play
         _battleField = battleField;
         _scene = scene;
         if (randomSeed == 0) randomSeed = (uint)DateTime.Now.Ticks;
-        Random = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
-        _cardHub = new(Random);
+        _random = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
+        _cardHub = new(_random);
     }
 
     private static Play? _instance;
@@ -92,7 +92,8 @@ public sealed partial class Play
     private readonly PlayerState _playerState = new();
     public static PlayerState PlayerState => Instance._playerState;
 
-    public RandomBelt Random { get; }
+    private readonly RandomBelt _random;
+    public static RandomBelt Random => Instance._random;
 
     private Scene _scene;
     public static Scene Scene

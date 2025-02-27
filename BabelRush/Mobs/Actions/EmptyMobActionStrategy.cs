@@ -12,7 +12,7 @@ public sealed class EmptyMobActionStrategy : MobActionStrategy
     public override MobActionStrategizer NewInstance(Mob mob) => new EmptyMobActionStrategizer(mob);
 }
 
-public sealed class EmptyMobActionStrategizer(Mob mob) : MobActionStrategizer(mob, EmptyMobActionStrategy.Instance)
+public sealed class EmptyMobActionStrategizer(Mob mob) : MobActionStrategizer(EmptyMobActionStrategy.Instance, mob)
 {
     public override MobAction? GetNextAction() => null;
 }
