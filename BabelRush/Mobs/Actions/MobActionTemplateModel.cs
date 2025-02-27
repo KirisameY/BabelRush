@@ -7,7 +7,7 @@ namespace BabelRush.Mobs.Actions;
 public partial class MobActionTemplateModel
 {
     [NecessaryProperty]
-    public partial string ActionId { get; set; }
+    public partial string Action { get; set; }
     public int Value { get; set; } = -1;
     [NecessaryProperty]
     public partial double Time { get; set; }
@@ -15,5 +15,5 @@ public partial class MobActionTemplateModel
     public string? ConvertState { get; set; }
 
 
-    public MobActionTemplate Convert() => new(ActionRegisters.Actions[ActionId], Value, Time, Weight, ConvertState);
+    public MobActionTemplate Convert() => new(ActionRegisters.Actions[Action], Value, Time, Weight, ConvertState);
 }

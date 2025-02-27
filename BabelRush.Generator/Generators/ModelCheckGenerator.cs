@@ -132,7 +132,7 @@ public class ModelCheckGenerator : IIncrementalGenerator
 
             sourceBuilder.AppendLine("//check properties")
                          .AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
-                         .AppendLine("private bool Check(out string[] errors)")
+                         .AppendLine("public bool Check(out string[] errors)")
                          .AppendLine("{");
             using (sourceBuilder.Indent())
             {

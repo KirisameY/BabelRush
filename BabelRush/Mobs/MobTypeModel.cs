@@ -20,11 +20,12 @@ internal partial class MobTypeModel : IDataModel<MobType>
     public partial bool BlocksMovement { get; set; }
     [NecessaryProperty]
     public partial int Health { get; set; }
+    public MobActionStrategyModel? ActionStrategy { get; set; }
 
     public MobType Convert()
     {
         var animationSet = Registers.MobRegisters.MobAnimationSets.GetItem(AnimationSet);
-        return new(Id, animationSet, BlocksMovement, Health, MobActionStrategy.Default); //todo: 加入MobActionStrategy字段
+        return new(Id, animationSet, BlocksMovement, Health, ActionStrategy?.Convert() ?? MobActionStrategy.Default);
     }
 
     public static IReadOnlyCollection<IModel<MobType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
