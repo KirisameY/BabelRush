@@ -45,7 +45,7 @@ offset_bottom = 76.0
 min_value = -1.0
 max_value = 6.0
 
-[connection signal="value_changed" from="VSlider" to="Cost" method="SetValue"]
-[connection signal="value_changed" from="VSlider2" to="Action" method="SetValue"]
-[connection signal="toggled" from="CheckButton" to="Action" method="SetEmpty"]
-[connection signal="value_changed" from="VSlider3" to="Feature" method="SetCount"]
+[connection signal="value_changed" from="VSlider" to="Cost" method="set_value"]
+[connection signal="value_changed" from="VSlider2" to="Action" method="set_value"]
+[connection signal="toggled" from="CheckButton" to="Action" method="set_empty"]
+[connection signal="value_changed" from="VSlider3" to="Feature" method="set_count"]

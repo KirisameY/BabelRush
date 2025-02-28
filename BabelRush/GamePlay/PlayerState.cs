@@ -51,7 +51,7 @@ public partial class PlayerState
 
 
     //Update
-    public void ProcessUpdate(double delta)
+    public void ProcessUpdate(double delta) //todo: 感觉不太对，用事件解耦一下吧回头
     {
         ApRegenerated += delta * ApRegeneration;
     }

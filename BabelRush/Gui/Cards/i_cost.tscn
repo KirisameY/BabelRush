@@ -8,42 +8,10 @@
 [ext_resource type="Texture2D" uid="uid://dx30a765xcfnu" path="res://meta_res/sprites/card/point1.png" id="6_la3h1"]
 
 [node name="Cost" type="AnimatedSprite2D"]
+process_mode = 4
 sprite_frames = ExtResource("1_oad8p")
 script = ExtResource("2_h805w")
-
-[node name="NumBase" type="Sprite2D" parent="."]
-texture = ExtResource("3_gb1l1")
-
-[node name="Num" type="AnimatedSprite2D" parent="NumBase"]
-modulate = Color(0.25, 0.25, 0.25, 1)
-sprite_frames = ExtResource("4_ernrr")
-
-[node name="Points" type="Node2D" parent="."]
-
-[node name="Point0" type="Sprite2D" parent="Points"]
-self_modulate = Color(0.75, 0.75, 0.75, 1)
-texture = ExtResource("5_5g6ou")
-
-[node name="Point1" type="Sprite2D" parent="Points"]
-self_modulate = Color(0.5, 0.5, 0.5, 1)
-texture = ExtResource("6_la3h1")
-
-[node name="Point2" type="Sprite2D" parent="Points"]
-self_modulate = Color(0.75, 0.75, 0.75, 1)
-scale = Vector2(1, -1)
-texture = ExtResource("5_5g6ou")
-
-[node name="Point3" type="Sprite2D" parent="Points"]
-self_modulate = Color(0.5, 0.5, 0.5, 1)
-scale = Vector2(-1, -1)
-texture = ExtResource("5_5g6ou")
-
-[node name="Point4" type="Sprite2D" parent="Points"]
-self_modulate = Color(0.75, 0.75, 0.75, 1)
-scale = Vector2(-1, 1)
-texture = ExtResource("6_la3h1")
-
-[node name="Point5" type="Sprite2D" parent="Points"]
-self_modulate = Color(0.5, 0.5, 0.5, 1)
-scale = Vector2(-1, 1)
-texture = ExtResource("5_5g6ou")
+nums = ExtResource("4_ernrr")
+num_base = ExtResource("3_gb1l1")
+point0 = ExtResource("5_5g6ou")
+point1 = ExtResource("6_la3h1")
