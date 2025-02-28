@@ -37,6 +37,7 @@ metadata/_edit_use_anchors_ = true
 texture = ExtResource("2_o5np5")
 
 [node name="Cost" parent="." instance=ExtResource("3_a0u5r")]
+position = Vector2(0, -27)
 
 [node name="Action0" parent="." instance=ExtResource("4_g4bhr")]
 position = Vector2(-26, -27)

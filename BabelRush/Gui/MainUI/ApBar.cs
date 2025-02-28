@@ -25,9 +25,14 @@ public partial class ApBar : Control
     #endregion
 
 
-    //Update
-    private static readonly StringName StringNameSetValue = "SetValue";
-    private static readonly StringName StringNameSetRate = "SetRate";
+    private static class Names
+    {
+        public static readonly StringName SetValue = "set_value";
+        public static readonly StringName SetRate = "set_rate";
+    }
+
+
+    #region Update
 
     private bool _ready = false;
 
@@ -45,11 +50,14 @@ public partial class ApBar : Control
         CardNameLabel.LabelSettings.FontSize = fontInfo.Size;
     }
 
-    private void UpdateAp() => ApBall.Call(StringNameSetValue,    Play.PlayerState.Ap);
-    private void UpdateApRate() => ApBall.Call(StringNameSetRate, Play.PlayerState.ApRegenerated);
+    private void UpdateAp() => ApBall.Call(Names.SetValue,    Play.PlayerState.Ap);
+    private void UpdateApRate() => ApBall.Call(Names.SetRate, Play.PlayerState.ApRegenerated);
+
+    #endregion
 
 
-    //Override
+    #region Override
+
     public override void _Ready()
     {
         UpdateAll();
@@ -72,8 +80,10 @@ public partial class ApBar : Control
         UnsubscribeInstanceHandler(Game.EventBus);
     }
 
+    #endregion
 
-    //Event Handlers
+
+    #region Event Handlers
 
     [EventHandler]
     private void OnApChanged(ApChangedEvent e)
@@ -92,4 +102,6 @@ public partial class ApBar : Control
     {
         UpdateFont();
     }
+
+    #endregion
 }

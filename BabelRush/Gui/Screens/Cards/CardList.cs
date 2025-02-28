@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Gui.Cards;
+using BabelRush.Gui.Utils;
 
 using Godot;
 
@@ -70,7 +71,7 @@ internal partial class CardList : Control
         //todo: temp visual effect, to be replaced
         ci.YPosTween?.Kill();
         var tween = ci.YPosTween = CreateTween();
-        tween.TweenProperty(ci, CardInterface.NodePaths.PositionY, e.Selected ? 34 : 36, 0.1f);
+        tween.TweenProperty(ci, NodePaths.PositionY, e.Selected ? 34 : 36, 0.1f);
     }
 
     [EventHandler]

@@ -12,7 +12,8 @@ namespace BabelRush.Gui.Cards;
 [EventHandlerContainer]
 public partial class CardInterface : Node2D
 {
-    //Factory
+    #region Factory
+
     private CardInterface() { }
 
     public static CardInterface GetInstance(Card card)
@@ -32,8 +33,11 @@ public partial class CardInterface : Node2D
     private const string ScenePath = "res://Gui/Cards/Card.tscn";
     private static PackedScene Scene { get; } = ResourceLoader.Load<PackedScene>(ScenePath);
 
+    #endregion
 
-    //Sub nodes
+
+    #region Sub nodes
+
     private Sprite2D? _boardNode;
     private Sprite2D BoardNode => _boardNode ??= GetNode<Sprite2D>("Board");
 
@@ -52,8 +56,11 @@ public partial class CardInterface : Node2D
     private Node2D? _featuresNode;
     private Node2D FeaturesNode => _featuresNode ??= GetNode<Node2D>("Features");
 
+    #endregion
 
-    //Property
+
+    #region Properties
+
     [field: AllowNull, MaybeNull]
     public Card Card
     {
@@ -72,12 +79,19 @@ public partial class CardInterface : Node2D
     public Tween? XPosTween { get; set; }
     public Tween? YPosTween { get; set; }
 
+    #endregion
 
-    //Update
-    private static readonly StringName StringNameSetValue = "SetValue";
-    private static readonly StringName StringNameSetCount = "SetCount";
-    private static readonly StringName StringNameSetEmpty = "SetEmpty";
-    private static readonly StringName StringNameSetIcon = "SetIcon";
+
+    private static class Names
+    {
+        public static readonly StringName SetValue = "set_value";
+        public static readonly StringName SetCount = "set_count";
+        public static readonly StringName SetEmpty = "set_empty";
+        public static readonly StringName SetIcon = "set_icon";
+    }
+
+
+    #region Update
 
     private void Refresh()
     {
@@ -85,35 +99,38 @@ public partial class CardInterface : Node2D
         IconNode.Texture = Card.Type.Icon;
 
         //Cost
-        CostNode.CallDeferred(StringNameSetValue, Card.Cost);
+        CostNode.CallDeferred(Names.SetValue, Card.Cost);
 
         //Actions
         var actionCount = Card.Actions.Count;
-        Action0Node.CallDeferred(StringNameSetEmpty, actionCount <= 0);
-        Action1Node.CallDeferred(StringNameSetEmpty, actionCount <= 1);
+        Action0Node.CallDeferred(Names.SetEmpty, actionCount <= 0);
+        Action1Node.CallDeferred(Names.SetEmpty, actionCount <= 1);
         if (actionCount > 0)
         {
-            Action0Node.CallDeferred(StringNameSetIcon,  Card.Actions[0].Type.Icon);
-            Action0Node.CallDeferred(StringNameSetValue, Card.Actions[0].Value);
+            Action0Node.CallDeferred(Names.SetIcon,  Card.Actions[0].Type.Icon);
+            Action0Node.CallDeferred(Names.SetValue, Card.Actions[0].Value);
         }
 
         if (actionCount > 1)
         {
-            Action1Node.CallDeferred(StringNameSetIcon,  Card.Actions[1].Type.Icon);
-            Action1Node.CallDeferred(StringNameSetValue, Card.Actions[1].Value);
+            Action1Node.CallDeferred(Names.SetIcon,  Card.Actions[1].Type.Icon);
+            Action1Node.CallDeferred(Names.SetValue, Card.Actions[1].Value);
         }
 
         //Features
         var featuresCount = Card.Features.Count;
-        FeaturesNode.CallDeferred(StringNameSetCount, featuresCount);
+        FeaturesNode.CallDeferred(Names.SetCount, featuresCount);
         for (int i = 0; i < featuresCount; i++)
         {
-            FeaturesNode.CallDeferred(StringNameSetIcon, i, Card.Features[i].Type.Icon);
+            FeaturesNode.CallDeferred(Names.SetIcon, i, Card.Features[i].Type.Icon);
         }
     }
 
+    #endregion
 
-    //Select
+
+    #region Select
+
     private bool _preSelected, _prePressed;
     public bool Selectable
     {
@@ -163,16 +180,22 @@ public partial class CardInterface : Node2D
         }
     }
 
+    #endregion
 
-    //Signal
+
+    #region Signal
+
     private void OnMouseEntered() => Selected = _preSelected = true;
     private void OnMouseExited() => Selected = _preSelected = false;
     private void OnButtonDown() => Pressed = _prePressed = true;
     private void OnButtonUp() => Pressed = _prePressed = false;
     private void OnPressed() => Game.EventBus.Publish(new CardInterfaceClickedEvent(this));
 
+    #endregion
 
-    //Scene Tree
+
+    #region Scene Tree
+
     public override void _EnterTree()
     {
         SubscribeInstanceHandler(Game.EventBus);
@@ -185,8 +208,11 @@ public partial class CardInterface : Node2D
         YPosTween?.Kill();
     }
 
+    #endregion
 
-    //Event Handlers
+
+    #region Event Handlers
+
     [EventHandler]
     private void OnCardUsed(CardUsedEvent e)
     {
@@ -200,15 +226,12 @@ public partial class CardInterface : Node2D
         tween.TweenCallback(Callable.From(QueueFree)).SetDelay(0.15f); //temp, will be replaced by remove from tree
     }
 
-
-    //Names
-    public static class NodePaths
-    {
-        public static readonly NodePath PositionX = "position:x";
-        public static readonly NodePath PositionY = "position:y";
-    }
+    #endregion
 
 
-    //Logging
+    #region Logging
+
     private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(CardInterface));
+
+    #endregion
 }

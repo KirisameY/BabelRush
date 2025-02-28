@@ -22,19 +22,19 @@ public partial class CardInfoText : Control
     private static class Names
     {
         //Methods
-        public static StringName Reset { get; } = "reset";
-        public static StringName AppendTitle { get; } = "append_title";
-        public static StringName AppendAction { get; } = "append_action";
-        public static StringName AppendFeature { get; } = "append_feature";
-        public static StringName AppendFooter { get; } = "append_footer";
+        public static readonly StringName Reset = "reset";
+        public static readonly StringName AppendTitle = "append_title";
+        public static readonly StringName AppendAction = "append_action";
+        public static readonly StringName AppendFeature = "append_feature";
+        public static readonly StringName AppendFooter = "append_footer";
 
         //Properties
-        public static StringName TitleFont { get; } = "title_font";
-        public static StringName TitleSize { get; } = "title_size";
-        public static StringName SubtitleFont { get; } = "subtitle_font";
-        public static StringName SubtitleSize { get; } = "subtitle_size";
-        public static StringName DetailFont { get; } = "detail_font";
-        public static StringName DetailSize { get; } = "detail_size";
+        public static readonly StringName TitleFont = "title_font";
+        public static readonly StringName TitleSize = "title_size";
+        public static readonly StringName SubtitleFont = "subtitle_font";
+        public static readonly StringName SubtitleSize = "subtitle_size";
+        public static readonly StringName DetailFont = "detail_font";
+        public static readonly StringName DetailSize = "detail_size";
     }
 
 

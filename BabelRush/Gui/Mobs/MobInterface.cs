@@ -101,13 +101,21 @@ public partial class MobInterface : Node2D
     #endregion
 
 
-    #region Update
+    private static class Names
+    {
+        //Methods
+        public static readonly StringName SetProgress = "set_progress";
+        public static readonly StringName SetIcon = "set_icon";
 
-    private static readonly StringName StringNameMaxHealth = "max_health"; //todo: 修正一下所有组件（包括文件名）的命名格式，按卡牌的版本来，这些也放在内部静态类里
-    private static readonly StringName StringNameHealth = "health";
-    private static readonly StringName StringNameActionValue = "action_value";
-    private static readonly StringName StringNameSetProgress = "set_progress";
-    private static readonly StringName StringNameSetIcon = "set_icon";
+        //Properties
+        public static readonly StringName MaxHealth = "max_health";
+        public static readonly StringName Health = "health";
+        public static readonly StringName ActionValue = "action_value";
+        public static readonly StringName ProgressColor = "progress_color"; // todo: 也许终有一天它会实装
+    }
+
+
+    #region Update
 
     private int _lastMaxHealth;
     private int _lastHealth;
@@ -126,8 +134,8 @@ public partial class MobInterface : Node2D
 
     private void UpdateHealthBar()
     {
-        if (Mob.MaxHealth != _lastMaxHealth) HealthBar.SetDeferred(StringNameMaxHealth, Mob.MaxHealth.FinalValue);
-        if (Mob.Health != _lastHealth) HealthBar.SetDeferred(StringNameHealth,          Mob.Health.FinalValue);
+        if (Mob.MaxHealth != _lastMaxHealth) HealthBar.SetDeferred(Names.MaxHealth, Mob.MaxHealth.FinalValue);
+        if (Mob.Health != _lastHealth) HealthBar.SetDeferred(Names.Health,          Mob.Health.FinalValue);
     }
 
     private void UpdateActionBar() //todo: 要有一个mob更新action的事件，然后把这个注册上去
@@ -139,15 +147,15 @@ public partial class MobInterface : Node2D
         }
 
         ActionBar.Visible = true;
-        ActionBar.SetDeferred(StringNameActionValue, action.Action.Value);
-        ActionBar.CallDeferred(StringNameSetIcon, action.Action.Type.Icon);
+        ActionBar.SetDeferred(Names.ActionValue, action.Action.Value);
+        ActionBar.CallDeferred(Names.SetIcon, action.Action.Type.Icon);
         UpdateActionBarProgress();
     }
 
     private void UpdateActionBarProgress()
     {
         if (!ActionBar.Visible || Mob.CurrentAction is not { } action) return;
-        ActionBar.CallDeferred(StringNameSetProgress, action.Progress / action.Time);
+        ActionBar.CallDeferred(Names.SetProgress, action.Progress / action.Time);
     }
 
     #endregion
@@ -209,14 +217,14 @@ public partial class MobInterface : Node2D
     private void OnMobMaxHealthChanged(MobMaxHealthChangedEvent e)
     {
         if (e.Mob != Mob) return;
-        HealthBar.SetDeferred(StringNameMaxHealth, e.NewValue);
+        HealthBar.SetDeferred(Names.MaxHealth, e.NewValue);
     }
 
     [EventHandler]
     private void OnMobHealthChanged(MobHealthChangedEvent e)
     {
         if (e.Mob != Mob) return;
-        HealthBar.SetDeferred(StringNameHealth, e.NewValue);
+        HealthBar.SetDeferred(Names.Health, e.NewValue);
     }
 
     [EventHandler]

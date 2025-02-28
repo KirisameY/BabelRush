@@ -34,7 +34,6 @@ func _draw():
 		draw_texture(num_tex(n%10), pos)
 		pos.x -= 5
 		n = n/10
-	
 
 
 func set_progress(value: float):

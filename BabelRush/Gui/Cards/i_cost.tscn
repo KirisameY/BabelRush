@@ -8,14 +8,13 @@
 [ext_resource type="Texture2D" uid="uid://dx30a765xcfnu" path="res://meta_res/sprites/card/point1.png" id="6_la3h1"]
 
 [node name="Cost" type="AnimatedSprite2D"]
-position = Vector2(0, -27)
 sprite_frames = ExtResource("1_oad8p")
 script = ExtResource("2_h805w")
 
 [node name="NumBase" type="Sprite2D" parent="."]
 texture = ExtResource("3_gb1l1")
 
-[node name="num" type="AnimatedSprite2D" parent="NumBase"]
+[node name="Num" type="AnimatedSprite2D" parent="NumBase"]
 modulate = Color(0.25, 0.25, 0.25, 1)
 sprite_frames = ExtResource("4_ernrr")
 

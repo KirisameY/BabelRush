@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+using BabelRush.Gui.Utils;
+
 using Godot;
 
 using CardInterface = BabelRush.Gui.Cards.CardInterface;
@@ -10,7 +12,8 @@ namespace BabelRush.Gui.MainUI;
 
 partial class CardField
 {
-    //Const
+    #region Consts
+
     private const float LeftPos = 0;
     private const float RightPos = 400;
     private const float MidPos = (LeftPos + RightPos) / 2;
@@ -23,7 +26,11 @@ partial class CardField
     private const double MoveInterval = 0.2;
     private const double SelectInterval = 0.1;
 
-    //Func
+    #endregion
+
+
+    #region Private Methods
+
     private float[] CalculateCardXPosition()
     {
         var count = CardInterfaces.Count;
@@ -50,7 +57,7 @@ partial class CardField
         {
             card.XPosTween?.Kill();
             var tween = card.XPosTween = CreateTween();
-            tween.TweenProperty(card, CardInterface.NodePaths.PositionX, xPos, MoveInterval)
+            tween.TweenProperty(card, NodePaths.PositionX, xPos, MoveInterval)
                  .SetTrans(Tween.TransitionType.Quad).SetEase(Tween.EaseType.Out);
         }
     }
@@ -59,7 +66,7 @@ partial class CardField
     {
         card.YPosTween?.Kill();
         var tween = card.YPosTween = CreateTween();
-        tween.TweenProperty(card, CardInterface.NodePaths.PositionY, CardYOffset, InsertInterval)
+        tween.TweenProperty(card, NodePaths.PositionY, CardYOffset, InsertInterval)
              .SetTrans(Tween.TransitionType.Quart)
              .SetEase(Tween.EaseType.Out);
         tween.TweenCallback(Callable.From(() => card.Selectable = true));
@@ -73,7 +80,7 @@ partial class CardField
         {
             old.YPosTween?.Kill();
             var tween = old.YPosTween = CreateTween();
-            tween.TweenProperty(old, CardInterface.NodePaths.PositionY, CardYOffset, SelectInterval)
+            tween.TweenProperty(old, NodePaths.PositionY, CardYOffset, SelectInterval)
                  .SetTrans(Tween.TransitionType.Quart)
                  .SetEase(Tween.EaseType.In);
             old.YPosTween.TweenCallback(Callable.From(SortCards));
@@ -83,7 +90,7 @@ partial class CardField
         {
             @new.YPosTween?.Kill();
             var tween = @new.YPosTween = CreateTween();
-            tween.TweenProperty(@new, CardInterface.NodePaths.PositionY, SelectedCardYOffset, SelectInterval)
+            tween.TweenProperty(@new, NodePaths.PositionY, SelectedCardYOffset, SelectInterval)
                  .SetTrans(Tween.TransitionType.Back)
                  .SetEase(Tween.EaseType.Out);
             SortCards();
@@ -119,4 +126,6 @@ partial class CardField
             }
         }
     }
+
+    #endregion
 }

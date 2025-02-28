@@ -1,12 +1,12 @@
 extends AnimatedSprite2D
 
 @onready
-var num: AnimatedSprite2D = $NumBase/num;
+var num: AnimatedSprite2D = $NumBase/Num;
 @onready
 var points: Array = $Points.get_children();
 
 
-func SetValue(value: int) -> void:
+func set_value(value: int) -> void:
 	#base
 	if value<0:
 		frame=1

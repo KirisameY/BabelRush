@@ -1,37 +1,37 @@
 extends Node2D
 
-@onready var Icon = $Icon
-@onready var Num = $Num
-@onready var N0 = $Num/N0
-@onready var N1 = $Num/N1
-@onready var Placeholder = $Placeholder
+@onready var icon: TextureRect = $Icon
+@onready var num: Node2D = $Num
+@onready var n0: AnimatedSprite2D = $Num/N0
+@onready var n1: AnimatedSprite2D = $Num/N1
+@onready var placeholder: Sprite2D = $Placeholder
 
 
-func SetIcon(icon: Texture2D) -> void:
-	Icon.texture = icon
+func set_icon(newicon: Texture2D) -> void:
+	icon.texture = newicon
 
 
-func SetValue(value: int) -> void:
+func set_value(value: int) -> void:
 	if(value<0):
-		N1.visible = false
-		N0.visible = false
-		Icon.position.x = 4
+		n1.visible = false
+		n0.visible = false
+		icon.position.x = 4
 	elif(value<10):
-		N1.visible = false
-		N0.visible = true
-		N0.position.x = 11
-		Icon.position.x = 0
-		N0.frame = value
+		n1.visible = false
+		n0.visible = true
+		n0.position.x = 11
+		icon.position.x = 0
+		n0.frame = value
 	else:
-		N1.visible = true
-		N0.visible = true
-		N0.position.x = 13
-		Icon.position.x = 0
-		N0.frame = value %10
-		N1.frame = (value/10) %10
+		n1.visible = true
+		n0.visible = true
+		n0.position.x = 13
+		icon.position.x = 0
+		n0.frame = value %10
+		n1.frame = (value/10) %10
 
 
-func SetEmpty(empty: bool) -> void:
-	Icon.visible = !empty
-	Num.visible = !empty
-	Placeholder.visible = empty
+func set_empty(empty: bool) -> void:
+	icon.visible = !empty
+	num.visible = !empty
+	placeholder.visible = empty

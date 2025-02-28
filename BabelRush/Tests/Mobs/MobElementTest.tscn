@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c2pjaa5hwbvhv"]
 
-[ext_resource type="PackedScene" uid="uid://ivk70wynqfry" path="res://Gui/Mobs/HealthBar.tscn" id="1_22iad"]
-[ext_resource type="PackedScene" uid="uid://bfk14p07770m2" path="res://Gui/Mobs/ActionBar.tscn" id="2_ch1ds"]
+[ext_resource type="PackedScene" uid="uid://ivk70wynqfry" path="res://Gui/Mobs/i_health_bar.tscn" id="1_22iad"]
+[ext_resource type="PackedScene" uid="uid://bfk14p07770m2" path="res://Gui/Mobs/i_action_bar.tscn" id="2_ch1ds"]
 
 [node name="MobElementTest" type="Node2D"]
 

@@ -21,10 +21,13 @@ public partial class CardField : Control
     public override void _Ready() { }
 
 
-    //Member
+    #region Members
+
     private static CardPile Pile => Play.CardHub.CardField;
     private Dictionary<Card, CardInterface> CardDict { get; } = [];
     private IReadOnlyCollection<CardInterface> CardInterfaces => CardDict.Values;
+
+    #endregion
 
 
     //Process
@@ -34,7 +37,8 @@ public partial class CardField : Control
     }
 
 
-    //Card Operation
+    #region Card Operation
+
     private void AddCard(CardInterface ci)
     {
         CardDict.TryAdd(ci.Card, ci);
@@ -62,8 +66,11 @@ public partial class CardField : Control
 
     private void RemoveCard(CardInterface ci) => RemoveCard(ci.Card);
 
+    #endregion
 
-    //Card Select
+
+    #region Card Select
+
     private CardInterface? _selected;
     private CardInterface? Selected
     {
@@ -83,8 +90,11 @@ public partial class CardField : Control
 
     private int SelectedCardIndex => Selected is not null ? CardInterfaces.PositionOfFirst(Selected) : -1;
 
+    #endregion
 
-    //Card Drag & Use
+
+    #region Card Drag & Use
+
     private CardInterface? _picked;
     private CardInterface? Picked
     {
@@ -108,7 +118,6 @@ public partial class CardField : Control
             Game.EventBus.Publish(new CardPickedEvent(old.Card, false));
             if (!oldOut || !await old.Card.Use(Play.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
                 InsertCard(old);
-            
         }
 
         if (@new is not null)
@@ -135,8 +144,11 @@ public partial class CardField : Control
         card.YPosTween?.Kill();
     }
 
+    #endregion
 
-    //Event handlers
+
+    #region Event handlers
+
     public override void _EnterTree()
     {
         SubscribeInstanceHandler(Game.EventBus);
@@ -180,4 +192,6 @@ public partial class CardField : Control
         if (e.CardPile != Pile) return;
         RemoveCard(e.Card);
     }
+
+    #endregion
 }
