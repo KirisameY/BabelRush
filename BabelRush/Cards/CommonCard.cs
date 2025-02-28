@@ -33,7 +33,7 @@ public class CommonCard(CardType type) : Card
         }
 
         var canceled = (
-            await Game.EventBus.PublishAndWaitFor(new BeforeCardUseEvent(this, new()))
+            await Game.EventBus.PublishAndWaitFor(new CardUseRequestEvent(this, new()))
         ).Cancel.Canceled;
         if (canceled) return false;
 

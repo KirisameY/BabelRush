@@ -10,18 +10,18 @@ public sealed record CardSelectedEvent(Card Card, bool Selected) : CardEvent(Car
 
 public sealed record CardPickedEvent(Card Card, bool Picked) : CardEvent(Card);
 
-public sealed record BeforeCardUseEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
+public sealed record CardUseRequestEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
 
 public sealed record CardUsedEvent(Card Card, bool CostAp,Variable<bool> ToExhaust) : CardEvent(Card);
 
 //Gaming
 public sealed record CardDrawnEvent(Card Card) : CardEvent(Card);
 
-public sealed record BeforeCardDiscardEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
+public sealed record CardDiscardRequestEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
 
 public sealed record CardDiscardedEvent(Card Card) : CardEvent(Card);
 
-public sealed record BeforeCardExhaustEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
+public sealed record CardExhaustRequestEvent(Card Card, CancelToken Cancel) : CardEvent(Card);
 
 public sealed record CardExhaustedEvent(Card Card) : CardEvent(Card);
 

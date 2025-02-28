@@ -47,7 +47,7 @@ public partial class CardHub(RandomBelt random)
     public async ValueTask<bool> DiscardCard(Card card, bool cancellable = true)
     {
         var canceled = (
-            await Game.EventBus.PublishAndWaitFor(new BeforeCardDiscardEvent(card, new()))
+            await Game.EventBus.PublishAndWaitFor(new CardDiscardRequestEvent(card, new()))
         ).Cancel.Canceled;
         if (cancellable && canceled) return false;
 
@@ -64,7 +64,7 @@ public partial class CardHub(RandomBelt random)
     public async ValueTask<bool> ExhaustCard(Card card, bool cancellable = true)
     {
         var canceled = (
-            await Game.EventBus.PublishAndWaitFor(new BeforeCardExhaustEvent(card, new()))
+            await Game.EventBus.PublishAndWaitFor(new CardExhaustRequestEvent(card, new()))
         ).Cancel.Canceled;
         if (cancellable && canceled) return false;
 

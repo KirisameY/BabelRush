@@ -32,7 +32,7 @@ public class MobAction(Mob mob, ActionInstance action, double time)
     {
         var targets = Play.BattleField.GetOppositeMobs(Mob.Alignment);
 
-        var request = await Game.EventBus.PublishAndWaitFor(new MobActionExecuteRequest(Mob, this, new()));
+        var request = await Game.EventBus.PublishAndWaitFor(new MobActionExecuteRequestEvent(Mob, this, new()));
         if (request.Cancel.Canceled)
         {
             Game.EventBus.Publish(new MobActionCanceledEvent(Mob, this));

@@ -90,7 +90,7 @@ public partial class PlayerState
 
     //Card - AP
     [EventHandler]
-    private static void BeforeCardUse(BeforeCardUseEvent e)
+    private static void OnCardUseRequest(CardUseRequestEvent e)
     {
         if (e.Card.Cost > Play.PlayerState.Ap) e.Cancel.Cancel();
     }
