@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 using BabelRush.Mobs;
+using BabelRush.Mobs.Actions;
 using BabelRush.Mobs.Animation;
 
 using Godot;
@@ -120,10 +121,13 @@ public partial class MobInterface : Node2D
     private int _lastMaxHealth;
     private int _lastHealth;
 
+    private bool _actionDirty;
+
     public override void _Process(double delta)
     {
         Position = new((float)Mob.Position, Position.Y);
         UpdateActionBarProgress();
+        if (_actionDirty) UpdateActionBar();
     }
 
     private void Refresh()
@@ -138,8 +142,9 @@ public partial class MobInterface : Node2D
         if (Mob.Health != _lastHealth) HealthBar.SetDeferred(Names.Health,          Mob.Health.FinalValue);
     }
 
-    private void UpdateActionBar() //todo: 要有一个mob更新action的事件，然后把这个注册上去
+    private void UpdateActionBar()
     {
+        _actionDirty = false;
         if (Mob.CurrentAction is not { } action)
         {
             ActionBar.Visible = false;
@@ -234,6 +239,12 @@ public partial class MobInterface : Node2D
         Modulate = e.ByCursor
             ? new Color(Modulate.R, e.Selected ? 0 : 1, Modulate.B)
             : new Color(Modulate.R, Modulate.G,         e.Selected ? 0 : 1);
+    }
+
+    private void OnMobActionEvent(MobActionEvent e)
+    {
+        if (e.Mob != Mob) return;
+        _actionDirty = true;
     }
 
     public override void _EnterTree()

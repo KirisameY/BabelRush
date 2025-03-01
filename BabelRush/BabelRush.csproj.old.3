@@ -1,0 +1,42 @@
+<Project Sdk="Godot.NET.Sdk/4.4.0-rc.1">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net8.0</TargetFramework>
+        <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'ios' ">net8.0</TargetFramework>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <LangVersion>preview</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
+        <PackageReference Include="Tomlyn" Version="0.17.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="KirisameLib.Core" Version="0.1.2" />
+        <PackageReference Include="KirisameLib.Data" Version="0.1.1" />
+        <PackageReference Include="KirisameLib.Event" Version="0.1.1" />
+        <PackageReference Include="KirisameLib.Godot" Version="0.1.0" />
+        <PackageReference Include="KirisameLib.Logging" Version="0.1.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">
+        <Compile Remove="Tests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Remove="Tests\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="**\*.tscn" />
+        <None Include="**\*.gd" />
+    </ItemGroup>
+
+</Project>
