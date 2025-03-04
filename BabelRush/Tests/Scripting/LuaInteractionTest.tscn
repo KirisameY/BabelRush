@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://djyicn8rl48j0"]
+
+[ext_resource type="Script" uid="uid://d4gv7i6c7m4uy" path="res://Tests/Scripting/LuaInteractionTest.cs" id="1_28f6y"]
+
+[node name="LuaInteractionTest" type="Node"]
+script = ExtResource("1_28f6y")

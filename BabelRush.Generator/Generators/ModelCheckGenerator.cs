@@ -144,7 +144,9 @@ public class ModelCheckGenerator : IIncrementalGenerator
                     sourceBuilder.AppendLine($"if (!_initialized_{name}) errorList.Add(\"Property {name} of {info.ClassName} did not initialized\");");
                 }
                 sourceBuilder.AppendLine()
-                             .AppendLine("string[] errorsArray;");
+                             .AppendLine("#pragma warning disable CS0168 // variable is declared but not used")
+                             .AppendLine("string[] errorsArray;")
+                             .AppendLine("#pragma warning restore CS0168");
                 foreach (var property in info.ModelProperties)
                 {
                     var name = property.Name;
