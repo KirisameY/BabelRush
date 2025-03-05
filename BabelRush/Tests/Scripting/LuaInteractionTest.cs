@@ -1,6 +1,9 @@
+using BabelRush.GamePlay;
 using BabelRush.Scripting;
 
 using Godot;
+
+using NLua;
 
 namespace BabelRush.Tests.Scripting;
 
@@ -8,13 +11,14 @@ public partial class LuaInteractionTest : Node
 {
     public override void _Ready()
     {
-        var lua = ScriptCenter.Lua;
+        var lua = ScriptHub.Lua;
         var test1 = lua.DoString(
             """
             t1 = 't1'
             local t2 = 't2'
             return t1, t2
-            """);
+            """
+        );
         var test2 = lua.DoString(
             """
             return t1, t2
@@ -22,5 +26,16 @@ public partial class LuaInteractionTest : Node
         );
         GD.Print(test1);
         GD.Print(test2);
+
+        var test3 = lua.DoString(
+            """
+            local e = luanet.import_type("BabelRush.GamePlay.ApChangedEvent")
+            GD.Print(e(12,24))
+            return e(11,2)
+            """
+        );
+        GD.Print(test3[0].GetType());
+        GD.Print(test3[0]);
+        GD.Print(test3);
     }
 }

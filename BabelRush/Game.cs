@@ -7,6 +7,7 @@ using System.Text;
 
 using BabelRush.I18n;
 using BabelRush.Registering;
+using BabelRush.Scripting;
 
 using Godot;
 
@@ -71,6 +72,9 @@ public partial class Game : SceneTree
         base._Initialize();
 
         Logger.Log(LogLevel.Info, "Initializing", "Game class loaded");
+
+        Logger.Log(LogLevel.Info, "Initializing", "Loading Script...");
+        ScriptHub.Initialize();
 
         // 回头可以把这个拿走到单独的地方，但现在为了不叠不必要的任务栈影响开发，先这样
         Logger.Log(LogLevel.Info, "Initializing", "Loading assets...");
