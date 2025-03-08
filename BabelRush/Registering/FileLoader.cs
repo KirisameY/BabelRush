@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BabelRush.Registering.RootLoaders;
+using BabelRush.Registering.SourceTakers;
+
 using KirisameLib.Extensions;
-using KirisameLib.Data.FileLoading;
 
 namespace BabelRush.Registering;
 
@@ -18,7 +20,7 @@ public static class FileLoader
     private static Dictionary<string, RootLoader?> RootMap { get; } = new()
     {
         ["data"] = DataRoot,
-        // ["script"] = null,
+        // ["script"] = null, todo: script也该安排了
         ["res"] = DefaultResRoot,
     };
     private static Dictionary<string, RootLoader?> LocalRootMap { get; } = new()
@@ -27,10 +29,10 @@ public static class FileLoader
         ["lang"] = LangRoot,
     };
 
-    public static void AddDataRegistrant(string path, DataRegistrant registrant) => DataRoot.AddRegistrant(path, registrant);
-    public static void AddDefaultResRegistrant(string path, ResRegistrant registrant) => DefaultResRoot.AddRegistrant(path, registrant);
-    public static void AddLocalResRegistrant(string path, ResRegistrant registrant) => LocalResRoot.AddRegistrant(path, registrant);
-    public static void AddLangRegistrant(string path, LangRegistrant registrant) => LangRoot.AddRegistrant(path, registrant);
+    public static void AddDataRegistrant(string path, DataSourceTaker sourceTaker) => DataRoot.AddRegistrant(path, sourceTaker);
+    public static void AddDefaultResRegistrant(string path, ResSourceTaker sourceTaker) => DefaultResRoot.AddRegistrant(path, sourceTaker);
+    public static void AddLocalResRegistrant(string path, ResSourceTaker sourceTaker) => LocalResRoot.AddRegistrant(path, sourceTaker);
+    public static void AddLangRegistrant(string path, LangSourceTaker sourceTaker) => LangRoot.AddRegistrant(path, sourceTaker);
 
     #endregion
 

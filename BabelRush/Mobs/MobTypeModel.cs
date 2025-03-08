@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using BabelRush.Data;
 using BabelRush.Mobs.Actions;
 
-using KirisameLib.Data.Model;
-
 using Tomlyn.Syntax;
 
 namespace BabelRush.Mobs;

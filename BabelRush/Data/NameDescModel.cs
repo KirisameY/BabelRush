@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 
 using KirisameLib.Extensions;
-using KirisameLib.Data.Model;
 
 namespace BabelRush.Data;
 

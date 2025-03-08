@@ -8,8 +8,6 @@ using BabelRush.Data.ExtendModels;
 
 using Godot;
 
-using KirisameLib.Data.Model;
-
 using Tomlyn;
 
 namespace BabelRush.Mobs.Animation;

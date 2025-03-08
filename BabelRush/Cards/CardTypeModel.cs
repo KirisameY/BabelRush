@@ -6,8 +6,6 @@ using BabelRush.Registers;
 
 using JetBrains.Annotations;
 
-using KirisameLib.Data.Model;
-
 using Tomlyn.Syntax;
 
 namespace BabelRush.Cards;

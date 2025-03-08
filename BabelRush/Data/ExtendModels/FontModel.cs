@@ -3,8 +3,6 @@ using System.Linq;
 
 using Godot;
 
-using KirisameLib.Data.Model;
-
 using Tomlyn;
 
 namespace BabelRush.Data.ExtendModels;

@@ -1,13 +1,13 @@
-using BabelRush.Registering;
 using BabelRush.Scenery.Rooms;
 
-using KirisameLib.Data.Register;
+using KirisameLib.Data.Registers;
 
 namespace BabelRush.Registers;
 
-[RegisterContainer]
-public static partial class LevelRegisters
+public static class LevelRegisters
 {
-    [DataRegister<RoomTemplateModel, RoomTemplate>("rooms")]
-    private static readonly CommonRegister<RoomTemplate> RoomRegister = new(_ => RoomTemplate.Default);
+    public static IRegister<RoomTemplate> RoomRegister { get; }
+
+    // [DataRegister<RoomTemplateModel, RoomTemplate>("rooms")]
+    // private static readonly CommonRegister<RoomTemplate> RoomRegister = new(_ => RoomTemplate.Default);
 }

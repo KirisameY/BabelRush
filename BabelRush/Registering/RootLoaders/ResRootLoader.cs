@@ -3,16 +3,15 @@ using System.IO;
 using System.Threading.Tasks;
 
 using BabelRush.Data;
+using BabelRush.Registering.SourceTakers;
 
 using KirisameLib.Asynchronous;
 using KirisameLib.Extensions;
-using KirisameLib.Data.FileLoading;
-using KirisameLib.Data.Registration;
 using KirisameLib.Logging;
 
-namespace BabelRush.Registering;
+namespace BabelRush.Registering.RootLoaders;
 
-public class ResRootLoader : CommonRootLoader<ResSourceInfo, IRegistrant<ResSourceInfo>>
+public class ResRootLoader : CommonRootLoader<ResSourceInfo, ISourceTaker<ResSourceInfo>>
 {
     protected override void HandleFile(Dictionary<string, ResSourceInfo> sourceDict, string fileSubPath, byte[] fileContent)
     {
@@ -26,14 +25,14 @@ public class ResRootLoader : CommonRootLoader<ResSourceInfo, IRegistrant<ResSour
         source.Files.TryAdd(extension, fileContent);
     }
 
-    protected override async Task RegisterDirectory(IRegistrant<ResSourceInfo> registrant, Dictionary<string, ResSourceInfo> sourceDict)
+    protected override async Task RegisterDirectory(ISourceTaker<ResSourceInfo> registrant, Dictionary<string, ResSourceInfo> sourceDict)
     {
         var path = CurrentPath;
         await AsyncOrrery.SwitchContext();
 
         foreach (var source in sourceDict.Values)
         {
-            var regInfos = registrant.Parse(source, out var errorInfo);
+            var regInfos = registrant.Take(source, out var errorInfo);
             if (errorInfo.ErrorCount != 0)
             {
                 Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),

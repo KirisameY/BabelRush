@@ -5,27 +5,30 @@ using BabelRush.Registering;
 
 using Godot;
 
-using KirisameLib.Data.I18n;
-using KirisameLib.Data.Register;
+using KirisameLib.Data.Registers;
 
 namespace BabelRush.Registers;
 
-[RegisterContainer]
-internal static partial class ActionRegisters
+public static class ActionRegisters
 {
-    [DataRegister<ActionStepModel, ActionStep>("action_steps")]
-    private static readonly CommonRegister<ActionStep> ActionStepsRegister =
-        new(_ => ActionStep.Default);
+    public static IRegister<ActionStep> ActionSteps { get; }
+    public static IRegister<NameDesc> ActionNameDesc { get; }
+    public static IRegister<Texture2D> ActionIcon { get; }
+    public static IRegister<ActionType> Actions { get; }
 
-    [LangRegister<NameDescModel, NameDesc>("actions")]
-    private static readonly LocalizedRegister<NameDesc> ActionNameDescRegister =
-        new("en", id => (id, ""));
-
-    [ResRegister<Texture2DModel, Texture2D>("textures/actions")]
-    private static readonly CommonRegister<Texture2D> ActionIconRegister =
-        new(_ => new PlaceholderTexture2D());
-
-    [DataRegister<ActionTypeModel, ActionType>("actions", "action_steps")]
-    private static readonly CommonRegister<ActionType> ActionsRegister =
-        new(_ => ActionType.Default);
+    // [DataRegister<ActionStepModel, ActionStep>("action_steps")]
+    // private static readonly CommonRegister<ActionStep> ActionStepsRegister =
+    //     new(_ => ActionStep.Default);
+    //
+    // [LangRegister<NameDescModel, NameDesc>("actions")]
+    // private static readonly LocalizedRegister<NameDesc> ActionNameDescRegister =
+    //     new("en", id => (id, ""));
+    //
+    // [ResRegister<Texture2DModel, Texture2D>("textures/actions")]
+    // private static readonly CommonRegister<Texture2D> ActionIconRegister =
+    //     new(_ => new PlaceholderTexture2D());
+    //
+    // [DataRegister<ActionTypeModel, ActionType>("actions", "action_steps")]
+    // private static readonly CommonRegister<ActionType> ActionsRegister =
+    //     new(_ => ActionType.Default);
 }

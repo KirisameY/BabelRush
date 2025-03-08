@@ -5,8 +5,6 @@ using BabelRush.Data;
 
 using JetBrains.Annotations;
 
-using KirisameLib.Data.Model;
-
 using Tomlyn.Syntax;
 
 namespace BabelRush.Scenery.Rooms;

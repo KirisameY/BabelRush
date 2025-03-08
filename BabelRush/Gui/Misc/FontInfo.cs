@@ -7,15 +7,13 @@ using BabelRush.Registers;
 
 using Godot;
 
-using KirisameLib.Data.Model;
-
 using Tomlyn;
 
 namespace BabelRush.Gui.Misc;
 
 public record FontInfo(string FontId, int Size)
 {
-    public Font Font => LocalInfoRegisters.Font.GetItem(FontId);
+    public Font Font => LocalInfoRegisters.Fonts.GetItem(FontId);
 }
 
 [Model]

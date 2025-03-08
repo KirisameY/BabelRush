@@ -5,13 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-using BabelRush.I18n;
 using BabelRush.Registering;
 using BabelRush.Scripting;
 
 using Godot;
 
-using KirisameLib.Data.I18n;
 using KirisameLib.Event;
 using KirisameLib.Event.Generated;
 using KirisameLib.FileSys;
@@ -45,19 +43,20 @@ public partial class Game : SceneTree
     private static readonly DelayedEventBus InnerEventBus = new();
     public static EventBus EventBus => InnerEventBus;
 
-    public static class Localization
-    {
-        static Localization()
-        {
-            LocalizedRegister.LocalChangedEvent += static (prev, current) => EventBus.Publish(new LocalChangedEvent(prev, current));
-        }
-
-        public static string Local
-        {
-            get => LocalizedRegister.Local;
-            set => LocalizedRegister.Local = value;
-        }
-    }
+    // todo: Local event
+    // public static class Localization
+    // {
+    //     static Localization()
+    //     {
+    //         LocalizedRegister.LocalChangedEvent += static (prev, current) => EventBus.Publish(new LocalChangedEvent(prev, current));
+    //     }
+    //
+    //     public static string Local
+    //     {
+    //         get => LocalizedRegister.Local;
+    //         set => LocalizedRegister.Local = value;
+    //     }
+    // }
 
 
     //Initialization
@@ -105,7 +104,7 @@ public partial class Game : SceneTree
 
     private static void LoadAssets()
     {
-        BabelRushGenerated.BabelRush.RegisterMap.Register();
+        // BabelRushGenerated.BabelRush.RegisterMap.Register(); todo: register entrance
 
     #if TOOLS
         var root = new DirectoryInfo("./assets").ToReadableDirectory();

@@ -2,8 +2,6 @@ using System.Collections.Generic;
 
 using BabelRush.Data;
 
-using KirisameLib.Data.Model;
-
 using Tomlyn.Syntax;
 
 namespace BabelRush.Cards.Features;

@@ -45,7 +45,7 @@ public partial class ApBar : Control
 
     private void UpdateFont()
     {
-        var fontInfo = LocalInfoRegisters.FontInfo.GetItem("title");
+        var fontInfo = LocalInfoRegisters.FontInfos.GetItem("title");
         CardNameLabel.LabelSettings.Font = fontInfo.Font;
         CardNameLabel.LabelSettings.FontSize = fontInfo.Size;
     }

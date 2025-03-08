@@ -4,16 +4,17 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using BabelRush.Registering.SourceTakers;
+
 using KirisameLib.Extensions;
-using KirisameLib.Data.FileLoading;
 using KirisameLib.Logging;
 
 using Tomlyn;
 using Tomlyn.Syntax;
 
-namespace BabelRush.Registering;
+namespace BabelRush.Registering.RootLoaders;
 
-public class DataRootLoader : CommonRootLoader<DocumentSyntax, DataRegistrant>
+public class DataRootLoader : CommonRootLoader<DocumentSyntax, DataSourceTaker>
 {
     private static ConcurrentDictionary<string, TaskCompletionSource> TaskDict { get; } = new();
 
@@ -30,14 +31,14 @@ public class DataRootLoader : CommonRootLoader<DocumentSyntax, DataRegistrant>
         sourceDict.TryAdd(fileSubPath, syntax);
     }
 
-    protected override async Task RegisterDirectory(DataRegistrant registrant, Dictionary<string, DocumentSyntax> sourceDict)
+    protected override async Task RegisterDirectory(DataSourceTaker sourceTaker, Dictionary<string, DocumentSyntax> sourceDict)
     {
         var path = CurrentPath;
-        await Task.WhenAll(registrant.WaitFor.Select(wait => TaskDict.GetOrAdd(wait, _ => new()).Task));
+        await Task.WhenAll(sourceTaker.WaitFor.Select(wait => TaskDict.GetOrAdd(wait, _ => new()).Task));
 
         foreach (var (file, source) in sourceDict)
         {
-            var regInfos = registrant.Parse(source, out var errorInfo);
+            var regInfos = sourceTaker.Take(source, out var errorInfo);
             if (errorInfo.ErrorCount != 0)
             {
                 Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),

@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BabelRush.Registering.SourceTakers;
+
 using KirisameLib.Extensions;
-using KirisameLib.Data.FileLoading;
 using KirisameLib.Logging;
 
 using Tomlyn;
 using Tomlyn.Model;
 
-namespace BabelRush.Registering;
+namespace BabelRush.Registering.RootLoaders;
 
-public class LangRootLoader : RootLoader<IDictionary<string, object>, LangRegistrant>
+public class LangRootLoader : RootLoader<IDictionary<string, object>, LangSourceTaker>
 {
     private bool Exited { get; set; }
     private LinkedList<string> SubPathLink { get; } = [];
@@ -67,7 +68,7 @@ public class LangRootLoader : RootLoader<IDictionary<string, object>, LangRegist
     {
         var registrant = PathMapView[sort];
 
-        var regInfos = registrant.Parse(source, out var errorInfo);
+        var regInfos = registrant.Take(source, out var errorInfo);
         if (errorInfo.ErrorCount != 0)
         {
             Logger.Log(LogLevel.Warning, nameof(Register),

@@ -43,13 +43,13 @@ public partial class CardInfoText : Control
 
     private void UpdateFont()
     {
-        var titleInfo = LocalInfoRegisters.FontInfo.GetItem("title");
+        var titleInfo = LocalInfoRegisters.FontInfos.GetItem("title");
         Label.Set(Names.TitleFont, titleInfo.Font);
         Label.Set(Names.TitleSize, titleInfo.Size);
-        var subtitleInfo = LocalInfoRegisters.FontInfo.GetItem("subtitle");
+        var subtitleInfo = LocalInfoRegisters.FontInfos.GetItem("subtitle");
         Label.Set(Names.SubtitleFont, subtitleInfo.Font);
         Label.Set(Names.SubtitleSize, subtitleInfo.Size);
-        var detailInfo = LocalInfoRegisters.FontInfo.GetItem("detail");
+        var detailInfo = LocalInfoRegisters.FontInfos.GetItem("detail");
         Label.Set(Names.DetailFont, detailInfo.Font);
         Label.Set(Names.DetailSize, detailInfo.Size);
     }
