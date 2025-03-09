@@ -8,8 +8,7 @@ using KirisameLib.Extensions;
 
 namespace BabelRush.Registering.RootLoaders;
 
-public abstract class CommonRootLoader<TSource, TSourceTaker> : RootLoader<TSource, TSourceTaker>
-    where TSourceTaker : ISourceTaker<TSource>
+public abstract class CommonRootLoader<TSource> : RootLoader<TSource>
 {
     private LinkedList<string> PathLink { get; } = [];
     private Stack<RegisterInfo> RegisterStack { get; } = [];
@@ -25,9 +24,9 @@ public abstract class CommonRootLoader<TSource, TSourceTaker> : RootLoader<TSour
 
         PathLink.AddLast(dirName);
         var path = PathLink.Join('/');
-        if (PathMapView.TryGetValue(path, out var registrant))
+        if (GetSourceTaker(path) is { } sourceTaker)
         {
-            RegisterStack.Push(new RegisterInfo(path, registrant, [], []));
+            RegisterStack.Push(new RegisterInfo(path, sourceTaker, [], []));
         }
         else if (RegisterStack.TryPeek(out var info))
         {
@@ -65,7 +64,7 @@ public abstract class CommonRootLoader<TSource, TSourceTaker> : RootLoader<TSour
         if (info.SubPathLink.Count > 0) info.SubPathLink.RemoveLast();
         if (info.Path != path) return false;
 
-        var task = RegisterDirectory(info.Registrant, info.SourceDict);
+        var task = RegisterDirectory(info.SourceTaker, info.SourceDict);
         RegisteringTasks.Add(task);
         RegisterStack.Pop();
         return false;
@@ -73,12 +72,12 @@ public abstract class CommonRootLoader<TSource, TSourceTaker> : RootLoader<TSour
 
 
     protected abstract void HandleFile(Dictionary<string, TSource> sourceDict, string fileSubPath, byte[] fileContent);
-    protected abstract Task RegisterDirectory(TSourceTaker registrant, Dictionary<string, TSource> sourceDict);
+    protected abstract Task RegisterDirectory(ISourceTaker<TSource> sourceTaker, Dictionary<string, TSource> sourceDict);
     protected abstract void EndUp();
 
 
     private readonly record struct RegisterInfo(
-        string Path, TSourceTaker Registrant,
+        string Path, ISourceTaker<TSource> SourceTaker,
         Dictionary<string, TSource> SourceDict,
         LinkedList<string> SubPathLink
     );

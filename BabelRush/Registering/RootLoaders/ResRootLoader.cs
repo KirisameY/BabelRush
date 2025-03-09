@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -11,8 +12,16 @@ using KirisameLib.Logging;
 
 namespace BabelRush.Registering.RootLoaders;
 
-public class ResRootLoader : CommonRootLoader<ResSourceInfo, ISourceTaker<ResSourceInfo>>
+public class ResRootLoader((string local, IDictionary<string, ISourceTaker<ResSourceInfo>> dict)? localInfo = null) : CommonRootLoader<ResSourceInfo>
 {
+    private static Dictionary<string, ISourceTaker<ResSourceInfo>> StaticSourceTakerDict { get; } = new();
+    private string LocalInfo { get; } = localInfo?.local ?? "common res";
+    private ImmutableDictionary<string, ISourceTaker<ResSourceInfo>> SourceTakerDict { get; } =
+        (localInfo?.dict ?? StaticSourceTakerDict).ToImmutableDictionary();
+
+
+    protected override ISourceTaker<ResSourceInfo>? GetSourceTaker(string path) => SourceTakerDict.GetOrDefault(path);
+
     protected override void HandleFile(Dictionary<string, ResSourceInfo> sourceDict, string fileSubPath, byte[] fileContent)
     {
         var extension = Path.GetExtension(fileSubPath);
@@ -25,29 +34,20 @@ public class ResRootLoader : CommonRootLoader<ResSourceInfo, ISourceTaker<ResSou
         source.Files.TryAdd(extension, fileContent);
     }
 
-    protected override async Task RegisterDirectory(ISourceTaker<ResSourceInfo> registrant, Dictionary<string, ResSourceInfo> sourceDict)
+    protected override async Task RegisterDirectory(ISourceTaker<ResSourceInfo> sourceTaker, Dictionary<string, ResSourceInfo> sourceDict)
     {
         var path = CurrentPath;
         await AsyncOrrery.SwitchContext();
 
         foreach (var source in sourceDict.Values)
         {
-            var regInfos = registrant.Take(source, out var errorInfo);
+            sourceTaker.Take(source, out var errorInfo);
             if (errorInfo.ErrorCount != 0)
             {
                 Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
-                           $"{errorInfo.ErrorCount} errors found in Res/{path}/{source.Id} (in {FileLoader.CurrentLocalInfo}), "
+                           $"{errorInfo.ErrorCount} errors found in Res/{path}/{source.Id} (in {LocalInfo}), "
                          + $"error messages:\n"
                          + errorInfo.Messages.Join('\n'));
-            }
-
-            foreach (var (id, register) in regInfos)
-            {
-                if (register()) continue;
-
-                Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
-                           $"Failed to register item {id} in Res/{path} (in {FileLoader.CurrentLocalInfo}), "
-                         + $"Possibly there's already a registered item with a duplicate ID.");
             }
         }
     }

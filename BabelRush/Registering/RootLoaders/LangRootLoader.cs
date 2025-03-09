@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 using BabelRush.Registering.SourceTakers;
 
+using KirisameLib.Data.Registers;
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
 
@@ -11,11 +13,20 @@ using Tomlyn.Model;
 
 namespace BabelRush.Registering.RootLoaders;
 
-public class LangRootLoader : RootLoader<IDictionary<string, object>, LangSourceTaker>
+public class LangRootLoader(string local, IDictionary<string, ISourceTaker<IDictionary<string, object>>> sourceTakerDict) : RootLoader<IDictionary<string, object>>
 {
+    private string Local { get; } = local;
+    private ImmutableDictionary<string, ISourceTaker<IDictionary<string, object>>> SourceTakerDict { get; } =
+        sourceTakerDict.ToImmutableDictionary();
+
     private bool Exited { get; set; }
     private LinkedList<string> SubPathLink { get; } = [];
 
+
+    protected override ISourceTaker<IDictionary<string, object>>? GetSourceTaker(string path)
+    {
+        return SourceTakerDict.GetOrDefault(path);
+    }
 
     public override bool EnterDirectory(string dirName)
     {
@@ -39,7 +50,7 @@ public class LangRootLoader : RootLoader<IDictionary<string, object>, LangSource
                            $"Source data {key} in file {filePath} is not a table, skipped");
                 continue;
             }
-            if (!PathMapView.ContainsKey(key))
+            if (!SourceTakerDict.ContainsKey(key))
             {
                 Logger.Log(LogLevel.Warning, nameof(LoadFile),
                            $"Source data {key} in file {filePath} is unrecognized, skipped");
@@ -66,23 +77,14 @@ public class LangRootLoader : RootLoader<IDictionary<string, object>, LangSource
 
     private void Register(string filePath, string sort, IDictionary<string, object> source)
     {
-        var registrant = PathMapView[sort];
+        if (GetSourceTaker(sort) is not { } registrant) return;
 
-        var regInfos = registrant.Take(source, out var errorInfo);
+        registrant.Take(source, out var errorInfo);
         if (errorInfo.ErrorCount != 0)
         {
             Logger.Log(LogLevel.Warning, nameof(Register),
-                       $"{errorInfo.ErrorCount} errors found in data sort {sort} of Lang/{filePath} (in {FileLoader.CurrentLocalInfo}), "
-                     + $"error messages:\n"
-                     + errorInfo.Messages.Join('\n'));
-        }
-
-        foreach (var (id, register) in regInfos)
-        {
-            if (register()) continue;
-            Logger.Log(LogLevel.Warning, nameof(Register),
-                       $"Failed to register item {id} in data sort {sort} of Lang/{filePath} (in {FileLoader.CurrentLocalInfo}), "
-                     + $"Possibly there's already a registered item with a duplicate ID.");
+                       $"{errorInfo.ErrorCount} errors found in data sort {sort} of Lang/{filePath} (in {Local}), "
+                     + $"error messages:\n" + errorInfo.Messages.Join('\n'));
         }
     }
 

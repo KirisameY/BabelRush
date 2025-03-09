@@ -17,15 +17,9 @@ public abstract class RootLoader
     public abstract bool ExitDirectory();
 }
 
-public abstract class RootLoader<TSource, TSourceTaker> : RootLoader
-    where TSourceTaker : ISourceTaker<TSource>
+public abstract class RootLoader<TSource> : RootLoader
 {
-    private Dictionary<string, TSourceTaker> PathMap { get; } = new();
-
-    [field: AllowNull, MaybeNull]
-    protected ReadOnlyDictionary<string, TSourceTaker> PathMapView => field ??= PathMap.AsReadOnly();
-
-    public bool AddRegistrant(string path, TSourceTaker registrant) => PathMap.TryAdd(path, registrant);
+    protected abstract ISourceTaker<TSource>? GetSourceTaker(string path);
 }
 
 public class RootLoaderExitedException : Exception

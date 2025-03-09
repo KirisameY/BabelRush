@@ -1,23 +1,28 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using BabelRush.Data;
 
 namespace BabelRush.Registering.SourceTakers;
 
-public class CommonSourceTaker<TSource, TModel, TTarget>(RegisterItem<TTarget> registerItem) : ISourceTaker<TSource>
+public abstract class CommonSourceTaker<TSource, TModel, TTarget> : ISourceTaker<TSource>
     where TModel : IModel<TSource, TTarget>
 {
-    public (string id, Func<bool> register)[] Take(TSource source, out ModelParseErrorInfo errorMessages)
+    public void Take(TSource source, out ModelParseErrorInfo errorMessages)
     {
         var models = TModel.FromSource(source, out errorMessages);
-        return models.Select(GetRegister).ToArray();
-
-        (string id, Func<bool> register) GetRegister(IModel<TTarget> model)
+        List<string> errors = [];
+        foreach (var model in models)
         {
-            return (model.Id, () => registerItem(model.Id, model.Convert()));
+            if (!RegisterItem(model.Id, model.Convert()))
+                errors.Add($"Failed to register item {model.Id}, Possibly there's already a registered item with a duplicate ID.");
+        }
+        if (errors.Count != 0)
+        {
+            var finalErrors = errorMessages.Messages.Concat(errors).ToArray();
+            errorMessages = new(finalErrors.Length, finalErrors);
         }
     }
-}
 
-public delegate bool RegisterItem<in TItem>(string id, TItem item);
+    protected abstract bool RegisterItem(string id, TTarget item);
+}
