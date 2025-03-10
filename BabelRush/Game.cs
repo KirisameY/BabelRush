@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 
 using BabelRush.Registering;
+using BabelRush.Registering.FileLoading;
 using BabelRush.Scripting;
 
 using Godot;
@@ -43,7 +44,7 @@ public partial class Game : SceneTree
     private static readonly DelayedEventBus InnerEventBus = new();
     public static EventBus EventBus => InnerEventBus;
 
-    // todo: Local event
+    // todo: Local
     // public static class Localization
     // {
     //     static Localization()
@@ -75,9 +76,11 @@ public partial class Game : SceneTree
         Logger.Log(LogLevel.Info, "Initializing", "Loading Script...");
         ScriptHub.Initialize();
 
-        // 回头可以把这个拿走到单独的地方，但现在为了不叠不必要的任务栈影响开发，先这样
         Logger.Log(LogLevel.Info, "Initializing", "Loading assets...");
-        LoadAssets();
+        //todo: 现在正是不得不把它拿走之时
+        RegisterManager.LoadCommonAssets();
+        Logger.Log(LogLevel.Info, "Initializing", "Loading local assets...");
+        RegisterManager.LoadLocalAssets("zh-cn");
         Logger.Log(LogLevel.Info, "Initializing", "Assets loading completed");
     }
 
@@ -100,58 +103,6 @@ public partial class Game : SceneTree
         LogBus = new WriterLogBus(Project.Logging.MinLogLevel,
                                   new StreamWriter(logFile, Encoding.UTF8),
                                   new GdConsoleWriter());
-    }
-
-    private static void LoadAssets()
-    {
-        // BabelRushGenerated.BabelRush.RegisterMap.Register(); todo: register entrance
-
-    #if TOOLS
-        var root = new DirectoryInfo("./assets").ToReadableDirectory();
-        if (!root.Exists)
-        {
-            Logger.Log(LogLevel.Error, "LoadingAssets", "Assets directory not found");
-            return;
-        }
-    #else
-        var zipInfo = new FileInfo("./assets.zip");
-        if (!zipInfo.Exists)
-        {
-            Logger.Log(LogLevel.Error, "LoadingAssets", "Assets zip file not found");
-            return;
-        }
-        using var zip = ZipFile.OpenRead(zipInfo.FullName);
-        var root = zip.ToReadableDirectory(zipInfo.FullName);
-    #endif
-
-        Stack<(IReadableDirectory dir, IEnumerator<IReadableDirectory> children)> dirStack = new();
-        // ReSharper disable once GenericEnumeratorNotDisposed
-        dirStack.Push((root, root.Directories.GetEnumerator()));
-        using MemoryStream buffer = new();
-        while (dirStack.TryPeek(out var info))
-        {
-            var (dir, children) = info;
-            if (children.MoveNext())
-            {
-                FileLoader.EnterDirectory(children.Current.Name);
-                // ReSharper disable once GenericEnumeratorNotDisposed
-                dirStack.Push((children.Current, children.Current.Directories.GetEnumerator()));
-                continue;
-            }
-
-            foreach (var file in dir.Files)
-            {
-                buffer.SetLength(0);
-                buffer.Position = 0;
-                using var fileStream = file.OpenRead();
-                fileStream.CopyTo(buffer);
-                FileLoader.LoadFile(file.Name, buffer.ToArray());
-            }
-
-            FileLoader.ExitDirectory();
-            children.Dispose();
-            dirStack.Pop();
-        }
     }
 
 
