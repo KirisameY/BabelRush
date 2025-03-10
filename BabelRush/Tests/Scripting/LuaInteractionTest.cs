@@ -1,9 +1,6 @@
-using BabelRush.GamePlay;
 using BabelRush.Scripting;
 
 using Godot;
-
-using NLua;
 
 namespace BabelRush.Tests.Scripting;
 

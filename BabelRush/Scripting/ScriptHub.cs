@@ -1,8 +1,6 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
-using Godot;
-
 using NLua;
 
 namespace BabelRush.Scripting;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -7,6 +8,7 @@ using BabelRush.Data;
 using BabelRush.Registering.SourceTakers;
 
 using KirisameLib.Asynchronous;
+using KirisameLib.Data.Registering;
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
 
@@ -14,6 +16,17 @@ namespace BabelRush.Registering.RootLoaders;
 
 public class ResRootLoader((string local, IDictionary<string, ISourceTaker<ResSourceInfo>> dict)? localInfo = null) : CommonRootLoader<ResSourceInfo>
 {
+    internal static IRegistrant<TItem> NewRegistrant<TItem, TModel>(string path)
+        where TModel : IModel<ResSourceInfo, TItem>
+    {
+        var taker = new RegistrantSourceTaker<ResSourceInfo, TModel, TItem>();
+        if (!StaticSourceTakerDict.TryAdd(path, taker))
+        {
+            throw new InvalidOperationException($"SourceTaker for path {path} is already registered.");
+        }
+        return taker;
+    }
+
     private static Dictionary<string, ISourceTaker<ResSourceInfo>> StaticSourceTakerDict { get; } = new();
     private string LocalInfo { get; } = localInfo?.local ?? "common res";
     private ImmutableDictionary<string, ISourceTaker<ResSourceInfo>> SourceTakerDict { get; } =

@@ -22,6 +22,7 @@ public class I18nRegistrant<TSource, TModel, TItem>(IRegisterDoneEventSource reg
     public IEnumerable<(string Local, ISourceTaker<TSource> SourceTaker)> InitializeRegistration(string local)
     {
         List<(string Local, ISourceTaker<TSource> SourceTaker)> registrants = [];
+        // ReSharper disable once ConvertToLocalFunction
         Func<string, IRegistrant<TItem>> registrantCreator = l =>
         {
             var result = new RegistrantSourceTaker<TSource, TModel, TItem>();

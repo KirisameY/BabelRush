@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 using BabelRush.Data;
 using BabelRush.Registers;
@@ -14,7 +16,9 @@ public class ActionType(string id, TargetPattern targetPattern, IEnumerable<Acti
     public NameDesc NameDesc => ActionRegisters.ActionNameDesc.GetItem(Id);
     public Texture2D Icon => ActionRegisters.ActionIcon.GetItem(Id);
     public TargetPattern TargetPattern { get; } = targetPattern;
-    public IImmutableList<ActionStep> ActionItems { get; } = actionItems.ToImmutableList();
+
+    [field: AllowNull, MaybeNull]
+    public ImmutableList<ActionStep> ActionItems => field ??= actionItems.ToImmutableList();
 
     public ActionInstance NewInstance(int value) => new(this, value);
 

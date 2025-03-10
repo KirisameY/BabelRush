@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Actions;
 using BabelRush.Cards.Features;
@@ -16,8 +17,13 @@ public class CardType(string id, bool usable, int cost, IEnumerable<(ActionType,
     public Texture2D Icon => Registers.CardRegisters.CardIcon.GetItem(Id);
     public bool Usable { get; } = usable;
     public int Cost { get; } = cost;
-    public IImmutableList<(ActionType type, int value)> Actions { get; } = actions.ToImmutableList();
-    public IImmutableList<FeatureType> Features { get; } = features.ToImmutableList();
+
+    [field: AllowNull, MaybeNull]
+    public IImmutableList<(ActionType type, int value)> Actions => field ??= actions.ToImmutableList();
+
+    [field: AllowNull, MaybeNull]
+    public IImmutableList<FeatureType> Features => field ??= features.ToImmutableList();
+
     public Card NewInstance() => new CommonCard(this);
 
     public static CardType Default { get; } = new CardType("default", false, 0, [], []);

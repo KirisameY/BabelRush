@@ -9,22 +9,15 @@ using KirisameLib.Data.Registers;
 
 namespace BabelRush.Registers;
 
-// todo: all these registers need to be implemented
+[RegisterContainer]
 public static class CardFeatureRegisters
 {
-    public static IRegister<NameDesc> FeatureNameDesc { get; }
-    public static IRegister<Texture2D> FeatureIcon { get; }
-    public static IRegister<FeatureType> Features { get; }
+    public static IRegister<NameDesc> FeatureNameDesc { get; } =
+        SimpleRegisterCreate.Lang<NameDesc, NameDescModel>("card_features", "en", id => (id, ""));
 
-    // [LangRegister<NameDescModel, NameDesc>("card_features")]
-    // private static readonly LocalizedRegister<NameDesc> FeatureNameDescRegister =
-    //     new("en", id => (id, ""));
-    //
-    // [ResRegister<Texture2DModel, Texture2D>("textures/card_features")]
-    // private static readonly CommonRegister<Texture2D> FeatureIconRegister =
-    //     new(_ => new PlaceholderTexture2D());
-    //
-    // [DataRegister<FeatureTypeModel, FeatureType>("card_features")]
-    // private static readonly CommonRegister<FeatureType> FeaturesRegister =
-    //     new(_ => FeatureType.Default);
+    public static IRegister<Texture2D> FeatureIcon { get; } =
+        SimpleRegisterCreate.Res<Texture2D, Texture2DModel>("textures/card_features", new PlaceholderTexture2D());
+
+    public static IRegister<FeatureType> Features { get; } =
+        SimpleRegisterCreate.Data<FeatureType, FeatureTypeModel>("card_features", FeatureType.Default);
 }

@@ -1,19 +1,16 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
 
 using BabelRush.Registering;
-using BabelRush.Registering.FileLoading;
 using BabelRush.Scripting;
 
 using Godot;
 
 using KirisameLib.Event;
 using KirisameLib.Event.Generated;
-using KirisameLib.FileSys;
 using KirisameLib.Logging;
 using KirisameLib.Godot.IO;
 

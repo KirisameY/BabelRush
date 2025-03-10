@@ -66,6 +66,25 @@ internal class LocalFileLoader(string local)
 
     #endregion
 
+
+    // Registrant Getter
+    // ReSharper disable InconsistentNaming
+    public static I18nRegistrant<TItem> GetResRegistrant<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem>
+    {
+        var result = new I18nRegistrant<ResSourceInfo, TModel, TItem>(RegisterEventSource.LocalRegisterDone);
+        LocalResInfo.Add(path, result.InitializeRegistration);
+        return result;
+    }
+
+    public static I18nRegistrant<TItem> GetLangRegistrant<TItem, TModel>(string path) where TModel : IModel<IDictionary<string, object>, TItem>
+    {
+        var result = new I18nRegistrant<IDictionary<string, object>, TModel, TItem>(RegisterEventSource.LocalRegisterDone);
+        LocalLangInfo.Add(path, result.InitializeRegistration);
+        return result;
+    }
+    // ReSharper restore InconsistentNaming
+
+
     protected override bool EnterRootDirectory(LinkedList<string> directoryLink, out RootLoader? rootLoader)
     {
         rootLoader = null;

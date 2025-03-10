@@ -1,14 +1,12 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 using BabelRush.Data;
 using BabelRush.Registering.SourceTakers;
 
+using KirisameLib.Asynchronous;
 using KirisameLib.Data.Registering;
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
@@ -18,14 +16,11 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Registering.RootLoaders;
 
-public class DataRootLoader : CommonRootLoader<DocumentSyntax>
+internal class DataRootLoader : CommonRootLoader<DocumentSyntax>
 {
-    private ConcurrentDictionary<string, TaskCompletionSource> TaskDict { get; } = new();
-    private static Dictionary<string, IImmutableSet<string>> WaitForDict { get; } = new();
     private static Dictionary<string, ISourceTaker<DocumentSyntax>> SourceTakerDict { get; } = new();
 
-
-    public static IRegistrant<TItem> NewRegistrant<TItem, TModel>(string path, params IEnumerable<string> waitFor)
+    public static IRegistrant<TItem> NewRegistrant<TItem, TModel>(string path)
         where TModel : IModel<DocumentSyntax, TItem>
     {
         var taker = new RegistrantSourceTaker<DocumentSyntax, TModel, TItem>();
@@ -33,7 +28,6 @@ public class DataRootLoader : CommonRootLoader<DocumentSyntax>
         {
             throw new InvalidOperationException($"SourceTaker for path {path} is already registered.");
         }
-        WaitForDict.Add(path, waitFor.ToImmutableHashSet());
         return taker;
     }
 
@@ -55,7 +49,7 @@ public class DataRootLoader : CommonRootLoader<DocumentSyntax>
     protected override async Task RegisterDirectory(ISourceTaker<DocumentSyntax> sourceTaker, Dictionary<string, DocumentSyntax> sourceDict)
     {
         var path = CurrentPath;
-        await Task.WhenAll(WaitForDict.GetOrDefault(path, [])!.Select(wait => TaskDict.GetOrAdd(wait, _ => new()).Task));
+        await AsyncOrrery.SwitchContext();
 
         foreach (var (file, source) in sourceDict)
         {
@@ -67,14 +61,9 @@ public class DataRootLoader : CommonRootLoader<DocumentSyntax>
                          + errorInfo.Messages.Join('\n'));
             }
         }
-
-        TaskDict.GetOrAdd(path, _ => new()).SetResult();
     }
 
-    protected override void EndUp()
-    {
-        Task.WhenAll(TaskDict.Values.Select(x => x.Task)).Wait();
-    }
+    protected override void EndUp() { }
 
 
     // New Registrant

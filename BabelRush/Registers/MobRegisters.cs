@@ -1,26 +1,24 @@
+using System;
+
 using BabelRush.Data;
 using BabelRush.Mobs;
 using BabelRush.Mobs.Animation;
+using BabelRush.Registering;
 
 using KirisameLib.Data.Registers;
 
 namespace BabelRush.Registers;
 
-public static partial class MobRegisters
+[RegisterContainer]
+public static class MobRegisters
 {
-    public static IRegister<NameDesc> MobNameDesc { get; }
-    public static IRegister<MobAnimationSet> MobAnimationSets { get; }
-    public static IRegister<MobType> Mobs { get; }
+    public static IRegister<NameDesc> MobNameDesc { get; } =
+        SimpleRegisterCreate.Lang<NameDesc, NameDescModel>("mobs", "en", id => (id, ""));
+    public static IRegister<MobAnimationSet> MobAnimationSets => throw new NotImplementedException();
+    public static IRegister<MobType> Mobs { get; } =
+        SimpleRegisterCreate.Data<MobType, MobTypeModel>("mobs", MobType.Default);
 
-
-    // [LangRegister<NameDescModel, NameDesc>("mobs")]
-    // private static readonly LocalizedRegister<NameDesc> MobNameDescRegister =
-    //     new("en", id => (id, ""));
-    //
-    // [DataRegister<MobTypeModel, MobType>("mobs")]
-    // private static readonly CommonRegister<MobType> MobsRegister =
-    //     new(_ => MobType.Default);
-    //
+    // todo:
     // // Mob animation data
     // private static readonly MobAnimationSetRegister MobAnimationSetRegister = new(MobAnimationSet.Default);
     // public static IRegister<MobAnimationSet> MobAnimationSets => MobAnimationSetRegister;

@@ -1,5 +1,3 @@
-using System;
-
 using BabelRush.Data;
 
 namespace BabelRush.Registering.SourceTakers;

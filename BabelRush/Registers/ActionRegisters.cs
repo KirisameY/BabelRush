@@ -9,26 +9,18 @@ using KirisameLib.Data.Registers;
 
 namespace BabelRush.Registers;
 
+[RegisterContainer]
 public static class ActionRegisters
 {
-    public static IRegister<ActionStep> ActionSteps { get; }
-    public static IRegister<NameDesc> ActionNameDesc { get; }
-    public static IRegister<Texture2D> ActionIcon { get; }
-    public static IRegister<ActionType> Actions { get; }
+    public static IRegister<ActionStep> ActionSteps { get; } =
+        SimpleRegisterCreate.Data<ActionStep, ActionStepModel>("action_steps", ActionStep.Default);
 
-    // [DataRegister<ActionStepModel, ActionStep>("action_steps")]
-    // private static readonly CommonRegister<ActionStep> ActionStepsRegister =
-    //     new(_ => ActionStep.Default);
-    //
-    // [LangRegister<NameDescModel, NameDesc>("actions")]
-    // private static readonly LocalizedRegister<NameDesc> ActionNameDescRegister =
-    //     new("en", id => (id, ""));
-    //
-    // [ResRegister<Texture2DModel, Texture2D>("textures/actions")]
-    // private static readonly CommonRegister<Texture2D> ActionIconRegister =
-    //     new(_ => new PlaceholderTexture2D());
-    //
-    // [DataRegister<ActionTypeModel, ActionType>("actions", "action_steps")]
-    // private static readonly CommonRegister<ActionType> ActionsRegister =
-    //     new(_ => ActionType.Default);
+    public static IRegister<NameDesc> ActionNameDesc { get; } =
+        SimpleRegisterCreate.Lang<NameDesc, NameDescModel>("actions", "en", id => (id, ""));
+
+    public static IRegister<Texture2D> ActionIcon { get; } =
+        SimpleRegisterCreate.Res<Texture2D, Texture2DModel>("textures/actions", new PlaceholderTexture2D());
+
+    public static IRegister<ActionType> Actions { get; } =
+        SimpleRegisterCreate.Data<ActionType, ActionTypeModel>("actions", ActionType.Default);
 }

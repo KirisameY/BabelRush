@@ -4,7 +4,6 @@ using System.Linq;
 
 using BabelRush.Registering.SourceTakers;
 
-using KirisameLib.Data.Registers;
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
 
