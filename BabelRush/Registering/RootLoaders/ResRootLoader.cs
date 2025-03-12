@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using BabelRush.Data;
@@ -14,12 +15,10 @@ using KirisameLib.Logging;
 
 namespace BabelRush.Registering.RootLoaders;
 
-public class ResRootLoader((string local, IDictionary<string, ISourceTaker<ResSourceInfo>> dict)? localInfo = null) : CommonRootLoader<ResSourceInfo>
+internal class ResRootLoader((string local, IDictionary<string, ISourceTaker<ResSourceInfo>> dict)? localInfo = null) : CommonRootLoader<ResSourceInfo>
 {
-    internal static IRegistrant<TItem> NewRegistrant<TItem, TModel>(string path)
-        where TModel : IModel<ResSourceInfo, TItem>
+    public static T WithStaticSourceTaker<T>(string path, T taker) where T : ISourceTaker<ResSourceInfo>
     {
-        var taker = new RegistrantSourceTaker<ResSourceInfo, TModel, TItem>();
         if (!StaticSourceTakerDict.TryAdd(path, taker))
         {
             throw new InvalidOperationException($"SourceTaker for path {path} is already registered.");
@@ -35,14 +34,15 @@ public class ResRootLoader((string local, IDictionary<string, ISourceTaker<ResSo
 
     protected override ISourceTaker<ResSourceInfo>? GetSourceTaker(string path) => SourceTakerDict.GetOrDefault(path);
 
-    protected override void HandleFile(Dictionary<string, ResSourceInfo> sourceDict, string fileSubPath, byte[] fileContent)
+    protected override void HandleFile(Dictionary<string, ResSourceInfo> sourceDict, string[] fileSubPath, byte[] fileContent)
     {
-        var extension = Path.GetExtension(fileSubPath);
-        var pathName = fileSubPath.Remove(fileSubPath.Length - extension.Length);
-        var name = Path.GetFileNameWithoutExtension(fileSubPath);
+        var dir = fileSubPath.SkipLast(1).ToImmutableArray();
+        var name = Path.GetFileNameWithoutExtension(fileSubPath.Last());
+        var extension = Path.GetExtension(fileSubPath.Last());
+        var pathNoExt = dir.Append(name).Join('/');
 
-        if (!sourceDict.TryGetValue(pathName, out var source))
-            sourceDict.Add(pathName, source = new ResSourceInfo(name));
+        if (!sourceDict.TryGetValue(pathNoExt, out var source))
+            sourceDict.Add(pathNoExt, source = new ResSourceInfo(dir, name));
 
         source.Files.TryAdd(extension, fileContent);
     }

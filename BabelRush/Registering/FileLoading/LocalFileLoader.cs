@@ -19,8 +19,8 @@ internal class LocalFileLoader(string local)
 
     #region Map
 
-    private static readonly Dictionary<string, GetSourceTakers<ResSourceInfo>> LocalResInfo = new();
-    private static readonly Dictionary<string, GetSourceTakers<IDictionary<string, object>>> LocalLangInfo = new();
+    private static readonly Dictionary<string, II18nSourceTakerFactory<ResSourceInfo>> LocalResInfo = new();
+    private static readonly Dictionary<string, II18nSourceTakerFactory<IDictionary<string, object>>> LocalLangInfo = new();
 
     private static FrozenDictionary<string, FrozenDictionary<string, RootLoader>> InitRootMap(string local)
     {
@@ -45,12 +45,13 @@ internal class LocalFileLoader(string local)
 
     private delegate RootLoader CreateRootLoader<TSource>(string local, IDictionary<string, ISourceTaker<TSource>> sourceTakers);
 
-    private static IEnumerable<(string Local, RootLoader RootLoader)> NewLocalRootLoader<TSource>
-        (string local, IDictionary<string, GetSourceTakers<TSource>> getters, Func<string, IDictionary<string, ISourceTaker<TSource>>, RootLoader> loaderCreator)
+    private static IEnumerable<(string Local, RootLoader RootLoader)> NewLocalRootLoader<TSource>(
+        string local, IDictionary<string, II18nSourceTakerFactory<TSource>> getters,
+        Func<string, IDictionary<string, ISourceTaker<TSource>>, RootLoader> loaderCreator)
     {
         var sourceTakers = getters.SelectMany(p =>
         {
-            return p.Value.Invoke(local).Select(t => (t.Local, p.Key, t.SourceTaker));
+            return p.Value.CreateSourceTakers(local).Select(t => (t.Local, p.Key, t.SourceTaker));
         });
 
         return from t in sourceTakers
@@ -68,21 +69,17 @@ internal class LocalFileLoader(string local)
 
 
     // Registrant Getter
-    // ReSharper disable InconsistentNaming
-    public static I18nRegistrant<TItem> GetResRegistrant<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem>
+    public static T WithResSourceTakerFactory<T>(string path, T newFac) where T : II18nSourceTakerFactory<ResSourceInfo>
     {
-        var result = new I18nRegistrant<ResSourceInfo, TModel, TItem>(RegisterEventSource.LocalRegisterDone);
-        LocalResInfo.Add(path, result.InitializeRegistration);
-        return result;
+        LocalResInfo.Add(path, newFac);
+        return newFac;
     }
 
-    public static I18nRegistrant<TItem> GetLangRegistrant<TItem, TModel>(string path) where TModel : IModel<IDictionary<string, object>, TItem>
+    public static T WithLangSourceTakerFactory<T>(string path, T newFac) where T : II18nSourceTakerFactory<IDictionary<string, object>>
     {
-        var result = new I18nRegistrant<IDictionary<string, object>, TModel, TItem>(RegisterEventSource.LocalRegisterDone);
-        LocalLangInfo.Add(path, result.InitializeRegistration);
-        return result;
+        LocalLangInfo.Add(path, newFac);
+        return newFac;
     }
-    // ReSharper restore InconsistentNaming
 
 
     protected override bool EnterRootDirectory(LinkedList<string> directoryLink, out RootLoader? rootLoader)

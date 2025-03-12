@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 using BabelRush.Data;
@@ -20,10 +21,8 @@ internal class DataRootLoader : CommonRootLoader<DocumentSyntax>
 {
     private static Dictionary<string, ISourceTaker<DocumentSyntax>> SourceTakerDict { get; } = new();
 
-    public static IRegistrant<TItem> NewRegistrant<TItem, TModel>(string path)
-        where TModel : IModel<DocumentSyntax, TItem>
+    public static T WithSourceTaker<T>(string path, T taker) where T : ISourceTaker<DocumentSyntax>
     {
-        var taker = new RegistrantSourceTaker<DocumentSyntax, TModel, TItem>();
         if (!SourceTakerDict.TryAdd(path, taker))
         {
             throw new InvalidOperationException($"SourceTaker for path {path} is already registered.");
@@ -33,17 +32,18 @@ internal class DataRootLoader : CommonRootLoader<DocumentSyntax>
 
     protected override ISourceTaker<DocumentSyntax>? GetSourceTaker(string path) => SourceTakerDict.GetOrDefault(path);
 
-    protected override void HandleFile(Dictionary<string, DocumentSyntax> sourceDict, string fileSubPath, byte[] fileContent)
+    protected override void HandleFile(Dictionary<string, DocumentSyntax> sourceDict, string[] fileSubPath, byte[] fileContent)
     {
-        var extension = Path.GetExtension(fileSubPath);
+        var path = fileSubPath.Join('/');
+        var extension = Path.GetExtension(path);
         if (extension != ".toml")
         {
             Logger.Log(LogLevel.Warning, nameof(HandleFile),
-                       $"Unexpected file type {extension} in Data/{CurrentPath}/{fileSubPath}");
+                       $"Unexpected file type {extension} in Data/{CurrentPath}/{path}");
             return;
         }
         var syntax = Toml.Parse(fileContent);
-        sourceDict.TryAdd(fileSubPath, syntax);
+        sourceDict.TryAdd(path, syntax);
     }
 
     protected override async Task RegisterDirectory(ISourceTaker<DocumentSyntax> sourceTaker, Dictionary<string, DocumentSyntax> sourceDict)

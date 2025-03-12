@@ -16,7 +16,13 @@ namespace BabelRush.Mobs.Animation;
 internal partial class MobAnimationModel : IResModel<MobAnimationModel>
 {
     [IgnoreDataMember]
-    public string Id { get; private set; } = "";
+    public string Id => $"{MobId}/{AnimationId}";
+
+    [IgnoreDataMember]
+    public string MobId { get; private set; } = "";
+    [IgnoreDataMember]
+    public string AnimationId { get; private set; } = "";
+
     [NecessaryProperty]
     public partial int Columns { get; set; }
     [NecessaryProperty]
@@ -32,7 +38,7 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
     [field: AllowNull, MaybeNull]
     public Texture2D FrameAtlas
     {
-        get => field ?? new PlaceholderTexture2D();
+        get => field ??= new PlaceholderTexture2D { Size = new(24, 24) };
         set;
     }
 
@@ -50,6 +56,8 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
         //check file existence
         if (!source.Files.TryGetValue(".toml", out var tomlFile)) errors.Add("Missing toml configuration file");
         if (!source.Files.TryGetValue(".png",  out var pngFile)) errors.Add("Missing png resource file");
+        if (source.Path.Length == 0) errors.Add("MobAnimation in root directory will not be loaded");
+
         if (errors.Count > 0)
         {
             errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());
@@ -72,7 +80,21 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
 
         errorMessages = new(errors.Count, errors.ToArray());
         model.FrameAtlas = ImageTexture.CreateFromImage(DataUtils.LoadImageFromPngBuffer(pngFile!));
-        model.Id = source.Id;
+
+        model.MobId = source.Path.Last();
+        model.AnimationId = source.Id;
         return [model];
     }
+
+    public static MobAnimationModel Default { get; } = new()
+    {
+        MobId = "default/default",
+        AnimationId = "default",
+        Columns = 1,
+        Rows = 1,
+        FrameCenter = new() { X = 12, Y = 0 },
+        BoxSize = new() { X = 24, Y = 24 },
+        Fps = 0,
+        FrameAtlas = new PlaceholderTexture2D { Size = new(24, 24) }
+    };
 }

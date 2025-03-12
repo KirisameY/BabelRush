@@ -41,7 +41,7 @@ public abstract class CommonRootLoader<TSource> : RootLoader<TSource>
         RootLoaderExitedException.ThrowIf(Exited);
 
         if (!RegisterStack.TryPeek(out var info)) return;
-        HandleFile(info.SourceDict, info.SubPathLink.Append(fileName).Join('/'), fileContent);
+        HandleFile(info.SourceDict, info.SubPathLink.Append(fileName).ToArray(), fileContent);
     }
 
     public sealed override bool ExitDirectory()
@@ -71,7 +71,7 @@ public abstract class CommonRootLoader<TSource> : RootLoader<TSource>
     }
 
 
-    protected abstract void HandleFile(Dictionary<string, TSource> sourceDict, string fileSubPath, byte[] fileContent);
+    protected abstract void HandleFile(Dictionary<string, TSource> sourceDict, string[] fileSubPath, byte[] fileContent);
     protected abstract Task RegisterDirectory(ISourceTaker<TSource> sourceTaker, Dictionary<string, TSource> sourceDict);
     protected abstract void EndUp();
 

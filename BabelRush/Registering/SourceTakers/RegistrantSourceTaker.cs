@@ -10,17 +10,17 @@ namespace BabelRush.Registering.SourceTakers;
 public class RegistrantSourceTaker<TSource, TModel, TTarget> : CommonSourceTaker<TSource, TModel, TTarget>, IRegistrant<TTarget>
     where TModel : IModel<TSource, TTarget>
 {
-    private MoltenRegister<TTarget>? _registrant;
+    private IRegTarget<TTarget>? _registrant;
 
-    public void AcceptMoltenRegister(MoltenRegister<TTarget> moltenRegister)
+    public void AcceptTarget(IRegTarget<TTarget> target)
     {
-        if (_registrant is null) _registrant = moltenRegister;
-        else throw new InvalidOperationException("RegistrantSourceTaker already has a MoltenRegister.");
+        if (_registrant is null) _registrant = target;
+        else throw new InvalidOperationException("RegistrantSourceTaker already has a target.");
     }
 
     protected override bool RegisterItem(string id, TTarget item)
     {
-        if (_registrant is null) throw new InvalidOperationException("RegistrantSourceTaker does not have a MoltenRegister.");
+        if (_registrant is null) throw new InvalidOperationException("RegistrantSourceTaker does not have a target.");
         return _registrant.AddItem(id, item);
     }
 }
