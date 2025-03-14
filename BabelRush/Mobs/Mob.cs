@@ -26,13 +26,13 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
     [field: AllowNull, MaybeNull]
     public Numeric<int> MaxHealth => field ??=
         new Numeric<int>(type.Health)
-           .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.EventBus.Publish(new MobHealthChangedEvent(this, oldValue, newValue)))
+           .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.GameEventBus.Publish(new MobHealthChangedEvent(this, oldValue, newValue)))
            .WithFinalValueUpdatedHandler((_, _, newValue) => Health.Clamp = (0, newValue));
 
     [field: AllowNull, MaybeNull]
     public Numeric<int> Health => field ??=
         new Numeric<int>(MaxHealth) { Clamp = (0, MaxHealth) }
-           .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.EventBus.Publish(new MobMaxHealthChangedEvent(this, oldValue, newValue)));
+           .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.GameEventBus.Publish(new MobMaxHealthChangedEvent(this, oldValue, newValue)));
 
     [field: AllowNull, MaybeNull]
     public MobActionStrategizer ActionStrategizer => field ??= Type.ActionStrategy.NewInstance(this);
@@ -47,7 +47,7 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
             if (Alignment == value) return;
             var old = Alignment;
             field = value;
-            Game.EventBus.Publish(new MobAlignmentChangedEvent(this, old, Alignment));
+            Game.GameEventBus.Publish(new MobAlignmentChangedEvent(this, old, Alignment));
         }
     } = alignment;
 
@@ -58,7 +58,7 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
 
     protected override void _EnterScene()
     {
-        SubscribeInstanceHandler(Game.EventBus);
+        SubscribeInstanceHandler(Game.GameEventBus);
         Game.Process += Process;
 
         _ = ActionStrategizer; // initialize strategizer
@@ -66,7 +66,7 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
 
     protected override void _ExitScene()
     {
-        UnsubscribeInstanceHandler(Game.EventBus);
+        UnsubscribeInstanceHandler(Game.GameEventBus);
         Game.Process -= Process;
     }
 
@@ -86,9 +86,9 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
 
     public void SetAction(MobAction? action)
     {
-        if (CurrentAction is not null) Game.EventBus.Publish(new MobActionInterruptedEvent(this, CurrentAction));
+        if (CurrentAction is not null) Game.GameEventBus.Publish(new MobActionInterruptedEvent(this, CurrentAction));
         CurrentAction = action;
-        if (action is not null) Game.EventBus.Publish(new MobActionStartedEvent(this, action));
+        if (action is not null) Game.GameEventBus.Publish(new MobActionStartedEvent(this, action));
     }
 
     #endregion

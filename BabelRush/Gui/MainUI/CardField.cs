@@ -83,8 +83,8 @@ public partial class CardField : Control
             _selected = value;
 
             OnSelectChanged(old, @new);
-            if (old is not null) Game.EventBus.Publish(new CardSelectedEvent(old.Card,   false));
-            if (@new is not null) Game.EventBus.Publish(new CardSelectedEvent(@new.Card, true));
+            if (old is not null) Game.GameEventBus.Publish(new CardSelectedEvent(old.Card,   false));
+            if (@new is not null) Game.GameEventBus.Publish(new CardSelectedEvent(@new.Card, true));
         }
     }
 
@@ -115,7 +115,7 @@ public partial class CardField : Control
         if (old is not null)
         {
             old.Selectable = false;
-            Game.EventBus.Publish(new CardPickedEvent(old.Card, false));
+            Game.GameEventBus.Publish(new CardPickedEvent(old.Card, false));
             if (!oldOut || !await old.Card.Use(Play.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
                 InsertCard(old);
         }
@@ -123,7 +123,7 @@ public partial class CardField : Control
         if (@new is not null)
         {
             PickUpCard(@new);
-            Game.EventBus.Publish(new CardPickedEvent(@new.Card, true));
+            Game.GameEventBus.Publish(new CardPickedEvent(@new.Card, true));
         }
     }
 
@@ -151,12 +151,12 @@ public partial class CardField : Control
 
     public override void _EnterTree()
     {
-        SubscribeInstanceHandler(Game.EventBus);
+        SubscribeInstanceHandler(Game.GameEventBus);
     }
 
     public override void _ExitTree()
     {
-        UnsubscribeInstanceHandler(Game.EventBus);
+        UnsubscribeInstanceHandler(Game.GameEventBus);
     }
 
     [EventHandler]

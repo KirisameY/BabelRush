@@ -12,56 +12,83 @@ namespace BabelRush.Registering.I18n;
 
 // ReSharper disable once InconsistentNaming
 public class I18nRegister<TItem>(Func<string, TItem> fallback, Func<string, bool> fallbackExists,
-                                 Func<IEnumerable<KeyValuePair<string, TItem>>> getFallbacks, string? defaultLocal = null)
+                                 Func<IEnumerable<KeyValuePair<string, TItem>>> getFallbacks,
+                                 IRegisterDoneEventSource registerDoneEventSource, string? defaultLocal = null)
     : IEnumerableRegister<TItem>, II18nRegTarget<TItem>
 {
-    public I18nRegister(IEnumerableRegister<TItem> fallbackRegister) :
-        this(fallbackRegister.GetItem, fallbackRegister.ItemRegistered, () => fallbackRegister) { }
+    private enum State
+    {
+        Uninitialized,
+        Registering,
+        Ready
+    }
 
-    public I18nRegister(Func<string, TItem> fallback) : this(fallback, _ => false, () => []) { }
 
-    public I18nRegister(Func<string, TItem> fallback, string? defaultLocal) : this(fallback, _ => false, () => [], defaultLocal) { }
+    #region Fields
 
-    private bool _initialized = false;
     private string? _currentLocal;
-    private IEnumerableRegister<TItem>? _defaultLocalRegister;
+    private State _state = State.Uninitialized;
 
-    [field: AllowNull, MaybeNull]
-    private IEnumerableRegister<TItem> InnerRegister
+    private MoltenRegister<TItem>? _defaultLocalRegisterMolten;
+    private FrozenRegister<TItem>? _defaultLocalRegister;
+
+    private MoltenRegister<TItem>? _innerRegisterMolten;
+    private FrozenRegister<TItem>? _innerRegister;
+
+    private FrozenRegister<TItem> InnerRegister =>
+        _state is State.Ready ? _innerRegister! : throw new InvalidOperationException("I18nRegister is not ready.");
+
+    #endregion
+
+
+    public void UpdateLocal(string local, Func<string, IRegistrant<TItem>> registrantCreator)
     {
-        get => _initialized ? field! : throw new InvalidOperationException("I18nRegister is not initialized.");
-        set;
+        if (_currentLocal == local && _state is State.Ready) return;
+
+        // Begin registration
+        if (_state is not State.Registering)
+        {
+            _currentLocal = local;
+            _state = State.Registering;
+            _innerRegister = null;
+
+            // Initialize default local register
+            if (defaultLocal is not null && _defaultLocalRegister is null)
+            {
+                _defaultLocalRegisterMolten = new MoltenRegister<TItem>(fallback);
+                registerDoneEventSource.RegisterDone += () =>
+                {
+                    _defaultLocalRegister = _defaultLocalRegisterMolten!.Freeze();
+                    _defaultLocalRegisterMolten = null;
+                };
+            }
+
+            // Initialize inner register
+            if (local != defaultLocal)
+            {
+                var realFallback = defaultLocal is null ? fallback : id => _defaultLocalRegister!.GetItem(id);
+                _innerRegisterMolten = new MoltenRegister<TItem>(realFallback);
+                registerDoneEventSource.RegisterDone += () =>
+                {
+                    _innerRegister = _innerRegisterMolten!.Freeze();
+                    _innerRegisterMolten = null;
+                };
+            }
+            else registerDoneEventSource.RegisterDone += () => _innerRegister = _defaultLocalRegister!;
+
+            // Set state done
+            registerDoneEventSource.RegisterDone += () => _state = State.Ready;
+        }
+
+        if (_currentLocal != local) throw new InvalidOperationException("I18nRegister is in registering state with different local.");
+
+        // during registration
+        if (_defaultLocalRegisterMolten is not null) registrantCreator(defaultLocal!).AcceptTarget(_defaultLocalRegisterMolten);
+        if (_innerRegisterMolten is not null) registrantCreator(local).AcceptTarget(_innerRegisterMolten);
     }
 
 
-    public void UpdateLocal(string local, Func<string, IRegistrant<TItem>> registrantCreator, IRegisterDoneEventSource registerDoneEventSource)
-    {
-        if (_currentLocal == local && _initialized) return;
-        _currentLocal = local;
-
-        if (defaultLocal is not null)
-        {
-            _defaultLocalRegister ??= new RegisterBuilder<TItem>()
-                                     .WithFallback(fallback)
-                                     .AddRegistrant(registrantCreator.Invoke(defaultLocal))
-                                     .WithRegisterDoneEventSource(registerDoneEventSource)
-                                     .Build();
-        }
-
-        if (local == defaultLocal) InnerRegister = _defaultLocalRegister!;
-        else
-        {
-            var realFallback = defaultLocal is null ? fallback : _defaultLocalRegister!.GetItem;
-            InnerRegister = new RegisterBuilder<TItem>()
-                           .WithFallback(realFallback)
-                           .AddRegistrant(registrantCreator.Invoke(local))
-                           .WithRegisterDoneEventSource(registerDoneEventSource)
-                           .Build();
-        }
-
-        _initialized = true;
-    }
-
+    // Reading
     public TItem GetItem(string id) => InnerRegister!.GetItem(id);
 
     public bool ItemRegistered(string id) =>

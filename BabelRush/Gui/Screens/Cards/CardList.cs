@@ -54,12 +54,12 @@ internal partial class CardList : Control
     // Event Handlers
     public override void _EnterTree()
     {
-        SubscribeInstanceHandler(Game.EventBus);
+        SubscribeInstanceHandler(Game.GameEventBus);
     }
 
     public override void _ExitTree()
     {
-        UnsubscribeInstanceHandler(Game.EventBus);
+        UnsubscribeInstanceHandler(Game.GameEventBus);
     }
 
     [EventHandler]

@@ -249,12 +249,12 @@ public partial class MobInterface : Node2D
 
     public override void _EnterTree()
     {
-        SubscribeInstanceHandler(Game.EventBus);
+        SubscribeInstanceHandler(Game.GameEventBus);
     }
 
     public override void _ExitTree()
     {
-        UnsubscribeInstanceHandler(Game.EventBus);
+        UnsubscribeInstanceHandler(Game.GameEventBus);
     }
 
     #endregion
@@ -264,12 +264,12 @@ public partial class MobInterface : Node2D
 
     private void OnMouseEntered()
     {
-        Game.EventBus.Publish(new MobInterfaceSelectedEvent(this, true));
+        Game.GameEventBus.Publish(new MobInterfaceSelectedEvent(this, true));
     }
 
     private void OnMouseExited()
     {
-        Game.EventBus.Publish(new MobInterfaceSelectedEvent(this, false));
+        Game.GameEventBus.Publish(new MobInterfaceSelectedEvent(this, false));
     }
 
     #endregion

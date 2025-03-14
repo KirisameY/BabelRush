@@ -34,7 +34,7 @@ public sealed class CardPile : IReadOnlyCollection<Card>
         if (toTop) Cards.AddFirst(card);
         else Cards.AddLast(card);
 
-        Game.EventBus.Publish(new CardInsertedToPileEvent(this, card));
+        Game.GameEventBus.Publish(new CardInsertedToPileEvent(this, card));
         return true;
     }
 
@@ -52,7 +52,7 @@ public sealed class CardPile : IReadOnlyCollection<Card>
 
         if (!Cards.Remove(card)) return false;
 
-        Game.EventBus.Publish(new CardRemovedFromPileEvent(this, card));
+        Game.GameEventBus.Publish(new CardRemovedFromPileEvent(this, card));
         return true;
     }
 
@@ -106,7 +106,7 @@ public sealed class CardPile : IReadOnlyCollection<Card>
         if (node is not null)
         {
             Cards.Remove(node);
-            Game.EventBus.Publish(new CardRemovedFromPileEvent(this, node.Value));
+            Game.GameEventBus.Publish(new CardRemovedFromPileEvent(this, node.Value));
         }
         return node?.Value;
     }
@@ -117,7 +117,7 @@ public sealed class CardPile : IReadOnlyCollection<Card>
         var result = nodes.Select(node =>
         {
             Cards.Remove(node);
-            Game.EventBus.Publish(new CardRemovedFromPileEvent(this, node.Value));
+            Game.GameEventBus.Publish(new CardRemovedFromPileEvent(this, node.Value));
             return node.Value;
         }).ToList();
         return result;
@@ -131,7 +131,7 @@ public sealed class CardPile : IReadOnlyCollection<Card>
         {
             Cards.Remove(node);
             cards.Add(node.Value);
-            Game.EventBus.Publish(new CardRemovedFromPileEvent(this, node.Value));
+            Game.GameEventBus.Publish(new CardRemovedFromPileEvent(this, node.Value));
             node = node.Next;
         }
         return cards;

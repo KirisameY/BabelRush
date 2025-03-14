@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 
 using BabelRush.Registering.FileLoading;
 
+using KirisameLib.Event;
 using KirisameLib.Extensions;
 using KirisameLib.FileSys;
 using KirisameLib.Logging;
@@ -15,7 +16,7 @@ internal static class RegisterManager
 {
     static RegisterManager()
     {
-        // 现阶段先这样，回头可能要重写以考虑其他可能被加载的程序集
+        //todo: 重写以支持加载更多程序集
         typeof(RegisterManager)
            .Assembly.GetTypes()
            .Where(t => t.CustomAttributes.Any(a => a.AttributeType == typeof(RegisterContainerAttribute)))
@@ -24,19 +25,25 @@ internal static class RegisterManager
 
     public static void LoadCommonAssets()
     {
+        Game.LoadEventBus.Publish(new CommonRegisterStartEvent());
         var loader = new CommonFileLoader();
         LoadAssets(loader);
+        //todo: 手动注册
         RegisterEventSource.TriggerCommonRegisterDone();
+        Game.LoadEventBus.Publish(new CommonRegisterDoneEvent());
     }
 
     public static void LoadLocalAssets(string local)
     {
+        Game.LoadEventBus.Publish(new LocalRegisterStartEvent(local));
         var loader = new LocalFileLoader(local);
         LoadAssets(loader);
+        //todo: 手动注册
         RegisterEventSource.TriggerLocalRegisterDone();
+        Game.LoadEventBus.Publish(new LocalRegisterDoneEvent(local));
     }
 
-    private static void LoadAssets(FileLoader loader)
+    private static void LoadAssets(FileLoader loader) //todo: 把获取资源包目录的逻辑提取到外面
     {
     #if TOOLS
         var root = new DirectoryInfo("./assets").ToReadableDirectory();
@@ -86,6 +93,7 @@ internal static class RegisterManager
         }
     }
 
-    //Logging
+
+    // Logging
     private static Logger Logger => Game.LogBus.GetLogger("Root");
 }

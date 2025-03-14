@@ -11,7 +11,7 @@ public sealed class Area(double position, double radius)
         set
         {
             field = value;
-            Game.EventBus.Publish(new AreaTransformedEvent(this));
+            Game.GameEventBus.Publish(new AreaTransformedEvent(this));
         }
     } = position;
 
@@ -21,7 +21,7 @@ public sealed class Area(double position, double radius)
         set
         {
             field = value;
-            Game.EventBus.Publish(new AreaTransformedEvent(this));
+            Game.GameEventBus.Publish(new AreaTransformedEvent(this));
         }
     } = Math.Abs(radius);
 

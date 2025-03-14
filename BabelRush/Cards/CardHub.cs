@@ -47,7 +47,7 @@ public partial class CardHub(RandomBelt random)
     public async ValueTask<bool> DiscardCard(Card card, bool cancellable = true)
     {
         var canceled = (
-            await Game.EventBus.PublishAndWaitFor(new CardDiscardRequestEvent(card, new()))
+            await Game.GameEventBus.PublishAndWaitFor(new CardDiscardRequestEvent(card, new()))
         ).Cancel.Canceled;
         if (cancellable && canceled) return false;
 
@@ -56,7 +56,7 @@ public partial class CardHub(RandomBelt random)
         DrawPile.RemoveCard(card);
         DiscardPile.AddCard(card);
 
-        Game.EventBus.Publish(new CardDiscardedEvent(card));
+        Game.GameEventBus.Publish(new CardDiscardedEvent(card));
         return true;
     }
 
@@ -64,7 +64,7 @@ public partial class CardHub(RandomBelt random)
     public async ValueTask<bool> ExhaustCard(Card card, bool cancellable = true)
     {
         var canceled = (
-            await Game.EventBus.PublishAndWaitFor(new CardExhaustRequestEvent(card, new()))
+            await Game.GameEventBus.PublishAndWaitFor(new CardExhaustRequestEvent(card, new()))
         ).Cancel.Canceled;
         if (cancellable && canceled) return false;
 
@@ -72,7 +72,7 @@ public partial class CardHub(RandomBelt random)
         DrawPile.RemoveCard(card);
         DiscardPile.RemoveCard(card);
 
-        Game.EventBus.Publish(new CardExhaustedEvent(card));
+        Game.GameEventBus.Publish(new CardExhaustedEvent(card));
         return true;
     }
 
@@ -89,7 +89,7 @@ public partial class CardHub(RandomBelt random)
 
         DrawPile.PickCard();
         CardField.AddCard(card);
-        Game.EventBus.Publish(new CardDrawnEvent(card));
+        Game.GameEventBus.Publish(new CardDrawnEvent(card));
 
         StopInternalMove();
         return true;
@@ -109,7 +109,7 @@ public partial class CardHub(RandomBelt random)
         PrepareInternalMove(DiscardPile);
         var shuffled = random.Shuffle(DiscardPile.TakeAll());
         DrawPile.AddCards(shuffled);
-        Game.EventBus.Publish(new CardsShuffledEvent());
+        Game.GameEventBus.Publish(new CardsShuffledEvent());
         return true;
     }
 
@@ -158,14 +158,14 @@ public partial class CardHub(RandomBelt random)
     private void CardInDecide(CardInsertedToPileEvent e)
     {
         if (_internalMovingCards.Remove(e.Card)) //if not in moving cards
-            Game.EventBus.Publish(new CardIntoHubEvent(e.Card));
+            Game.GameEventBus.Publish(new CardIntoHubEvent(e.Card));
     }
 
     private void CardOutDecide(CardRemovedFromPileEvent e)
     {
         if (_internalMovingCards.Contains(e.Card)) return;
         if (_internalMovingOutPile == e.CardPile) _internalMovingCards.Add(e.Card);
-        else Game.EventBus.Publish(new CardOutOfHubEvent(e.Card));
+        else Game.GameEventBus.Publish(new CardOutOfHubEvent(e.Card));
     }
 
     #endregion

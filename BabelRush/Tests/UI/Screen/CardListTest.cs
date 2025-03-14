@@ -19,7 +19,7 @@ public partial class CardListTest : Node
 
     public override void _Ready()
     {
-        Game.EventBus.Subscribe<BaseEvent>(e => GD.Print(e));
+        Game.GameEventBus.Subscribe<BaseEvent>(e => GD.Print(e));
 
 
 

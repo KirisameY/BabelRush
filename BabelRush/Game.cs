@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BabelRush.I18n;
 using BabelRush.Registering;
 using BabelRush.Scripting;
 
@@ -38,23 +39,25 @@ public partial class Game : SceneTree
         private set;
     }
 
-    private static readonly DelayedEventBus InnerEventBus = new();
-    public static EventBus EventBus => InnerEventBus;
+    private static readonly DelayedEventBus InnerGameEventBus = new();
+    public static EventBus GameEventBus => InnerGameEventBus;
 
-    // todo: Local
-    // public static class Localization
-    // {
-    //     static Localization()
-    //     {
-    //         LocalizedRegister.LocalChangedEvent += static (prev, current) => EventBus.Publish(new LocalChangedEvent(prev, current));
-    //     }
-    //
-    //     public static string Local
-    //     {
-    //         get => LocalizedRegister.Local;
-    //         set => LocalizedRegister.Local = value;
-    //     }
-    // }
+    private static readonly ImmediateEventBus InnerLoadEventBus = new();
+    public static EventBus LoadEventBus => InnerLoadEventBus;
+
+
+    public static string Local
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            var prev = field;
+            field = value;
+            RegisterManager.LoadLocalAssets(value);
+            GameEventBus.Publish(new LocalChangedEvent(prev, value));
+        }
+    } = "zh-cn";
 
 
     //Initialization
@@ -64,7 +67,7 @@ public partial class Game : SceneTree
         LogInitialize();
 
         Logger.Log(LogLevel.Info, "Initializing", "Subscribing default static event handlers...");
-        GlobalEventHandlersSubscriber.Subscribe(EventBus);
+        GlobalEventHandlersSubscriber.Subscribe(GameEventBus);
 
         base._Initialize();
 
@@ -74,7 +77,6 @@ public partial class Game : SceneTree
         ScriptHub.Initialize();
 
         Logger.Log(LogLevel.Info, "Initializing", "Loading assets...");
-        //todo: 现在正是不得不把它拿走之时
         RegisterManager.LoadCommonAssets();
         Logger.Log(LogLevel.Info, "Initializing", "Loading local assets...");
         RegisterManager.LoadLocalAssets("zh-cn");
@@ -113,7 +115,7 @@ public partial class Game : SceneTree
         var result = base._Process(delta);
 
         //Event Cycle
-        try { InnerEventBus.HandleEvent(); }
+        try { InnerGameEventBus.HandleEvent(); }
         catch (QueueEventHandlingException e)
         {
             Logger.Log(LogLevel.Error, "EventHandling", e.Message);

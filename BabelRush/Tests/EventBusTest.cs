@@ -12,11 +12,11 @@ public partial class EventBusTest : Node
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        SubscribeInstanceHandler(Game.EventBus);
+        SubscribeInstanceHandler(Game.GameEventBus);
 
         Task.Delay(1000).ContinueWith(_ =>
         {
-            Game.EventBus.Publish(new TestEvent2("msg1", "msg22"));
+            Game.GameEventBus.Publish(new TestEvent2("msg1", "msg22"));
         });
     }
 

@@ -10,7 +10,7 @@ public abstract class SceneObject
         {
             var old = Position;
             field = value;
-            Game.EventBus.Publish(new SceneObjectMovedEvent(this, old, Position));
+            Game.GameEventBus.Publish(new SceneObjectMovedEvent(this, old, Position));
         }
     }
     public virtual bool Collidable => false;

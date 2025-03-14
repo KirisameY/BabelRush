@@ -12,7 +12,7 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Registering;
 
-public static class MakeRegistrant
+public static class MakeFileRegistrant
 {
     public static IRegistrant<TItem> ForData<TItem, TModel>(string path) where TModel : IModel<DocumentSyntax, TItem> =>
         DataRootLoader.WithSourceTaker(path, new RegistrantSourceTaker<DocumentSyntax, TModel, TItem>());
@@ -20,9 +20,9 @@ public static class MakeRegistrant
     public static IRegistrant<TItem> ForCommonRes<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem> =>
         ResRootLoader.WithStaticSourceTaker(path, new RegistrantSourceTaker<ResSourceInfo, TModel, TItem>());
 
-    public static I18nRegistrant<TItem> ForLocalRes<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem> =>
-        LocalFileLoader.WithResSourceTakerFactory(path, new I18nRegistrant<ResSourceInfo, TModel, TItem>(RegisterEventSource.LocalRegisterDone));
+    public static II18nRegistrant<TItem> ForLocalRes<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem> =>
+        LocalFileLoader.WithResSourceTakerFactory(path, new I18nSourceTakerRegistrant<ResSourceInfo, TModel, TItem>(RegisterEventSource.LocalRegisterDone));
 
-    public static I18nRegistrant<TItem> ForLang<TItem, TModel>(string path) where TModel : IModel<IDictionary<string, object>, TItem> =>
-        LocalFileLoader.WithLangSourceTakerFactory(path, new I18nRegistrant<IDictionary<string, object>, TModel, TItem>(RegisterEventSource.LocalRegisterDone));
+    public static II18nRegistrant<TItem> ForLang<TItem, TModel>(string path) where TModel : IModel<IDictionary<string, object>, TItem> =>
+        LocalFileLoader.WithLangSourceTakerFactory(path, new I18nSourceTakerRegistrant<IDictionary<string, object>, TModel, TItem>(RegisterEventSource.LocalRegisterDone));
 }

@@ -16,23 +16,24 @@ internal sealed class MobAnimationSetRegister : IRegister<MobAnimationSet>, II18
     public MobAnimationSetRegister(string path)
     {
         ModelReg = SimpleRegisterCreate.Res<MobAnimationModel, MobAnimationModel>(path, MobAnimationModel.Default);
-        MakeRegistrant.ForLocalRes<MobAnimationModel, MobAnimationModel>(path).AcceptRegister(this);
+        MakeFileRegistrant.ForLocalRes<MobAnimationModel, MobAnimationModel>(path).AcceptRegister(this);
     }
 
     #region Fields
 
     private I18nRegister<MobAnimationModel> ModelReg { get; }
     private Dictionary<string, MobAnimationSet> FinalReg { get; } = new();
+    private static readonly IRegisterDoneEventSource RegisterDoneEventSource = RegisterEventSource.LocalRegisterDone;
 
     #endregion
 
 
     #region Registering
 
-    public void UpdateLocal(string local, Func<string, IRegistrant<MobAnimationModel>> registrantCreator, IRegisterDoneEventSource registerDoneEventSource)
+    public void UpdateLocal(string local, Func<string, IRegistrant<MobAnimationModel>> registrantCreator)
     {
-        ModelReg.UpdateLocal(local, registrantCreator, registerDoneEventSource);
-        registerDoneEventSource.RegisterDone += () =>
+        ModelReg.UpdateLocal(local, registrantCreator);
+        RegisterDoneEventSource.RegisterDone += () =>
         {
             FinalReg.Clear();
             var groups = ModelReg.Values.GroupBy(model => model.MobId);

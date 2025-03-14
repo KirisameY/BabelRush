@@ -2,24 +2,20 @@ using System;
 using System.Collections.Generic;
 
 using BabelRush.Data;
-using BabelRush.Registering.SourceTakers;
+using BabelRush.Registering.I18n;
 
 using KirisameLib.Data.Registering;
 
-namespace BabelRush.Registering.I18n;
+namespace BabelRush.Registering.SourceTakers;
 
 // ReSharper disable once InconsistentNaming
-public abstract class I18nRegistrant<TItem>
-{
-    protected II18nRegTarget<TItem>? Register { get; private set; }
-    public void AcceptRegister(II18nRegTarget<TItem> register) => Register = register;
-}
-
-// ReSharper disable once InconsistentNaming
-public class I18nRegistrant<TSource, TModel, TItem>(IRegisterDoneEventSource registerDoneEventSource)
-    : I18nRegistrant<TItem>, II18nSourceTakerFactory<TSource>
+public class I18nSourceTakerRegistrant<TSource, TModel, TItem>(IRegisterDoneEventSource registerDoneEventSource)
+    : II18nRegistrant<TItem>, II18nSourceTakerFactory<TSource>
     where TModel : IModel<TSource, TItem>
 {
+    private II18nRegTarget<TItem>? _register;
+    public void AcceptRegister(II18nRegTarget<TItem> register) => _register = register;
+
     public IEnumerable<(string Local, ISourceTaker<TSource> SourceTaker)> InitializeRegistration(string local)
     {
         List<(string Local, ISourceTaker<TSource> SourceTaker)> registrants = [];
@@ -31,7 +27,7 @@ public class I18nRegistrant<TSource, TModel, TItem>(IRegisterDoneEventSource reg
             return result;
         };
 
-        Register?.UpdateLocal(local, registrantCreator, registerDoneEventSource);
+        _register?.UpdateLocal(local, registrantCreator);
         return registrants;
     }
 
