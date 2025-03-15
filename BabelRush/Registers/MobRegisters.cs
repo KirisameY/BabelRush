@@ -1,5 +1,3 @@
-using System;
-
 using BabelRush.Data;
 using BabelRush.Mobs;
 using BabelRush.Mobs.Animation;

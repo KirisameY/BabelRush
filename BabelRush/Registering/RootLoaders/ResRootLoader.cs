@@ -9,7 +9,6 @@ using BabelRush.Data;
 using BabelRush.Registering.SourceTakers;
 
 using KirisameLib.Asynchronous;
-using KirisameLib.Data.Registering;
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
 

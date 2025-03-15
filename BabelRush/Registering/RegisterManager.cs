@@ -5,7 +5,6 @@ using System.Runtime.CompilerServices;
 
 using BabelRush.Registering.FileLoading;
 
-using KirisameLib.Event;
 using KirisameLib.Extensions;
 using KirisameLib.FileSys;
 using KirisameLib.Logging;

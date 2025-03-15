@@ -3,7 +3,6 @@ using System;
 using BabelRush.Data;
 
 using KirisameLib.Data.Registering;
-using KirisameLib.Data.Registers;
 
 namespace BabelRush.Registering.SourceTakers;
 
