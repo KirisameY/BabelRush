@@ -14,7 +14,7 @@ public class I18nSourceTakerRegistrant<TSource, TModel, TItem>(IRegisterDoneEven
     where TModel : IModel<TSource, TItem>
 {
     private II18nRegTarget<TItem>? _register;
-    public void AcceptRegister(II18nRegTarget<TItem> register) => _register = register;
+    public void AcceptTarget(II18nRegTarget<TItem> target) => _register = target;
 
     public IEnumerable<(string Local, ISourceTaker<TSource> SourceTaker)> InitializeRegistration(string local)
     {

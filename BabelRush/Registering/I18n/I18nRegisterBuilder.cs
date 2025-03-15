@@ -54,7 +54,7 @@ public class I18nRegisterBuilder<TItem>
         var (fallback, fallbackExists, enumerate) = _fallback.Value;
 
         var register = new I18nRegister<TItem>(fallback, fallbackExists, enumerate, _registerDoneEventSource, _defaultLocal);
-        _registrants.ForEach(r => r.AcceptRegister(register));
+        _registrants.ForEach(r => r.AcceptTarget(register));
         return register;
     }
 }

@@ -15,9 +15,18 @@ internal sealed class MobAnimationSetRegister : IRegister<MobAnimationSet>, II18
 {
     public MobAnimationSetRegister(string path)
     {
-        ModelReg = SimpleRegisterCreate.Res<MobAnimationModel, MobAnimationModel>(path, MobAnimationModel.Default);
-        MakeFileRegistrant.ForLocalRes<MobAnimationModel, MobAnimationModel>(path).AcceptRegister(this);
+        // ModelReg = SimpleRegisterCreate.Res<MobAnimationModel, MobAnimationModel>(path, MobAnimationModel.Default);
+        ModelReg = new I18nRegisterBuilder<MobAnimationModel>()
+                  .WithFallback(new RegisterBuilder<MobAnimationModel>()
+                               .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
+                               .AddRegistrant(MakeRegistrant.ForCommonRes<MobAnimationModel, MobAnimationModel>(path))
+                               .WithFallback(MobAnimationModel.Default)
+                               .Build())
+                  .WithRegisterDoneEventSource(RegisterEventSource.LocalRegisterDone)
+                  .Build();
+        MakeRegistrant.ForLocalRes<MobAnimationModel, MobAnimationModel>(path).AcceptTarget(this);
     }
+
 
     #region Fields
 

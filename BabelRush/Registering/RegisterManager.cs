@@ -28,7 +28,7 @@ internal static class RegisterManager
         Game.LoadEventBus.Publish(new CommonRegisterStartEvent());
         var loader = new CommonFileLoader();
         LoadAssets(loader);
-        //todo: 手动注册
+        ManualRegistrant.PublishCommonEvents();
         RegisterEventSource.TriggerCommonRegisterDone();
         Game.LoadEventBus.Publish(new CommonRegisterDoneEvent());
     }
@@ -38,7 +38,7 @@ internal static class RegisterManager
         Game.LoadEventBus.Publish(new LocalRegisterStartEvent(local));
         var loader = new LocalFileLoader(local);
         LoadAssets(loader);
-        //todo: 手动注册
+        ManualRegistrant.PublishI18nEvents(local);
         RegisterEventSource.TriggerLocalRegisterDone();
         Game.LoadEventBus.Publish(new LocalRegisterDoneEvent(local));
     }

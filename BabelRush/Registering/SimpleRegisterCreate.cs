@@ -21,7 +21,7 @@ public static class SimpleRegisterCreate
         where TModel : IModel<DocumentSyntax, TItem> =>
         new RegisterBuilder<TItem>()
            .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
-           .AddRegistrant(MakeFileRegistrant.ForData<TItem, TModel>(path))
+           .AddRegistrant(MakeRegistrant.ForData<TItem, TModel>(path))
            .WithFallback(fallback)
            .Build();
 
@@ -33,10 +33,10 @@ public static class SimpleRegisterCreate
     public static I18nRegister<TItem> Res<TItem, TModel>(string path, Func<string, TItem> fallback)
         where TModel : IModel<ResSourceInfo, TItem> =>
         new I18nRegisterBuilder<TItem>()
-           .WithRegistrant(MakeFileRegistrant.ForLocalRes<TItem, TModel>(path))
+           .WithRegistrant(MakeRegistrant.ForLocalRes<TItem, TModel>(path))
            .WithFallback(new RegisterBuilder<TItem>()
                         .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
-                        .AddRegistrant(MakeFileRegistrant.ForCommonRes<TItem, TModel>(path))
+                        .AddRegistrant(MakeRegistrant.ForCommonRes<TItem, TModel>(path))
                         .WithFallback(fallback)
                         .Build())
            .WithRegisterDoneEventSource(RegisterEventSource.LocalRegisterDone)
@@ -50,7 +50,7 @@ public static class SimpleRegisterCreate
     public static I18nRegister<TItem> Lang<TItem, TModel>(string path, string defaultLocal, Func<string, TItem> fallback)
         where TModel : IModel<IDictionary<string, object>, TItem> =>
         new I18nRegisterBuilder<TItem>()
-           .WithRegistrant(MakeFileRegistrant.ForLang<TItem, TModel>(path))
+           .WithRegistrant(MakeRegistrant.ForLang<TItem, TModel>(path))
            .WithDefaultLocal(defaultLocal)
            .WithFallback(fallback)
            .WithRegisterDoneEventSource(RegisterEventSource.LocalRegisterDone)

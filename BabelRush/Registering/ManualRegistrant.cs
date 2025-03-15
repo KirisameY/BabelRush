@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,21 +8,24 @@ using KirisameLib.Data.Registering;
 
 namespace BabelRush.Registering;
 
-public static class ManualRegistrant<TItem> //todo:这里是泛型的话外面没法统一获取了，类型问题得想办法啊！
+public static class ManualRegistrant
 {
     #region Common
 
-    private static readonly Dictionary<(string Root, string Path), IRegTarget<TItem>> CommonTargets = [];
+    private static readonly List<Action> CommonTargets = [];
 
-    internal static IEnumerable<(string Root, string Path, IRegTarget<TItem>)> GetCommonTargets() =>
-        CommonTargets.Select(p => (p.Key.Root, p.Key.Path, p.Value));
+    internal static void PublishCommonEvents() => CommonTargets.ForEach(static a => a.Invoke());
 
 
-    public static IRegistrant<TItem> Common(string root, string path) => new ManualCommonRegistrant(root, path);
+    public static ManualCommonRegistrant<TItem> Common<TItem>(string root, string path) => new(root, path);
 
-    private readonly struct ManualCommonRegistrant(string root, string path) : IRegistrant<TItem>
+    public readonly struct ManualCommonRegistrant<TItem>(string root, string path) : IRegistrant<TItem>
     {
-        public void AcceptTarget(IRegTarget<TItem> target) => CommonTargets.Add((root, path), target);
+        public void AcceptTarget(IRegTarget<TItem> target)
+        {
+            var (root1, path1) = (root, path);
+            CommonTargets.Add(() => Game.LoadEventBus.Publish(new CommonManualRegisterEvent<TItem>(root1, path1, target)));
+        }
     }
 
     #endregion
@@ -31,32 +35,35 @@ public static class ManualRegistrant<TItem> //todo:这里是泛型的话外面�
 
     // ReSharper disable InconsistentNaming
 
-    private static readonly Dictionary<(string Root, string Path), II18nRegTarget<TItem>> I18nTargets = [];
+    private static readonly List<Action<string>> I18nTargets = [];
 
-    internal static IEnumerable<(string lang, string Root, string Path, IRegTarget<TItem>)> GetI8nTargets(string local)
+    internal static void PublishI18nEvents(string local) => I18nTargets.ForEach(a => a.Invoke(local));
+
+
+    public static ManualI18nRegistrant<TItem> I18n<TItem>(string root, string path) => new(root, path);
+
+    public readonly struct ManualI18nRegistrant<TItem>(string root, string path) : II18nRegistrant<TItem>
     {
-        List<(string lang, string Root, string Path, IRegTarget<TItem>)> result = [];
-        foreach (var ((root, path), target) in I18nTargets)
+        public void AcceptTarget(II18nRegTarget<TItem> target)
         {
-            target.UpdateLocal(local, l => new ManualL10nRegistrant(result, l, root, path));
+            var (root1, path1) = (root, path);
+            I18nTargets.Add(local =>
+            {
+                List<(string Lang, IRegTarget<TItem> target)> targets = [];
+                target.UpdateLocal(local, l => new ManualL10nRegistrant<TItem>(targets, l));
+                foreach (var (local1, target1) in targets)
+                {
+                    Game.LoadEventBus.Publish(new LocalManualRegisterEvent<TItem>(local1, root1, path1, target1));
+                }
+            });
         }
-
-        return result.AsReadOnly();
     }
 
-
-    public static II18nRegistrant<TItem> I18n(string root, string path) => new ManualI18nRegistrant(root, path);
-
-    private readonly struct ManualI18nRegistrant(string root, string path) : II18nRegistrant<TItem>
-    {
-        public void AcceptRegister(II18nRegTarget<TItem> register) => I18nTargets.Add((root, path), register);
-    }
-
-    private readonly struct ManualL10nRegistrant(
-        List<(string lang, string Root, string Path, IRegTarget<TItem>)> list, string lang, string root, string path)
+    private readonly struct ManualL10nRegistrant<TItem>(
+        List<(string lang, IRegTarget<TItem>)> list, string lang)
         : IRegistrant<TItem>
     {
-        public void AcceptTarget(IRegTarget<TItem> target) => list.Add((lang, root, path, target));
+        public void AcceptTarget(IRegTarget<TItem> target) => list.Add((lang, target));
     }
 
     // ReSharper restore InconsistentNaming
