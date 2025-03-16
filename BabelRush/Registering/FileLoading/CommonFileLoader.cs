@@ -11,9 +11,9 @@ internal class CommonFileLoader : FileLoader
 {
     private static Dictionary<string, Func<RootLoader>> RootMap { get; } = new()
     {
-        ["data"] = static () => new DataRootLoader(),
-        // ["script"] = null, todo: script也该安排了
-        ["res"] = static () => new ResRootLoader(),
+        [RootNames.Data] = static () => new DataRootLoader(),
+        // [RootNames.Script] = null, todo: script也该安排了
+        [RootNames.Res] = static () => new ResRootLoader(),
     };
 
 

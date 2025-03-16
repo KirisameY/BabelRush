@@ -34,5 +34,36 @@ public partial class LuaInteractionTest : Node
         GD.Print(test3[0].GetType());
         GD.Print(test3[0]);
         GD.Print(test3);
+
+
+        var func1 = lua.LoadString(
+            """
+            local a = 1
+            GD.Print("this is func1")
+            GD.Print("a=", a)
+            """,
+            "func"
+        );
+        var func2 = lua.LoadString(
+            """
+            GD.Print("this is func2")
+            GD.Print("a=", a)
+            """,
+            "func"
+        );
+        var func3 = lua.LoadString(
+            """
+            local a = 3
+            GD.Print("this is func3")
+            GD.Print("a=", a)
+            """,
+            "func"
+        );
+
+        func1.Call();
+        func2.Call();
+        func3.Call();
+        func2.Call();
+        func1.Call();
     }
 }

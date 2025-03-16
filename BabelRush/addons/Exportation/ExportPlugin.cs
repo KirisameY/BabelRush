@@ -31,7 +31,7 @@ public partial class ExportPlugin : EditorExportPlugin
 
     public override void _ExportFile(string path, string type, string[] features)
     {
-        if (path.StartsWith(ResPath))
+        if (path.StartsWith(ResPath)) //todo: 应该把assets直接移出godot工程目录
         {
             Skip();
             var innerPath = path.Remove(0, ResPath.Length);

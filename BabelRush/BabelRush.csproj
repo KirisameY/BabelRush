@@ -38,6 +38,7 @@
     <ItemGroup>
         <None Include="**\*.tscn" />
         <None Include="**\*.gd" />
+        <None Include="**\*.lua" />
     </ItemGroup>
 
 </Project>

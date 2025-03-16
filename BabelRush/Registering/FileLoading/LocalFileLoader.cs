@@ -26,8 +26,8 @@ internal class LocalFileLoader(string local)
     {
         Dictionary<string, IEnumerable<(string Local, RootLoader RootLoader)>> dict = new()
         {
-            ["res"] = NewLocalRootLoader(local,  LocalResInfo,  (l, dict) => new ResRootLoader((l, dict))),
-            ["lang"] = NewLocalRootLoader(local, LocalLangInfo, (l, dict) => new LangRootLoader(l, dict)),
+            [RootNames.Res] = NewLocalRootLoader(local,  LocalResInfo,  (l, dict) => new ResRootLoader((l, dict))),
+            [RootNames.Lang] = NewLocalRootLoader(local, LocalLangInfo, (l, dict) => new LangRootLoader(l, dict)),
         };
 
         IEnumerable<(string Root, string Local, RootLoader RootLoader)> loaders = dict.SelectMany(p =>

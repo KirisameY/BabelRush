@@ -73,7 +73,7 @@ public partial class Game : SceneTree
 
         Logger.Log(LogLevel.Info, "Initializing", "Game class loaded");
 
-        Logger.Log(LogLevel.Info, "Initializing", "Loading Script...");
+        Logger.Log(LogLevel.Info, "Initializing", "Loading script frame...");
         ScriptHub.Initialize();
 
         Logger.Log(LogLevel.Info, "Initializing", "Loading assets...");

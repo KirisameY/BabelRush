@@ -1,0 +1,15 @@
+[remap]
+
+importer="BabelRush.Lua"
+importer_version=1
+type="Text"
+uid="uid://c3ue8u8bkj8ra"
+path="res://.godot/imported/initialize.lua-2ce740c7039cb71e6b8b48b110e279c6.tres"
+
+[deps]
+
+source_file="res://Scripting/initialize.lua"
+dest_files=["res://.godot/imported/initialize.lua-2ce740c7039cb71e6b8b48b110e279c6.tres"]
+
+[params]
+

@@ -63,9 +63,6 @@ internal class DataRootLoader : CommonRootLoader<DocumentSyntax>
     protected override void EndUp() { }
 
 
-    // New Registrant
-
-
     // Logging
     private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(DataRootLoader));
 }

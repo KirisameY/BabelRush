@@ -38,7 +38,7 @@ project/solution_directory=".."
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Exportation/plugin.cfg")
+enabled=PackedStringArray("res://addons/Exportation/plugin.cfg", "res://addons/Importation/plugin.cfg")
 
 [file_customization]
 
