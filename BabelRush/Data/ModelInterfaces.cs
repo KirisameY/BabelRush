@@ -17,7 +17,7 @@ public interface IModel<in TSource, out TTarget> : IModel<TTarget>
     static abstract IReadOnlyCollection<IModel<TTarget>> FromSource(TSource source, out ModelParseErrorInfo errorMessages);
 }
 
-public interface IScriptModel<out TTarget> : IModel<LuaFunction, TTarget>;
+public interface IScriptModel<out TTarget> : IModel<ScriptSourceInfo, TTarget>;
 
 public interface IDataModel<out TTarget> : IModel<DocumentSyntax, TTarget>;
 

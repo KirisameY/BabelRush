@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
+using BabelRush.Data;
 using BabelRush.Registering.SourceTakers;
 using BabelRush.Scripting;
 
@@ -15,15 +16,15 @@ using NLua;
 
 namespace BabelRush.Registering.RootLoaders;
 
-internal sealed class ScriptRootLoader : CommonRootLoader<LuaFunction>
+internal sealed class ScriptRootLoader : CommonRootLoader<ScriptSourceInfo>
 {
-    private static Dictionary<string, ISourceTaker<LuaFunction>> SourceTakerDict { get; } = new()
+    private static Dictionary<string, ISourceTaker<ScriptSourceInfo>> SourceTakerDict { get; } = new()
     {
         // todo: modules loader
         //["_modules"] =
     };
 
-    public static T WithSourceTaker<T>(string path, T taker) where T : ISourceTaker<LuaFunction>
+    public static T WithSourceTaker<T>(string path, T taker) where T : ISourceTaker<ScriptSourceInfo>
     {
         if (path.StartsWith('_'))
             throw new InvalidOperationException($"Path that begin with '_' is reserved. (Invalid path: {path})");
@@ -33,9 +34,9 @@ internal sealed class ScriptRootLoader : CommonRootLoader<LuaFunction>
         return taker;
     }
 
-    protected override ISourceTaker<LuaFunction>? GetSourceTaker(string path) => SourceTakerDict.GetOrDefault(path);
+    protected override ISourceTaker<ScriptSourceInfo>? GetSourceTaker(string path) => SourceTakerDict.GetOrDefault(path);
 
-    protected override void HandleFile(Dictionary<string, LuaFunction> sourceDict, string[] fileSubPath, byte[] fileContent)
+    protected override void HandleFile(Dictionary<string, ScriptSourceInfo> sourceDict, string[] fileSubPath, byte[] fileContent)
     {
         var extension = Path.GetExtension(fileSubPath.Last());
         var path = fileSubPath.Join('/');
@@ -48,12 +49,12 @@ internal sealed class ScriptRootLoader : CommonRootLoader<LuaFunction>
 
         path = Path.ChangeExtension(path, null);
         var function = ScriptHub.Lua.LoadString(fileContent, "chunk");
-        sourceDict.TryAdd(path, function);
+        sourceDict.TryAdd(path, new(path, function));
     }
 
     private readonly TaskCompletionSource _startRegistering = new();
 
-    protected override async Task RegisterDirectory(ISourceTaker<LuaFunction> sourceTaker, Dictionary<string, LuaFunction> sourceDict)
+    protected override async Task RegisterDirectory(ISourceTaker<ScriptSourceInfo> sourceTaker, Dictionary<string, ScriptSourceInfo> sourceDict)
     {
         var path = CurrentPath;
 

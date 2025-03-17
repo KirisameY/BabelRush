@@ -17,9 +17,9 @@ namespace BabelRush.Registering;
 
 public static class MakeRegistrant
 {
-    public static IRegistrant<TItem> ForScript<TItem, TModel>(string path) where TModel : IModel<LuaFunction, TItem> =>
+    public static IRegistrant<TItem> ForScript<TItem, TModel>(string path) where TModel : IModel<ScriptSourceInfo, TItem> =>
         new MergedRegistrant<TItem>(
-            ScriptRootLoader.WithSourceTaker(path, new RegistrantSourceTaker<LuaFunction, TModel, TItem>()),
+            ScriptRootLoader.WithSourceTaker(path, new RegistrantSourceTaker<ScriptSourceInfo, TModel, TItem>()),
             ManualRegistrant.Common<TItem>(RootNames.Script, path)
         );
 

@@ -1,27 +1,44 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using BabelRush.Data;
 using BabelRush.Registers;
 
-using Tomlyn.Syntax;
+using KirisameLib.Extensions;
+
+using NLua;
+using NLua.Exceptions;
 
 namespace BabelRush.Actions;
 
-[ModelSet("ActionStep")]
-internal partial class ActionStepModel : IDataModel<ActionStep>
+internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<ActionStep> //todo: Data 改 Script
 {
-    [NecessaryProperty]
-    public partial string Id { get; set; }
-    [NecessaryProperty]
-    public partial string ActionDelegate { get; set; }
-    
     public ActionStep Convert()
     {
-        var actionDelegate = InCodeRegisters.ActionDelegates.GetItem(ActionDelegate);
-        
-        return new(actionDelegate);
+        return new ScriptActionStep(Id, Action);
     }
 
-    public static IReadOnlyCollection<IModel<ActionStep>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
-        ModelUtils.ParseFromSource<ModelSet, ActionStep>(source, out errorMessages);
+    public static IReadOnlyCollection<IModel<ActionStep>> FromSource(ScriptSourceInfo source, out ModelParseErrorInfo errorMessages)
+    {
+        List<string> errors = [];
+        object[] returnValues = [];
+        try
+        {
+            returnValues = source.Script.Call();
+        }
+        catch (LuaScriptException e)
+        {
+            errors.Add(e.ToString());
+        }
+
+        if (returnValues is not [LuaFunction func, ..])
+        {
+            errors.Add($"Invalid script return values :" + $"[{returnValues.Select(o => o.GetType().ToString()).Join(", ")}].");
+            errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());
+            return [];
+        }
+
+        errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());
+        return [new ActionStepModel(source.Id, func)];
+    }
 }

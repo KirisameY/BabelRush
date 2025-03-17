@@ -14,7 +14,7 @@ namespace BabelRush.Registering;
 
 public static class HookSourceLoader
 {
-    public static T OnScript<T>(string path, T loader) where T : ISourceTaker<LuaFunction> =>
+    public static T OnScript<T>(string path, T loader) where T : ISourceTaker<ScriptSourceInfo> =>
         ScriptRootLoader.WithSourceTaker(path, loader);
 
     public static T OnData<T>(string path, T loader) where T : ISourceTaker<DocumentSyntax> =>

@@ -16,11 +16,11 @@ namespace BabelRush.Registering;
 public static class CreateSimpleRegister
 {
     public static IEnumerableRegister<TItem> Script<TItem, TModel>(string path, TItem fallback)
-        where TModel : IModel<LuaFunction, TItem> =>
+        where TModel : IModel<ScriptSourceInfo, TItem> =>
         Script<TItem, TModel>(path, _ => fallback);
 
     public static IEnumerableRegister<TItem> Script<TItem, TModel>(string path, Func<string, TItem> fallback)
-        where TModel : IModel<LuaFunction, TItem> =>
+        where TModel : IModel<ScriptSourceInfo, TItem> =>
         new RegisterBuilder<TItem>()
            .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
            .AddRegistrant(MakeRegistrant.ForScript<TItem, TModel>(path))

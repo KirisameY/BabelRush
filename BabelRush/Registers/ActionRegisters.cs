@@ -13,7 +13,7 @@ namespace BabelRush.Registers;
 public static class ActionRegisters
 {
     public static IRegister<ActionStep> ActionSteps { get; } =
-        CreateSimpleRegister.Data<ActionStep, ActionStepModel>("action_steps", ActionStep.Default);
+        CreateSimpleRegister.Script<ActionStep, ActionStepModel>("action_steps", ActionStep.Default);
 
     public static IRegister<NameDesc> ActionNameDesc { get; } =
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>("actions", "en", id => (id, ""));
