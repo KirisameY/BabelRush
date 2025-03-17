@@ -7,12 +7,27 @@ using BabelRush.Registering.I18n;
 using KirisameLib.Data.Registering;
 using KirisameLib.Data.Registers;
 
+using NLua;
+
 using Tomlyn.Syntax;
 
 namespace BabelRush.Registering;
 
-public static class SimpleRegisterCreate
+public static class CreateSimpleRegister
 {
+    public static IEnumerableRegister<TItem> Script<TItem, TModel>(string path, TItem fallback)
+        where TModel : IModel<LuaFunction, TItem> =>
+        Script<TItem, TModel>(path, _ => fallback);
+
+    public static IEnumerableRegister<TItem> Script<TItem, TModel>(string path, Func<string, TItem> fallback)
+        where TModel : IModel<LuaFunction, TItem> =>
+        new RegisterBuilder<TItem>()
+           .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
+           .AddRegistrant(MakeRegistrant.ForScript<TItem, TModel>(path))
+           .WithFallback(fallback)
+           .Build();
+
+
     public static IEnumerableRegister<TItem> Data<TItem, TModel>(string path, TItem fallback)
         where TModel : IModel<DocumentSyntax, TItem> =>
         Data<TItem, TModel>(path, _ => fallback);

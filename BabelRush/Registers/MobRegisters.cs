@@ -12,8 +12,8 @@ namespace BabelRush.Registers;
 public static class MobRegisters
 {
     public static IRegister<NameDesc> MobNameDesc { get; } =
-        SimpleRegisterCreate.Lang<NameDesc, NameDescModel>("mobs", "en", id => (id, ""));
+        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("mobs", "en", id => (id, ""));
     public static IRegister<MobAnimationSet> MobAnimationSets => new MobAnimationSetRegister("textures/mobs");
     public static IRegister<MobType> Mobs { get; } =
-        SimpleRegisterCreate.Data<MobType, MobTypeModel>("mobs", MobType.Default);
+        CreateSimpleRegister.Data<MobType, MobTypeModel>("mobs", MobType.Default);
 }

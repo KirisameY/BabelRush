@@ -14,7 +14,7 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Registering.RootLoaders;
 
-internal class DataRootLoader : CommonRootLoader<DocumentSyntax>
+internal sealed class DataRootLoader : CommonRootLoader<DocumentSyntax>
 {
     private static Dictionary<string, ISourceTaker<DocumentSyntax>> SourceTakerDict { get; } = new();
 
@@ -60,7 +60,7 @@ internal class DataRootLoader : CommonRootLoader<DocumentSyntax>
         }
     }
 
-    protected override void EndUp() { }
+    protected override void EndUp(Task registeringTask) { }
 
 
     // Logging

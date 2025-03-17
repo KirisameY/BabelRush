@@ -12,7 +12,8 @@ using Tomlyn.Model;
 
 namespace BabelRush.Registering.RootLoaders;
 
-public class LangRootLoader(string local, IDictionary<string, ISourceTaker<IDictionary<string, object>>> sourceTakerDict) : RootLoader<IDictionary<string, object>>
+internal sealed class LangRootLoader(string local, IDictionary<string, ISourceTaker<IDictionary<string, object>>> sourceTakerDict) :
+    RootLoader<IDictionary<string, object>>
 {
     private string Local { get; } = local;
     private ImmutableDictionary<string, ISourceTaker<IDictionary<string, object>>> SourceTakerDict { get; } =

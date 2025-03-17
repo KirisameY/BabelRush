@@ -6,12 +6,17 @@ using BabelRush.Registering.I18n;
 using BabelRush.Registering.RootLoaders;
 using BabelRush.Registering.SourceTakers;
 
+using NLua;
+
 using Tomlyn.Syntax;
 
 namespace BabelRush.Registering;
 
 public static class HookSourceLoader
 {
+    public static T OnScript<T>(string path, T loader) where T : ISourceTaker<LuaFunction> =>
+        ScriptRootLoader.WithSourceTaker(path, loader);
+
     public static T OnData<T>(string path, T loader) where T : ISourceTaker<DocumentSyntax> =>
         DataRootLoader.WithSourceTaker(path, loader);
 

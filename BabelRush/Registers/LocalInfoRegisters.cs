@@ -12,7 +12,7 @@ namespace BabelRush.Registers;
 public static class LocalInfoRegisters
 {
     public static IRegister<Font> Fonts { get; } =
-        SimpleRegisterCreate.Res<Font, FontModel>("fonts/res", new FontVariation());
+        CreateSimpleRegister.Res<Font, FontModel>("fonts/res", new FontVariation());
     public static IRegister<FontInfo> FontInfos { get; } =
-        SimpleRegisterCreate.Res<FontInfo, FontInfoModel>("fonts", new FontInfo("", 12));
+        CreateSimpleRegister.Res<FontInfo, FontInfoModel>("fonts", new FontInfo("", 12));
 }

@@ -15,7 +15,7 @@ using NLua;
 
 namespace BabelRush.Registering.RootLoaders;
 
-public class ScriptRootLoader : CommonRootLoader<LuaFunction>
+internal sealed class ScriptRootLoader : CommonRootLoader<LuaFunction>
 {
     private static Dictionary<string, ISourceTaker<LuaFunction>> SourceTakerDict { get; } = new()
     {
@@ -51,12 +51,16 @@ public class ScriptRootLoader : CommonRootLoader<LuaFunction>
         sourceDict.TryAdd(path, function);
     }
 
+    private readonly TaskCompletionSource _startRegistering = new();
+
     protected override async Task RegisterDirectory(ISourceTaker<LuaFunction> sourceTaker, Dictionary<string, LuaFunction> sourceDict)
     {
         var path = CurrentPath;
-        await AsyncOrrery.SwitchContext();
 
-        foreach (var (file, source) in sourceDict) //todo: 应该把实际注册的时间点放在EndUp时候，这里最好把动作挂上去就不管了
+        await AsyncOrrery.SwitchContext();
+        await _startRegistering.Task;
+
+        foreach (var (file, source) in sourceDict)
         {
             sourceTaker.Take(source, out var errorInfo);
             if (errorInfo.ErrorCount != 0)
@@ -68,7 +72,10 @@ public class ScriptRootLoader : CommonRootLoader<LuaFunction>
         }
     }
 
-    protected override void EndUp() { }
+    protected override void EndUp(Task registeringTask)
+    {
+        _startRegistering.SetResult();
+    }
 
 
     // Logging

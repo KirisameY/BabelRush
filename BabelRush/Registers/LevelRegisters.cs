@@ -9,5 +9,5 @@ namespace BabelRush.Registers;
 public static class LevelRegisters
 {
     public static IRegister<RoomTemplate> RoomRegister { get; } =
-        SimpleRegisterCreate.Data<RoomTemplate, RoomTemplateModel>("rooms", RoomTemplate.Default);
+        CreateSimpleRegister.Data<RoomTemplate, RoomTemplateModel>("rooms", RoomTemplate.Default);
 }

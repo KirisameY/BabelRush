@@ -10,7 +10,7 @@ namespace BabelRush.Registers;
 [RegisterContainer]
 public static class InCodeRegisters
 {
-    // todo: implement
+    // todo: implement  和Action一起重置了吧
 
     public static IRegister<ActionDelegate> ActionDelegates => throw new NotImplementedException();
 

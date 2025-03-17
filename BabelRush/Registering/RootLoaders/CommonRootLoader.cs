@@ -50,13 +50,14 @@ public abstract class CommonRootLoader<TSource> : RootLoader<TSource>
 
         if (PathLink.Count == 0)
         {
-            Task.WhenAll(RegisteringTasks).Wait();
-            EndUp();
+            var registeringTask = Task.WhenAll(RegisteringTasks);
+            EndUp(registeringTask);
+            registeringTask.Wait();
             Exited = true;
             return true;
         }
 
-        //else: still in root directory
+        // else: still in root directory
         var path = PathLink.Join('/');
         PathLink.RemoveLast();
 
@@ -73,7 +74,7 @@ public abstract class CommonRootLoader<TSource> : RootLoader<TSource>
 
     protected abstract void HandleFile(Dictionary<string, TSource> sourceDict, string[] fileSubPath, byte[] fileContent);
     protected abstract Task RegisterDirectory(ISourceTaker<TSource> sourceTaker, Dictionary<string, TSource> sourceDict);
-    protected abstract void EndUp();
+    protected abstract void EndUp(Task registeringTask);
 
 
     private readonly record struct RegisterInfo(

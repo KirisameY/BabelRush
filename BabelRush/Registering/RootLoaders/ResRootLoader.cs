@@ -14,7 +14,7 @@ using KirisameLib.Logging;
 
 namespace BabelRush.Registering.RootLoaders;
 
-internal class ResRootLoader((string local, IDictionary<string, ISourceTaker<ResSourceInfo>> dict)? localInfo = null) : CommonRootLoader<ResSourceInfo>
+internal sealed class ResRootLoader((string local, IDictionary<string, ISourceTaker<ResSourceInfo>> dict)? localInfo = null) : CommonRootLoader<ResSourceInfo>
 {
     public static T WithStaticSourceTaker<T>(string path, T taker) where T : ISourceTaker<ResSourceInfo>
     {
@@ -64,7 +64,7 @@ internal class ResRootLoader((string local, IDictionary<string, ISourceTaker<Res
         }
     }
 
-    protected override void EndUp() { }
+    protected override void EndUp(Task registeringTask) { }
 
 
     //Logger

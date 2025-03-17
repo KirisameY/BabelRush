@@ -9,12 +9,20 @@ using BabelRush.Registering.SourceTakers;
 using KirisameLib.Data.Registering;
 using KirisameLib.Extensions;
 
+using NLua;
+
 using Tomlyn.Syntax;
 
 namespace BabelRush.Registering;
 
 public static class MakeRegistrant
 {
+    public static IRegistrant<TItem> ForScript<TItem, TModel>(string path) where TModel : IModel<LuaFunction, TItem> =>
+        new MergedRegistrant<TItem>(
+            ScriptRootLoader.WithSourceTaker(path, new RegistrantSourceTaker<LuaFunction, TModel, TItem>()),
+            ManualRegistrant.Common<TItem>(RootNames.Script, path)
+        );
+
     public static IRegistrant<TItem> ForData<TItem, TModel>(string path) where TModel : IModel<DocumentSyntax, TItem> =>
         new MergedRegistrant<TItem>(
             DataRootLoader.WithSourceTaker(path, new RegistrantSourceTaker<DocumentSyntax, TModel, TItem>()),

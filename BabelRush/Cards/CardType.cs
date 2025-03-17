@@ -13,7 +13,7 @@ namespace BabelRush.Cards;
 public class CardType(string id, bool usable, int cost, IEnumerable<(ActionType, int)> actions, IEnumerable<FeatureType> features)
 {
     public string Id { get; } = id;
-    public NameDesc NameDesc => Registers.CardRegisters.CardNameDesc.GetItem(Id);
+    public NameDesc NameDesc => Registers.CardRegisters.CardNameDesc.GetItem(Id); // todo: 也许需要给各种模型拆出来可选的非默认资源ID
     public Texture2D Icon => Registers.CardRegisters.CardIcon.GetItem(Id);
     public bool Usable { get; } = usable;
     public int Cost { get; } = cost;
