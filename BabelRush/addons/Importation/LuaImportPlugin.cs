@@ -31,12 +31,12 @@ public partial class LuaImportPlugin : EditorImportPlugin
 
     public override int _GetFormatVersion() => 1;
 
-    public override Godot.Collections.Array<Godot.Collections.Dictionary> _GetImportOptions(string path, int presetIndex) => [];
+    public override Array<Dictionary> _GetImportOptions(string path, int presetIndex) => [];
 
     public override bool _GetOptionVisibility(string path, StringName optionName, Dictionary options) => true;
 
-    public override Error _Import(string sourceFile, string savePath, Godot.Collections.Dictionary options,
-                                  Godot.Collections.Array<string> platformVariants, Godot.Collections.Array<string> genFiles)
+    public override Error _Import(string sourceFile, string savePath, Dictionary options,
+                                  Array<string> platformVariants, Array<string> genFiles)
     {
         using var file = FileAccess.Open(sourceFile, FileAccess.ModeFlags.Read);
         var error = file.GetError();

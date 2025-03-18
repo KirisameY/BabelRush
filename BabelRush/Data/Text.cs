@@ -1,5 +1,3 @@
-using System.Runtime.Serialization;
-
 using Godot;
 
 namespace BabelRush.Data;

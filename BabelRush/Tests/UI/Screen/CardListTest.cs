@@ -22,12 +22,11 @@ public partial class CardListTest : Node
         Game.GameEventBus.Subscribe<BaseEvent>(e => GD.Print(e));
 
 
-
         CardListScreen.Add(CardType.Default.NewInstance());
         CardListScreen.Add(CardType.Default.NewInstance());
-        var testCardType = new CardType("testing", true, 2,
-                                        [(new("test_action", new TargetPattern.Self(), []), 8)],
-                                        [new("test_feature")]);
+        var testCardType = new CardType("testing", "testing", true, 2,
+                                        [(new("test_action", "test", new TargetPattern.Self(), []), 8)],
+                                        [new("test_feature", "test")]);
         CardListScreen.Add(testCardType.NewInstance());
     }
 }

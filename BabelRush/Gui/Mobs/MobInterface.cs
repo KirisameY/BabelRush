@@ -241,6 +241,7 @@ public partial class MobInterface : Node2D
             : new Color(Modulate.R, Modulate.G,         e.Selected ? 0 : 1);
     }
 
+    [EventHandler]
     private void OnMobActionEvent(MobActionEvent e)
     {
         if (e.Mob != Mob) return;

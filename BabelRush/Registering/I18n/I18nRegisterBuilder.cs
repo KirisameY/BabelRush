@@ -11,7 +11,7 @@ namespace BabelRush.Registering.I18n;
 public class I18nRegisterBuilder<TItem>
 {
     private (Func<string, TItem> Get, Func<string, bool> Exists, Func<IEnumerable<KeyValuePair<string, TItem>>> enumerate)? _fallback;
-    private IRegisterDoneEventSource _registerDoneEventSource;
+    private IRegisterDoneEventSource? _registerDoneEventSource;
     private string? _defaultLocal;
     private readonly HashSet<II18nRegistrant<TItem>> _registrants = [];
 

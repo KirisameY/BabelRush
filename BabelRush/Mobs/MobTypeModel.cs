@@ -12,8 +12,7 @@ internal partial class MobTypeModel : IDataModel<MobType>
 {
     [NecessaryProperty]
     public partial string Id { get; set; }
-    [NecessaryProperty]
-    public partial string AnimationSet { get; set; }
+    public string? AnimationSet { get; set; } = null;
     [NecessaryProperty]
     public partial bool BlocksMovement { get; set; }
     [NecessaryProperty]
@@ -22,8 +21,8 @@ internal partial class MobTypeModel : IDataModel<MobType>
 
     public MobType Convert()
     {
-        var animationSet = Registers.MobRegisters.MobAnimationSets.GetItem(AnimationSet);
-        return new(Id, animationSet, BlocksMovement, Health, ActionStrategy?.Convert() ?? MobActionStrategy.Default);
+        AnimationSet ??= Id;
+        return new(Id, AnimationSet, BlocksMovement, Health, ActionStrategy?.Convert() ?? MobActionStrategy.Default);
     }
 
     public static IReadOnlyCollection<IModel<MobType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>

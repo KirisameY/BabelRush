@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BabelRush.Data;
-using BabelRush.Registers;
 
 using KirisameLib.Extensions;
 

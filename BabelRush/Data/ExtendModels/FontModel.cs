@@ -36,7 +36,7 @@ public class FontModel(string id, Font font) : IResModel<Font>
         if (!source.Files.TryGetValue(".toml", out var toml))
         {
             errorMessages = ModelParseErrorInfo.Empty;
-            return [new FontModel(source.Id, font)];
+            return [new FontModel(source.Path, font)];
         }
 
         Toml.Parse(toml).TryToModel<FontVariation>(out var fontVariation, out var diagnostics);
@@ -44,6 +44,6 @@ public class FontModel(string id, Font font) : IResModel<Font>
         if (fontVariation is null) return [];
 
         fontVariation.BaseFont = font;
-        return [new FontModel(source.Id, fontVariation)];
+        return [new FontModel(source.Path, fontVariation)];
     }
 }

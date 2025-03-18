@@ -88,13 +88,13 @@ public class I18nRegister<TItem>(Func<string, TItem> fallback, Func<string, bool
 
 
     // Reading
-    public TItem GetItem(string id) => InnerRegister!.GetItem(id);
+    public TItem GetItem(string id) => InnerRegister.GetItem(id);
 
     public bool ItemRegistered(string id) =>
-        InnerRegister!.ItemRegistered(id) || (_defaultLocalRegister?.ItemRegistered(id) ?? false) || fallbackExists(id);
+        InnerRegister.ItemRegistered(id) || (_defaultLocalRegister?.ItemRegistered(id) ?? false) || fallbackExists(id);
 
     public IEnumerator<KeyValuePair<string, TItem>> GetEnumerator() =>
-        InnerRegister!
+        InnerRegister
            .Concat(getFallbacks())
            .GroupBy(p => p.Key, p => p.Value)
            .ToImmutableDictionary(g => g.Key, g => g.First())
@@ -102,7 +102,7 @@ public class I18nRegister<TItem>(Func<string, TItem> fallback, Func<string, bool
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
-    public int Count => InnerRegister!.Concat(getFallbacks()).GroupBy(p => p.Key).Count();
+    public int Count => InnerRegister.Concat(getFallbacks()).GroupBy(p => p.Key).Count();
 
     public bool TryGetValue(string key, out TItem value)
     {

@@ -57,7 +57,7 @@ internal sealed class ResRootLoader((string local, IDictionary<string, ISourceTa
             if (errorInfo.ErrorCount != 0)
             {
                 Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
-                           $"{errorInfo.ErrorCount} errors found in Res/{path}/{source.Id} (in {LocalInfo}), "
+                           $"{errorInfo.ErrorCount} errors found in Res/{path}/{source.Path} (in {LocalInfo}), "
                          + $"error messages:\n"
                          + errorInfo.Messages.Join('\n'));
             }

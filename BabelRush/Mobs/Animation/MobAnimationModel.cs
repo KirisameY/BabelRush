@@ -8,6 +8,8 @@ using BabelRush.Data.ExtendModels;
 
 using Godot;
 
+using KirisameLib.Extensions;
+
 using Tomlyn;
 
 namespace BabelRush.Mobs.Animation;
@@ -16,10 +18,10 @@ namespace BabelRush.Mobs.Animation;
 internal partial class MobAnimationModel : IResModel<MobAnimationModel>
 {
     [IgnoreDataMember]
-    public string Id => $"{MobId}/{AnimationId}";
+    public string Id => $"{SetId}/{AnimationId}";
 
     [IgnoreDataMember]
-    public string MobId { get; private set; } = "";
+    public string SetId { get; private set; } = "";
     [IgnoreDataMember]
     public string AnimationId { get; private set; } = "";
 
@@ -56,7 +58,7 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
         //check file existence
         if (!source.Files.TryGetValue(".toml", out var tomlFile)) errors.Add("Missing toml configuration file");
         if (!source.Files.TryGetValue(".png",  out var pngFile)) errors.Add("Missing png resource file");
-        if (source.Path.Length == 0) errors.Add("MobAnimation in root directory will not be loaded");
+        if (source.Dir.Length == 0) errors.Add("MobAnimation in root directory will not be loaded");
 
         if (errors.Count > 0)
         {
@@ -81,14 +83,14 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
         errorMessages = new(errors.Count, errors.ToArray());
         model.FrameAtlas = ImageTexture.CreateFromImage(DataUtils.LoadImageFromPngBuffer(pngFile!));
 
-        model.MobId = source.Path.Last();
-        model.AnimationId = source.Id;
+        model.SetId = source.Dir.Join('/');
+        model.AnimationId = source.Name;
         return [model];
     }
 
     public static MobAnimationModel Default { get; } = new()
     {
-        MobId = "default/default",
+        SetId = "default",
         AnimationId = "default",
         Columns = 1,
         Rows = 1,

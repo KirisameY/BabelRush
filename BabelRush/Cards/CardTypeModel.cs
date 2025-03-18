@@ -15,6 +15,7 @@ internal partial class CardTypeModel : IDataModel<CardType>
 {
     [NecessaryProperty]
     public partial string Id { get; set; }
+    public string? Icon { get; set; } = null;
     [NecessaryProperty]
     public partial bool Usable { get; set; }
     [NecessaryProperty]
@@ -26,9 +27,10 @@ internal partial class CardTypeModel : IDataModel<CardType>
 
     public CardType Convert()
     {
+        Icon ??= Id;
         var actions = Actions.Select(t => (ActionRegisters.Actions.GetItem(t.Id), t.Value));
         var features = Features.Select(id => CardFeatureRegisters.Features.GetItem(id));
-        return new CardType(Id, Usable, Cost, actions, features);
+        return new CardType(Id, Icon, Usable, Cost, actions, features);
     }
 
     public static IReadOnlyCollection<IModel<CardType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>

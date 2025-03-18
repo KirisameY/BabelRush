@@ -45,7 +45,7 @@ internal sealed class MobAnimationSetRegister : IRegister<MobAnimationSet>, II18
         RegisterDoneEventSource.RegisterDone += () =>
         {
             FinalReg.Clear();
-            var groups = ModelReg.Values.GroupBy(model => model.MobId);
+            var groups = ModelReg.Values.GroupBy(model => model.SetId);
             foreach (var group in groups)
             {
                 var builder = new MobAnimationSetBuilder(group.Key);

@@ -11,10 +11,12 @@ internal partial class FeatureTypeModel : IDataModel<FeatureType>
 {
     [NecessaryProperty]
     public partial string Id { get; set; }
+    public string? Icon { get; set; }
 
     public FeatureType Convert()
     {
-        return new FeatureType(Id);
+        Icon ??= Id;
+        return new FeatureType(Id, Icon);
     }
 
     public static IReadOnlyCollection<IModel<FeatureType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>

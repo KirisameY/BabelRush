@@ -5,11 +5,11 @@ using BabelRush.Registers;
 
 namespace BabelRush.Mobs;
 
-public class MobType(string id, MobAnimationSet animationSet, bool blocksMovement, int health, MobActionStrategy actionStrategy)
+public class MobType(string id, string animationSetId, bool blocksMovement, int health, MobActionStrategy actionStrategy)
 {
     public string Id => id;
-    public NameDesc NameDesc => MobRegisters.MobNameDesc.GetItem(Id);
-    public MobAnimationSet AnimationSet => animationSet;
+    public NameDesc NameDesc => MobRegisters.MobNameDesc[Id];
+    public MobAnimationSet AnimationSet => MobRegisters.MobAnimationSets[animationSetId];
     public bool BlocksMovement => blocksMovement;
     public int Health => health;
     public MobActionStrategy ActionStrategy => actionStrategy;
@@ -21,5 +21,5 @@ public class MobType(string id, MobAnimationSet animationSet, bool blocksMovemen
     }
 
 
-    public static MobType Default { get; } = new("default", MobAnimationSet.Default, true, 50, MobActionStrategy.Default);
+    public static MobType Default { get; } = new("default", "default", true, 50, MobActionStrategy.Default);
 }

@@ -9,7 +9,7 @@ using KirisameLib.Data.Registering;
 namespace BabelRush.Registering.SourceTakers;
 
 // ReSharper disable once InconsistentNaming
-public class I18nSourceTakerRegistrant<TSource, TModel, TItem>(IRegisterDoneEventSource registerDoneEventSource)
+public class I18nSourceTakerRegistrant<TSource, TModel, TItem>
     : II18nRegistrant<TItem>, II18nSourceTakerFactory<TSource>
     where TModel : IModel<TSource, TItem>
 {

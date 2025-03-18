@@ -21,6 +21,6 @@ public class Texture2DModel(string id, Texture2D texture) : IResModel<Texture2D>
         errorMessages = ModelParseErrorInfo.Empty;
         var image = DataUtils.LoadImageFromPngBuffer(file);
         var tex = ImageTexture.CreateFromImage(image);
-        return [new Texture2DModel(source.Id, tex)];
+        return [new Texture2DModel(source.Path, tex)];
     }
 }

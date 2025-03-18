@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 
-using NLua;
-
 using Tomlyn.Syntax;
 
 namespace BabelRush.Data;

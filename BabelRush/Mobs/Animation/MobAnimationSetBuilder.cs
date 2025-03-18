@@ -42,7 +42,7 @@ internal class MobAnimationSetBuilder(string id)
 
     public MobAnimationSetBuilder AddAnimation(MobAnimationModel model)
     {
-        if (model.MobId != id) throw new InvalidOperationException("Model is not for this animation set");
+        if (model.SetId != id) throw new InvalidOperationException("Model is not for this animation set");
         return AddAnimation(model.AnimationId,
                             DataUtils.CutAtlasTexture(model.FrameAtlas, model.Columns, model.Rows),
                             model.FrameCenter, model.BoxSize, model.Fps,

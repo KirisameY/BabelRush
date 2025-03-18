@@ -2,8 +2,6 @@ using System.Diagnostics.CodeAnalysis;
 
 using Godot;
 
-using KirisameLib.Logging;
-
 namespace BabelRush.GamePlay;
 
 public partial class PlayNode : Node
@@ -28,5 +26,5 @@ public partial class PlayNode : Node
 
 
     //Logging
-    private static Logger Logger { get; } = Game.LogBus.GetLogger("PlayNode");
+    // private static Logger Logger { get; } = Game.LogBus.GetLogger("PlayNode");
 }

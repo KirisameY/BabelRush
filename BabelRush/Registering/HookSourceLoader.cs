@@ -6,8 +6,6 @@ using BabelRush.Registering.I18n;
 using BabelRush.Registering.RootLoaders;
 using BabelRush.Registering.SourceTakers;
 
-using NLua;
-
 using Tomlyn.Syntax;
 
 namespace BabelRush.Registering;

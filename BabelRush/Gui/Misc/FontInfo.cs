@@ -13,7 +13,7 @@ namespace BabelRush.Gui.Misc;
 
 public record FontInfo(string FontId, int Size)
 {
-    public Font Font => LocalInfoRegisters.Fonts.GetItem(FontId);
+    public Font Font => LocalInfoRegisters.Fonts[FontId];
 }
 
 [Model]
@@ -55,7 +55,7 @@ internal partial class FontInfoModel : IResModel<FontInfo>
         }
 
         errorMessages = new(errors.Count, errors.ToArray());
-        model.Id = source.Id;
+        model.Id = source.Path;
         return [model];
     }
 }

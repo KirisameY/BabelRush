@@ -10,11 +10,11 @@ using Godot;
 
 namespace BabelRush.Cards;
 
-public class CardType(string id, bool usable, int cost, IEnumerable<(ActionType, int)> actions, IEnumerable<FeatureType> features)
+public class CardType(string id, string iconId, bool usable, int cost, IEnumerable<(ActionType, int)> actions, IEnumerable<FeatureType> features)
 {
     public string Id { get; } = id;
-    public NameDesc NameDesc => Registers.CardRegisters.CardNameDesc.GetItem(Id); // todo: 也许需要给各种模型拆出来可选的非默认资源ID
-    public Texture2D Icon => Registers.CardRegisters.CardIcon.GetItem(Id);
+    public NameDesc NameDesc => Registers.CardRegisters.CardNameDesc.GetItem(Id);
+    public Texture2D Icon => Registers.CardRegisters.CardIcon.GetItem(iconId);
     public bool Usable { get; } = usable;
     public int Cost { get; } = cost;
 
@@ -26,5 +26,5 @@ public class CardType(string id, bool usable, int cost, IEnumerable<(ActionType,
 
     public Card NewInstance() => new CommonCard(this);
 
-    public static CardType Default { get; } = new CardType("default", false, 0, [], []);
+    public static CardType Default { get; } = new CardType("default", "default", false, 0, [], []);
 }

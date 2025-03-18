@@ -12,8 +12,6 @@ using KirisameLib.Asynchronous;
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
 
-using NLua;
-
 namespace BabelRush.Registering.RootLoaders;
 
 internal sealed class ScriptRootLoader : CommonRootLoader<ScriptSourceInfo>

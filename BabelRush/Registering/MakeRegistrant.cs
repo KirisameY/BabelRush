@@ -9,8 +9,6 @@ using BabelRush.Registering.SourceTakers;
 using KirisameLib.Data.Registering;
 using KirisameLib.Extensions;
 
-using NLua;
-
 using Tomlyn.Syntax;
 
 namespace BabelRush.Registering;
@@ -37,15 +35,13 @@ public static class MakeRegistrant
 
     public static II18nRegistrant<TItem> ForLocalRes<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem> =>
         new MergedI18nRegistrant<TItem>(
-            LocalFileLoader.WithResSourceTakerFactory(path, new I18nSourceTakerRegistrant<ResSourceInfo, TModel, TItem>(
-                                                          RegisterEventSource.LocalRegisterDone)),
+            LocalFileLoader.WithResSourceTakerFactory(path, new I18nSourceTakerRegistrant<ResSourceInfo, TModel, TItem>()),
             ManualRegistrant.I18n<TItem>(RootNames.Res, path)
         );
 
     public static II18nRegistrant<TItem> ForLang<TItem, TModel>(string path) where TModel : IModel<IDictionary<string, object>, TItem> =>
         new MergedI18nRegistrant<TItem>(
-            LocalFileLoader.WithLangSourceTakerFactory(path, new I18nSourceTakerRegistrant<IDictionary<string, object>, TModel, TItem>(
-                                                           RegisterEventSource.LocalRegisterDone)),
+            LocalFileLoader.WithLangSourceTakerFactory(path, new I18nSourceTakerRegistrant<IDictionary<string, object>, TModel, TItem>()),
             ManualRegistrant.I18n<TItem>(RootNames.Lang, path)
         );
 }

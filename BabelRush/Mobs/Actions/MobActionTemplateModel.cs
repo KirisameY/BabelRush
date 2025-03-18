@@ -1,5 +1,4 @@
 using BabelRush.Data;
-using BabelRush.Registers;
 
 namespace BabelRush.Mobs.Actions;
 
@@ -15,5 +14,5 @@ public partial class MobActionTemplateModel
     public string? ConvertState { get; set; }
 
 
-    public MobActionTemplate Convert() => new(ActionRegisters.Actions[Action], Value, Time, Weight, ConvertState);
+    public MobActionTemplate Convert() => new(Action, Value, Time, Weight, ConvertState);
 }

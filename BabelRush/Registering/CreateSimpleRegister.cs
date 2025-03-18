@@ -7,8 +7,6 @@ using BabelRush.Registering.I18n;
 using KirisameLib.Data.Registering;
 using KirisameLib.Data.Registers;
 
-using NLua;
-
 using Tomlyn.Syntax;
 
 namespace BabelRush.Registering;

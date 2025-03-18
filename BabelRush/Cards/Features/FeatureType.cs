@@ -5,11 +5,11 @@ using Godot;
 
 namespace BabelRush.Cards.Features;
 
-public class FeatureType(string id)
+public class FeatureType(string id, string iconId)
 {
     public string Id { get; } = id;
-    public NameDesc NameDesc => CardFeatureRegisters.FeatureNameDesc.GetItem(Id);
-    public Texture2D Icon => CardFeatureRegisters.FeatureIcon.GetItem(Id);
+    public NameDesc NameDesc => CardFeatureRegisters.FeatureNameDesc[Id];
+    public Texture2D Icon => CardFeatureRegisters.FeatureIcon[iconId];
 
     public Feature NewInstance()
     {
@@ -17,5 +17,5 @@ public class FeatureType(string id)
         return result;
     }
 
-    public static FeatureType Default { get; } = new("default");
+    public static FeatureType Default { get; } = new("default", "default");
 }

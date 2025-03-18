@@ -43,8 +43,6 @@ internal class LocalFileLoader(string local)
         return dicts.ToFrozenDictionary();
     }
 
-    private delegate RootLoader CreateRootLoader<TSource>(string local, IDictionary<string, ISourceTaker<TSource>> sourceTakers);
-
     private static IEnumerable<(string Local, RootLoader RootLoader)> NewLocalRootLoader<TSource>(
         string local, IDictionary<string, II18nSourceTakerFactory<TSource>> getters,
         Func<string, IDictionary<string, ISourceTaker<TSource>>, RootLoader> loaderCreator)
