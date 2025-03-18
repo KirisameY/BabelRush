@@ -13,7 +13,7 @@ public static class MobRegisters
 {
     public static IRegister<NameDesc> MobNameDesc { get; } =
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>("mobs", "en", id => (id, ""));
-    public static IRegister<MobAnimationSet> MobAnimationSets => new MobAnimationSetRegister("textures/mobs");
+    public static IRegister<MobAnimationSet> MobAnimationSets { get; } = new MobAnimationSetRegister("textures/mobs");
     public static IRegister<MobType> Mobs { get; } =
         CreateSimpleRegister.Data<MobType, MobTypeModel>("mobs", MobType.Default);
 }
