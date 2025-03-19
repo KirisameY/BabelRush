@@ -25,8 +25,7 @@ public class MobAnimationId
 
     public static MobAnimationId Get(IList<string> stateParts, IList<string> actionParts)
     {
-        var key = actionParts.Count == 0
-            ? stateParts.Join('.') : $"{stateParts.Join('.')}:{actionParts.Join('.')}";
+        var key = actionParts is [] ? stateParts.Join('.') : $"{stateParts.Join('.')}:{actionParts.Join('.')}";
         if (Cache.TryGetValue(key, out var result)) return result;
         result = new MobAnimationId(stateParts, actionParts, key);
         Cache.Add(key, result);
@@ -35,25 +34,25 @@ public class MobAnimationId
 
     public static MobAnimationId Get(string state, string action)
     {
-        var key = action == "" ? state : $"{state}:{action}";
-        if (Cache.TryGetValue(key, out var result)) return result;
-        result = new(state.Split('.'), action.Split('.'), key);
-        Cache.Add(key, result);
+        var fullName = action == "" ? state : $"{state}:{action}";
+        if (Cache.TryGetValue(fullName, out var result)) return result;
+        result = new(state.Split('.'), action.Split('.'), fullName);
+        Cache.Add(fullName, result);
         return result;
     }
 
     public static MobAnimationId Get(string fullName)
     {
         if (Cache.TryGetValue(fullName, out var result)) return result;
-        var (state, action) = fullName.Split(':', 2) switch
+        var (state, action) = fullName.Split('$', 2) switch
         {
             // ReSharper disable ConvertTypeCheckPatternToNullCheck
-            [string s]           => (s, ""),
-            [string s, string a] => (s, a),
-            _                    => ("", "")
+            [string s]           => (s.Split('.'), []),
+            [string s, string a] => (s.Split('.'), a.Split('.')),
+            _                    => ([], [])
             // ReSharper restore ConvertTypeCheckPatternToNullCheck
         };
-        result = new MobAnimationId(state.Split('.'), action.Split('.'), fullName);
+        result = new MobAnimationId(state, action, fullName);
         Cache.Add(fullName, result);
         return result;
     }
