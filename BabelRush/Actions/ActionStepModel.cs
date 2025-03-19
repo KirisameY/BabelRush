@@ -10,7 +10,7 @@ using NLua.Exceptions;
 
 namespace BabelRush.Actions;
 
-internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<ActionStep> //todo: Data 改 Script
+internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<ActionStep>
 {
     public ActionStep Convert()
     {
