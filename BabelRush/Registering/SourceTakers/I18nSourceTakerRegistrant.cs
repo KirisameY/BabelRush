@@ -20,7 +20,7 @@ public class I18nSourceTakerRegistrant<TSource, TModel, TItem>
     {
         List<(string Local, ISourceTaker<TSource> SourceTaker)> registrants = [];
         // ReSharper disable once ConvertToLocalFunction
-        Func<string, IRegistrant<TItem>> registrantCreator = l =>
+        Func<string, IRegistrant<RegKey, TItem>> registrantCreator = l =>
         {
             var result = new RegistrantSourceTaker<TSource, TModel, TItem>();
             registrants.Add((l, result));

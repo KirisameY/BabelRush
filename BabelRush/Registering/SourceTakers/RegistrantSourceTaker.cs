@@ -6,12 +6,12 @@ using KirisameLib.Data.Registering;
 
 namespace BabelRush.Registering.SourceTakers;
 
-public class RegistrantSourceTaker<TSource, TModel, TTarget> : CommonSourceTaker<TSource, TModel, TTarget>, IRegistrant<TTarget>
+public class RegistrantSourceTaker<TSource, TModel, TTarget> : CommonSourceTaker<TSource, TModel, TTarget>, IRegistrant<RegKey, TTarget>
     where TModel : IModel<TSource, TTarget>
 {
-    private IRegTarget<TTarget>? _registrant;
+    private IRegTarget<RegKey, TTarget>? _registrant;
 
-    public void AcceptTarget(IRegTarget<TTarget> target)
+    public void AcceptTarget(IRegTarget<RegKey, TTarget> target)
     {
         if (_registrant is null) _registrant = target;
         else throw new InvalidOperationException("RegistrantSourceTaker already has a target.");

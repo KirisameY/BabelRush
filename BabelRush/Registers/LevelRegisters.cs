@@ -1,3 +1,4 @@
+using BabelRush.Data;
 using BabelRush.Registering;
 using BabelRush.Scenery.Rooms;
 
@@ -8,6 +9,6 @@ namespace BabelRush.Registers;
 [RegisterContainer]
 public static class LevelRegisters
 {
-    public static IRegister<RoomTemplate> RoomRegister { get; } =
+    public static IRegister<RegKey, RoomTemplate> RoomRegister { get; } =
         CreateSimpleRegister.Data<RoomTemplate, RoomTemplateModel>("rooms", RoomTemplate.Default);
 }
