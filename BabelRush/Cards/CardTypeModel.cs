@@ -25,12 +25,14 @@ internal partial class CardTypeModel : IDataModel<CardType>
     [UsedImplicitly]
     public List<string> Features { get; set; } = [];
 
-    public CardType Convert()
+    public (RegKey, CardType) Convert(string nameSpace)
     {
-        Icon ??= Id;
-        var actions = Actions.Select(t => (ActionRegisters.Actions.GetItem(t.Id), t.Value));
-        var features = Features.Select(id => CardFeatureRegisters.Features.GetItem(id));
-        return new CardType(Id, Icon, Usable, Cost, actions, features);
+        RegKey id = (nameSpace, Id);
+        RegKey icon = Icon?.WithDefaultNameSpace(nameSpace) ?? id;
+        var actions = Actions.Select(t => (ActionRegisters.Actions.GetItem(t.Id.WithDefaultNameSpace(nameSpace)), t.Value));
+        var features = Features.Select(fid => CardFeatureRegisters.Features.GetItem(fid.WithDefaultNameSpace(nameSpace)));
+        var card = new CardType(id, icon, Usable, Cost, actions, features);
+        return (id, card);
     }
 
     public static IReadOnlyCollection<IModel<CardType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>

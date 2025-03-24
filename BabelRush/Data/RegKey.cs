@@ -20,7 +20,11 @@ public sealed class RegKey
 
     public static RegKey From(string nameSpace, string key)
     {
-        return _cache.GetOrAdd((nameSpace, key), static t => new RegKey(t.nameSpace, t.key));
+        return _cache.GetOrAdd((nameSpace, key), static t =>
+        {
+            if (t.nameSpace.Contains(':') || t.key.Contains(':')) throw new ArgumentException($"Invalid id: {t.nameSpace}:{t.key}");
+            return new RegKey(t.nameSpace, t.key);
+        });
     }
 
     public static RegKey From(string id)
@@ -56,6 +60,8 @@ public sealed class RegKey
 
     public override string ToString() => FullName;
 
+    public void Deconstruct(out string nameSpace, out string key) => (nameSpace, key) = (NameSpace, Key);
+
     public static implicit operator string(RegKey regKey) => regKey.FullName;
 
     public static implicit operator RegKey(string regKey) => From(regKey);
@@ -63,4 +69,14 @@ public sealed class RegKey
     public static implicit operator RegKey((string nameSpace, string key) regKey) => From(regKey.nameSpace, regKey.key);
 
     #endregion
+}
+
+public static class RegKeyExtensions
+{
+    public static RegKey WithDefaultNameSpace(this string id, string defaultNameSpace) => id.Split(':') switch
+    {
+        [var nameSpace, var key] => RegKey.From(nameSpace,        key),
+        [var key]                => RegKey.From(defaultNameSpace, key),
+        _                        => throw new AggregateException($"Invalid id: {id}"),
+    };
 }

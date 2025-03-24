@@ -14,8 +14,8 @@ public abstract class CommonSourceTaker<TSource, TModel, TTarget> : ISourceTaker
         List<string> errors = [];
         foreach (var model in models)
         {
-            if (!RegisterItem(model.Id, model.Convert()))
-                errors.Add($"Failed to register item {model.Id}, Possibly there's already a registered item with a duplicate ID.");
+            RegisterItem(model, out var e);
+            errors.AddRange(e);
         }
         if (errors.Count != 0)
         {
@@ -24,5 +24,5 @@ public abstract class CommonSourceTaker<TSource, TModel, TTarget> : ISourceTaker
         }
     }
 
-    protected abstract bool RegisterItem(string id, TTarget item);
+    protected abstract void RegisterItem(IModel<TTarget> model, out string[] errors);
 }

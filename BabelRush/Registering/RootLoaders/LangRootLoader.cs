@@ -12,21 +12,19 @@ using Tomlyn.Model;
 
 namespace BabelRush.Registering.RootLoaders;
 
-internal sealed class LangRootLoader(string local, IDictionary<string, ISourceTaker<IDictionary<string, object>>> sourceTakerDict) :
+internal sealed class LangRootLoader(string nameSpace, bool overwriting, string local, IDictionary<string, SourceTakerRegistrant<IDictionary<string, object>>> sourceTakerDict) :
     RootLoader<IDictionary<string, object>>
 {
     private string Local { get; } = local;
-    private ImmutableDictionary<string, ISourceTaker<IDictionary<string, object>>> SourceTakerDict { get; } =
+    private ImmutableDictionary<string, SourceTakerRegistrant<IDictionary<string, object>>> SourceTakerDict { get; } =
         sourceTakerDict.ToImmutableDictionary();
 
     private bool Exited { get; set; }
     private LinkedList<string> SubPathLink { get; } = [];
 
 
-    protected override ISourceTaker<IDictionary<string, object>>? GetSourceTaker(string path)
-    {
-        return SourceTakerDict.GetOrDefault(path);
-    }
+    protected override ISourceTaker<IDictionary<string, object>>? GetSourceTaker(string path) =>
+        SourceTakerDict.GetOrDefault(path)?.CreateSourceTaker(nameSpace, overwriting);
 
     public override bool EnterDirectory(string dirName)
     {

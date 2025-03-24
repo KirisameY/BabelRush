@@ -7,10 +7,12 @@ namespace BabelRush.Registering.FileLoading;
 internal abstract class FileLoader
 {
     private LinkedList<string> DirectoryLink { get; } = [];
-    private RootLoader? CurrentRootLoader { get; set; }
+    private IRootLoader? CurrentRootLoader { get; set; }
 
-    protected abstract bool EnterRootDirectory(LinkedList<string> directoryLink, out RootLoader? rootLoader);
+    /// <returns>If should enter this directory</returns>
+    protected abstract bool EnterRootDirectory(LinkedList<string> directoryLink, out IRootLoader? rootLoader);
 
+    /// <returns>If should enter this directory</returns>
     public bool EnterDirectory(string dirName)
     {
         if (CurrentRootLoader is not null)
@@ -26,14 +28,14 @@ internal abstract class FileLoader
         return result;
     }
 
-    public void ExitDirectory()
+    public bool ExitDirectory()
     {
-        if (DirectoryLink.Count == 0) return;
+        if (DirectoryLink.Count == 0) return true;
 
         if (CurrentRootLoader is null)
         {
             DirectoryLink.RemoveLast();
-            return;
+            return false;
         }
 
         if (CurrentRootLoader.ExitDirectory())
@@ -41,6 +43,8 @@ internal abstract class FileLoader
             DirectoryLink.RemoveLast();
             CurrentRootLoader = null;
         }
+
+        return false;
     }
 
     public void LoadFile(string fileName, byte[] fileContent)

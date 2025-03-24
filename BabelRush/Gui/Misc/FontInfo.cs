@@ -11,7 +11,7 @@ using Tomlyn;
 
 namespace BabelRush.Gui.Misc;
 
-public record FontInfo(string FontId, int Size)
+public record FontInfo(RegKey FontId, int Size)
 {
     public Font Font => LocalInfoRegisters.Fonts[FontId];
 }
@@ -28,7 +28,13 @@ internal partial class FontInfoModel : IResModel<FontInfo>
     [NecessaryProperty]
     public partial int Size { get; set; }
 
-    public FontInfo Convert() => new(Font, Size);
+    public (RegKey, FontInfo) Convert(string nameSpace)
+    {
+        RegKey id = (nameSpace, Id);
+        RegKey font = Font.WithDefaultNameSpace(nameSpace);
+        var info = new FontInfo(font, Size);
+        return (id, info);
+    }
 
 
     public static IReadOnlyCollection<IModel<FontInfo>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)

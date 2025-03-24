@@ -33,7 +33,8 @@ internal sealed class MobAnimationSetRegister : IRegister<RegKey, MobAnimationSe
 
     private I18nRegister<MobAnimationModel> ModelReg { get; }
     private Dictionary<RegKey, MobAnimationSet> FinalReg { get; } = new();
-    private static readonly IRegisterDoneEventSource RegisterDoneEventSource = RegisterEventSource.LocalRegisterDone;
+
+    private bool _isRegistering = false;
 
     #endregion
 
@@ -43,17 +44,21 @@ internal sealed class MobAnimationSetRegister : IRegister<RegKey, MobAnimationSe
     public void UpdateLocal(string local, Func<string, IRegistrant<RegKey, MobAnimationModel>> registrantCreator)
     {
         ModelReg.UpdateLocal(local, registrantCreator);
-        RegisterDoneEventSource.RegisterDone += () =>
+
+        if (_isRegistering) return;
+        _isRegistering = true;
+        Game.LoadEventBus.Subscribe<LocalRegisterDoneEvent>(_ =>
         {
             FinalReg.Clear();
-            var groups = ModelReg.Values.GroupBy(model => model.SetId);
+            var groups = ModelReg.Values.GroupBy(model => model.SetId); //todo: 改RegKey的后续处理
             foreach (var group in groups)
             {
                 var builder = new MobAnimationSetBuilder(group.Key);
                 foreach (var model in group) builder.AddAnimation(model);
                 FinalReg[group.Key] = builder.Build();
             }
-        };
+            _isRegistering = false;
+        });
     }
 
     #endregion

@@ -10,7 +10,7 @@ using KirisameLib.Extensions;
 
 namespace BabelRush.Mobs.Animation;
 
-internal class MobAnimationSetBuilder(string id)
+internal class MobAnimationSetBuilder(RegKey id)
 {
     private SpriteFrames SpriteFrames { get; } = new();
     private Dictionary<MobAnimationId, MobAnimationSet.AnimationInfo> AnimationDict { get; } = [];
