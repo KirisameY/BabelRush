@@ -12,7 +12,7 @@ public class FontModel(string id, Font font) : IResModel<Font>
     public string Id => id;
 
     public Font Convert() => font;
-
+    public (RegKey, Font) Convert(string nameSpace) => ((nameSpace, id), font);
 
     public static IReadOnlyCollection<IModel<Font>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {

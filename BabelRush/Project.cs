@@ -7,16 +7,17 @@ namespace BabelRush;
 public static class Project
 {
     public const string Name = "BabelRush";
+    public const string NameSpace = "babelrush";
 
     public static class Logging
     {
         public const string LogDirPath = "./logs";
         public const int MaxLogFileCount = 16;
-        #if DEBUG
+    #if DEBUG
         public const LogLevel MinLogLevel = LogLevel.Debug;
-        #else
+    #else
         public const LogLevel MinLogLevel = LogLevel.Info;
-        #endif
+    #endif
     }
 
 

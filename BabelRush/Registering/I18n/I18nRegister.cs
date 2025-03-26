@@ -4,16 +4,18 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
+using BabelRush.Data;
+
 using KirisameLib.Data.Registering;
 using KirisameLib.Data.Registers;
 
 namespace BabelRush.Registering.I18n;
 
 // ReSharper disable once InconsistentNaming
-public class I18nRegister<TItem>(Func<string, TItem> fallback, Func<string, bool> fallbackExists,
-                                 Func<IEnumerable<KeyValuePair<string, TItem>>> getFallbacks,
+public class I18nRegister<TItem>(Func<RegKey, TItem> fallback, Func<RegKey, bool> fallbackExists,
+                                 Func<IEnumerable<KeyValuePair<RegKey, TItem>>> getFallbacks,
                                  IRegisterDoneEventSource registerDoneEventSource, string? defaultLocal = null)
-    : IEnumerableRegister<TItem>, II18nRegTarget<TItem>
+    : IEnumerableRegister<RegKey, TItem>, II18nRegTarget<TItem>
 {
     private enum State
     {
@@ -28,19 +30,19 @@ public class I18nRegister<TItem>(Func<string, TItem> fallback, Func<string, bool
     private string? _currentLocal;
     private State _state = State.Uninitialized;
 
-    private MoltenRegister<TItem>? _defaultLocalRegisterMolten;
-    private FrozenRegister<TItem>? _defaultLocalRegister;
+    private MoltenRegister<RegKey, TItem>? _defaultLocalRegisterMolten;
+    private FrozenRegister<RegKey, TItem>? _defaultLocalRegister;
 
-    private MoltenRegister<TItem>? _innerRegisterMolten;
-    private FrozenRegister<TItem>? _innerRegister;
+    private MoltenRegister<RegKey, TItem>? _innerRegisterMolten;
+    private FrozenRegister<RegKey, TItem>? _innerRegister;
 
-    private FrozenRegister<TItem> InnerRegister =>
+    private FrozenRegister<RegKey, TItem> InnerRegister =>
         _state is State.Ready ? _innerRegister! : throw new InvalidOperationException("I18nRegister is not ready.");
 
     #endregion
 
 
-    public void UpdateLocal(string local, Func<string, IRegistrant<TItem>> registrantCreator)
+    public void UpdateLocal(string local, Func<string, IRegistrant<RegKey, TItem>> registrantCreator)
     {
         if (_currentLocal == local && _state is State.Ready) return;
 
@@ -54,7 +56,7 @@ public class I18nRegister<TItem>(Func<string, TItem> fallback, Func<string, bool
             // Initialize default local register
             if (defaultLocal is not null && _defaultLocalRegister is null)
             {
-                _defaultLocalRegisterMolten = new MoltenRegister<TItem>(fallback);
+                _defaultLocalRegisterMolten = new MoltenRegister<RegKey, TItem>(fallback);
                 registerDoneEventSource.RegisterDone += () =>
                 {
                     _defaultLocalRegister = _defaultLocalRegisterMolten!.Freeze();
@@ -66,7 +68,7 @@ public class I18nRegister<TItem>(Func<string, TItem> fallback, Func<string, bool
             if (local != defaultLocal)
             {
                 var realFallback = defaultLocal is null ? fallback : id => _defaultLocalRegister!.GetItem(id);
-                _innerRegisterMolten = new MoltenRegister<TItem>(realFallback);
+                _innerRegisterMolten = new MoltenRegister<RegKey, TItem>(realFallback);
                 registerDoneEventSource.RegisterDone += () =>
                 {
                     _innerRegister = _innerRegisterMolten!.Freeze();
@@ -88,12 +90,12 @@ public class I18nRegister<TItem>(Func<string, TItem> fallback, Func<string, bool
 
 
     // Reading
-    public TItem GetItem(string id) => InnerRegister.GetItem(id);
+    public TItem GetItem(RegKey id) => InnerRegister.GetItem(id);
 
-    public bool ItemRegistered(string id) =>
+    public bool ItemRegistered(RegKey id) =>
         InnerRegister.ItemRegistered(id) || (_defaultLocalRegister?.ItemRegistered(id) ?? false) || fallbackExists(id);
 
-    public IEnumerator<KeyValuePair<string, TItem>> GetEnumerator() =>
+    public IEnumerator<KeyValuePair<RegKey, TItem>> GetEnumerator() =>
         InnerRegister
            .Concat(getFallbacks())
            .GroupBy(p => p.Key, p => p.Value)
@@ -104,13 +106,13 @@ public class I18nRegister<TItem>(Func<string, TItem> fallback, Func<string, bool
 
     public int Count => InnerRegister.Concat(getFallbacks()).GroupBy(p => p.Key).Count();
 
-    public bool TryGetValue(string key, out TItem value)
+    public bool TryGetValue(RegKey key, out TItem value)
     {
         value = GetItem(key);
         return ItemRegistered(key);
     }
 
-    public TItem this[string key] => GetItem(key);
-    public IEnumerable<string> Keys => InnerRegister.Concat(getFallbacks()).Select(p => p.Key).Distinct();
+    public TItem this[RegKey key] => GetItem(key);
+    public IEnumerable<RegKey> Keys => InnerRegister.Concat(getFallbacks()).Select(p => p.Key).Distinct();
     public IEnumerable<TItem> Values => this.Select(p => p.Value);
 }

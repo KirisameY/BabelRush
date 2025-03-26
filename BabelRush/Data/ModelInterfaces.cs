@@ -4,21 +4,20 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Data;
 
-public interface IModel<out TTarget>
+public interface IModel<TTarget>
 {
-    string Id { get; }
-    TTarget Convert();
+    (RegKey, TTarget) Convert(string nameSpace);
 }
 
-public interface IModel<in TSource, out TTarget> : IModel<TTarget>
+public interface IModel<in TSource, TTarget> : IModel<TTarget>
 {
     static abstract IReadOnlyCollection<IModel<TTarget>> FromSource(TSource source, out ModelParseErrorInfo errorMessages);
 }
 
-public interface IScriptModel<out TTarget> : IModel<ScriptSourceInfo, TTarget>;
+public interface IScriptModel<TTarget> : IModel<ScriptSourceInfo, TTarget>;
 
-public interface IDataModel<out TTarget> : IModel<DocumentSyntax, TTarget>;
+public interface IDataModel<TTarget> : IModel<DocumentSyntax, TTarget>;
 
-public interface IResModel<out TTarget> : IModel<ResSourceInfo, TTarget>;
+public interface IResModel<TTarget> : IModel<ResSourceInfo, TTarget>;
 
-public interface ILangModel<out TTarget> : IModel<IDictionary<string, object>, TTarget>;
+public interface ILangModel<TTarget> : IModel<IDictionary<string, object>, TTarget>;

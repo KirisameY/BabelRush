@@ -10,35 +10,35 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-        <PackageReference Include="NLua" Version="1.7.4" />
-        <PackageReference Include="Tomlyn" Version="0.17.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2023.3.0"/>
+        <PackageReference Include="NLua" Version="1.7.4"/>
+        <PackageReference Include="Tomlyn" Version="0.17.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="KirisameLib.Core" Version="0.1.2" />
-        <PackageReference Include="KirisameLib.Data" Version="0.2.4" />
-        <PackageReference Include="KirisameLib.Event" Version="0.1.1" />
-        <PackageReference Include="KirisameLib.Godot" Version="0.1.0" />
-        <PackageReference Include="KirisameLib.Logging" Version="0.1.0" />
+        <PackageReference Include="KirisameLib.Core" Version="0.1.2"/>
+        <PackageReference Include="KirisameLib.Data" Version="0.2.4"/>
+        <PackageReference Include="KirisameLib.Event" Version="0.1.1"/>
+        <PackageReference Include="KirisameLib.Godot" Version="0.1.0"/>
+        <PackageReference Include="KirisameLib.Logging" Version="0.1.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">
-        <Compile Remove="Tests\**" />
+        <Compile Remove="Tests\**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Remove="Tests\**" />
+        <EmbeddedResource Remove="Tests\**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="**\*.tscn" />
-        <None Include="**\*.gd" />
-        <None Include="**\*.lua" />
+        <None Include="**\*.tscn"/>
+        <None Include="**\*.gd"/>
+        <None Include="**\*.lua"/>
     </ItemGroup>
 
 </Project>

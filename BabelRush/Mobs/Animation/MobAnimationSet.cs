@@ -1,12 +1,14 @@
 using System.Collections.Frozen;
 using System.Collections.Generic;
 
+using BabelRush.Data;
+
 using Godot;
 
 namespace BabelRush.Mobs.Animation;
 
 public class MobAnimationSet(
-    string id,
+    RegKey id,
     SpriteFrames spriteFrames,
     IDictionary<MobAnimationId, MobAnimationSet.AnimationInfo> animationDict
     // MobAnimationId defaultAnimationId
@@ -14,7 +16,7 @@ public class MobAnimationSet(
 {
     #region Properties
 
-    public string Id { get; } = id;
+    public RegKey Id { get; } = id;
     public SpriteFrames SpriteFrames { get; } = spriteFrames;
     private FrozenDictionary<MobAnimationId, AnimationInfo> AnimationDict { get; } = animationDict.ToFrozenDictionary();
     // public MobAnimationId DefaultAnimationId { get; } = defaultAnimationId;

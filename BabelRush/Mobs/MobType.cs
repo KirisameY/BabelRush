@@ -5,9 +5,9 @@ using BabelRush.Registers;
 
 namespace BabelRush.Mobs;
 
-public class MobType(string id, string animationSetId, bool blocksMovement, int health, MobActionStrategy actionStrategy)
+public class MobType(RegKey id, RegKey animationSetId, bool blocksMovement, int health, MobActionStrategy actionStrategy)
 {
-    public string Id => id;
+    public RegKey Id => id;
     public NameDesc NameDesc => MobRegisters.MobNameDesc[Id];
     public MobAnimationSet AnimationSet => MobRegisters.MobAnimationSets[animationSetId];
     public bool BlocksMovement => blocksMovement;

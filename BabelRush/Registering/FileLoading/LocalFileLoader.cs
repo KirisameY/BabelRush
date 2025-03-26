@@ -12,8 +12,7 @@ using KirisameLib.Extensions;
 
 namespace BabelRush.Registering.FileLoading;
 
-internal class LocalFileLoader(string local)
-    : FileLoader
+internal class LocalFileLoader(string nameSpace, bool overwriting, string local) : FileLoader, IRootLoader
 {
     // ↓这里的代码可能有毒，不过能跑所以就这样吧。
 
@@ -22,15 +21,17 @@ internal class LocalFileLoader(string local)
     private static readonly Dictionary<string, II18nSourceTakerFactory<ResSourceInfo>> LocalResInfo = new();
     private static readonly Dictionary<string, II18nSourceTakerFactory<IDictionary<string, object>>> LocalLangInfo = new();
 
-    private static FrozenDictionary<string, FrozenDictionary<string, RootLoader>> InitRootMap(string local)
+    private static FrozenDictionary<string, FrozenDictionary<string, IRootLoader>> InitRootMap(string nameSpace, bool overwriting, string local)
     {
-        Dictionary<string, IEnumerable<(string Local, RootLoader RootLoader)>> dict = new()
+        Dictionary<string, IEnumerable<(string Local, IRootLoader RootLoader)>> dict = new()
         {
-            [RootNames.Res] = NewLocalRootLoader(local,  LocalResInfo,  (l, dict) => new ResRootLoader((l, dict))),
-            [RootNames.Lang] = NewLocalRootLoader(local, LocalLangInfo, (l, dict) => new LangRootLoader(l, dict)),
+            [RootNames.Res] = NewLocalRootLoader(local, LocalResInfo, (l, dict) =>
+                                                     new ResRootLoader(nameSpace, overwriting, (l, dict))),
+            [RootNames.Lang] = NewLocalRootLoader(local, LocalLangInfo, (l, dict) =>
+                                                      new LangRootLoader(nameSpace, overwriting, l, dict)),
         };
 
-        IEnumerable<(string Root, string Local, RootLoader RootLoader)> loaders = dict.SelectMany(p =>
+        IEnumerable<(string Root, string Local, IRootLoader RootLoader)> loaders = dict.SelectMany(p =>
         {
             return p.Value.Select(t => (p.Key, t.Local, t.RootLoader));
         });
@@ -43,9 +44,9 @@ internal class LocalFileLoader(string local)
         return dicts.ToFrozenDictionary();
     }
 
-    private static IEnumerable<(string Local, RootLoader RootLoader)> NewLocalRootLoader<TSource>(
+    private static IEnumerable<(string Local, IRootLoader RootLoader)> NewLocalRootLoader<TSource>(
         string local, IDictionary<string, II18nSourceTakerFactory<TSource>> getters,
-        Func<string, IDictionary<string, ISourceTaker<TSource>>, RootLoader> loaderCreator)
+        Func<string, IDictionary<string, SourceTakerRegistrant<TSource>>, IRootLoader> loaderCreator)
     {
         var sourceTakers = getters.SelectMany(p =>
         {
@@ -61,7 +62,7 @@ internal class LocalFileLoader(string local)
                select (grouped.Key, loaderCreator(grouped.Key, grouped.ToDictionary(x => x.path, x => x.sourceTaker)));
     }
 
-    private FrozenDictionary<string, FrozenDictionary<string, RootLoader>> RootMap { get; } = InitRootMap(local);
+    private FrozenDictionary<string, FrozenDictionary<string, IRootLoader>> RootMap { get; } = InitRootMap(nameSpace, overwriting, local);
 
     #endregion
 
@@ -80,13 +81,19 @@ internal class LocalFileLoader(string local)
     }
 
 
-    protected override bool EnterRootDirectory(LinkedList<string> directoryLink, out RootLoader? rootLoader)
+    protected override bool EnterRootDirectory(LinkedList<string> directoryLink, out IRootLoader? rootLoader)
     {
         rootLoader = null;
         var directory = directoryLink.ToArray();
-        if (directory is [] or ["local"]) return true;
-        if (directory is not ["local", var local, .. var path]) return false;
-        if (!RootMap.TryGetValue(local, out var dict)) return false;
+        if (directory is [] or ["local"] or ["overwriting"]) return true; // skip common dir
+        if (!overwriting && directory is ["overwriting", var ns])         // overwriting root loader
+        {
+            rootLoader = new LocalFileLoader(ns, true, local);
+            return true;
+        }
+
+        if (directory is not ["local", var pLocal, .. var path]) return false;
+        if (!RootMap.TryGetValue(pLocal, out var dict)) return false;
 
         rootLoader = dict.GetOrDefault(path.Join('/'));
         return true;

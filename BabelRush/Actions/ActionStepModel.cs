@@ -12,9 +12,11 @@ namespace BabelRush.Actions;
 
 internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<ActionStep>
 {
-    public ActionStep Convert()
+    public (RegKey, ActionStep) Convert(string nameSpace)
     {
-        return new ScriptActionStep(Id, Action);
+        RegKey id = (nameSpace, Id);
+        var step = new ScriptActionStep(id, Action);
+        return (id, step);
     }
 
     public static IReadOnlyCollection<IModel<ActionStep>> FromSource(ScriptSourceInfo source, out ModelParseErrorInfo errorMessages)
@@ -38,6 +40,6 @@ internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<Ac
         }
 
         errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());
-        return [new ActionStepModel(source.Id, func)];
+        return [new ActionStepModel(source.Path.Join('/'), func)];
     }
 }

@@ -15,21 +15,21 @@ namespace BabelRush.Registering;
 
 public static class MakeRegistrant
 {
-    public static IRegistrant<TItem> ForScript<TItem, TModel>(string path) where TModel : IModel<ScriptSourceInfo, TItem> =>
+    public static IRegistrant<RegKey,TItem> ForScript<TItem, TModel>(string path) where TModel : IModel<ScriptSourceInfo, TItem> =>
         new MergedRegistrant<TItem>(
-            ScriptRootLoader.WithSourceTaker(path, new RegistrantSourceTaker<ScriptSourceInfo, TModel, TItem>()),
+            ScriptRootLoader.WithSourceTaker(path, new SourceTakerRegistrant<ScriptSourceInfo, TModel, TItem>()),
             ManualRegistrant.Common<TItem>(RootNames.Script, path)
         );
 
-    public static IRegistrant<TItem> ForData<TItem, TModel>(string path) where TModel : IModel<DocumentSyntax, TItem> =>
+    public static IRegistrant<RegKey,TItem> ForData<TItem, TModel>(string path) where TModel : IModel<DocumentSyntax, TItem> =>
         new MergedRegistrant<TItem>(
-            DataRootLoader.WithSourceTaker(path, new RegistrantSourceTaker<DocumentSyntax, TModel, TItem>()),
+            DataRootLoader.WithSourceTaker(path, new SourceTakerRegistrant<DocumentSyntax, TModel, TItem>()),
             ManualRegistrant.Common<TItem>(RootNames.Data, path)
         );
 
-    public static IRegistrant<TItem> ForCommonRes<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem> =>
+    public static IRegistrant<RegKey,TItem> ForCommonRes<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem> =>
         new MergedRegistrant<TItem>(
-            ResRootLoader.WithStaticSourceTaker(path, new RegistrantSourceTaker<ResSourceInfo, TModel, TItem>()),
+            ResRootLoader.WithStaticSourceTaker(path, new SourceTakerRegistrant<ResSourceInfo, TModel, TItem>()),
             ManualRegistrant.Common<TItem>(RootNames.Res, path)
         );
 
@@ -46,9 +46,9 @@ public static class MakeRegistrant
         );
 }
 
-file class MergedRegistrant<TItem>(params IRegistrant<TItem>[] registrants) : IRegistrant<TItem>
+file class MergedRegistrant<TItem>(params IRegistrant<RegKey,TItem>[] registrants) : IRegistrant<RegKey,TItem>
 {
-    public void AcceptTarget(IRegTarget<TItem> target) => registrants.ForEach(r => r.AcceptTarget(target));
+    public void AcceptTarget(IRegTarget<RegKey,TItem> target) => registrants.ForEach(r => r.AcceptTarget(target));
 }
 
 // ReSharper disable once InconsistentNaming

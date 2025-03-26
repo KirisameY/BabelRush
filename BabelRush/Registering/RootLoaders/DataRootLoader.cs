@@ -14,11 +14,11 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Registering.RootLoaders;
 
-internal sealed class DataRootLoader : CommonRootLoader<DocumentSyntax>
+internal sealed class DataRootLoader(string nameSpace, bool overwriting) : CommonRootLoader<DocumentSyntax>
 {
-    private static Dictionary<string, ISourceTaker<DocumentSyntax>> SourceTakerDict { get; } = new();
+    private static Dictionary<string, SourceTakerRegistrant<DocumentSyntax>> SourceTakerDict { get; } = new();
 
-    public static T WithSourceTaker<T>(string path, T taker) where T : ISourceTaker<DocumentSyntax>
+    public static T WithSourceTaker<T>(string path, T taker) where T : SourceTakerRegistrant<DocumentSyntax>
     {
         if (!SourceTakerDict.TryAdd(path, taker))
         {
@@ -27,7 +27,8 @@ internal sealed class DataRootLoader : CommonRootLoader<DocumentSyntax>
         return taker;
     }
 
-    protected override ISourceTaker<DocumentSyntax>? GetSourceTaker(string path) => SourceTakerDict.GetOrDefault(path);
+    protected override ISourceTaker<DocumentSyntax>? GetSourceTaker(string path) =>
+        SourceTakerDict.GetOrDefault(path)?.CreateSourceTaker(nameSpace, overwriting);
 
     protected override void HandleFile(Dictionary<string, DocumentSyntax> sourceDict, string[] fileSubPath, byte[] fileContent)
     {

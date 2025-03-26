@@ -6,9 +6,10 @@ namespace BabelRush.Data.ExtendModels;
 
 public class Texture2DModel(string id, Texture2D texture) : IResModel<Texture2D>
 {
-    public string Id { get; } = id;
+    public string Id => id;
 
     public Texture2D Convert() => texture;
+    public (RegKey, Texture2D) Convert(string nameSpace) => ((nameSpace, id), texture);
 
     public static IReadOnlyCollection<IModel<Texture2D>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {

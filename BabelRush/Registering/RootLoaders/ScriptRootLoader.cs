@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,15 +15,15 @@ using KirisameLib.Logging;
 
 namespace BabelRush.Registering.RootLoaders;
 
-internal sealed class ScriptRootLoader : CommonRootLoader<ScriptSourceInfo>
+internal sealed class ScriptRootLoader(string nameSpace, bool overwriting) : CommonRootLoader<ScriptSourceInfo>
 {
-    private static Dictionary<string, ISourceTaker<ScriptSourceInfo>> SourceTakerDict { get; } = new()
+    private static Dictionary<string, SourceTakerRegistrant<ScriptSourceInfo>> SourceTakerDict { get; } = new()
     {
         // todo: modules loader
         //["_modules"] =
     };
 
-    public static T WithSourceTaker<T>(string path, T taker) where T : ISourceTaker<ScriptSourceInfo>
+    public static T WithSourceTaker<T>(string path, T taker) where T : SourceTakerRegistrant<ScriptSourceInfo>
     {
         if (path.StartsWith('_'))
             throw new InvalidOperationException($"Path that begin with '_' is reserved. (Invalid path: {path})");
@@ -32,22 +33,23 @@ internal sealed class ScriptRootLoader : CommonRootLoader<ScriptSourceInfo>
         return taker;
     }
 
-    protected override ISourceTaker<ScriptSourceInfo>? GetSourceTaker(string path) => SourceTakerDict.GetOrDefault(path);
+    protected override ISourceTaker<ScriptSourceInfo>? GetSourceTaker(string path) =>
+        SourceTakerDict.GetOrDefault(path)?.CreateSourceTaker(nameSpace, overwriting);
 
     protected override void HandleFile(Dictionary<string, ScriptSourceInfo> sourceDict, string[] fileSubPath, byte[] fileContent)
     {
         var extension = Path.GetExtension(fileSubPath.Last());
-        var path = fileSubPath.Join('/');
+        var path = fileSubPath.SkipLast(1).Append(Path.ChangeExtension(fileSubPath.Last(), null)).ToImmutableArray();
+        var pathString = path.Join('/');
         if (extension is not ".lua")
         {
             Logger.Log(LogLevel.Warning, nameof(HandleFile),
-                       $"Unexpected file type {extension} in Script/{CurrentPath}/{path}");
+                       $"Unexpected file type {extension} in Script/{CurrentPath}/{pathString}{extension}");
             return;
         }
 
-        path = Path.ChangeExtension(path, null);
         var function = ScriptHub.Lua.LoadString(fileContent, "chunk");
-        sourceDict.TryAdd(path, new(path, function));
+        sourceDict.TryAdd(pathString, new(path, function));
     }
 
     private readonly TaskCompletionSource _startRegistering = new();

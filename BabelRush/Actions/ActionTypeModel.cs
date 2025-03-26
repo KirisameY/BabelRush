@@ -21,12 +21,14 @@ internal partial class ActionTypeModel : IDataModel<ActionType>
     [UsedImplicitly]
     public List<string> ActionItems { get; set; } = [];
 
-    public ActionType Convert()
+    public (RegKey, ActionType) Convert(string nameSpace)
     {
-        Icon ??= Id;
+        RegKey id = (nameSpace, Id);
+        RegKey icon = Icon?.WithDefaultNameSpace(nameSpace) ?? id;
         var targetPattern = Actions.TargetPattern.FromString(TargetPattern);
-        var actionItems = ActionItems.Select(id => ActionRegisters.ActionSteps.GetItem(id));
-        return new(Id, Icon, targetPattern, actionItems);
+        var actionItems = ActionItems.Select(aid => ActionRegisters.ActionSteps.GetItem(aid.WithDefaultNameSpace(nameSpace)));
+        var action = new ActionType(id, icon, targetPattern, actionItems);
+        return (id, action);
     }
 
     public static IReadOnlyCollection<IModel<ActionType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>

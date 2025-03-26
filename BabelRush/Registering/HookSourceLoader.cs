@@ -12,13 +12,13 @@ namespace BabelRush.Registering;
 
 public static class HookSourceLoader
 {
-    public static T OnScript<T>(string path, T loader) where T : ISourceTaker<ScriptSourceInfo> =>
+    public static T OnScript<T>(string path, T loader) where T : SourceTakerRegistrant<ScriptSourceInfo> =>
         ScriptRootLoader.WithSourceTaker(path, loader);
 
-    public static T OnData<T>(string path, T loader) where T : ISourceTaker<DocumentSyntax> =>
+    public static T OnData<T>(string path, T loader) where T : SourceTakerRegistrant<DocumentSyntax> =>
         DataRootLoader.WithSourceTaker(path, loader);
 
-    public static T OnCommonRes<T>(string path, T loader) where T : ISourceTaker<ResSourceInfo> =>
+    public static T OnCommonRes<T>(string path, T loader) where T : SourceTakerRegistrant<ResSourceInfo> =>
         ResRootLoader.WithStaticSourceTaker(path, loader);
 
     public static T OnLocalRes<T>(string path, T loader) where T : II18nSourceTakerFactory<ResSourceInfo> =>

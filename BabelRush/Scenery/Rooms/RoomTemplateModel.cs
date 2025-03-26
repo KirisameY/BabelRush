@@ -20,9 +20,11 @@ public partial class RoomTemplateModel : IDataModel<RoomTemplate>
     public List<RoomObjInfo> Objects { get; set; } = [];
 
 
-    public RoomTemplate Convert()
+    public (RegKey, RoomTemplate) Convert(string nameSpace)
     {
-        return new(Id, Length, Objects.Select(o => (RoomObject.FromString(o.Obj), o.Position)));
+        var id = RegKey.From(nameSpace, Id);
+        var room = new RoomTemplate(id, Length, Objects.Select(o => (RoomObject.FromString(o.Obj), o.Position)));
+        return (id, room);
     }
 
     public static IReadOnlyCollection<IModel<RoomTemplate>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>

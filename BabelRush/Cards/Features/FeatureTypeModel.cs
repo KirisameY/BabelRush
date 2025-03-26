@@ -13,10 +13,12 @@ internal partial class FeatureTypeModel : IDataModel<FeatureType>
     public partial string Id { get; set; }
     public string? Icon { get; set; }
 
-    public FeatureType Convert()
+    public (RegKey, FeatureType) Convert(string nameSpace)
     {
-        Icon ??= Id;
-        return new FeatureType(Id, Icon);
+        RegKey id = (nameSpace, Id);
+        RegKey icon = Icon?.WithDefaultNameSpace(nameSpace) ?? id;
+        var feature = new FeatureType(id, icon);
+        return (id, feature);
     }
 
     public static IReadOnlyCollection<IModel<FeatureType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>

@@ -25,7 +25,7 @@ internal static class RegisterManager
     public static void LoadCommonAssets()
     {
         Game.LoadEventBus.Publish(new CommonRegisterStartEvent());
-        var loader = new CommonFileLoader();
+        var loader = new CommonFileLoader(Project.NameSpace, false);
         LoadAssets(loader);
         ManualRegistrant.PublishCommonEvents();
         RegisterEventSource.TriggerCommonRegisterDone();
@@ -35,7 +35,7 @@ internal static class RegisterManager
     public static void LoadLocalAssets(string local)
     {
         Game.LoadEventBus.Publish(new LocalRegisterStartEvent(local));
-        var loader = new LocalFileLoader(local);
+        var loader = new LocalFileLoader(Project.NameSpace, false, local);
         LoadAssets(loader);
         ManualRegistrant.PublishI18nEvents(local);
         RegisterEventSource.TriggerLocalRegisterDone();

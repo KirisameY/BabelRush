@@ -18,10 +18,10 @@ namespace BabelRush.Mobs.Animation;
 internal partial class MobAnimationModel : IResModel<MobAnimationModel>
 {
     [IgnoreDataMember]
-    public string Id => $"{SetId}/{AnimationId}";
+    public RegKey Id => (SetId.NameSpace, $"{SetId.Key}/{AnimationId}");
 
     [IgnoreDataMember]
-    public string SetId { get; private set; } = "";
+    public RegKey SetId { get; private set; } = "";
     [IgnoreDataMember]
     public string AnimationId { get; private set; } = "";
 
@@ -49,7 +49,12 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
     public string? AfterAnimation { get; set; }
 
 
-    public MobAnimationModel Convert() => this;
+    public (RegKey, MobAnimationModel) Convert(string nameSpace)
+    {
+        //todo: 这个倒也好办，回头重置完MobAnimation之后把它做成MobAnimationEntry的Model即可
+        throw new System.NotImplementedException();
+    }
+
 
     public static IReadOnlyCollection<IModel<MobAnimationModel>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {

@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+using BabelRush.Data;
+
 using KirisameLib.Data.Registering;
 using KirisameLib.Data.Registers;
 using KirisameLib.Extensions;
@@ -10,20 +12,20 @@ namespace BabelRush.Registering.I18n;
 // ReSharper disable once InconsistentNaming
 public class I18nRegisterBuilder<TItem>
 {
-    private (Func<string, TItem> Get, Func<string, bool> Exists, Func<IEnumerable<KeyValuePair<string, TItem>>> enumerate)? _fallback;
+    private (Func<RegKey, TItem> Get, Func<RegKey, bool> Exists, Func<IEnumerable<KeyValuePair<RegKey, TItem>>> enumerate)? _fallback;
     private IRegisterDoneEventSource? _registerDoneEventSource;
     private string? _defaultLocal;
     private readonly HashSet<II18nRegistrant<TItem>> _registrants = [];
 
 
-    public I18nRegisterBuilder<TItem> WithFallback(Func<string, TItem> fallback) => WithFallback(fallback, _ => false, () => []);
+    public I18nRegisterBuilder<TItem> WithFallback(Func<RegKey, TItem> fallback) => WithFallback(fallback, _ => false, () => []);
 
     public I18nRegisterBuilder<TItem> WithFallback(TItem fallback) => WithFallback(_ => fallback, _ => false, () => []);
 
-    public I18nRegisterBuilder<TItem> WithFallback(IEnumerableRegister<TItem> fallbackRegister) =>
+    public I18nRegisterBuilder<TItem> WithFallback(IEnumerableRegister<RegKey, TItem> fallbackRegister) =>
         WithFallback(fallbackRegister.GetItem, fallbackRegister.ItemRegistered, () => fallbackRegister);
 
-    public I18nRegisterBuilder<TItem> WithFallback(Func<string, TItem> fallback, Func<string, bool> exists, Func<IEnumerable<KeyValuePair<string, TItem>>> enumerate)
+    public I18nRegisterBuilder<TItem> WithFallback(Func<RegKey, TItem> fallback, Func<RegKey, bool> exists, Func<IEnumerable<KeyValuePair<RegKey, TItem>>> enumerate)
     {
         _fallback = (fallback, exists, enumerate);
         return this;

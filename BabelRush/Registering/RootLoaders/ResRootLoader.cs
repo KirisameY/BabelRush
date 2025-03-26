@@ -14,9 +14,9 @@ using KirisameLib.Logging;
 
 namespace BabelRush.Registering.RootLoaders;
 
-internal sealed class ResRootLoader((string local, IDictionary<string, ISourceTaker<ResSourceInfo>> dict)? localInfo = null) : CommonRootLoader<ResSourceInfo>
+internal sealed class ResRootLoader(string nameSpace, bool overwriting, (string local, IDictionary<string, SourceTakerRegistrant<ResSourceInfo>> dict)? localInfo = null) : CommonRootLoader<ResSourceInfo>
 {
-    public static T WithStaticSourceTaker<T>(string path, T taker) where T : ISourceTaker<ResSourceInfo>
+    public static T WithStaticSourceTaker<T>(string path, T taker) where T : SourceTakerRegistrant<ResSourceInfo>
     {
         if (!StaticSourceTakerDict.TryAdd(path, taker))
         {
@@ -25,13 +25,14 @@ internal sealed class ResRootLoader((string local, IDictionary<string, ISourceTa
         return taker;
     }
 
-    private static Dictionary<string, ISourceTaker<ResSourceInfo>> StaticSourceTakerDict { get; } = new();
+    private static Dictionary<string, SourceTakerRegistrant<ResSourceInfo>> StaticSourceTakerDict { get; } = new();
     private string LocalInfo { get; } = localInfo?.local ?? "common res";
-    private ImmutableDictionary<string, ISourceTaker<ResSourceInfo>> SourceTakerDict { get; } =
+    private ImmutableDictionary<string, SourceTakerRegistrant<ResSourceInfo>> SourceTakerDict { get; } =
         (localInfo?.dict ?? StaticSourceTakerDict).ToImmutableDictionary();
 
 
-    protected override ISourceTaker<ResSourceInfo>? GetSourceTaker(string path) => SourceTakerDict.GetOrDefault(path);
+    protected override ISourceTaker<ResSourceInfo>? GetSourceTaker(string path) =>
+        SourceTakerDict.GetOrDefault(path)?.CreateSourceTaker(nameSpace, overwriting);
 
     protected override void HandleFile(Dictionary<string, ResSourceInfo> sourceDict, string[] fileSubPath, byte[] fileContent)
     {

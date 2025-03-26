@@ -1,3 +1,5 @@
+using BabelRush.Data;
+
 using KirisameLib.Data.Registering;
 using KirisameLib.Event;
 
@@ -24,8 +26,8 @@ public abstract record ManualRegisterEvent : RegisteringEvent;
 
 public abstract record CommonManualRegisterEvent(string Root, string Path) : ManualRegisterEvent;
 
-public sealed record CommonManualRegisterEvent<T>(string Root, string Path, IRegTarget<T> Reg) : CommonManualRegisterEvent(Root, Path);
+public sealed record CommonManualRegisterEvent<T>(string Root, string Path, IRegTarget<RegKey, T> Reg) : CommonManualRegisterEvent(Root, Path);
 
 public abstract record LocalManualRegisterEvent(string Local, string Root, string Path) : ManualRegisterEvent;
 
-public sealed record LocalManualRegisterEvent<T>(string Local, string Root, string Path, IRegTarget<T> Reg) : LocalManualRegisterEvent(Local, Root, Path);
+public sealed record LocalManualRegisterEvent<T>(string Local, string Root, string Path, IRegTarget<RegKey, T> Reg) : LocalManualRegisterEvent(Local, Root, Path);

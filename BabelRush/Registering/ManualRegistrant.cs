@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 
+using BabelRush.Data;
 using BabelRush.Registering.I18n;
 
 using KirisameLib.Data.Registering;
@@ -18,9 +19,9 @@ public static class ManualRegistrant
 
     public static ManualCommonRegistrant<TItem> Common<TItem>(string root, string path) => new(root, path);
 
-    public readonly struct ManualCommonRegistrant<TItem>(string root, string path) : IRegistrant<TItem>
+    public readonly struct ManualCommonRegistrant<TItem>(string root, string path) : IRegistrant<RegKey, TItem>
     {
-        public void AcceptTarget(IRegTarget<TItem> target)
+        public void AcceptTarget(IRegTarget<RegKey, TItem> target)
         {
             var (root1, path1) = (root, path);
             CommonTargets.Add(() => Game.LoadEventBus.Publish(new CommonManualRegisterEvent<TItem>(root1, path1, target)));
@@ -48,7 +49,7 @@ public static class ManualRegistrant
             var (root1, path1) = (root, path);
             I18nTargets.Add(local =>
             {
-                List<(string Lang, IRegTarget<TItem> target)> targets = [];
+                List<(string Lang, IRegTarget<RegKey, TItem> target)> targets = [];
                 target.UpdateLocal(local, l => new ManualL10nRegistrant<TItem>(targets, l));
                 foreach (var (local1, target1) in targets)
                 {
@@ -59,10 +60,10 @@ public static class ManualRegistrant
     }
 
     private readonly struct ManualL10nRegistrant<TItem>(
-        List<(string lang, IRegTarget<TItem>)> list, string lang)
-        : IRegistrant<TItem>
+        List<(string lang, IRegTarget<RegKey, TItem>)> list, string lang)
+        : IRegistrant<RegKey, TItem>
     {
-        public void AcceptTarget(IRegTarget<TItem> target) => list.Add((lang, target));
+        public void AcceptTarget(IRegTarget<RegKey, TItem> target) => list.Add((lang, target));
     }
 
     // ReSharper restore InconsistentNaming

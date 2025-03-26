@@ -9,11 +9,11 @@ using Godot;
 
 namespace BabelRush.Actions;
 
-public class ActionType(string id, string iconId, TargetPattern targetPattern, IEnumerable<ActionStep> actionItems)
+public class ActionType(RegKey id, RegKey iconId, TargetPattern targetPattern, IEnumerable<ActionStep> actionItems)
 {
-    public string Id { get; } = id;
-    public NameDesc NameDesc => ActionRegisters.ActionNameDesc.GetItem(Id);
-    public Texture2D Icon => ActionRegisters.ActionIcon.GetItem(iconId);
+    public RegKey Id { get; } = id;
+    public NameDesc NameDesc => ActionRegisters.ActionNameDesc[Id];
+    public Texture2D Icon => ActionRegisters.ActionIcon[iconId];
     public TargetPattern TargetPattern { get; } = targetPattern;
 
     [field: AllowNull, MaybeNull]
@@ -21,5 +21,5 @@ public class ActionType(string id, string iconId, TargetPattern targetPattern, I
 
     public ActionInstance NewInstance(int value) => new(this, value);
 
-    public static ActionType Default { get; } = new("default", "default", new TargetPattern.None(), []);
+    public static ActionType Default { get; } = new(RegKey.Default, RegKey.Default, new TargetPattern.None(), []);
 }

@@ -16,13 +16,13 @@ public class I18nSourceTakerRegistrant<TSource, TModel, TItem>
     private II18nRegTarget<TItem>? _register;
     public void AcceptTarget(II18nRegTarget<TItem> target) => _register = target;
 
-    public IEnumerable<(string Local, ISourceTaker<TSource> SourceTaker)> InitializeRegistration(string local)
+    public IEnumerable<(string Local, SourceTakerRegistrant<TSource> SourceTaker)> InitializeRegistration(string local)
     {
-        List<(string Local, ISourceTaker<TSource> SourceTaker)> registrants = [];
+        List<(string Local, SourceTakerRegistrant<TSource> SourceTaker)> registrants = [];
         // ReSharper disable once ConvertToLocalFunction
-        Func<string, IRegistrant<TItem>> registrantCreator = l =>
+        Func<string, IRegistrant<RegKey, TItem>> registrantCreator = l =>
         {
-            var result = new RegistrantSourceTaker<TSource, TModel, TItem>();
+            var result = new SourceTakerRegistrant<TSource, TModel, TItem>();
             registrants.Add((l, result));
             return result;
         };
@@ -31,5 +31,5 @@ public class I18nSourceTakerRegistrant<TSource, TModel, TItem>
         return registrants;
     }
 
-    public IEnumerable<(string Local, ISourceTaker<TSource> SourceTaker)> CreateSourceTakers(string local) => InitializeRegistration(local);
+    public IEnumerable<(string Local, SourceTakerRegistrant<TSource> SourceTaker)> CreateSourceTakers(string local) => InitializeRegistration(local);
 }

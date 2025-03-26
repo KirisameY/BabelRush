@@ -1,11 +1,13 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
+using BabelRush.Data;
+
 namespace BabelRush.Scenery.Rooms;
 
-public class RoomTemplate(string id, int length, IEnumerable<(RoomObject obj, double pos)> objects)
+public class RoomTemplate(RegKey id, int length, IEnumerable<(RoomObject obj, double pos)> objects)
 {
-    public string Id { get; } = id;
+    public RegKey Id { get; } = id;
     public int Length { get; } = length;
     public ImmutableList<(RoomObject obj, double pos)> Objects { get; } = objects.ToImmutableList();
 

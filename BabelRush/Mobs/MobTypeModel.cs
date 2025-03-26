@@ -19,10 +19,12 @@ internal partial class MobTypeModel : IDataModel<MobType>
     public partial int Health { get; set; }
     public MobActionStrategyModel? ActionStrategy { get; set; }
 
-    public MobType Convert()
+    public (RegKey, MobType) Convert(string nameSpace)
     {
-        AnimationSet ??= Id;
-        return new(Id, AnimationSet, BlocksMovement, Health, ActionStrategy?.Convert() ?? MobActionStrategy.Default);
+        RegKey id = (nameSpace, Id);
+        RegKey animationId = AnimationSet?.WithDefaultNameSpace(nameSpace) ?? id;
+        MobType mob = new(id, animationId, BlocksMovement, Health, ActionStrategy?.Convert() ?? MobActionStrategy.Default);
+        return (id, mob);
     }
 
     public static IReadOnlyCollection<IModel<MobType>> FromSource(DocumentSyntax source, out ModelParseErrorInfo errorMessages) =>
