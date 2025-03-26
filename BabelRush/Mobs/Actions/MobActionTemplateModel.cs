@@ -14,5 +14,5 @@ public partial class MobActionTemplateModel
     public string? ConvertState { get; set; }
 
 
-    public MobActionTemplate Convert() => new(Action, Value, Time, Weight, ConvertState);
+    public MobActionTemplate Convert(string nameSpace) => new(Action.WithDefaultNameSpace(nameSpace), Value, Time, Weight, ConvertState);
 }

@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Cards;
+using BabelRush.Gui.DisplayInfos;
 using BabelRush.I18n;
 using BabelRush.Registers;
 
@@ -43,13 +44,13 @@ public partial class CardInfoText : Control
 
     private void UpdateFont()
     {
-        var titleInfo = LocalInfoRegisters.FontInfos.GetItem("title");
+        var titleInfo = LocalInfoRegisters.FontInfos.GetItem(FontInfoIds.Title);
         Label.Set(Names.TitleFont, titleInfo.Font);
         Label.Set(Names.TitleSize, titleInfo.Size);
-        var subtitleInfo = LocalInfoRegisters.FontInfos.GetItem("subtitle");
+        var subtitleInfo = LocalInfoRegisters.FontInfos.GetItem(FontInfoIds.Subtitle);
         Label.Set(Names.SubtitleFont, subtitleInfo.Font);
         Label.Set(Names.SubtitleSize, subtitleInfo.Size);
-        var detailInfo = LocalInfoRegisters.FontInfos.GetItem("detail");
+        var detailInfo = LocalInfoRegisters.FontInfos.GetItem(FontInfoIds.Detail);
         Label.Set(Names.DetailFont, detailInfo.Font);
         Label.Set(Names.DetailSize, detailInfo.Size);
     }

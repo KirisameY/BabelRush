@@ -13,5 +13,5 @@ public class RoomTemplate(RegKey id, int length, IEnumerable<(RoomObject obj, do
 
     public Room CreateRoom() => new Room(Length);
 
-    public static RoomTemplate Default { get; } = new("default", 1, []);
+    public static RoomTemplate Default { get; } = new(RegKey.Default, 1, []);
 }

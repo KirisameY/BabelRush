@@ -21,7 +21,7 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
     public RegKey Id => (SetId.NameSpace, $"{SetId.Key}/{AnimationId}");
 
     [IgnoreDataMember]
-    public RegKey SetId { get; private set; } = "";
+    public RegKey SetId { get; private set; } = RegKey.Default;
     [IgnoreDataMember]
     public string AnimationId { get; private set; } = "";
 
@@ -95,7 +95,7 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
 
     public static MobAnimationModel Default { get; } = new()
     {
-        SetId = "default",
+        SetId = RegKey.Default,
         AnimationId = "default",
         Columns = 1,
         Rows = 1,

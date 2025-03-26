@@ -25,7 +25,7 @@ public class MobAnimationId
 
     public static MobAnimationId Get(IList<string> stateParts, IList<string> actionParts)
     {
-        var key = actionParts is [] ? stateParts.Join('.') : $"{stateParts.Join('.')}:{actionParts.Join('.')}";
+        var key = actionParts is [] ? stateParts.Join('.') : $"{stateParts.Join('.')}${actionParts.Join('.')}";
         if (Cache.TryGetValue(key, out var result)) return result;
         result = new MobAnimationId(stateParts, actionParts, key);
         Cache.Add(key, result);
@@ -34,7 +34,7 @@ public class MobAnimationId
 
     public static MobAnimationId Get(string state, string action)
     {
-        var fullName = action == "" ? state : $"{state}:{action}";
+        var fullName = action == "" ? state : $"{state}${action}";
         if (Cache.TryGetValue(fullName, out var result)) return result;
         result = new(state.Split('.'), action.Split('.'), fullName);
         Cache.Add(fullName, result);

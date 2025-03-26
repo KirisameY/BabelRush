@@ -21,5 +21,5 @@ public class MobType(RegKey id, RegKey animationSetId, bool blocksMovement, int 
     }
 
 
-    public static MobType Default { get; } = new("default", "default", true, 50, MobActionStrategy.Default);
+    public static MobType Default { get; } = new(RegKey.Default, RegKey.Default, true, 50, MobActionStrategy.Default);
 }

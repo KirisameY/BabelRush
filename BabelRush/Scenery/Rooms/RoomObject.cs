@@ -14,6 +14,7 @@ public abstract record RoomObject
     /// <exception cref="ArgumentException"></exception>
     public static RoomObject FromString(string from) => from.ToLower().Split('.') switch
     {
+        // todo: 这里有空想办法改一下吧
         ["Mob", var id, var alignment] => new Mob(id, Enum.Parse<Alignment>(alignment)),
         _                              => throw new ArgumentOutOfRangeException(nameof(from), from)
     };

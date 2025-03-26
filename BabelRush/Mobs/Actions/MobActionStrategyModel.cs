@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
+using BabelRush.Data;
+
 namespace BabelRush.Mobs.Actions;
 
 public class MobActionStrategyModel : IDictionary<string, List<MobActionTemplateModel>>
@@ -25,7 +27,8 @@ public class MobActionStrategyModel : IDictionary<string, List<MobActionTemplate
         return errorList.Count == 0;
     }
 
-    public CommonMobActionStrategy Convert() => new(this.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Select(m => m.Convert()).ToList()));
+    public CommonMobActionStrategy Convert(string nameSpace) =>
+        new(this.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Select(m => m.Convert(nameSpace)).ToList()));
 
 
     #region Implementation

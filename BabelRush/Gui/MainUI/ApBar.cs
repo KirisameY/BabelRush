@@ -2,6 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Cards;
 using BabelRush.GamePlay;
+using BabelRush.Gui.DisplayInfos;
 using BabelRush.I18n;
 using BabelRush.Registers;
 
@@ -45,7 +46,7 @@ public partial class ApBar : Control
 
     private void UpdateFont()
     {
-        var fontInfo = LocalInfoRegisters.FontInfos.GetItem("title");
+        var fontInfo = LocalInfoRegisters.FontInfos.GetItem(FontInfoIds.Title);
         CardNameLabel.LabelSettings.Font = fontInfo.Font;
         CardNameLabel.LabelSettings.FontSize = fontInfo.Size;
     }

@@ -9,7 +9,7 @@ using Godot;
 
 using Tomlyn;
 
-namespace BabelRush.Gui.Misc;
+namespace BabelRush.Gui.DisplayInfos;
 
 public record FontInfo(RegKey FontId, int Size)
 {

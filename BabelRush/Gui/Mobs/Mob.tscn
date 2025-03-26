@@ -13,7 +13,7 @@ animations = [{
 "texture": ExtResource("2_1ormx")
 }],
 "loop": true,
-"name": &"default",
+"name": &"idle",
 "speed": 5.0
 }, {
 "frames": [{
@@ -21,7 +21,7 @@ animations = [{
 "texture": ExtResource("3_bv8i1")
 }],
 "loop": true,
-"name": &"stand:attack.slash",
+"name": &"stand$attack.slash",
 "speed": 5.0
 }]
 

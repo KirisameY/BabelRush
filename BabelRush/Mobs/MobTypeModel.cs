@@ -23,7 +23,7 @@ internal partial class MobTypeModel : IDataModel<MobType>
     {
         RegKey id = (nameSpace, Id);
         RegKey animationId = AnimationSet?.WithDefaultNameSpace(nameSpace) ?? id;
-        MobType mob = new(id, animationId, BlocksMovement, Health, ActionStrategy?.Convert() ?? MobActionStrategy.Default);
+        MobType mob = new(id, animationId, BlocksMovement, Health, ActionStrategy?.Convert(nameSpace) ?? MobActionStrategy.Default);
         return (id, mob);
     }
 

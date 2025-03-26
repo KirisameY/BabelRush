@@ -24,9 +24,9 @@ public partial class CardListTest : Node
 
         CardListScreen.Add(CardType.Default.NewInstance());
         CardListScreen.Add(CardType.Default.NewInstance());
-        var testCardType = new CardType("testing", "testing", true, 2,
-                                        [(new("test_action", "test", new TargetPattern.Self(), []), 8)],
-                                        [new("test_feature", "test")]);
+        var testCardType = new CardType("test:testing", "testing", true, 2,
+                                        [(new("test:test_action", "test", new TargetPattern.Self(), []), 8)],
+                                        [new("test:test_feature", "test")]);
         CardListScreen.Add(testCardType.NewInstance());
     }
 }
