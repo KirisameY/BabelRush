@@ -1,5 +1,6 @@
 using System;
 
+using BabelRush.Data;
 using BabelRush.Mobs;
 using BabelRush.Registers;
 
@@ -20,7 +21,7 @@ public abstract record RoomObject
 
     #region Implements
 
-    public sealed record Mob(string Id, Alignment Alignment) : RoomObject
+    public sealed record Mob(RegKey Id, Alignment Alignment) : RoomObject
     {
         public override SceneObject CreateObject() => MobRegisters.Mobs[Id].GetInstance(Alignment);
     }

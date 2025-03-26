@@ -3,6 +3,8 @@ using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
+using KirisameLib.Logging;
+
 namespace BabelRush.Data;
 
 public sealed class RegKey
@@ -22,14 +24,22 @@ public sealed class RegKey
     {
         return _cache.GetOrAdd((nameSpace, key), static t =>
         {
-            if (t.nameSpace.Contains(':') || t.key.Contains(':')) throw new ArgumentException($"Invalid id: {t.nameSpace}:{t.key}");
+            if (t.nameSpace.Contains(':') || t.key.Contains(':'))
+            {
+                Logger.Log(LogLevel.Error, "Parsing String", $"Invalid id: {t.nameSpace}:{t.key}");
+                return Default;
+            }
             return new RegKey(t.nameSpace, t.key);
         });
     }
 
     public static RegKey From(string id)
     {
-        if (id.Split(':') is not [var nameSpace, var key]) throw new ArgumentException($"Invalid id: {id}");
+        if (id.Split(':') is not [var nameSpace, var key])
+        {
+            Logger.Log(LogLevel.Error, "Parsing String", $"Invalid id: {id}");
+            return Default;
+        }
         return From(nameSpace, key);
     }
 
@@ -69,6 +79,14 @@ public sealed class RegKey
     public static implicit operator RegKey((string nameSpace, string key) regKey) => From(regKey.nameSpace, regKey.key);
 
     #endregion
+
+
+    // Default
+    public static readonly RegKey Default = From("default", "default");
+
+
+    // Logging
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(RegKey));
 }
 
 public static class RegKeyExtensions
@@ -77,6 +95,6 @@ public static class RegKeyExtensions
     {
         [var nameSpace, var key] => RegKey.From(nameSpace,        key),
         [var key]                => RegKey.From(defaultNameSpace, key),
-        _                        => throw new AggregateException($"Invalid id: {id}"),
+        _                        => RegKey.From(id), // will log a error and return default
     };
 }

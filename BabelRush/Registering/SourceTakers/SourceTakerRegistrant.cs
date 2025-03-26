@@ -19,12 +19,12 @@ public sealed class SourceTakerRegistrant<TSource, TModel, TTarget> : SourceTake
     public void AcceptTarget(IRegTarget<RegKey, TTarget> target)
     {
         if (_regTarget is null) _regTarget = target;
-        else throw new InvalidOperationException("RegistrantSourceTaker already has a target.");
+        else throw new InvalidOperationException("SourceTakerRegistrant already has a target.");
     }
 
     public override ISourceTaker<TSource> CreateSourceTaker(string nameSpace, bool overridePrevious)
     {
-        if (_regTarget is null) throw new InvalidOperationException("RegistrantSourceTaker does not have a target.");
+        if (_regTarget is null) throw new InvalidOperationException("SourceTakerRegistrant does not have a target.");
         return new RegistrantSourceTaker(_regTarget, nameSpace, overridePrevious);
     }
 

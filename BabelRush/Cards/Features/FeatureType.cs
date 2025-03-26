@@ -17,5 +17,5 @@ public class FeatureType(RegKey id, RegKey iconId)
         return result;
     }
 
-    public static FeatureType Default { get; } = new("default:default", "default:default");
+    public static FeatureType Default { get; } = new(RegKey.Default, RegKey.Default);
 }

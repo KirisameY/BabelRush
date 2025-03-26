@@ -26,5 +26,5 @@ public class CardType(RegKey id, RegKey iconId, bool usable, int cost, IEnumerab
 
     public Card NewInstance() => new CommonCard(this);
 
-    public static CardType Default { get; } = new("default:default", "default:default", false, 0, [], []);
+    public static CardType Default { get; } = new(RegKey.Default, RegKey.Default, false, 0, [], []);
 }

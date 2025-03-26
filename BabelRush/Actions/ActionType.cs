@@ -21,5 +21,5 @@ public class ActionType(RegKey id, RegKey iconId, TargetPattern targetPattern, I
 
     public ActionInstance NewInstance(int value) => new(this, value);
 
-    public static ActionType Default { get; } = new("default:default", "default:default", new TargetPattern.None(), []);
+    public static ActionType Default { get; } = new(RegKey.Default, RegKey.Default, new TargetPattern.None(), []);
 }
