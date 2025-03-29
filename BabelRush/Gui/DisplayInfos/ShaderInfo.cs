@@ -12,8 +12,12 @@ using KirisameLib.Event;
 
 namespace BabelRush.Gui.DisplayInfos;
 
+// todo: waiting for https://github.com/godotengine/godot/pull/90436 to make additional texture support
+
 public partial class ShaderInfo
 {
+    #region Initialize
+
     [GeneratedRegex(@"^\s*#include\s*<\s*([A-Za-z_]\w*:?[A-Za-z_]\w*)\s*>\s*$", RegexOptions.Multiline | RegexOptions.Compiled)]
     private static partial Regex IncludeRegex { get; }
 
@@ -38,6 +42,9 @@ public partial class ShaderInfo
             return includeCode;
         };
     }
+
+    #endregion
+
 
     private Shader? _shader;
 
