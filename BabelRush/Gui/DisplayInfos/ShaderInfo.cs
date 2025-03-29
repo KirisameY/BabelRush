@@ -12,27 +12,31 @@ using KirisameLib.Event;
 
 namespace BabelRush.Gui.DisplayInfos;
 
-public partial class ShaderInfo // todo:让它不能被local加载好了
+public partial class ShaderInfo
 {
-    [GeneratedRegex(@"^\s*#include\s*<\s*([A-Za-z_]\w*)\s*>\s*$", RegexOptions.Multiline | RegexOptions.Compiled)]
+    [GeneratedRegex(@"^\s*#include\s*<\s*([A-Za-z_]\w*:?[A-Za-z_]\w*)\s*>\s*$", RegexOptions.Multiline | RegexOptions.Compiled)]
     private static partial Regex IncludeRegex { get; }
 
     public ShaderInfo(string nameSpace, string shaderCode)
     {
-        Game.LoadEventBus.Subscribe<CommonRegisterDoneEvent>(_ =>
+        RegisterEventSource.LocalRegisterDone.RegisterDone += () =>
         {
             var shader = new Shader();
-            var code = new StringBuilder();
-            code.Append("#define _LOADED_\n");
-            code.Append(IncludeRegex.Replace(shaderCode, m => // todo: 另外ShaderInc也需要处理include。可能得写个IncInfo类存默认命名空间然后递归
-            {
-                var include = m.Groups[1].Value;
-                var id = include.WithDefaultNameSpace(nameSpace);
-                return SpriteInfoRegisters.ShaderIncludes[id].Code;
-            }));
-            shader.SetCode(code.ToString());
+            var code = "#define _LOADED_\n" + IncludeRegex.Replace(shaderCode, IncludeEvaluator(nameSpace));
+            shader.SetCode(code);
             _shader = shader;
-        }, HandlerSubscribeFlag.OnlyOnce);
+        };
+
+        return;
+
+        MatchEvaluator IncludeEvaluator(string ns) => m =>
+        {
+            var id = m.Groups[1].Value.WithDefaultNameSpace(ns);
+            var includeInfo = SpriteInfoRegisters.ShaderIncludes[id];
+            var includeCode = includeInfo.Code;
+            includeCode = IncludeRegex.Replace(includeCode, IncludeEvaluator(id.NameSpace));
+            return includeCode;
+        };
     }
 
     private Shader? _shader;
