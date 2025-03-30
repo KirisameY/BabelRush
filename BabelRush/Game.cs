@@ -33,7 +33,7 @@ public partial class Game : SceneTree
 
     //Properties
     [field: AllowNull, MaybeNull]
-    public static LogBus LogBus
+    public static LogBus LogBus // todo: 使Log接收来自godot的调试输出
     {
         get => field ?? throw new GameNotInitializedException();
         private set;
