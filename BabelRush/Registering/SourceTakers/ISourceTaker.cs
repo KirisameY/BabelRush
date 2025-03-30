@@ -4,5 +4,5 @@ namespace BabelRush.Registering.SourceTakers;
 
 public interface ISourceTaker<TSource>
 {
-    void Take(TSource source, out ModelParseErrorInfo errorMessages);
+    void Take(TSource source, string path, out ModelParseErrorInfo errorMessages);
 }

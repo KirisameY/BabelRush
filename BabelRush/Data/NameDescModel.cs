@@ -8,7 +8,7 @@ internal class NameDescModel(string id, NameDesc nameDesc) : ILangModel<NameDesc
 {
     public string Id => id;
 
-    public (RegKey, NameDesc) Convert(string nameSpace) => ((nameSpace, id), nameDesc);
+    public (RegKey, NameDesc) Convert(string nameSpace, string path) => ((nameSpace, id), nameDesc);
 
     public static NameDescModel? FromEntry(KeyValuePair<string, object> entry, out string? error)
     {

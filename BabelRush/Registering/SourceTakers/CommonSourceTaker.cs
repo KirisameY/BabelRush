@@ -8,13 +8,13 @@ namespace BabelRush.Registering.SourceTakers;
 public abstract class CommonSourceTaker<TSource, TModel, TTarget> : ISourceTaker<TSource>
     where TModel : IModel<TSource, TTarget>
 {
-    public void Take(TSource source, out ModelParseErrorInfo errorMessages)
+    public void Take(TSource source, string path, out ModelParseErrorInfo errorMessages)
     {
         var models = TModel.FromSource(source, out errorMessages);
         List<string> errors = [];
         foreach (var model in models)
         {
-            RegisterItem(model, out var e);
+            RegisterItem(model, path, out var e);
             errors.AddRange(e);
         }
         if (errors.Count != 0)
@@ -24,5 +24,5 @@ public abstract class CommonSourceTaker<TSource, TModel, TTarget> : ISourceTaker
         }
     }
 
-    protected abstract void RegisterItem(IModel<TTarget> model, out string[] errors);
+    protected abstract void RegisterItem(IModel<TTarget> model, string path, out string[] errors);
 }

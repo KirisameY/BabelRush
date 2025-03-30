@@ -39,6 +39,19 @@ public static class CreateSimpleRegister
            .Build();
 
 
+    public static IEnumerableRegister<RegKey, TItem> CommonRes<TItem, TModel>(string path, TItem fallback)
+        where TModel : IModel<ResSourceInfo, TItem> =>
+        CommonRes<TItem, TModel>(path, _ => fallback);
+
+    public static IEnumerableRegister<RegKey, TItem> CommonRes<TItem, TModel>(string path, Func<RegKey, TItem> fallback)
+        where TModel : IModel<ResSourceInfo, TItem> =>
+        new RegisterBuilder<RegKey, TItem>()
+           .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
+           .AddRegistrant(MakeRegistrant.ForCommonRes<TItem, TModel>(path))
+           .WithFallback(fallback)
+           .Build();
+
+
     public static I18nRegister<TItem> Res<TItem, TModel>(string path, TItem fallback)
         where TModel : IModel<ResSourceInfo, TItem> =>
         Res<TItem, TModel>(path, _ => fallback);
@@ -47,11 +60,7 @@ public static class CreateSimpleRegister
         where TModel : IModel<ResSourceInfo, TItem> =>
         new I18nRegisterBuilder<TItem>()
            .WithRegistrant(MakeRegistrant.ForLocalRes<TItem, TModel>(path))
-           .WithFallback(new RegisterBuilder<RegKey, TItem>()
-                        .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
-                        .AddRegistrant(MakeRegistrant.ForCommonRes<TItem, TModel>(path))
-                        .WithFallback(fallback)
-                        .Build())
+           .WithFallback(CommonRes<TItem, TModel>(path, fallback))
            .WithRegisterDoneEventSource(RegisterEventSource.LocalRegisterDone)
            .Build();
 

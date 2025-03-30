@@ -25,7 +25,7 @@ internal partial class CardTypeModel : IDataModel<CardType>
     [UsedImplicitly]
     public List<string> Features { get; set; } = [];
 
-    public (RegKey, CardType) Convert(string nameSpace)
+    public (RegKey, CardType) Convert(string nameSpace, string path)
     {
         RegKey id = (nameSpace, Id);
         RegKey icon = Icon?.WithDefaultNameSpace(nameSpace) ?? id;

@@ -30,10 +30,10 @@ public sealed class SourceTakerRegistrant<TSource, TModel, TTarget> : SourceTake
 
     private class RegistrantSourceTaker(IRegTarget<RegKey, TTarget> target, string nameSpace, bool overridePrevious) : CommonSourceTaker<TSource, TModel, TTarget>
     {
-        protected override void RegisterItem(IModel<TTarget> model, out string[] errors)
+        protected override void RegisterItem(IModel<TTarget> model, string path, out string[] errors)
         {
             errors = [];
-            var (id, item) = model.Convert(nameSpace);
+            var (id, item) = model.Convert(nameSpace, path);
             if (overridePrevious) target.AddOrOverwriteItem(id, item);
             else if (!target.AddItem(id, item)) errors = [$"Failed to register item {id}, Possibly there's already a registered item with a duplicate ID."];
         }

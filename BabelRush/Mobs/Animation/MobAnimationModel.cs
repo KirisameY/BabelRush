@@ -49,7 +49,7 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
     public string? AfterAnimation { get; set; }
 
 
-    public (RegKey, MobAnimationModel) Convert(string nameSpace)
+    public (RegKey, MobAnimationModel) Convert(string nameSpace, string path)
     {
         //todo: 这个倒也好办，回头重置完MobAnimation之后把它做成MobAnimationEntry的Model即可
         throw new System.NotImplementedException();

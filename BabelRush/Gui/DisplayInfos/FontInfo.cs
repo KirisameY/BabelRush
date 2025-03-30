@@ -28,7 +28,7 @@ internal partial class FontInfoModel : IResModel<FontInfo>
     [NecessaryProperty]
     public partial int Size { get; set; }
 
-    public (RegKey, FontInfo) Convert(string nameSpace)
+    public (RegKey, FontInfo) Convert(string nameSpace, string path)
     {
         RegKey id = (nameSpace, Id);
         RegKey font = Font.WithDefaultNameSpace(nameSpace);

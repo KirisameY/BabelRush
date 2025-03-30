@@ -1,4 +1,4 @@
-using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -8,27 +8,25 @@ using BabelRush.Registers;
 
 using Godot;
 
-using KirisameLib.Event;
-
 namespace BabelRush.Gui.DisplayInfos;
 
 // todo: waiting for https://github.com/godotengine/godot/pull/90436 to make additional texture support
 
-public partial class ShaderInfo
+public partial class ShaderInfo()
 {
     #region Initialize
 
     [GeneratedRegex(@"^\s*#include\s*<\s*([A-Za-z_]\w*:?[A-Za-z_]\w*)\s*>\s*$", RegexOptions.Multiline | RegexOptions.Compiled)]
     private static partial Regex IncludeRegex { get; }
 
-    public ShaderInfo(string nameSpace, string shaderCode)
+    public ShaderInfo(string nameSpace, string shaderCode) : this()
     {
         RegisterEventSource.LocalRegisterDone.RegisterDone += () =>
         {
             var shader = new Shader();
             var code = "#define _LOADED_\n" + IncludeRegex.Replace(shaderCode, IncludeEvaluator(nameSpace));
             shader.SetCode(code);
-            _shader = shader;
+            Shader = shader;
         };
 
         return;
@@ -46,7 +44,31 @@ public partial class ShaderInfo
     #endregion
 
 
-    private Shader? _shader;
+    public Shader? Shader { get; private set; }
 
-    public Shader Shader => _shader ?? throw new InvalidOperationException("Shader is not initialized yet.");
+
+    public static ShaderInfo Default { get; } = new();
+}
+
+public class ShaderInfoModel(string id, string code) : IResModel<ShaderInfo>
+{
+    public (RegKey, ShaderInfo) Convert(string nameSpace, string path)
+    {
+        RegKey fid = (nameSpace, id);
+        var info = new ShaderInfo(fid.NameSpace, code);
+        return (fid, info);
+    }
+
+    public static IReadOnlyCollection<IModel<ShaderInfo>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
+    {
+        if (!source.Files.TryGetValue(".gdshader", out var gdshader))
+        {
+            errorMessages = new(1, [".gdshader file not found"]);
+            return [];
+        }
+
+        Encoding.UTF8.GetString(gdshader);
+        errorMessages = ModelParseErrorInfo.Empty;
+        return [new ShaderInfoModel(source.Path, Encoding.UTF8.GetString(gdshader))];
+    }
 }

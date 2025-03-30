@@ -21,7 +21,7 @@ internal partial class ActionTypeModel : IDataModel<ActionType>
     [UsedImplicitly]
     public List<string> ActionItems { get; set; } = [];
 
-    public (RegKey, ActionType) Convert(string nameSpace)
+    public (RegKey, ActionType) Convert(string nameSpace, string path)
     {
         RegKey id = (nameSpace, Id);
         RegKey icon = Icon?.WithDefaultNameSpace(nameSpace) ?? id;

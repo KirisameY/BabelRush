@@ -51,7 +51,7 @@ internal sealed class DataRootLoader(string nameSpace, bool overwriting) : Commo
 
         foreach (var (file, source) in sourceDict)
         {
-            sourceTaker.Take(source, out var errorInfo);
+            sourceTaker.Take(source, CurrentPath, out var errorInfo);
             if (errorInfo.ErrorCount != 0)
             {
                 Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),
