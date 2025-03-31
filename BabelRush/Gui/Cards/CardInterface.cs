@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Cards;
+using BabelRush.Gui.DisplayInfos;
 
 using Godot;
 
@@ -96,7 +97,7 @@ public partial class CardInterface : Node2D
     private void Refresh()
     {
         //Icon
-        IconNode.Texture = Card.Type.Icon;
+        IconNode.ApplySpriteInfo(Card.Type.Icon);
 
         //Cost
         CostNode.CallDeferred(Names.SetValue, Card.Cost);

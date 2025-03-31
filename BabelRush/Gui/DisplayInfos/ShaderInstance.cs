@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -48,6 +49,15 @@ public class ShaderInstance
 
 
     public static ShaderInstance Default { get; } = new(RegKey.Default, [], []);
+
+    // ReSharper disable once InconsistentNaming
+    private static readonly Dictionary<RegKey, ShaderInstance> _fallbackCache = new();
+    public static Func<RegKey, ShaderInstance> Fallback { get; } = id =>
+    {
+        if (_fallbackCache.TryGetValue(id, out var shaderInstance)) return shaderInstance;
+        var result = _fallbackCache[id] = new ShaderInstance(id, FrozenDictionary<StringName, Variant>.Empty, FrozenDictionary<StringName, Variant>.Empty);
+        return result;
+    };
 }
 
 public class ShaderInstanceModel(string id, string? shader, IReadOnlyDictionary<StringName, Variant> uniforms,

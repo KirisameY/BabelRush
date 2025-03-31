@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,15 @@ public class SpriteInfo(RegKey textureId, RegKey shaderInstanceId, FrozenDiction
 
 
     public static SpriteInfo Default { get; } = new(RegKey.Default, RegKey.Default, FrozenDictionary<StringName, Variant>.Empty);
+
+    // ReSharper disable once InconsistentNaming
+    private static readonly Dictionary<RegKey, SpriteInfo> _fallbackCcache = new();
+    public static Func<RegKey, SpriteInfo> Fallback => id =>
+    {
+        if (_fallbackCcache.TryGetValue(id, out var spriteInfo)) return spriteInfo;
+        var result = _fallbackCcache[id] = new SpriteInfo(id, id, FrozenDictionary<StringName, Variant>.Empty);
+        return result;
+    };
 }
 
 public class SpriteInfoModel : IResModel<SpriteInfo>
@@ -56,9 +66,8 @@ public class SpriteInfoModel : IResModel<SpriteInfo>
     public (RegKey, SpriteInfo) Convert(string nameSpace, string path)
     {
         RegKey fid = (nameSpace, Id);
-        var fallbackId = path is "" ? Id : $"{path}/{Id}";
-        var textureId = (Texture ?? fallbackId).WithDefaultNameSpace(nameSpace);
-        var shaderId = (Shader ?? fallbackId).WithDefaultNameSpace(nameSpace);
+        var textureId = (Texture ?? Id).WithDefaultNameSpace(nameSpace);
+        var shaderId = (Shader ?? Id).WithDefaultNameSpace(nameSpace);
         var instanceUniforms = InstanceUniform.ToFrozenDictionary(
             p => new StringName(p.Key),
             p =>

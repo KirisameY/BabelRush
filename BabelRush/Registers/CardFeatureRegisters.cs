@@ -1,7 +1,7 @@
 using BabelRush.Cards.Features;
 using BabelRush.Data;
-using BabelRush.Data.ExtendModels;
 using BabelRush.Registering;
+using BabelRush.Registering.Registers;
 
 using Godot;
 
@@ -16,7 +16,7 @@ public static class CardFeatureRegisters
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>("card_features", "en", id => (id, ""));
 
     public static IRegister<RegKey, Texture2D> FeatureIcon { get; } =
-        CreateSimpleRegister.Res<Texture2D, Texture2DModel>("textures/card_features", new PlaceholderTexture2D());
+        SubRegister.Create(SpriteInfoRegisters.Textures, "card_features");
 
     public static IRegister<RegKey, FeatureType> Features { get; } =
         CreateSimpleRegister.Data<FeatureType, FeatureTypeModel>("card_features", FeatureType.Default);
