@@ -17,6 +17,7 @@ public class FontModel(string id, Font font) : IResModel<Font>
     public static IReadOnlyCollection<IModel<Font>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         Font font;
+        // todo: 有机会的话我应该给它做一个方便的获取文件的方法，比如传入需要的后缀的信息（以及是否必要等），然后传出一个字典
         switch (source.Files.TryGetValue(".ttf", out var ttf), source.Files.TryGetValue(".otf", out var otf))
         {
             case (true, true):
