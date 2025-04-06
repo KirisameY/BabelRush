@@ -59,6 +59,10 @@ public sealed class RegKey
 
     #region Equality
 
+    public static bool operator ==(RegKey a, RegKey b) => Equals(a, b);
+
+    public static bool operator !=(RegKey a, RegKey b) => !Equals(a, b);
+
     public override bool Equals(object? obj) => ReferenceEquals(this, obj);
 
     public override int GetHashCode() => RuntimeHelpers.GetHashCode(this);
