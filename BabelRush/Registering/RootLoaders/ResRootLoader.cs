@@ -54,7 +54,7 @@ internal sealed class ResRootLoader(string nameSpace, bool overwriting, (string 
 
         foreach (var source in sourceDict.Values)
         {
-            sourceTaker.Take(source, out var errorInfo);
+            sourceTaker.Take(source, CurrentPath, out var errorInfo);
             if (errorInfo.ErrorCount != 0)
             {
                 Logger.Log(LogLevel.Warning, nameof(RegisterDirectory),

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -86,7 +85,7 @@ public sealed class RegKey
 
 
     // Default
-    public static readonly RegKey Default = From("default", "default");
+    public static readonly RegKey Default = From("", "");
 
 
     // Logging

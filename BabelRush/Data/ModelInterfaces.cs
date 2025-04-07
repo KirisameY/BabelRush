@@ -6,7 +6,7 @@ namespace BabelRush.Data;
 
 public interface IModel<TTarget>
 {
-    (RegKey, TTarget) Convert(string nameSpace);
+    (RegKey, TTarget) Convert(string nameSpace, string path);
 }
 
 public interface IModel<in TSource, TTarget> : IModel<TTarget>

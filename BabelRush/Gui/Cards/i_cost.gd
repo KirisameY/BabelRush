@@ -35,12 +35,12 @@ func _draw():
 	
 	# points
 	for i in range(min(n,6)):
-		var tex : Texture2D = point1 if i%3 == 1 else point0
-		var size := tex.get_size()
+		var tex_ : Texture2D = point1 if i%3 == 1 else point0
+		var size := tex_.get_size()
 		var dir : Vector2 = points[i]
 		var color := p1_color if i%2 else p0_color
 		draw_set_transform(Vector2.ZERO, 0, dir)
-		draw_texture(tex, -size/2, color)
+		draw_texture(tex_, -size/2, color)
 	draw_set_transform(Vector2.ZERO)
 	
 	# nums

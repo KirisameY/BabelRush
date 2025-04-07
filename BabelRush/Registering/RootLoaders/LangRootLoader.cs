@@ -21,6 +21,7 @@ internal sealed class LangRootLoader(string nameSpace, bool overwriting, string 
 
     private bool Exited { get; set; }
     private LinkedList<string> SubPathLink { get; } = [];
+    private string CurrentPath => SubPathLink.Join('/');
 
 
     protected override ISourceTaker<IDictionary<string, object>>? GetSourceTaker(string path) =>
@@ -77,7 +78,7 @@ internal sealed class LangRootLoader(string nameSpace, bool overwriting, string 
     {
         if (GetSourceTaker(sort) is not { } registrant) return;
 
-        registrant.Take(source, out var errorInfo);
+        registrant.Take(source, CurrentPath, out var errorInfo);
         if (errorInfo.ErrorCount != 0)
         {
             Logger.Log(LogLevel.Warning, nameof(Register),

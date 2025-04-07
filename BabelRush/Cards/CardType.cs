@@ -5,8 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using BabelRush.Actions;
 using BabelRush.Cards.Features;
 using BabelRush.Data;
-
-using Godot;
+using BabelRush.Gui.DisplayInfos;
 
 namespace BabelRush.Cards;
 
@@ -14,7 +13,7 @@ public class CardType(RegKey id, RegKey iconId, bool usable, int cost, IEnumerab
 {
     public RegKey Id { get; } = id;
     public NameDesc NameDesc => Registers.CardRegisters.CardNameDesc.GetItem(Id);
-    public Texture2D Icon => Registers.CardRegisters.CardIcon.GetItem(iconId);
+    public SpriteInfo Icon => Registers.CardRegisters.CardIcon.GetItem(iconId);
     public bool Usable { get; } = usable;
     public int Cost { get; } = cost;
 

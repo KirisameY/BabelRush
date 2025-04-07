@@ -41,9 +41,11 @@ public partial class Game : SceneTree
 
     private static readonly DelayedEventBus InnerGameEventBus = new();
     public static EventBus GameEventBus => InnerGameEventBus;
+    public const string GameEventGroup = "";
 
     private static readonly ImmediateEventBus InnerLoadEventBus = new();
     public static EventBus LoadEventBus => InnerLoadEventBus;
+    public const string LoadEventGroup = "Load";
 
 
     public static string Local
@@ -68,6 +70,7 @@ public partial class Game : SceneTree
 
         Logger.Log(LogLevel.Info, "Initializing", "Subscribing default static event handlers...");
         GlobalEventHandlersSubscriber.Subscribe(GameEventBus);
+        GlobalEventHandlersSubscriber.Subscribe(LoadEventBus, LoadEventGroup);
 
         base._Initialize();
 

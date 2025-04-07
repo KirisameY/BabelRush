@@ -13,7 +13,7 @@ internal partial class FeatureTypeModel : IDataModel<FeatureType>
     public partial string Id { get; set; }
     public string? Icon { get; set; }
 
-    public (RegKey, FeatureType) Convert(string nameSpace)
+    public (RegKey, FeatureType) Convert(string nameSpace, string path)
     {
         RegKey id = (nameSpace, Id);
         RegKey icon = Icon?.WithDefaultNameSpace(nameSpace) ?? id;

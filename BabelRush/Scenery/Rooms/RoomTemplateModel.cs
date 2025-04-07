@@ -20,7 +20,7 @@ public partial class RoomTemplateModel : IDataModel<RoomTemplate>
     public List<RoomObjInfo> Objects { get; set; } = [];
 
 
-    public (RegKey, RoomTemplate) Convert(string nameSpace)
+    public (RegKey, RoomTemplate) Convert(string nameSpace, string path)
     {
         var id = RegKey.From(nameSpace, Id);
         var room = new RoomTemplate(id, Length, Objects.Select(o => (RoomObject.FromString(o.Obj), o.Position)));

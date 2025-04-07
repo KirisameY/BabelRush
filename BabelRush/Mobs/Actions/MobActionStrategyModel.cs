@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-using BabelRush.Data;
-
 namespace BabelRush.Mobs.Actions;
 
 public class MobActionStrategyModel : IDictionary<string, List<MobActionTemplateModel>>

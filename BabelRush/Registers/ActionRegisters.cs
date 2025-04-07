@@ -1,7 +1,7 @@
 using BabelRush.Actions;
 using BabelRush.Data;
-using BabelRush.Data.ExtendModels;
 using BabelRush.Registering;
+using BabelRush.Registering.Registers;
 
 using Godot;
 
@@ -19,7 +19,7 @@ public static class ActionRegisters
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>("actions", "en", id => (id, ""));
 
     public static IRegister<RegKey, Texture2D> ActionIcon { get; } =
-        CreateSimpleRegister.Res<Texture2D, Texture2DModel>("textures/actions", new PlaceholderTexture2D());
+        SubRegister.Create(SpriteInfoRegisters.Textures, "actions");
 
     public static IRegister<RegKey, ActionType> Actions { get; } =
         CreateSimpleRegister.Data<ActionType, ActionTypeModel>("actions", ActionType.Default);

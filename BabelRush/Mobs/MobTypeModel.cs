@@ -19,7 +19,7 @@ internal partial class MobTypeModel : IDataModel<MobType>
     public partial int Health { get; set; }
     public MobActionStrategyModel? ActionStrategy { get; set; }
 
-    public (RegKey, MobType) Convert(string nameSpace)
+    public (RegKey, MobType) Convert(string nameSpace, string path)
     {
         RegKey id = (nameSpace, Id);
         RegKey animationId = AnimationSet?.WithDefaultNameSpace(nameSpace) ?? id;

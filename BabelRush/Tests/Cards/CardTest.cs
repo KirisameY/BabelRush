@@ -25,7 +25,7 @@ public partial class CardTest : Node2D
         var cardTypeModels = CardTypeModel.FromSource(Toml.Parse(cardTypesFile.GetAsText()), out var errors);
         errors.Messages.ForEach(GD.Print);
 
-        var cardTypes = cardTypeModels.Select(m => m.Convert(Project.NameSpace));
+        var cardTypes = cardTypeModels.Select(m => m.Convert(Project.NameSpace, "cards"));
         //CardTypeData.FromTomlTable(Toml.ToModel(cardTypesFile.GetAsText()));
         var n = 0;
         foreach (var (_, cardType) in cardTypes)

@@ -12,7 +12,7 @@ namespace BabelRush.Actions;
 
 internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<ActionStep>
 {
-    public (RegKey, ActionStep) Convert(string nameSpace)
+    public (RegKey, ActionStep) Convert(string nameSpace, string path)
     {
         RegKey id = (nameSpace, Id);
         var step = new ScriptActionStep(id, Action);
