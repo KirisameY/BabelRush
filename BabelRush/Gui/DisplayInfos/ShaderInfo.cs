@@ -16,7 +16,7 @@ public partial class ShaderInfo()
 {
     #region Initialize
 
-    [GeneratedRegex(@"^\s*#include\s*<\s*([A-Za-z_]\w*:?[A-Za-z_]\w*)\s*>\s*$", RegexOptions.Multiline | RegexOptions.Compiled)]
+    [GeneratedRegex(@"^\s*#include\s*<\s*([A-Za-z_]\w*:?[A-Za-z_]\w*)\s*>\s*$", RegexOptions.Multiline)]
     private static partial Regex IncludeRegex { get; }
 
     public ShaderInfo(string nameSpace, string shaderCode) : this()
@@ -67,8 +67,8 @@ public class ShaderInfoModel(string id, string code) : IResModel<ShaderInfo>
             return [];
         }
 
-        Encoding.UTF8.GetString(gdshader);
+        var code = Encoding.UTF8.GetString(gdshader);
         errorMessages = ModelParseErrorInfo.Empty;
-        return [new ShaderInfoModel(source.Path, Encoding.UTF8.GetString(gdshader))];
+        return [new ShaderInfoModel(source.Path, code)];
     }
 }

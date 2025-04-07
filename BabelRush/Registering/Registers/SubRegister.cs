@@ -11,7 +11,7 @@ public abstract class SubRegister
 
 public class SubRegister<TItem>(IRegister<RegKey, TItem> parentRegister, string subPath) : SubRegister, IRegister<RegKey, TItem>
 {
-    private RegKey GetFullId(RegKey id) => subPath is "" ? id : RegKey.From(id.Key, $"{subPath}/{id})");
+    private RegKey GetFullId(RegKey id) => subPath is "" ? id : RegKey.From(id.NameSpace, $"{subPath}/{id.Key})");
 
     public TItem GetItem(RegKey id) => parentRegister.GetItem(GetFullId(id));
 

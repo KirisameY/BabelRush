@@ -22,7 +22,7 @@ public abstract class DynamicI18nItem
         where TKey : notnull where TResult : notnull
     {
         TReg? cache = default(TReg);
-        return new DynamicI18nItem<TResult>(_ => Equals(cache, register[key]), pre =>
+        return new DynamicI18nItem<TResult>(_ => !Equals(cache, register[key]), pre =>
         {
             cache = register[key];
             return updater.Invoke(pre, cache);

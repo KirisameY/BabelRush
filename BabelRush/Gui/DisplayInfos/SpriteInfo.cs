@@ -21,8 +21,8 @@ public class SpriteInfo(RegKey textureId, RegKey shaderInstanceId, FrozenDiction
     private readonly DynamicI18nItem<Texture2D> _texture = DynamicI18nItem.Create(SpriteInfoRegisters.Textures, textureId);
     public Texture2D Texture => _texture.Get();
 
-    private readonly DynamicI18nItem<ShaderInstance>? _shaderInstance = DynamicI18nItem.Create(SpriteInfoRegisters.ShaderInstances, shaderInstanceId);
-    public ShaderMaterial? Material => _shaderInstance?.Get().Material;
+    private readonly DynamicI18nItem<ShaderInstance> _shaderInstance = DynamicI18nItem.Create(SpriteInfoRegisters.ShaderInstances, shaderInstanceId);
+    public ShaderMaterial Material => _shaderInstance.Get().Material;
 
     private readonly DynamicI18nItem<FrozenDictionary<StringName, Variant>> _instanceUniforms = DynamicI18nItem.Create
         <RegKey, ShaderInstance, FrozenDictionary<StringName, Variant>>

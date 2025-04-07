@@ -27,9 +27,8 @@ public class ShaderInstance
         _instanceUniforms = instanceUniforms;
         _material = DynamicI18nItem.Create<RegKey, ShaderInfo, ShaderMaterial>(SpriteInfoRegisters.ShaderInfos, shaderId, (pre, s) =>
         {
-            var result = pre ?? new ShaderMaterial { Shader = s.Shader };
             if (s.Shader is null) return DefaultMaterial;
-            result.Shader = s.Shader;
+            var result = pre ?? new ShaderMaterial { Shader = s.Shader };
             Uniforms.ForEach(p => result.SetShaderParameter(p.Key, p.Value));
             return result;
         });
@@ -55,7 +54,7 @@ public class ShaderInstance
     public static Func<RegKey, ShaderInstance> Fallback { get; } = id =>
     {
         if (_fallbackCache.TryGetValue(id, out var shaderInstance)) return shaderInstance;
-        var result = _fallbackCache[id] = new ShaderInstance(id, FrozenDictionary<StringName, Variant>.Empty, FrozenDictionary<StringName, Variant>.Empty);
+        var result = _fallbackCache[id] = new ShaderInstance(id, [], []);
         return result;
     };
 }
@@ -70,9 +69,8 @@ public class ShaderInstanceModel(string id, string? shader, IReadOnlyDictionary<
         RegKey shaderId = shader?.WithDefaultNameSpace(nameSpace) ?? fid;
 
         var finalUniforms = uniforms.Select(TextureSelector);
-        var finalInstanceUniforms = defaultInstanceUniforms.Select(TextureSelector);
 
-        var instance = new ShaderInstance(shaderId, finalUniforms, finalInstanceUniforms);
+        var instance = new ShaderInstance(shaderId, finalUniforms, defaultInstanceUniforms);
         return (fid, instance);
 
         KeyValuePair<StringName, Variant> TextureSelector(KeyValuePair<StringName, Variant> p)
