@@ -16,7 +16,7 @@ public partial class ShaderInfo()
 {
     #region Initialize
 
-    [GeneratedRegex(@"^\s*#include\s*<\s*([A-Za-z_]\w*:?[A-Za-z_]\w*)\s*>\s*$", RegexOptions.Multiline)]
+    [GeneratedRegex(@"^\s*#include\s*<\s*([A-Za-z_]\w*(?::[A-Za-z_]\w*)?)\s*>\s*$", RegexOptions.Multiline)]
     private static partial Regex IncludeRegex { get; }
 
     public ShaderInfo(string nameSpace, string shaderCode) : this()
