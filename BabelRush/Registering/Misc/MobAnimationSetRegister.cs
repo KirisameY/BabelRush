@@ -54,7 +54,7 @@ internal sealed class MobAnimationSetRegister : IRegister<RegKey, MobAnimationSe
             foreach (var group in groups)
             {
                 var builder = new MobAnimationSetBuilder(group.Key);
-                foreach (var model in group) builder.AddAnimation(model);
+                group.ForEach(model => builder.AddAnimation(model));
                 FinalReg[group.Key] = builder.Build();
             }
             _isRegistering = false;

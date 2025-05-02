@@ -8,8 +8,7 @@ using Godot;
 namespace BabelRush.Mobs.Animation;
 
 public class MobAnimationSet(
-    RegKey id,
-    SpriteFrames spriteFrames,
+    RegKey id, SpriteFrames spriteFrames,
     IDictionary<MobAnimationId, MobAnimationSet.AnimationInfo> animationDict
     // MobAnimationId defaultAnimationId
 )

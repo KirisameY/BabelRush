@@ -37,8 +37,11 @@ internal sealed class ResRootLoader(string nameSpace, bool overwriting, (string 
     protected override void HandleFile(Dictionary<string, ResSourceInfo> sourceDict, string[] fileSubPath, byte[] fileContent)
     {
         var dir = fileSubPath.SkipLast(1).ToImmutableArray();
-        var name = Path.GetFileNameWithoutExtension(fileSubPath.Last());
-        var extension = Path.GetExtension(fileSubPath.Last());
+        if (fileSubPath.Last().Split('#', 2) is not [var name, var extension]) // todo: append texture support
+        {
+            name      = Path.GetFileNameWithoutExtension(fileSubPath.Last());
+            extension = Path.GetExtension(fileSubPath.Last());
+        }
         var pathNoExt = dir.Append(name).Join('/');
 
         if (!sourceDict.TryGetValue(pathNoExt, out var source))
