@@ -2,7 +2,7 @@ using Godot;
 
 namespace BabelRush.Gui.Scenery;
 
-public partial class RoomInterface : Node2D
+public partial class RoomInterface : Node2D //todo: 这货删掉吧，既然已经要改多层了，整出来东西大不了存个列表
 {
     //Getter
     private RoomInterface() { }

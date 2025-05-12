@@ -100,6 +100,8 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
         return MobInterface.GetInstance(this);
     }
 
+    public override float Parallax => 1;
+
 
     //Default
     public static Mob Default { get; } = new(MobType.Default, Alignment.Neutral);

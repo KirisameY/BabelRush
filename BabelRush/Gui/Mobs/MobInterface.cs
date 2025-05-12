@@ -112,7 +112,7 @@ public partial class MobInterface : Node2D
         public static readonly StringName MaxHealth = "max_health";
         public static readonly StringName Health = "health";
         public static readonly StringName ActionValue = "action_value";
-        public static readonly StringName ProgressColor = "progress_color"; // todo: 也许终有一天它会实装
+        // public static readonly StringName ProgressColor = "progress_color"; // todo: 也许终有一天它会实装
     }
 
 

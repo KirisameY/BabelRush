@@ -7,6 +7,8 @@ using BabelRush.Gui.Cards;
 
 using Godot;
 
+using JetBrains.Annotations;
+
 using KirisameLib.Extensions;
 using KirisameLib.Event;
 
@@ -56,6 +58,7 @@ public partial class CardField : Control
         AddCard(ci);
     }
 
+    // ReSharper disable once UnusedMethodReturnValue.Local
     private bool RemoveCard(Card card)
     {
         if (!CardDict.Remove(card)) return false;

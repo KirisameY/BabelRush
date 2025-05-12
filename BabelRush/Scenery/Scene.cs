@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using BabelRush.Scenery.Collision;
 using BabelRush.Scenery.Rooms;
@@ -98,9 +97,7 @@ public sealed class Scene : IDisposable
 
         if (obj is VisualObject vObj)
         {
-            var objI = vObj.CreateInterface();
-            if (_objectInterfaces.TryAdd(vObj, objI))
-                Node.AddChild(objI);
+            AddVisualObject(vObj);
         }
 
         obj.EnterScene();
@@ -114,10 +111,39 @@ public sealed class Scene : IDisposable
 
         CollisionSpace.RemoveObject(obj);
 
-        if (_objectInterfaces.Remove(obj, out var objI))
-            Node.RemoveChild(objI);
+        _ = TryRemoveVisualObject(obj);
 
         obj.Scene = null;
+    }
+
+    private readonly SortedList<float, Parallax2D> _layers = [];
+
+    private void AddVisualObject(VisualObject vObj)
+    {
+        if (_objectInterfaces.ContainsKey(vObj)) return;
+
+        if (!_layers.TryGetValue(vObj.Parallax, out var layer))
+        {
+            _layers[vObj.Parallax] = layer = new Parallax2D
+            {
+                ScrollScale  = new(vObj.Parallax, 1),
+                ScrollOffset = Project.ViewportSize / 2
+            };
+
+            Node.AddChild(layer);
+            Node.MoveChild(layer, _layers.IndexOfValue(layer));
+        }
+
+        var objI = vObj.CreateInterface();
+        _objectInterfaces.Add(vObj, objI);
+        layer.AddChild(objI);
+    }
+
+    private bool TryRemoveVisualObject(SceneObject obj)
+    {
+        if (!_objectInterfaces.Remove(obj, out var objI)) return false;
+        objI.QueueFree();
+        return true;
     }
 
 
