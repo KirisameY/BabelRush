@@ -20,9 +20,9 @@ public sealed partial class Play
     private Play(BattleField battleField, Scene scene, uint randomSeed)
     {
         _battleField = battleField;
-        _scene = scene;
+        _scene       = scene;
         if (randomSeed == 0) randomSeed = (uint)DateTime.Now.Ticks;
-        _random = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
+        _random  = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
         _cardHub = new(_random);
     }
 
@@ -135,7 +135,7 @@ public sealed partial class Play
         if (e.SceneObject != BattleField.Player) return;
 
         //camera
-        Node.Camera.TargetPositionX = (float)e.NewPosition;
+        Node.Camera.TargetPositionX = (float)e.NewPosition + Project.ViewportSize.X / 2;
 
         //screen area
         float offset = Node.Camera.Offset.X; //temp

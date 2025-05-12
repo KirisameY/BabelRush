@@ -127,7 +127,7 @@ public sealed class Scene : IDisposable
             _layers[vObj.Parallax] = layer = new Parallax2D
             {
                 ScrollScale  = new(vObj.Parallax, 1),
-                ScrollOffset = Project.ViewportSize / 2
+                ScrollOffset = Vector2.Zero with { X = Project.ViewportSize.X / 2 }
             };
 
             Node.AddChild(layer);

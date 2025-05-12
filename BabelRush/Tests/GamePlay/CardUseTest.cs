@@ -40,10 +40,10 @@ public partial class CardUseTest : Node
         Play.Scene.AddObject(enemy1);
         Play.Scene.AddObject(enemy2);
 
-        player.Position = GetNode<Marker2D>("Player").Position.X;
+        player.Position  = GetNode<Marker2D>("Player").Position.X;
         friend1.Position = GetNode<Marker2D>("Friend1").Position.X;
-        enemy1.Position = GetNode<Marker2D>("Enemy1").Position.X;
-        enemy2.Position = GetNode<Marker2D>("Enemy2").Position.X;
+        enemy1.Position  = GetNode<Marker2D>("Enemy1").Position.X;
+        enemy2.Position  = GetNode<Marker2D>("Enemy2").Position.X;
     }
 
     public void AddCard()
