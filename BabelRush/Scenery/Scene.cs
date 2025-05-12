@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using BabelRush.Scenery.Collision;
 using BabelRush.Scenery.Rooms;
 
 using Godot;
 
+using KirisameLib.Extensions;
 using KirisameLib.Logging;
 
 namespace BabelRush.Scenery;
@@ -43,35 +45,35 @@ public sealed class Scene : IDisposable
     /// <summary>
     /// Adds a room to the scene at the specified position.
     /// </summary>
-    /// <param name="room">The room to be added.</param>
+    /// <param name="roomTemplate">The room to be added.</param>
     /// <param name="toRight">Indicates whether the room should be added to the right or left of the current rooms.</param>
-    public void AddRoom(RoomTemplate room, bool toRight)
+    public void AddRoom(RoomTemplate roomTemplate, bool toRight)
     {
         const string logProcess = "AddingRoom";
-        var r = room.CreateRoom();
+        var room = roomTemplate.CreateRoom();
         if (toRight)
         {
-            _rooms.AddLast(r);
-            r.Position = _rightEdge;
-            _rightEdge += r.Length;
-            Logger.Log(LogLevel.Info, logProcess, $"Added room {r} to the right, new right edge: {_rightEdge}");
+            _rooms.AddLast(room);
+            room.Position =  _rightEdge;
+            _rightEdge    += room.Length;
+            Logger.Log(LogLevel.Info, logProcess, $"Added room {room} to the right, new right edge: {_rightEdge}");
         }
         else
         {
-            _rooms.AddFirst(r);
-            _leftEdge -= r.Length;
-            r.Position = _leftEdge;
-            Logger.Log(LogLevel.Info, logProcess, $"Added room {r} to the left, new left edge: {_leftEdge}");
+            _rooms.AddFirst(room);
+            _leftEdge     -= room.Length;
+            room.Position =  _leftEdge;
+            Logger.Log(LogLevel.Info, logProcess, $"Added room {room} to the left, new left edge: {_leftEdge}");
         }
 
         //setup room
-        Node.AddChild(Gui.Scenery.RoomInterface.GetInstance(r.Position, r.Length));
+        Node.AddChild(Gui.Scenery.RoomInterface.GetInstance(room.Position, room.Length));
 
-        foreach ((RoomObject roomObj, double pos) in room.Objects)
+        foreach ((RoomObject roomObj, double pos) in roomTemplate.Objects)
         {
-            var obj = roomObj.CreateObject();
-            obj.Position = pos + r.Position;
-            AddObject(obj);
+            roomObj.CreateObject()
+                   .SelectSelf(obj => obj.Position += pos + room.Position)
+                   .ForEach(AddObject);
         }
     }
 

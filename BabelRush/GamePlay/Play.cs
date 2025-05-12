@@ -46,7 +46,7 @@ public sealed partial class Play
 
         Logger.Log(LogLevel.Info, logProcess, "Initializing Scene...");
         Scene.CollisionSpace.AddArea(ScreenArea);
-        Node.AddChild(Scene.Node);
+        Scene.Ready(Node);
         Logger.Log(LogLevel.Debug, logProcess, "Subscribing process event...");
         Game.Process += Process;
 
@@ -84,7 +84,7 @@ public sealed partial class Play
     #region Public members
 
     private readonly BattleField _battleField;
-    public static BattleField BattleField => Instance._battleField;
+    public static BattleField BattleField => Instance._battleField; //todo: 这坨static要不还是改掉
 
     private readonly PlayNode _node = PlayNode.GetInstance();
     public static PlayNode Node => Instance._node;

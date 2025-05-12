@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 using BabelRush.Data;
 using BabelRush.Mobs;
@@ -8,7 +9,7 @@ namespace BabelRush.Scenery.Rooms;
 
 public abstract record RoomObject
 {
-    public abstract SceneObject CreateObject();
+    public abstract IEnumerable<SceneObject> CreateObject();
 
 
     /// <exception cref="ArgumentException"></exception>
@@ -24,7 +25,7 @@ public abstract record RoomObject
 
     public sealed record Mob(RegKey Id, Alignment Alignment) : RoomObject
     {
-        public override SceneObject CreateObject() => MobRegisters.Mobs[Id].GetInstance(Alignment);
+        public override IEnumerable<SceneObject> CreateObject() => [MobRegisters.Mobs[Id].GetInstance(Alignment)];
     }
 
     #endregion

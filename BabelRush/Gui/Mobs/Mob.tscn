@@ -33,6 +33,7 @@ script = ExtResource("1_22tyx")
 
 [node name="Sprite" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_oayvn")
+animation = &"idle"
 centered = false
 offset = Vector2(-9, -17)
 
