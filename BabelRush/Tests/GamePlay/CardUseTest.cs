@@ -30,15 +30,15 @@ public partial class CardUseTest : Node
         var enemy1 = new Mob(MobType.Default,  Alignment.Enemy);
         var enemy2 = new Mob(MobType.Default,  Alignment.Enemy);
 
-        Play.Initialize(player, new Scene());
-        AddChild(Play.Node);
-        Play.BattleField.AddMobs(enemy1, enemy2, friend1);
-        Play.PlayerState.Ap = 6;
+        var play = Play.Create(player, new Scene());
+        Game.SetPlay(play);
+        play.BattleField.AddMobs(enemy1, enemy2, friend1);
+        play.PlayerState.Ap = 6;
 
-        Play.Scene.AddObject(player);
-        Play.Scene.AddObject(friend1);
-        Play.Scene.AddObject(enemy1);
-        Play.Scene.AddObject(enemy2);
+        play.Scene.AddObject(player);
+        play.Scene.AddObject(friend1);
+        play.Scene.AddObject(enemy1);
+        play.Scene.AddObject(enemy2);
 
         player.Position  = GetNode<Marker2D>("Player").Position.X;
         friend1.Position = GetNode<Marker2D>("Friend1").Position.X;
@@ -48,7 +48,7 @@ public partial class CardUseTest : Node
 
     public void AddCard()
     {
-        Play.CardHub.DrawPile.AddCard(CardType.NewInstance());
+        Game.Play!.CardHub.DrawPile.AddCard(CardType.NewInstance());
     }
 
     private CardType CardType =>

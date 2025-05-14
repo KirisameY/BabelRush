@@ -176,7 +176,7 @@ public partial class CardHub(RandomBelt random)
     [EventHandler]
     private static void OnCardInsertedToPile(CardInsertedToPileEvent e)
     {
-        var hub = Play.CardHub;
+        var hub = Game.Play!.CardHub;
         if (!hub.Piles.Contains(e.CardPile)) return;
 
         hub.CardInDecide(e);
@@ -187,7 +187,7 @@ public partial class CardHub(RandomBelt random)
     [EventHandler]
     private static void OnCardRemovedFromPile(CardRemovedFromPileEvent e)
     {
-        var hub = Play.CardHub;
+        var hub = Game.Play!.CardHub;
         if (!hub.Piles.Contains(e.CardPile)) return;
 
         hub.CardOutDecide(e);

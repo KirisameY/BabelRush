@@ -47,12 +47,12 @@ public partial class ApBar : Control
     private void UpdateFont()
     {
         var fontInfo = LocalInfoRegisters.FontInfos.GetItem(FontInfoIds.Title);
-        CardNameLabel.LabelSettings.Font = fontInfo.Font;
+        CardNameLabel.LabelSettings.Font     = fontInfo.Font;
         CardNameLabel.LabelSettings.FontSize = fontInfo.Size;
     }
 
-    private void UpdateAp() => ApBall.Call(Names.SetValue,    Play.PlayerState.Ap);
-    private void UpdateApRate() => ApBall.Call(Names.SetRate, Play.PlayerState.ApRegenerated);
+    private void UpdateAp() => ApBall.Call(Names.SetValue,    Game.Play!.PlayerState.Ap);
+    private void UpdateApRate() => ApBall.Call(Names.SetRate, Game.Play!.PlayerState.ApRegenerated);
 
     #endregion
 

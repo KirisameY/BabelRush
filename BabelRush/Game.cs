@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
+using BabelRush.GamePlay;
 using BabelRush.I18n;
 using BabelRush.Registering;
 using BabelRush.Scripting;
@@ -31,7 +32,8 @@ public partial class Game : SceneTree
     }
 
 
-    //Properties
+    #region Properties
+
     [field: AllowNull, MaybeNull]
     public static LogBus LogBus // todo: 使Log接收来自godot的调试输出
     {
@@ -47,6 +49,15 @@ public partial class Game : SceneTree
     public static EventBus LoadEventBus => InnerLoadEventBus;
     public const string LoadEventGroup = "Load";
 
+    public static Play? Play
+    {
+        get;
+        private set
+        {
+            field?.Dispose();
+            field = value;
+        }
+    }
 
     public static string Local
     {
@@ -61,11 +72,22 @@ public partial class Game : SceneTree
         }
     } = "zh-cn";
 
+    #endregion
+
 
     //Initialization
+    private bool _initialized = false;
+
     public override void _Initialize()
     {
-        Instance = this;
+        if (_initialized)
+        {
+            Logger.Log(LogLevel.Error, "Initializing", "Game class already initialized");
+            return;
+        }
+
+        _initialized = true;
+        Instance     = this;
         LogInitialize();
 
         Logger.Log(LogLevel.Info, "Initializing", "Subscribing default static event handlers...");
@@ -141,6 +163,12 @@ public partial class Game : SceneTree
 
 
     //Public Methods
+    public static void SetPlay(Play play)
+    {
+        Play = play;
+        Instance.Root.AddChild(play.Node);
+    }
+
     public static void Quit() => Instance.Quit(0);
 
 

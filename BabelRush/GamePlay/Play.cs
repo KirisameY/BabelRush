@@ -13,64 +13,44 @@ using KirisameLib.Logging;
 namespace BabelRush.GamePlay;
 
 [EventHandlerContainer]
-public sealed partial class Play
+public sealed partial class Play : IDisposable
 {
-    #region Singleton & Initialize
+    #region Initialize & Dispose
 
     private Play(BattleField battleField, Scene scene, uint randomSeed)
     {
-        _battleField = battleField;
-        _scene       = scene;
+        BattleField = battleField;
+        Scene       = scene;
         if (randomSeed == 0) randomSeed = (uint)DateTime.Now.Ticks;
-        _random  = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
-        _cardHub = new(_random);
-    }
+        Random  = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
+        CardHub = new(Random);
 
-    private static Play? _instance;
-    public static Play Instance
-    {
-        get
-        {
-            if (_instance is not null) return _instance;
-            Logger.Log(LogLevel.Error, "GettingInstance", "GamePlay did not initialized");
-            throw new GamePlayNotInitializedException();
-        }
-    }
-
-    public static void Initialize(Mob player, Scene scene, uint randomSeed = 0)
-    {
-        const string logProcess = "Initializing...";
-
-        _instance?.Dispose();
-        _instance = new(new(player), scene, randomSeed);
-
-        Logger.Log(LogLevel.Info, logProcess, "Initializing Scene...");
-        Scene.CollisionSpace.AddArea(ScreenArea);
-        Scene.Ready(Node);
-        Logger.Log(LogLevel.Debug, logProcess, "Subscribing process event...");
         Game.Process += Process;
+        SubscribeInstanceHandler(Game.GameEventBus);
+    }
 
-        Logger.Log(LogLevel.Info, logProcess, "Gameplay initialized successfully");
+    public static Play Create(Mob player, Scene scene, uint randomSeed = 0)
+    {
+        return new(new(player), scene, randomSeed);
+    }
+
+    public void Dispose()
+    {
+        const string logProcess = "Disposing";
+
+        Logger.Log(LogLevel.Debug, logProcess, "Unsubscribing process & events...");
+        UnsubscribeInstanceHandler(Game.GameEventBus);
+        Game.Process -= Process;
+        Logger.Log(LogLevel.Debug, logProcess, "Free Node...");
+        Node.QueueFree();
+        Logger.Log(LogLevel.Info, logProcess, "Old gameplay disposed");
     }
 
     #endregion
 
 
-    //Dispose
-    private void Dispose()
-    {
-        const string logProcess = "Disposing";
-
-        Logger.Log(LogLevel.Debug, logProcess, "Unsubscribing process event...");
-        Game.Process -= Process;
-        Logger.Log(LogLevel.Debug, logProcess, "Free Node...");
-        _node.QueueFree();
-        Logger.Log(LogLevel.Info, logProcess, "Old gameplay disposed");
-    }
-
-
     //Tick Loop
-    public static void Process(double delta)
+    public void Process(double delta)
     {
         //player state update
         PlayerState.ProcessUpdate(delta);
@@ -81,56 +61,44 @@ public sealed partial class Play
     }
 
 
-    #region Public members
+    #region Properties
 
-    private readonly BattleField _battleField;
-    public static BattleField BattleField => Instance._battleField; //todo: 这坨static要不还是改掉
+    public BattleField BattleField { get; }
 
-    private readonly PlayNode _node = PlayNode.GetInstance();
-    public static PlayNode Node => Instance._node;
+    public PlayNode Node { get; } = PlayNode.CreateInstance();
 
-    private readonly PlayerState _playerState = new();
-    public static PlayerState PlayerState => Instance._playerState;
+    public PlayerState PlayerState { get; } = new();
 
-    private readonly RandomBelt _random;
-    public static RandomBelt Random => Instance._random;
+    public RandomBelt Random { get; }
 
-    private Scene _scene;
-    public static Scene Scene
+    public Scene Scene
     {
-        get => Instance._scene;
-        set
+        get;
+        private set
         {
-            if (value == Scene) return;
-            Instance._scene.Dispose();
-            Instance._scene = value;
-            value.CollisionSpace.AddArea(ScreenArea);
+            if (value == field) return;
+            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+            field?.Dispose(); // 这里考虑初始化时候为null
+            field = value;
+            value.CollisionSpace.AddArea(_screenArea);
             value.Ready(Node);
         }
     }
 
-    private readonly CardHub _cardHub;
-    public static CardHub CardHub => Instance._cardHub;
+    public CardHub CardHub { get; }
+
+    private readonly Area _screenArea = new(0, Project.ViewportSize.X / 2);
+
+    // Settings
+    public static int MinCardValue => 4;
 
     #endregion
-
-
-    #region Public properties
-
-    private readonly int _minCardValue = 4;
-    public static int MinCardValue => Instance._minCardValue;
-
-    #endregion
-
-
-    //ScreenArea
-    private static Area ScreenArea { get; } = new(0, Project.ViewportSize.X / 2);
 
 
     #region EventHandler
 
     [EventHandler]
-    public static void OnPlayerMoved(SceneObjectMovedEvent e)
+    public void OnPlayerMoved(SceneObjectMovedEvent e)
     {
         if (e.SceneObject != BattleField.Player) return;
 
@@ -139,20 +107,20 @@ public sealed partial class Play
 
         //screen area
         float offset = Node.Camera.Offset.X; //temp
-        ScreenArea.Position = e.NewPosition + offset;
+        _screenArea.Position = e.NewPosition + offset;
     }
 
     [EventHandler]
-    public static void OnEntityEnteredScreen(ObjectEnteredEvent e)
+    public void OnEntityEntered(ObjectEnteredEvent e)
     {
-        if (e.Object is not Mob mob) return;
+        if (e.Area != _screenArea || e.Object is not Mob mob) return;
         BattleField.AddMob(mob);
     }
 
     [EventHandler]
-    public static void OnEntityExitedScreen(ObjectExitedEvent e)
+    public void OnEntityExited(ObjectExitedEvent e)
     {
-        if (e.Object is not Mob mob) return;
+        if (e.Area != _screenArea || e.Object is not Mob mob) return;
         BattleField.RemoveMob(mob);
     }
 

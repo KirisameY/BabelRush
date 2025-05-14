@@ -84,9 +84,9 @@ public partial class CardListScreen : Control
 
     [UsedImplicitly] private void SetAsPile(string pile) => ReplaceWith(pile switch
     {
-        "discard" => Play.CardHub.DiscardPile,
-        "draw"    => Play.CardHub.DrawPile,
-        "all"     => Play.CardHub.CardsView,
+        "discard" => Game.Play!.CardHub.DiscardPile,
+        "draw"    => Game.Play!.CardHub.DrawPile,
+        "all"     => Game.Play!.CardHub.CardsView,
         _         => throw new ArgumentOutOfRangeException(nameof(pile), pile, null)
     });
 }

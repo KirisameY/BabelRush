@@ -64,11 +64,11 @@ public partial class PlayerState
     private static void OnMobAlignmentChanged(MobAlignmentChangedEvent e)
     {
         if (e.Mob.Type.BlocksMovement == false) return;
-        Play.PlayerState.Moving = (e.OldAlignment, e.NewAlignment) switch
+        Game.Play!.PlayerState.Moving = (e.OldAlignment, e.NewAlignment) switch
         {
             (Alignment.Enemy, not Alignment.Enemy) => true,
             (not Alignment.Enemy, Alignment.Enemy) => false,
-            _                                      => Play.PlayerState.Moving
+            _                                      => Game.Play.PlayerState.Moving
         };
     }
 
@@ -76,15 +76,15 @@ public partial class PlayerState
     private static void OnInBattleMobAdded(InBattleMobAddedEvent e)
     {
         if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy)
-            Play.PlayerState.Moving = false;
+            Game.Play!.PlayerState.Moving = false;
     }
 
     [EventHandler]
     private static void OnInBattleMobRemoved(InBattleMobRemovedEvent e)
     {
         if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy
-         && Play.BattleField.Enemies.All(mob => !mob.Type.BlocksMovement))
-            Play.PlayerState.Moving = true;
+         && Game.Play!.BattleField.Enemies.All(mob => !mob.Type.BlocksMovement))
+            Game.Play.PlayerState.Moving = true;
     }
 
 
@@ -92,14 +92,14 @@ public partial class PlayerState
     [EventHandler]
     private static void OnCardUseRequest(CardUseRequestEvent e)
     {
-        if (e.Card.Cost > Play.PlayerState.Ap) e.Cancel.Cancel();
+        if (e.Card.Cost > Game.Play!.PlayerState.Ap) e.Cancel.Cancel();
     }
 
 
     [EventHandler]
     private static void OnCardUsed(CardUsedEvent e)
     {
-        if (e.CostAp) Play.PlayerState.Ap -= e.Card.Cost;
+        if (e.CostAp) Game.Play!.PlayerState.Ap -= e.Card.Cost;
     }
 
     #endregion

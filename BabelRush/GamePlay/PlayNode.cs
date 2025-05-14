@@ -12,7 +12,7 @@ public partial class PlayNode : Node
     [field: AllowNull, MaybeNull]
     private static PackedScene Scene => field ??= ResourceLoader.Load<PackedScene>("res://GamePlay/Play.tscn");
 
-    public static PlayNode GetInstance()
+    public static PlayNode CreateInstance()
     {
         var result = Scene.Instantiate<PlayNode>();
         result.Name = "Play";

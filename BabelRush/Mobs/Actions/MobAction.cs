@@ -30,7 +30,7 @@ public class MobAction(Mob mob, ActionInstance action, double time)
 
     public async ValueTask<bool> Act()
     {
-        var targets = Play.BattleField.GetOppositeMobs(Mob.Alignment);
+        var targets = Game.Play!.BattleField.GetOppositeMobs(Mob.Alignment);
 
         var request = await Game.GameEventBus.PublishAndWaitFor(new MobActionExecuteRequestEvent(Mob, this, new()));
         if (request.Cancel.Canceled)

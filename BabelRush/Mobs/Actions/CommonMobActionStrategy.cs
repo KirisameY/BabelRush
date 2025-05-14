@@ -19,7 +19,7 @@ public class CommonMobActionStrategy(IDictionary<string, List<MobActionTemplate>
         if (!ActionTable.TryGetValue(state, out var t)) return null;
         if (t is not (list: { IsEmpty: false } list, var weightSum)) return null;
 
-        var random = Play.Random;
+        var random = Game.Play!.Random;
         var randomValue = random.NextDouble(weightSum);
 
         foreach (var action in list)

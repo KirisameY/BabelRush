@@ -32,7 +32,7 @@ public partial class TargetSelector
         set
         {
             if (AutoSelectRange == value) return;
-            field = value;
+            field        = value;
             AutoSelected = GetRange(value);
         }
     }
@@ -61,7 +61,7 @@ public partial class TargetSelector
             var old = AutoSelected;
             field = value;
             var unite = old.Intersect(value).ToList();
-            if (SelectPlayer) unite.Add(Play.BattleField.Player);
+            if (SelectPlayer) unite.Add(Game.Play!.BattleField.Player);
             foreach (var mob in old.Except(unite))
                 Game.GameEventBus.Publish(new MobSelectedEvent(mob, false, false));
             foreach (var mob in value.Except(unite))
@@ -76,8 +76,8 @@ public partial class TargetSelector
         {
             if (SelectPlayer == value) return;
             field = value;
-            if (!AutoSelected.Contains(Play.BattleField.Player))
-                Game.GameEventBus.Publish(new MobSelectedEvent(Play.BattleField.Player, false, value));
+            if (!AutoSelected.Contains(Game.Play!.BattleField.Player))
+                Game.GameEventBus.Publish(new MobSelectedEvent(Game.Play.BattleField.Player, false, value));
         }
     }
 
@@ -85,20 +85,22 @@ public partial class TargetSelector
     //Methods
     public static IReadOnlyList<Mob> GetRange(TargetRange range) => range switch
     {
-        TargetRange.Friend => Play.BattleField.Friends,
-        TargetRange.Enemy  => Play.BattleField.Enemies,
-        TargetRange.All    => Play.BattleField.AllMobs,
-        0                  => [],
-        _                  => throw new ArgumentOutOfRangeException(nameof(range), range, null)
+        _ when Game.Play is null => [],
+        TargetRange.Friend       => Game.Play.BattleField.Friends,
+        TargetRange.Enemy        => Game.Play.BattleField.Enemies,
+        TargetRange.All          => Game.Play.BattleField.AllMobs,
+        0                        => [],
+        _                        => throw new ArgumentOutOfRangeException(nameof(range), range, null)
     };
 
     public static IReadOnlyList<Mob> GetTargets(TargetPattern pattern) => pattern switch
     {
-        TargetPattern.None    => [],
-        TargetPattern.Self    => [Play.BattleField.Player],
-        TargetPattern.Any any => CursorSelected is not null && GetRange(any.Range).Contains(CursorSelected) ? [CursorSelected] : [],
-        TargetPattern.All all => GetRange(all.Range),
-        _                     => throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null)
+        _ when Game.Play is null => [],
+        TargetPattern.None       => [],
+        TargetPattern.Self       => [Game.Play!.BattleField.Player],
+        TargetPattern.Any any    => CursorSelected is not null && GetRange(any.Range).Contains(CursorSelected) ? [CursorSelected] : [],
+        TargetPattern.All all    => GetRange(all.Range),
+        _                        => throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null)
     };
 
 
@@ -106,16 +108,20 @@ public partial class TargetSelector
     [EventHandler]
     private static void OnMobInterfaceSelected(MobInterfaceSelectedEvent e)
     {
-        if (e.Selected) CursorSelected = e.Interface.Mob;
+        if (Game.Play is null) return;
+
+        if (e.Selected) CursorSelected                             = e.Interface.Mob;
         else if (e.Interface.Mob == CursorSelected) CursorSelected = null;
     }
 
     [EventHandler]
     private static void OnCardPicked(CardPickedEvent e)
     {
+        if (Game.Play is null) return;
+
         CursorSelectRange = 0;
-        AutoSelectRange = 0;
-        SelectPlayer = false;
+        AutoSelectRange   = 0;
+        SelectPlayer      = false;
 
         if (!e.Picked) return;
 

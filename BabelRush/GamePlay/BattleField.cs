@@ -129,7 +129,7 @@ public partial class BattleField(Mob player)
     [EventHandler]
     private static void OnMobAlignmentChanged(MobAlignmentChangedEvent e)
     {
-        var state = Play.BattleField;
+        var state = Game.Play!.BattleField;
         if (!state.AllMobsWithNeutral.Contains(e.Mob) || state.Player == e.Mob) return;
         state.TryRemoveFromList(e.Mob, e.OldAlignment);
         state.TryAddToList(e.Mob, e.NewAlignment);

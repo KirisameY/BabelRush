@@ -18,10 +18,10 @@ public class CommonCard(CardType type) : Card
 
     public override bool TargetSelected() =>
         Actions.Count > 0 && Actions.All
-            (action =>
-                 action.Type.TargetPattern is TargetPattern.None ||
-                 TargetSelector.GetTargets(action.Type.TargetPattern).Count > 0
-            );
+        (action =>
+             action.Type.TargetPattern is TargetPattern.None ||
+             TargetSelector.GetTargets(action.Type.TargetPattern).Count > 0
+        );
 
     public override async ValueTask<bool> Use(Mob user)
     {
@@ -42,8 +42,8 @@ public class CommonCard(CardType type) : Card
         ).ToExhaust;
 
         var removed = toExhause
-            ? await Play.CardHub.ExhaustCard(this)
-            : await Play.CardHub.DiscardCard(this);
+            ? await Game.Play!.CardHub.ExhaustCard(this)
+            : await Game.Play!.CardHub.DiscardCard(this);
 
         return removed;
     }

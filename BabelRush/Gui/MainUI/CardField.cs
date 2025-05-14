@@ -25,7 +25,7 @@ public partial class CardField : Control
 
     #region Members
 
-    private static CardPile Pile => Play.CardHub.CardField;
+    private static CardPile Pile => Game.Play!.CardHub.CardField;
     private Dictionary<Card, CardInterface> CardDict { get; } = [];
     private IReadOnlyCollection<CardInterface> CardInterfaces => CardDict.Values;
 
@@ -119,7 +119,7 @@ public partial class CardField : Control
         {
             old.Selectable = false;
             Game.GameEventBus.Publish(new CardPickedEvent(old.Card, false));
-            if (!oldOut || !await old.Card.Use(Play.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
+            if (!oldOut || !await old.Card.Use(Game.Play!.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
                 InsertCard(old);
         }
 
@@ -165,6 +165,7 @@ public partial class CardField : Control
     [EventHandler]
     private void OnCardInterfaceSelected(CardInterfaceSelectedEvent e)
     {
+        if (Game.Play is null) return;
         if (!CardInterfaces.Contains(e.CardInterface)) return;
         if (e.Selected)
             Selected = e.CardInterface;
@@ -175,6 +176,7 @@ public partial class CardField : Control
     [EventHandler]
     private void OnCardInterfacePressed(CardInterfacePressedEvent e)
     {
+        if (Game.Play is null) return;
         if (!CardInterfaces.Contains(e.CardInterface)) return;
         if (e.Pressed)
             Picked = e.CardInterface;
