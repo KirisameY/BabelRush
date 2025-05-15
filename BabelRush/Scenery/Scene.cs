@@ -44,12 +44,11 @@ public sealed class Scene : IDisposable
     /// <summary>
     /// Adds a room to the scene at the specified position.
     /// </summary>
-    /// <param name="roomTemplate">The room to be added.</param>
+    /// <param name="room">The room to be added.</param>
     /// <param name="toRight">Indicates whether the room should be added to the right or left of the current rooms.</param>
-    public void AddRoom(RoomTemplate roomTemplate, bool toRight)
+    public void AddRoom(Room room, bool toRight)
     {
         const string logProcess = "AddingRoom";
-        var room = roomTemplate.CreateRoom();
         if (toRight)
         {
             _rooms.AddLast(room);
@@ -68,12 +67,7 @@ public sealed class Scene : IDisposable
         //setup room
         Node.AddChild(Gui.Scenery.RoomInterface.GetInstance(room.Position, room.Length));
 
-        foreach ((RoomObject roomObj, double pos) in roomTemplate.Objects)
-        {
-            roomObj.CreateObject()
-                   .SelectSelf(obj => obj.Position += pos + room.Position)
-                   .ForEach(AddObject);
-        }
+        room.Objects.SelectSelf(obj => obj.Position += room.Position).ForEach(AddObject);
     }
 
 

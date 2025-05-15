@@ -7,6 +7,7 @@ using BabelRush.Cards;
 using BabelRush.GamePlay;
 using BabelRush.Mobs;
 using BabelRush.Scenery;
+using BabelRush.Stages;
 
 using Godot;
 
@@ -30,7 +31,7 @@ public partial class CardUseTest : Node
         var enemy1 = new Mob(MobType.Default,  Alignment.Enemy);
         var enemy2 = new Mob(MobType.Default,  Alignment.Enemy);
 
-        var play = Play.Create(player, new Scene());
+        var play = Play.Create(player, new Stage());
         Game.SetPlay(play);
         play.BattleField.AddMobs(enemy1, enemy2, friend1);
         play.PlayerState.Ap = 6;

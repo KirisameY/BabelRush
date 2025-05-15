@@ -1,9 +1,11 @@
 using System;
+using System.Runtime.CompilerServices;
 
 using BabelRush.Cards;
 using BabelRush.Mobs;
 using BabelRush.Scenery;
 using BabelRush.Scenery.Collision;
+using BabelRush.Stages;
 
 using KirisameLib.Randomization;
 using KirisameLib.Randomization.RandomGenerators;
@@ -17,21 +19,22 @@ public sealed partial class Play : IDisposable
 {
     #region Initialize & Dispose
 
-    private Play(BattleField battleField, Scene scene, uint randomSeed)
+    private Play(BattleField battleField, Stage initialStage, uint randomSeed)
     {
         BattleField = battleField;
-        Scene       = scene;
-        if (randomSeed == 0) randomSeed = (uint)DateTime.Now.Ticks;
-        Random  = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
-        CardHub = new(Random);
+        Random      = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
+        CardHub     = new(Random);
+        Scene       = null!; // will be set by Stage
+        Stage       = initialStage;
 
         Game.Process += Process;
         SubscribeInstanceHandler(Game.GameEventBus);
     }
 
-    public static Play Create(Mob player, Scene scene, uint randomSeed = 0)
+    public static Play Create(Mob player, Stage initialStage, uint randomSeed = 0)
     {
-        return new(new(player), scene, randomSeed);
+        if (randomSeed == 0) randomSeed = Unsafe.BitCast<int, uint>(DateTime.Now.Ticks.GetHashCode());
+        return new(new(player), initialStage, randomSeed);
     }
 
     public void Dispose()
@@ -71,6 +74,18 @@ public sealed partial class Play : IDisposable
 
     public RandomBelt Random { get; }
 
+    public Stage Stage
+    {
+        get;
+        set
+        {
+            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+            field?.Dispose(); // When initializing it will be null
+            field = value;
+            Scene = value.CreateScene();
+        }
+    }
+
     public Scene Scene
     {
         get;
@@ -78,7 +93,7 @@ public sealed partial class Play : IDisposable
         {
             if (value == field) return;
             // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
-            field?.Dispose(); // 这里考虑初始化时候为null
+            field?.Dispose(); // When initializing it will be null
             field = value;
             value.CollisionSpace.AddArea(_screenArea);
             value.Ready(Node);
