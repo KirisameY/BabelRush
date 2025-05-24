@@ -6,12 +6,14 @@ using BabelRush.Actions;
 using BabelRush.Cards;
 using BabelRush.GamePlay;
 using BabelRush.Mobs;
-using BabelRush.Scenery;
-using BabelRush.Stages;
+using BabelRush.Scenery.Rooms;
+using BabelRush.Scenery.Stages;
 
 using Godot;
 
 using KirisameLib.Event;
+
+using Stage = BabelRush.Scenery.Stages.Stage;
 
 namespace BabelRush.Tests.GamePlay;
 
@@ -31,7 +33,7 @@ public partial class CardUseTest : Node
         var enemy1 = new Mob(MobType.Default,  Alignment.Enemy);
         var enemy2 = new Mob(MobType.Default,  Alignment.Enemy);
 
-        var play = Play.Create(player, new Stage());
+        var play = Play.Create(player, new Stage(new StageNode(RoomTemplate.Default, [], 0, Vector2.Zero)));
         Game.SetPlay(play);
         play.BattleField.AddMobs(enemy1, enemy2, friend1);
         play.PlayerState.Ap = 6;

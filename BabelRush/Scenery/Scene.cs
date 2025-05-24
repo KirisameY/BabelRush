@@ -23,8 +23,13 @@ public sealed class Scene : IDisposable
         Node.Name = "Scene";
     }
 
+    public bool Disposed { get; private set; }
+
     public void Dispose()
     {
+        if (Disposed) return;
+
+        Disposed = true;
         CollisionSpace.Dispose();
         Node.QueueFree();
     }
@@ -48,6 +53,8 @@ public sealed class Scene : IDisposable
     /// <param name="toRight">Indicates whether the room should be added to the right or left of the current rooms.</param>
     public void AddRoom(Room room, bool toRight)
     {
+        ObjectDisposedException.ThrowIf(Disposed, this);
+
         const string logProcess = "AddingRoom";
         if (toRight)
         {
@@ -81,6 +88,8 @@ public sealed class Scene : IDisposable
 
     public void AddObject(SceneObject obj)
     {
+        ObjectDisposedException.ThrowIf(Disposed, this);
+
         if (!_objects.Add(obj)) return;
 
         if (obj.Scene is { } scene) scene.RemoveObject(obj);
@@ -99,6 +108,8 @@ public sealed class Scene : IDisposable
 
     public void RemoveObject(SceneObject obj)
     {
+        ObjectDisposedException.ThrowIf(Disposed, this);
+
         if (!_objects.Remove(obj)) return;
 
         obj.ExitScene();
@@ -114,6 +125,8 @@ public sealed class Scene : IDisposable
 
     private void AddVisualObject(VisualObject vObj)
     {
+        ObjectDisposedException.ThrowIf(Disposed, this);
+
         if (_objectInterfaces.ContainsKey(vObj)) return;
 
         if (!_layers.TryGetValue(vObj.Parallax, out var layer))
@@ -135,6 +148,8 @@ public sealed class Scene : IDisposable
 
     private bool TryRemoveVisualObject(SceneObject obj)
     {
+        ObjectDisposedException.ThrowIf(Disposed, this);
+
         if (!_objectInterfaces.Remove(obj, out var objI)) return false;
         objI.QueueFree();
         return true;

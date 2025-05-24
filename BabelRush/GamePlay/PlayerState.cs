@@ -12,7 +12,9 @@ public partial class PlayerState
 {
     //Action
     public double MovingSpeed { get; set; } = 16;
-    public bool Moving { get; set; }
+    public bool IsBlocked { get; set; } = false;
+    public bool WantMove { get; set; } = true;
+    public bool IsMoving => WantMove && !IsBlocked;
 
 
     //Ap
@@ -64,11 +66,11 @@ public partial class PlayerState
     private static void OnMobAlignmentChanged(MobAlignmentChangedEvent e)
     {
         if (e.Mob.Type.BlocksMovement == false) return;
-        Game.Play!.PlayerState.Moving = (e.OldAlignment, e.NewAlignment) switch
+        Game.Play!.PlayerState.IsBlocked = (e.OldAlignment, e.NewAlignment) switch
         {
-            (Alignment.Enemy, not Alignment.Enemy) => true,
-            (not Alignment.Enemy, Alignment.Enemy) => false,
-            _                                      => Game.Play.PlayerState.Moving
+            (Alignment.Enemy, not Alignment.Enemy) => false,
+            (not Alignment.Enemy, Alignment.Enemy) => true,
+            _                                      => Game.Play.PlayerState.IsBlocked
         };
     }
 
@@ -76,7 +78,7 @@ public partial class PlayerState
     private static void OnInBattleMobAdded(InBattleMobAddedEvent e)
     {
         if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy)
-            Game.Play!.PlayerState.Moving = false;
+            Game.Play!.PlayerState.IsBlocked = true;
     }
 
     [EventHandler]
@@ -84,7 +86,7 @@ public partial class PlayerState
     {
         if (e.Mob.Type.BlocksMovement && e.Mob.Alignment == Alignment.Enemy
          && Game.Play!.BattleField.Enemies.All(mob => !mob.Type.BlocksMovement))
-            Game.Play.PlayerState.Moving = true;
+            Game.Play.PlayerState.IsBlocked = false;
     }
 
 

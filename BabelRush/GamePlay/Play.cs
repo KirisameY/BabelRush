@@ -5,12 +5,13 @@ using BabelRush.Cards;
 using BabelRush.Mobs;
 using BabelRush.Scenery;
 using BabelRush.Scenery.Collision;
-using BabelRush.Stages;
 
 using KirisameLib.Randomization;
 using KirisameLib.Randomization.RandomGenerators;
 using KirisameLib.Event;
 using KirisameLib.Logging;
+
+using Stage = BabelRush.Scenery.Stages.Stage;
 
 namespace BabelRush.GamePlay;
 
@@ -59,7 +60,7 @@ public sealed partial class Play : IDisposable
         PlayerState.ProcessUpdate(delta);
 
         //player moving
-        if (PlayerState.Moving)
+        if (PlayerState.IsMoving)
             BattleField.Player.Position += PlayerState.MovingSpeed * delta;
     }
 
@@ -126,14 +127,14 @@ public sealed partial class Play : IDisposable
     }
 
     [EventHandler]
-    public void OnEntityEntered(ObjectEnteredEvent e)
+    public void OnEntityEntered(ObjectEnteredAreaEvent e)
     {
         if (e.Area != _screenArea || e.Object is not Mob mob) return;
         BattleField.AddMob(mob);
     }
 
     [EventHandler]
-    public void OnEntityExited(ObjectExitedEvent e)
+    public void OnEntityExited(ObjectExitedAreaEvent e)
     {
         if (e.Area != _screenArea || e.Object is not Mob mob) return;
         BattleField.RemoveMob(mob);
