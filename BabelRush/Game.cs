@@ -41,11 +41,19 @@ public partial class Game : SceneTree
         private set;
     }
 
-    private static readonly DelayedEventBus InnerGameEventBus = new();
+    private static readonly DelayedEventBus InnerGameEventBus = new((ev, ex) =>
+    {
+        Logger.Log(LogLevel.Error, "EventHandling",
+                   $"Unhandled exception thrown from game event {ev}:\n{ex}");
+    });
     public static EventBus GameEventBus => InnerGameEventBus;
     public const string GameEventGroup = "";
 
-    private static readonly ImmediateEventBus InnerLoadEventBus = new();
+    private static readonly ImmediateEventBus InnerLoadEventBus = new((ev, ex) =>
+    {
+        Logger.Log(LogLevel.Error, "EventHandling",
+                   $"Unhandled exception thrown from loading event {ev}:\n{ex}");
+    });
     public static EventBus LoadEventBus => InnerLoadEventBus;
     public const string LoadEventGroup = "Load";
 
@@ -141,7 +149,7 @@ public partial class Game : SceneTree
 
         //Event Cycle
         try { InnerGameEventBus.HandleEvent(); }
-        catch (QueueEventHandlingException e)
+        catch (QueueEventSendingException e)
         {
             Logger.Log(LogLevel.Error, "EventHandling", e.Message);
             Logger.Log(LogLevel.Debug, "EventHandling", e.StackTrace ?? "no stack trace");

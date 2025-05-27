@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using BabelRush.Scenery.Collision;
 
@@ -34,13 +35,14 @@ public sealed class Stage(StageNode startNode) : IDisposable
 
         AddRooms(StartNode);
 
-        var unReg = Game.GameEventBus.Subscribe<ObjectEnteredAreaEvent>(async e =>
+        var unReg = Game.GameEventBus.SubscribeAsync<ObjectEnteredAreaEvent>(async e =>
         {
             if (result.Disposed) return;
             if (e.Object != Game.Play!.BattleField.Player || e.Area != junctionArea) return;
 
             Game.Play.PlayerState.WantMove = false;
-            StageNode nextNode = null!; // todo: await player for their decision
+            StageNode nextNode = await Task.Run(StageNode () => null!); // todo: await player for their decision
+            throw new NotImplementedException();
 
             Game.Play.PlayerState.WantMove = true;
             AddRooms(nextNode);
@@ -61,6 +63,7 @@ public sealed class Stage(StageNode startNode) : IDisposable
 
             if (node.NextRooms is []) return;
             junctionArea = null!; // todo: create new junction area with marker
+            throw new NotImplementedException();
             result.CollisionSpace.AddArea(junctionArea);
         }
     }
