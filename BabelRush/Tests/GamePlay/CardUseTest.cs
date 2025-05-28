@@ -33,7 +33,7 @@ public partial class CardUseTest : Node
         var enemy1 = new Mob(MobType.Default,  Alignment.Enemy);
         var enemy2 = new Mob(MobType.Default,  Alignment.Enemy);
 
-        var play = Play.Create(player, new Stage(new StageNode(RoomTemplate.Default, [], 0, Vector2.Zero)));
+        var play = Play.Create(player, Stage.Default);
         Game.SetPlay(play);
         play.BattleField.AddMobs(enemy1, enemy2, friend1);
         play.PlayerState.Ap = 6;

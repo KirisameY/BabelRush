@@ -2,10 +2,11 @@ using System;
 using System.Threading.Tasks;
 
 using BabelRush.Scenery.Collision;
+using BabelRush.Scenery.Stages.Template;
 
 namespace BabelRush.Scenery.Stages;
 
-public sealed class Stage(StageNode startNode) : IDisposable
+public sealed class Stage(StageTemplate template, StageNode startNode) : IDisposable
 {
     #region Dispose
 
@@ -24,6 +25,7 @@ public sealed class Stage(StageNode startNode) : IDisposable
     #endregion
 
 
+    public StageTemplate Template => template;
     public StageNode StartNode => startNode;
 
     internal Scene CreateScene()
@@ -67,4 +69,7 @@ public sealed class Stage(StageNode startNode) : IDisposable
             result.CollisionSpace.AddArea(junctionArea);
         }
     }
+
+
+    public static Stage Default { get; } = new(StageTemplate.Default, StageNode.Default);
 }
