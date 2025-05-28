@@ -1,7 +1,6 @@
 using System.Threading.Tasks;
 
 using BabelRush.Actions;
-using BabelRush.GamePlay;
 
 namespace BabelRush.Mobs.Actions;
 

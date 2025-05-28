@@ -10,6 +10,7 @@ public class ModelAttribute : Attribute;
 [AttributeUsage(AttributeTargets.Class, Inherited = false)]
 public sealed class ModelSetAttribute(string sortName) : ModelAttribute;
 
+// ReSharper disable once UnusedTypeParameter
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
 public sealed class ModelSetAttribute<TModel>(string sortName) : ModelAttribute;
 

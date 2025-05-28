@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
-using BabelRush.GamePlay;
-
 namespace BabelRush.Mobs.Actions;
 
 public class CommonMobActionStrategy(IDictionary<string, List<MobActionTemplate>> actionTable) : MobActionStrategy

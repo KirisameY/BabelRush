@@ -97,7 +97,7 @@ public partial class TargetSelector
     {
         _ when Game.Play is null => [],
         TargetPattern.None       => [],
-        TargetPattern.Self       => [Game.Play!.BattleField.Player],
+        TargetPattern.Self       => [Game.Play.BattleField.Player],
         TargetPattern.Any any    => CursorSelected is not null && GetRange(any.Range).Contains(CursorSelected) ? [CursorSelected] : [],
         TargetPattern.All all    => GetRange(all.Range),
         _                        => throw new ArgumentOutOfRangeException(nameof(pattern), pattern, null)

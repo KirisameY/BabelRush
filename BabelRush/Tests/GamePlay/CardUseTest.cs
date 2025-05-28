@@ -6,8 +6,6 @@ using BabelRush.Actions;
 using BabelRush.Cards;
 using BabelRush.GamePlay;
 using BabelRush.Mobs;
-using BabelRush.Scenery.Rooms;
-using BabelRush.Scenery.Stages;
 
 using Godot;
 
