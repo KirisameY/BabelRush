@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace BabelRush.Generator.Generators;
 
 [Generator(LanguageNames.CSharp)]
-public class ModelCheckGenerator : IIncrementalGenerator
+public class ModelCheckGenerator : IIncrementalGenerator //todo:继承关系
 {
     private static class Names
     {
@@ -38,6 +38,7 @@ public class ModelCheckGenerator : IIncrementalGenerator
 
     private record struct ModelClassInfo(
         string? Namespace, string ClassName, string ClassFullName,
+        bool Inherited, bool Sealed,
         IReadOnlyCollection<IPropertySymbol> ModelProperties, IReadOnlyCollection<IPropertySymbol> NecessaryProperties
     );
 
@@ -66,6 +67,9 @@ public class ModelCheckGenerator : IIncrementalGenerator
         var nameSpace = classSymbol.ContainingNamespace?.ToDisplayString();
         var className = classSymbol.Name;
         var classFullName = classSymbol.ToDisplayString();
+        var inherited = classSymbol.BaseType is { } baseType &&
+            baseType.GetAttributes().Any(a => a.AttributeClass.IsDerivedFrom(Names.ModelAttribute));
+        var @sealed = classSymbol.IsSealed;
         var properties =
             classSymbol.GetMembers()
                        .OfType<IPropertySymbol>()
@@ -76,11 +80,11 @@ public class ModelCheckGenerator : IIncrementalGenerator
         {
             if (property.Type.GetAttributes().Any(static a => a.AttributeClass.IsDerivedFrom(Names.ModelAttribute)))
                 modelProperties.Add(property);
-            else if (property.GetAttributes().Any(static a => a.AttributeClass.IsDerivedFrom(Names.NecessaryPropertyAttribute)))
+            if (property.GetAttributes().Any(static a => a.AttributeClass.IsDerivedFrom(Names.NecessaryPropertyAttribute)))
                 necessaryProperties.Add(property);
         }
 
-        return new(nameSpace, className, classFullName, modelProperties, necessaryProperties);
+        return new(nameSpace, className, classFullName, inherited, @sealed, modelProperties, necessaryProperties);
     }
 
     #endregion
@@ -121,6 +125,10 @@ public class ModelCheckGenerator : IIncrementalGenerator
                     sourceBuilder.AppendLine("set")
                                  .AppendLine("{")
                                  .IncreaseIndent()
+                                 .AppendLine("#pragma warning disable CS0472 // The result of the expression is always 'false' since a null reference is passed for parameter 'value'")
+                                 .AppendLine("if (value == null) return;")
+                                 .AppendLine("#pragma warning restore CS0472")
+                                 .AppendLine()
                                  .AppendLine($"_initialized_{name} = true;")
                                  .AppendLine("field = value;")
                                  .DecreaseIndent()
@@ -132,17 +140,31 @@ public class ModelCheckGenerator : IIncrementalGenerator
 
             sourceBuilder.AppendLine("//check properties")
                          .AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
-                         .AppendLine("public bool Check(out string[] errors)")
+                         .Append("public " + (info.Inherited, info.Sealed) switch
+                          {
+                              (true, _)      => "override ",
+                              (false, false) => "virtual ",
+                              (false, true)  => ""
+                          })
+                         .AppendLine("bool Check(out string[] errors)")
                          .AppendLine("{");
             using (sourceBuilder.Indent())
             {
-                sourceBuilder.AppendLine($"global::{Names.ListG}<string> errorList = [];");
+                sourceBuilder.AppendLine($"global::{Names.ListG}<string> errorList = [];")
+                             .AppendLine();
+
+                if (info.Inherited)
+                {
+                    sourceBuilder.AppendLine("_ = base.Check(out var baseErrors);")
+                                 .AppendLine("errorList.AddRange(baseErrors);");
+                }
                 // bool first = true;
                 foreach (var property in info.NecessaryProperties)
                 {
                     var name = property.Name;
                     sourceBuilder.AppendLine($"if (!_initialized_{name}) errorList.Add(\"Property {name} of {info.ClassName} did not initialized\");");
                 }
+
                 sourceBuilder.AppendLine()
                              .AppendLine("#pragma warning disable CS0168 // variable is declared but not used")
                              .AppendLine("string[] errorsArray;")

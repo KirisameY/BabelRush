@@ -11,13 +11,16 @@ public class ModelSetGenerator : IIncrementalGenerator
     {
         // ReSharper disable InconsistentNaming
         // ReSharper disable UnusedMember.Local
+        // ReSharper disable MemberCanBePrivate.Local
         public const string ModelSetAttribute = "BabelRush.Data.ModelSetAttribute";
+        public const string ModelSetAttributeG = "BabelRush.Data.ModelSetAttribute";
+        public const string ModelSetAttributeGT = $"{ModelSetAttributeG}<TModel>";
 
         public const string IModelSetG = "BabelRush.Data.IModelSet";
 
-        
+
         public const string IEnumerable = "System.Collections.IEnumerable";
-        
+
         public const string IEnumerator = "System.Collections.IEnumerator";
         public const string IEnumeratorG = "System.Collections.Generic.IEnumerator";
         public const string IReadOnlyCollectionG = "System.Collections.Generic.IReadOnlyCollection";
@@ -26,6 +29,7 @@ public class ModelSetGenerator : IIncrementalGenerator
         public const string NameSpaceLinq = "System.Linq";
 
         public const string TargetFileSuffix = "_ModelSet.generated.cs";
+        // ReSharper restore MemberCanBePrivate.Local
         // ReSharper restore UnusedMember.Local
         // ReSharper restore InconsistentNaming
     }
@@ -46,7 +50,7 @@ public class ModelSetGenerator : IIncrementalGenerator
 
     #region Select Info
 
-    private record struct ModelSetInfo(string? Namespace, string ClassName, string ClassFullName, string SetName);
+    private record struct ModelSetInfo(string? Namespace, string ClassName, string ClassFullName, List<(string Name, string Type)> Sets);
 
     private static bool SyntaxPredicate(SyntaxNode s, CancellationToken _) =>
         s is ClassDeclarationSyntax { AttributeLists.Count: > 0 } @class
@@ -59,19 +63,29 @@ public class ModelSetGenerator : IIncrementalGenerator
 
         var classSymbol = model.GetDeclaredSymbol(classDeclarationSyntax)!;
 
+        List<(string Name, string Type)> sets = [];
+
         foreach (var attributeData in classSymbol.GetAttributes())
         {
-            if (!attributeData.AttributeClass.IsDerivedFrom(Names.ModelSetAttribute)) continue;
+            string setType;
 
-            var nameSpace = classSymbol.ContainingNamespace?.ToDisplayString();
-            var className = classSymbol.Name;
-            var classFullName = classSymbol.ToDisplayString();
+            if (attributeData.AttributeClass.IsDerivedFrom(Names.ModelSetAttribute))
+                setType = classSymbol.ToDisplayString();
+            else if (attributeData.AttributeClass.IsDerivedFrom(Names.ModelSetAttributeGT))
+                setType = attributeData.AttributeClass!.TypeArguments[0].ToDisplayString();
+            else continue;
+
             var setName = (string)attributeData.ConstructorArguments[0].Value!;
 
-            return new(nameSpace, className, classFullName, setName);
+            sets.Add((setName, setType));
         }
 
-        return null;
+        if (sets.Count == 0) return null;
+
+        var nameSpace = classSymbol.ContainingNamespace?.ToDisplayString();
+        var className = classSymbol.Name;
+        var classFullName = classSymbol.ToDisplayString();
+        return new(nameSpace, className, classFullName, sets);
     }
 
     #endregion
@@ -93,7 +107,10 @@ public class ModelSetGenerator : IIncrementalGenerator
                          .AppendLine("{");
             using (sourceBuilder.Indent())
             {
-                sourceBuilder.AppendLine($"public {Names.ListG}<{info.ClassName}> {info.SetName} {{ get; set; }} = [];");
+                foreach (var set in info.Sets)
+                {
+                    sourceBuilder.AppendLine($"public global::{Names.ListG}<global::{set.Type}> {set.Name} {{ get; set; }} = [];");
+                }
 
                 sourceBuilder.AppendLine()
                              .AppendLine($"public global::{Names.IReadOnlyCollectionG}<{info.ClassName}> CheckAll(out string[] errors)")
@@ -102,19 +119,28 @@ public class ModelSetGenerator : IIncrementalGenerator
                 {
                     sourceBuilder.AppendLine($"global::{Names.ListG}<{info.ClassName}> result = [];")
                                  .AppendLine($"global::{Names.ListG}<(string id, string[] messages)> errorList = [];")
-                                  //.AppendLine($"foreach (var item in {info.SetName})")
-                                 .AppendLine($"for (int i = 0; i < {info.SetName}.Count; i++)")
+                                 .AppendLine();
+                    sourceBuilder.Append($"var sets = {info.Sets[0].Name}");
+                    foreach (var set in info.Sets.Skip(1))
+                    {
+                        sourceBuilder.AppendLine()
+                                     .Append($"          .Concat({set.Name})");
+                    }
+                    sourceBuilder.AppendLine(";");
+
+
+                    sourceBuilder.AppendLine("foreach (var item in sets)")
                                  .AppendLine("{");
                     using (sourceBuilder.Indent())
                     {
-                        sourceBuilder.AppendLine($"var item = {info.SetName}[i];")
-                                     .AppendLine("bool @checked = item.Check(out var error);")
+                        sourceBuilder.AppendLine("bool @checked = item.Check(out var error);")
                                      .AppendLine("errorList.Add((item.Id, error));");
                         sourceBuilder.AppendLine("if (@checked)")
                                      .AppendLine("{")
                                      .IncreaseIndent()
-                                     .AppendLine("AfterCheck(ref item, errorList);")
-                                     .AppendLine("result.Add(item);")
+                                     .AppendLine($"{info.ClassName} refItem = item;")
+                                     .AppendLine("AfterCheck(ref refItem, errorList);")
+                                     .AppendLine("result.Add(refItem);")
                                      .DecreaseIndent()
                                      .AppendLine("}");
                     }

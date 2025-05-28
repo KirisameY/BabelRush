@@ -12,9 +12,9 @@ public static class ModelUtils
         (DocumentSyntax source, out ModelParseErrorInfo errorMessages)
         where TModelSet : class, IModelSet<IModel<TTarget>>, new()
     {
-        source.TryToModel<TModelSet>(out var model, out var diagnostics);
+        source.TryToModel<TModelSet>(out var modelSet, out var diagnostics);
         string[] checkErrors = [];
-        IReadOnlyCollection<IModel<TTarget>> result = model?.CheckAll(out checkErrors) ?? [];
+        IReadOnlyCollection<IModel<TTarget>> result = modelSet?.CheckAll(out checkErrors) ?? [];
         var errors = diagnostics.Select(msg => msg.ToString()).Concat(checkErrors).ToArray();
         errorMessages = new(errors.Length, errors);
         return result;
