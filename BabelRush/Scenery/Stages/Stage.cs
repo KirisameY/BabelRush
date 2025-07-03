@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 
 using BabelRush.Scenery.Collision;
+using BabelRush.Scenery.Rooms;
 using BabelRush.Scenery.Stages.Template;
 
 namespace BabelRush.Scenery.Stages;
@@ -64,8 +65,8 @@ public sealed class Stage(StageTemplate template, StageNode startNode) : IDispos
             result.AddRoom(finalRoom, true);
 
             if (node.NextRooms is []) return;
-            junctionArea = null!; // todo: create new junction area with marker
-            throw new NotImplementedException();
+            var pos = node.Room.Objects.Find(o => o.obj is RoomObject.Marker { Mark: "junction" }).pos;
+            junctionArea = new Area(pos, 4d);
             result.CollisionSpace.AddArea(junctionArea);
         }
     }

@@ -6,7 +6,7 @@ using Tomlyn.Syntax;
 
 namespace BabelRush.Scenery.Stages.Template;
 
-[ModelSet<ConstantStageTemplateModel>("ConstantStage")] // todo: multi type
+[ModelSet<ConstantStageTemplateModel>("ConstantStage")]
 public abstract partial class StageTemplateModel : IDataModel<StageTemplate>
 {
     [NecessaryProperty]

@@ -34,9 +34,8 @@ public partial class RoomTemplateModel : IDataModel<RoomTemplate>
     {
         foreach (var objInfo in Objects)
         {
-            if (objInfo.Check(out var errors)) continue;
-            errorList.AddRange(errors);
-            break;
+            if (!objInfo.Check(out var errors))
+                errorList.AddRange(errors);
         }
     }
 
@@ -58,6 +57,11 @@ public partial class RoomTemplateModel : IDataModel<RoomTemplate>
             if (_obj is null)
             {
                 errors = ["Obj type did not initialized"];
+                return false;
+            }
+            if (RoomObject.CheckString(_obj))
+            {
+                errors = ["Invalid room obj format"];
                 return false;
             }
             errors = [];
