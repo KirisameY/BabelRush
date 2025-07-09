@@ -15,6 +15,8 @@ public partial class RoomTemplateModel : IDataModel<RoomTemplate>
     [NecessaryProperty]
     public partial string Id { get; set; }
     [NecessaryProperty]
+    public partial string IconId { get; set; }
+    [NecessaryProperty]
     public partial int Length { get; set; }
     [UsedImplicitly]
     public List<RoomObjInfo> Objects { get; set; } = [];
@@ -23,7 +25,8 @@ public partial class RoomTemplateModel : IDataModel<RoomTemplate>
     public (RegKey, RoomTemplate) Convert(string nameSpace, string path)
     {
         var id = RegKey.From(nameSpace, Id);
-        var room = new RoomTemplate(id, Length, Objects.Select(o => (RoomObject.FromString(o.Obj), o.Position)));
+        var iconId = IconId.WithDefaultNameSpace(nameSpace);
+        var room = new RoomTemplate(id, iconId, Length, Objects.Select(o => (RoomObject.FromString(o.Obj), o.Position)));
         return (id, room);
     }
 
