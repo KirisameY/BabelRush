@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 
+using BabelRush.Gui.Screens.InGame;
+
 using Godot;
 
 namespace BabelRush.GamePlay;
@@ -21,9 +23,11 @@ public partial class PlayNode : Node
 
 
     //Members
-    private Camera? _camera;
-    public Camera Camera => _camera ??= GetNode<Camera>("Camera");
+    [field: AllowNull, MaybeNull]
+    public Camera Camera => field ??= GetNode<Camera>("Camera");
 
+    [field: AllowNull, MaybeNull]
+    public MapScreen MapScreen => field ??= GetNode<MapScreen>("MapScreen");
 
     //Logging
     // private static Logger Logger { get; } = Game.LogBus.GetLogger("PlayNode");

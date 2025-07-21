@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,7 +5,7 @@ using BabelRush.Data;
 
 using JetBrains.Annotations;
 
-namespace BabelRush.Scenery.Stages.Template;
+namespace BabelRush.Level.Stages.Template;
 
 [Model] [UsedImplicitly]
 public partial class ConstantStageTemplateModel : StageTemplateModel

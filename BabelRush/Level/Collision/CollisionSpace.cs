@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 
+using BabelRush.Level.Scenery;
+
 using KirisameLib.Event;
 using KirisameLib.Extensions;
 
-namespace BabelRush.Scenery.Collision;
+namespace BabelRush.Level.Collision;
 
 [EventHandlerContainer]
 public sealed partial class CollisionSpace : IDisposable
@@ -71,7 +73,7 @@ public sealed partial class CollisionSpace : IDisposable
 
     #region Detect
 
-    private void RemoveCollision(Area area) => CollidingList.RemoveWhere(t => t.Area == area);
+    private void RemoveCollision(Area area) => CollidingList.RemoveWhere(t => t.Area == area); //todo: 拆分碰撞检测和事件发布
 
     private void RemoveCollision(SceneObject obj) => CollidingList.RemoveWhere(t => t.Obj == obj);
 
@@ -105,7 +107,7 @@ public sealed partial class CollisionSpace : IDisposable
     #region EventHandlers
 
     [EventHandler]
-    private void OnAreaTransformed(AreaTransformedEvent e) // 这里可能会导致事件发生时和处理时状态不一致，但现在先不修
+    private void OnAreaTransformed(AreaTransformedEvent e)
     {
         if (!AreaList.Contains(e.Area)) return;
 

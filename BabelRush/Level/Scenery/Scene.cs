@@ -1,43 +1,53 @@
 using System;
 using System.Collections.Generic;
 
-using BabelRush.Scenery.Collision;
-using BabelRush.Scenery.Rooms;
+using BabelRush.Level.Collision;
+using BabelRush.Level.Rooms;
+using BabelRush.Level.Stages;
 
 using Godot;
 
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
 
-namespace BabelRush.Scenery;
+namespace BabelRush.Level.Scenery;
 
-public sealed class Scene : IDisposable
+public sealed class Scene
 {
     #region Initialize&Cleanup
 
-    public void Ready(Node parent)
+    internal Scene(Stage stage)
+    {
+        Stage = stage;
+    }
+
+    internal void Ready(Node parent)
     {
         CollisionSpace.Ready();
         parent.AddChild(Node);
         parent.MoveChild(Node, 0);
         Node.Name = "Scene";
+        Game.GameEventBus.Publish(new SceneReadyEvent(this));
     }
 
     public bool Disposed { get; private set; }
 
-    public void Dispose()
+    internal void InternalDispose()
     {
         if (Disposed) return;
 
         Disposed = true;
         CollisionSpace.Dispose();
         Node.QueueFree();
+        Game.GameEventBus.Publish(new SceneDisposeEvent(this));
     }
 
     #endregion
 
 
-    //Node
+    // Properties
+    public Stage Stage { get; }
+
     public Node2D Node { get; } = new();
 
 

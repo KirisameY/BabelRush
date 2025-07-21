@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 
 using Tomlyn.Syntax;
 
-namespace BabelRush.Scenery.Rooms;
+namespace BabelRush.Level.Rooms;
 
 [ModelSet("Room")]
 public partial class RoomTemplateModel : IDataModel<RoomTemplate>

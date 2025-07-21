@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 using BabelRush.Data;
+using BabelRush.Level.Scenery;
 using BabelRush.Mobs;
 using BabelRush.Registers;
 
-namespace BabelRush.Scenery.Rooms;
+namespace BabelRush.Level.Rooms;
 
 public abstract partial record RoomObject
 {

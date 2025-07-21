@@ -4,7 +4,7 @@ using BabelRush.Data;
 
 using Tomlyn.Syntax;
 
-namespace BabelRush.Scenery.Stages.Template;
+namespace BabelRush.Level.Stages.Template;
 
 [ModelSet<ConstantStageTemplateModel>("ConstantStage")]
 public abstract partial class StageTemplateModel : IDataModel<StageTemplate>

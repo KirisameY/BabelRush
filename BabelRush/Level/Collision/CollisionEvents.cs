@@ -1,6 +1,8 @@
+using BabelRush.Level.Scenery;
+
 using KirisameLib.Event;
 
-namespace BabelRush.Scenery.Collision;
+namespace BabelRush.Level.Collision;
 
 public abstract record ObjectAreaEvent(Area Area, SceneObject Object) : BaseEvent;
 

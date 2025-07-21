@@ -1,6 +1,6 @@
 using BabelRush.Data;
 
-namespace BabelRush.Scenery.Stages.Template;
+namespace BabelRush.Level.Stages.Template;
 
 public class ConstantStageTemplate(RegKey id, StageNode startNode) : StageTemplate(id)
 {

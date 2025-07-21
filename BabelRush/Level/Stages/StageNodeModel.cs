@@ -7,7 +7,7 @@ using BabelRush.Registers;
 
 using JetBrains.Annotations;
 
-namespace BabelRush.Scenery.Stages;
+namespace BabelRush.Level.Stages;
 
 [Model] [UsedImplicitly]
 public partial class StageNodeModel

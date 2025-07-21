@@ -1,14 +1,15 @@
 using BabelRush.Data;
+using BabelRush.Level.Rooms;
+using BabelRush.Level.Stages.Template;
 using BabelRush.Registering;
 using BabelRush.Registering.Registers;
-using BabelRush.Scenery.Rooms;
-using BabelRush.Scenery.Stages.Template;
 
 using Godot;
 
 using KirisameLib.Data.Registers;
 
-using StageTemplateModel = BabelRush.Scenery.Stages.Template.StageTemplateModel;
+using RoomTemplateModel = BabelRush.Level.Rooms.RoomTemplateModel;
+using StageTemplateModel = BabelRush.Level.Stages.Template.StageTemplateModel;
 
 namespace BabelRush.Registers;
 

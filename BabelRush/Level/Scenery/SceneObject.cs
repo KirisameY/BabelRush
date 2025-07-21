@@ -1,4 +1,4 @@
-namespace BabelRush.Scenery;
+namespace BabelRush.Level.Scenery;
 
 public abstract class SceneObject
 {

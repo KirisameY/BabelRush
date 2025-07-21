@@ -1,6 +1,8 @@
 using System;
 
-namespace BabelRush.Scenery.Collision;
+using BabelRush.Level.Scenery;
+
+namespace BabelRush.Level.Collision;
 
 public sealed class Area(double position, double radius)
 {

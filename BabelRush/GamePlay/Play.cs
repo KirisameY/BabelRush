@@ -2,16 +2,16 @@ using System;
 using System.Runtime.CompilerServices;
 
 using BabelRush.Cards;
+using BabelRush.Level.Collision;
+using BabelRush.Level.Scenery;
 using BabelRush.Mobs;
-using BabelRush.Scenery;
-using BabelRush.Scenery.Collision;
 
 using KirisameLib.Randomization;
 using KirisameLib.Randomization.RandomGenerators;
 using KirisameLib.Event;
 using KirisameLib.Logging;
 
-using Stage = BabelRush.Scenery.Stages.Stage;
+using Stage = BabelRush.Level.Stages.Stage;
 
 namespace BabelRush.GamePlay;
 
@@ -25,7 +25,6 @@ public sealed partial class Play : IDisposable
         BattleField = battleField;
         Random      = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
         CardHub     = new(Random);
-        Scene       = null!; // will be set by Stage
         Stage       = initialStage;
 
         Game.Process += Process;
@@ -80,24 +79,14 @@ public sealed partial class Play : IDisposable
         get;
         set
         {
-            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
-            field?.Dispose(); // When initializing it will be null
-            field = value;
-            Scene = value.CreateScene();
-        }
-    }
-
-    public Scene Scene
-    {
-        get;
-        private set
-        {
             if (value == field) return;
-            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+
             field?.Dispose(); // When initializing it will be null
             field = value;
-            value.CollisionSpace.AddArea(_screenArea);
-            value.Ready(Node);
+
+            var scene = value.Scene;
+            scene.CollisionSpace.AddArea(_screenArea);
+            scene.Ready(Node);
         }
     }
 

@@ -1,6 +1,6 @@
 using Godot;
 
-namespace BabelRush.Scenery;
+namespace BabelRush.Level.Scenery;
 
 public abstract class VisualObject : SceneObject
 {

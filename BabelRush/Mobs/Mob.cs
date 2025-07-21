@@ -1,9 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.GamePlay;
+using BabelRush.Level;
+using BabelRush.Level.Scenery;
 using BabelRush.Mobs.Actions;
 using BabelRush.Numerics;
-using BabelRush.Scenery;
 
 using Godot;
 

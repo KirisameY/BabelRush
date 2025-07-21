@@ -9,7 +9,7 @@ using Godot;
 
 using KirisameLib.Extensions;
 
-namespace BabelRush.Scenery.Rooms;
+namespace BabelRush.Level.Rooms;
 
 public class RoomTemplate(RegKey id, RegKey iconId, int length, IEnumerable<(RoomObject obj, double pos)> objects)
 {

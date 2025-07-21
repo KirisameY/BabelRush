@@ -29,6 +29,12 @@
 
     <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">
         <Compile Remove="Tests\**" />
+        <Compile Update="Scenery\Stages\StageNodeModel.cs">
+          <DependentUpon>StageNode.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Scenery\Rooms\RoomTemplateModel.cs">
+          <DependentUpon>RoomTemplate.cs</DependentUpon>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>

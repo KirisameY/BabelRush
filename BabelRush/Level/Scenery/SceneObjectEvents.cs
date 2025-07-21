@@ -1,6 +1,6 @@
 using KirisameLib.Event;
 
-namespace BabelRush.Scenery;
+namespace BabelRush.Level.Scenery;
 
 public abstract record SceneObjectEvent(SceneObject SceneObject) : BaseEvent;
 
