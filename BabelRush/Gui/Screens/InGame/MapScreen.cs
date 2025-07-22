@@ -6,6 +6,7 @@ using System.Linq;
 
 using BabelRush.Level;
 using BabelRush.Level.Scenery;
+using BabelRush.Level.Stages;
 
 using Godot;
 
@@ -17,46 +18,47 @@ namespace BabelRush.Gui.Screens.InGame;
 [EventHandlerContainer]
 public partial class MapScreen : Control
 {
-    // todo: finish this
+    // fields
+    private Scene? CurrentScene
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            if (value is null) return;
 
-    // // C# api
-    // internal async Task<StageNode> SelectStage(StageNode start, StageNode junction)
-    // {
-    //     if (Instance._activated) throw new InvalidOperationException("Path select screen has already activated");
-    //     Instance._activated = true;
-    //
-    //     var playNode = Game.Play!.Node;
-    //     playNode.AddChild(Instance);
-    //
-    //     TaskCompletionSource<StageNode> selectTaskSource = new();
-    //
-    //     Queue<(StageNode? from, StageNode current)> queue = [];
-    //     queue.Enqueue((null, start));
-    //     while (queue.TryDequeue(out var path))
-    //     {
-    //         var node = path.current;
-    //         node.NextRooms.Select(n => (node, n)).ForEach(queue.Enqueue);
-    //
-    //         var token = new TextureButton { Disabled = true };
-    //         //todo: draw & add it >_<
-    //
-    //         if (path.from != junction) continue;
-    //         token.Pressed += () => selectTaskSource.SetResult(node);
-    //     }
-    //
-    //     // wait for player
-    //     var selected = await selectTaskSource.Task;
-    //
-    //     playNode.RemoveChild(Instance);
-    //     Instance._activated = false;
-    //     return selected;
-    // }
+            SetStage(value.Stage);
+        }
+    }
+
+
+    private void SetStage(Stage stage)
+    {
+        Queue<(StageNode? from, StageNode current)> queue = [];
+        queue.Enqueue((null, stage.StartNode));
+        while (queue.TryDequeue(out var path))
+        {
+            var node = path.current;
+            node.NextRooms.Select(n => (node, n)).ForEach(queue.Enqueue);
+
+            var token = new TextureButton { Disabled = true }; //OPTIMIZE: make this in pool
+            token.TextureNormal = node.Room.Icon;
+            AddChild(token);
+            token.Position = (node.DisplayPosition * 0.8f + new Vector2(0.1f, 0.1f)) * Size;
+            //todo: draw line
+
+            token.Pressed += () => Game.GameEventBus.Publish(new MapScreenChosenNodeEvent(this, node));
+        }
+    }
 
 
     // GD Override
     public override void _EnterTree()
     {
         SubscribeInstanceHandler(Game.GameEventBus);
+
+        CurrentScene = Game.Play?.Stage.Scene;
     }
 
     public override void _ExitTree()
@@ -69,6 +71,14 @@ public partial class MapScreen : Control
     [EventHandler]
     private void OnSceneReady(SceneReadyEvent e)
     {
-        // todo
+        CurrentScene = e.Scene;
     }
+
+    [EventHandler]
+    private void OnStagePathChosenRequest(StagePathChosenRequestEvent e)
+    {
+        Show();
+    }
+
+    //todo: update available rooms
 }

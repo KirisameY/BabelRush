@@ -57,8 +57,8 @@ public sealed class Stage(StageTemplate template, StageNode startNode) : IDispos
             Game.GameEventBus.Publish(new StagePathChosenRequestEvent(this, currentState.Value.node.NextRooms));
             var nextNode = await PathSelector.GetNextNode();
 
-            Game.Play.PlayerState.WantMove = true;
             AddRooms(nextNode);
+            Game.Play.PlayerState.WantMove = true;
         });
         _sceneCleanup += unReg;
 
