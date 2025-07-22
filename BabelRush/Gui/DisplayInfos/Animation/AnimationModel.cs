@@ -12,10 +12,10 @@ using KirisameLib.Extensions;
 
 using Tomlyn;
 
-namespace BabelRush.Mobs.Animation;
+namespace BabelRush.Gui.DisplayInfos.Animation;
 
 [Model]
-internal partial class MobAnimationModel : IResModel<MobAnimationModel>
+internal partial class AnimationModel : IResModel<AnimationModel>
 {
     [IgnoreDataMember]
     public RegKey Id => (SetId.NameSpace, $"{SetId.Key}/{AnimationId}");
@@ -49,14 +49,14 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
     public string? AfterAnimation { get; set; }
 
 
-    public (RegKey, MobAnimationModel) Convert(string nameSpace, string path)
+    public (RegKey, AnimationModel) Convert(string nameSpace, string path)
     {
         //todo: 这个倒也好办，回头重置完MobAnimation之后把它做成MobAnimationEntry的Model即可
         throw new System.NotImplementedException();
     }
 
 
-    public static IReadOnlyCollection<IModel<MobAnimationModel>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<AnimationModel>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         List<string> errors = [];
 
@@ -71,7 +71,7 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
             return [];
         }
 
-        Toml.Parse(tomlFile!).TryToModel(out MobAnimationModel? model, out var diagnostics);
+        Toml.Parse(tomlFile!).TryToModel(out AnimationModel? model, out var diagnostics);
         errors.AddRange(diagnostics.Select(static diagnostic => diagnostic.ToString()));
         if (model is null)
         {
@@ -93,7 +93,7 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
         return [model];
     }
 
-    public static MobAnimationModel Default { get; } = new()
+    public static AnimationModel Default { get; } = new()
     {
         SetId = RegKey.Default,
         AnimationId = "default",

@@ -8,16 +8,16 @@ using Godot;
 
 using KirisameLib.Extensions;
 
-namespace BabelRush.Mobs.Animation;
+namespace BabelRush.Gui.DisplayInfos.Animation;
 
-internal class MobAnimationSetBuilder(RegKey id)
+internal class AnimationSetBuilder(RegKey id)
 {
     private SpriteFrames SpriteFrames { get; } = new();
-    private Dictionary<MobAnimationId, MobAnimationSet.AnimationInfo> AnimationDict { get; } = [];
+    private Dictionary<AnimationId, AnimationSet.AnimationInfo> AnimationDict { get; } = [];
 
-    public MobAnimationSetBuilder AddAnimation(
-        MobAnimationId animationId, IEnumerable<Texture2D> frames, Vector2I center, Vector2I boxSize, float fps = 5.0f,
-        Dictionary<int, float>? timeScales = null, MobAnimationId? beforeAnimation = null, MobAnimationId? afterAnimation = null)
+    public AnimationSetBuilder AddAnimation(
+        AnimationId animationId, IEnumerable<Texture2D> frames, Vector2I center, Vector2I boxSize, float fps = 5.0f,
+        Dictionary<int, float>? timeScales = null, AnimationId? beforeAnimation = null, AnimationId? afterAnimation = null)
     {
         if (!animationId.IsAction && (beforeAnimation, afterAnimation) is not (null, null))
             throw new InvalidOperationException("State animation cannot have before and after animations");
@@ -40,7 +40,7 @@ internal class MobAnimationSetBuilder(RegKey id)
         return this;
     }
 
-    public MobAnimationSetBuilder AddAnimation(MobAnimationModel model)
+    public AnimationSetBuilder AddAnimation(AnimationModel model)
     {
         if (model.SetId != id) throw new InvalidOperationException("Model is not for this animation set");
         return AddAnimation(model.AnimationId,
@@ -50,10 +50,10 @@ internal class MobAnimationSetBuilder(RegKey id)
                             model.BeforeAnimation, model.AfterAnimation);
     }
 
-    public MobAnimationSet Build()
+    public AnimationSet Build()
     {
-        if (!AnimationDict.ContainsKey(MobAnimationId.Default))
-            throw new InvalidOperationException($"Animation \"{MobAnimationId.Default}\" does not exist");
+        if (!AnimationDict.ContainsKey(AnimationId.Default))
+            throw new InvalidOperationException($"Animation \"{AnimationId.Default}\" does not exist");
         return new(id, SpriteFrames, AnimationDict);
     }
 }

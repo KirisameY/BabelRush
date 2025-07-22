@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BabelRush.Data;
-using BabelRush.Mobs.Animation;
+using BabelRush.Gui.DisplayInfos.Animation;
 using BabelRush.Registering.I18n;
 
 using KirisameLib.Data.Registering;
@@ -12,27 +12,27 @@ using KirisameLib.Extensions;
 
 namespace BabelRush.Registering.Misc;
 
-internal sealed class MobAnimationSetRegister : IRegister<RegKey, MobAnimationSet>, II18nRegTarget<MobAnimationModel>
+internal sealed class MobAnimationSetRegister : IRegister<RegKey, AnimationSet>, II18nRegTarget<AnimationModel>
 {
     public MobAnimationSetRegister(string path)
     {
         // ModelReg = SimpleRegisterCreate.Res<MobAnimationModel, MobAnimationModel>(path, MobAnimationModel.Default);
-        ModelReg = new I18nRegisterBuilder<MobAnimationModel>()
-                  .WithFallback(new RegisterBuilder<RegKey, MobAnimationModel>()
+        ModelReg = new I18nRegisterBuilder<AnimationModel>()
+                  .WithFallback(new RegisterBuilder<RegKey, AnimationModel>()
                                .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
-                               .AddRegistrant(MakeRegistrant.ForCommonRes<MobAnimationModel, MobAnimationModel>(path))
-                               .WithFallback(MobAnimationModel.Default)
+                               .AddRegistrant(MakeRegistrant.ForCommonRes<AnimationModel, AnimationModel>(path))
+                               .WithFallback(AnimationModel.Default)
                                .Build())
                   .WithRegisterDoneEventSource(RegisterEventSource.LocalRegisterDone)
                   .Build();
-        MakeRegistrant.ForLocalRes<MobAnimationModel, MobAnimationModel>(path).AcceptTarget(this);
+        MakeRegistrant.ForLocalRes<AnimationModel, AnimationModel>(path).AcceptTarget(this);
     }
 
 
     #region Fields
 
-    private I18nRegister<MobAnimationModel> ModelReg { get; }
-    private Dictionary<RegKey, MobAnimationSet> FinalReg { get; } = new();
+    private I18nRegister<AnimationModel> ModelReg { get; }
+    private Dictionary<RegKey, AnimationSet> FinalReg { get; } = new();
 
     private bool _isRegistering = false;
 
@@ -41,7 +41,7 @@ internal sealed class MobAnimationSetRegister : IRegister<RegKey, MobAnimationSe
 
     #region Registering
 
-    public void UpdateLocal(string local, Func<string, IRegistrant<RegKey, MobAnimationModel>> registrantCreator)
+    public void UpdateLocal(string local, Func<string, IRegistrant<RegKey, AnimationModel>> registrantCreator)
     {
         ModelReg.UpdateLocal(local, registrantCreator);
 
@@ -53,7 +53,7 @@ internal sealed class MobAnimationSetRegister : IRegister<RegKey, MobAnimationSe
             var groups = ModelReg.Values.GroupBy(model => model.SetId); //todo: 改RegKey的后续处理
             foreach (var group in groups)
             {
-                var builder = new MobAnimationSetBuilder(group.Key);
+                var builder = new AnimationSetBuilder(group.Key);
                 group.ForEach(model => builder.AddAnimation(model));
                 FinalReg[group.Key] = builder.Build();
             }
@@ -64,9 +64,9 @@ internal sealed class MobAnimationSetRegister : IRegister<RegKey, MobAnimationSe
     #endregion
 
 
-    public MobAnimationSet this[RegKey id] => GetItem(id);
+    public AnimationSet this[RegKey id] => GetItem(id);
 
-    public MobAnimationSet GetItem(RegKey id) => FinalReg.GetOrDefault(id, MobAnimationSet.Default)!;
+    public AnimationSet GetItem(RegKey id) => FinalReg.GetOrDefault(id, AnimationSet.Default)!;
 
     public bool ItemRegistered(RegKey id) => FinalReg.ContainsKey(id);
 }

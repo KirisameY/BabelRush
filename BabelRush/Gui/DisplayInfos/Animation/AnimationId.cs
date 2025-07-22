@@ -6,13 +6,13 @@ using Godot;
 
 using KirisameLib.Extensions;
 
-namespace BabelRush.Mobs.Animation;
+namespace BabelRush.Gui.DisplayInfos.Animation;
 
-public class MobAnimationId
+public class AnimationId
 {
     #region Factory
 
-    private MobAnimationId(IEnumerable<string> stateParts, IEnumerable<string> actionParts, string fullName)
+    private AnimationId(IEnumerable<string> stateParts, IEnumerable<string> actionParts, string fullName)
     {
         FullName = fullName;
         NameId = new(fullName);
@@ -21,18 +21,18 @@ public class MobAnimationId
     }
 
 
-    private static readonly Dictionary<string, MobAnimationId> Cache = [];
+    private static readonly Dictionary<string, AnimationId> Cache = [];
 
-    public static MobAnimationId Get(IList<string> stateParts, IList<string> actionParts)
+    public static AnimationId Get(IList<string> stateParts, IList<string> actionParts)
     {
         var key = actionParts is [] ? stateParts.Join('.') : $"{stateParts.Join('.')}${actionParts.Join('.')}";
         if (Cache.TryGetValue(key, out var result)) return result;
-        result = new MobAnimationId(stateParts, actionParts, key);
+        result = new AnimationId(stateParts, actionParts, key);
         Cache.Add(key, result);
         return result;
     }
 
-    public static MobAnimationId Get(string state, string action)
+    public static AnimationId Get(string state, string action)
     {
         var fullName = action == "" ? state : $"{state}${action}";
         if (Cache.TryGetValue(fullName, out var result)) return result;
@@ -41,7 +41,7 @@ public class MobAnimationId
         return result;
     }
 
-    public static MobAnimationId Get(string fullName)
+    public static AnimationId Get(string fullName)
     {
         if (Cache.TryGetValue(fullName, out var result)) return result;
         var (state, action) = fullName.Split('$', 2) switch
@@ -52,12 +52,12 @@ public class MobAnimationId
             _                    => ([], [])
             // ReSharper restore ConvertTypeCheckPatternToNullCheck
         };
-        result = new MobAnimationId(state, action, fullName);
+        result = new AnimationId(state, action, fullName);
         Cache.Add(fullName, result);
         return result;
     }
 
-    public static MobAnimationId Default => Get("idle");
+    public static AnimationId Default => Get("idle");
 
     #endregion
 
@@ -79,20 +79,20 @@ public class MobAnimationId
     public override string ToString() => FullName;
 
     [return: NotNullIfNotNull("fullName")]
-    public static implicit operator MobAnimationId?(string? fullName) => fullName is null ? null : Get(fullName);
+    public static implicit operator AnimationId?(string? fullName) => fullName is null ? null : Get(fullName);
 
     [return: NotNullIfNotNull("id")]
-    public static implicit operator string?(MobAnimationId? id) => id?.FullName;
+    public static implicit operator string?(AnimationId? id) => id?.FullName;
 
     [return: NotNullIfNotNull("id")]
-    public static implicit operator StringName?(MobAnimationId? id) => id?.NameId;
+    public static implicit operator StringName?(AnimationId? id) => id?.NameId;
 
     #endregion
 
 
     #region Backoff
 
-    public IEnumerable<MobAnimationId> Backoff()
+    public IEnumerable<AnimationId> Backoff()
     {
         if (IsAction)
         {
