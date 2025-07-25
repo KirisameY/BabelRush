@@ -30,9 +30,9 @@ internal partial class AnimationModel : IResModel<AnimationModel>
     public string AnimationId { get; private set; } = "";
 
     [NecessaryProperty]
-    public partial int Columns { get; set; }
-    [NecessaryProperty]
-    public partial int Rows { get; set; }
+    public partial int Frames { get; set; }
+    // [NecessaryProperty]
+    // public partial int Rows { get; set; }
     [NecessaryProperty]
     public partial Vector2IModel FrameCenter { get; set; }
     [NecessaryProperty]
@@ -102,8 +102,8 @@ internal partial class AnimationModel : IResModel<AnimationModel>
         NameSpace   = "default",
         SetName     = "default",
         AnimationId = "default",
-        Columns     = 1,
-        Rows        = 1,
+        Frames      = 1,
+        // Rows        = 1,
         FrameCenter = new() { X = 12, Y = 0 },
         BoxSize     = new() { X = 24, Y = 24 },
         Fps         = 0,
