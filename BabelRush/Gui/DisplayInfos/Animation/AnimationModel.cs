@@ -30,7 +30,7 @@ internal partial class AnimationModel : IResModel<AnimationModel>
     public string AnimationId { get; private set; } = "";
 
     [NecessaryProperty]
-    public partial int Frames { get; set; }
+    public partial uint Frames { get; set; }
     // [NecessaryProperty]
     // public partial int Rows { get; set; }
     [NecessaryProperty]
