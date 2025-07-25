@@ -44,7 +44,7 @@ internal class AnimationSetBuilder(RegKey id)
     {
         if (model.SetId != id) throw new InvalidOperationException("Model is not for this animation set");
         return AddAnimation(model.AnimationId,
-                            DataUtils.CutAtlasTexture(model.FrameAtlas, model.Frames, 1), //model.Rows),
+                            DataUtils.CutAtlasTexture(model.FrameAtlas, (int)model.Frames, 1), //model.Rows),
                             model.FrameCenter, model.BoxSize, model.Fps,
                             model.FrameTimeScale,
                             model.BeforeAnimation, model.AfterAnimation);
