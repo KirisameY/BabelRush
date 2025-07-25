@@ -12,23 +12,27 @@ using KirisameLib.Extensions;
 
 using Tomlyn;
 
-namespace BabelRush.Mobs.Animation;
+namespace BabelRush.Gui.DisplayInfos.Animation;
 
 [Model]
-internal partial class MobAnimationModel : IResModel<MobAnimationModel>
+internal partial class AnimationModel : IResModel<AnimationModel>
 {
     [IgnoreDataMember]
-    public RegKey Id => (SetId.NameSpace, $"{SetId.Key}/{AnimationId}");
+    public RegKey Id => (NameSpace, $"{SetName}/{AnimationId}");
+    [IgnoreDataMember]
+    public RegKey SetId => (NameSpace, SetName);
 
     [IgnoreDataMember]
-    public RegKey SetId { get; private set; } = RegKey.Default;
+    public string NameSpace { get; private set; } = "";
+    [IgnoreDataMember]
+    public string SetName { get; private set; } = "";
     [IgnoreDataMember]
     public string AnimationId { get; private set; } = "";
 
     [NecessaryProperty]
-    public partial int Columns { get; set; }
-    [NecessaryProperty]
-    public partial int Rows { get; set; }
+    public partial uint Frames { get; set; }
+    // [NecessaryProperty]
+    // public partial int Rows { get; set; }
     [NecessaryProperty]
     public partial Vector2IModel FrameCenter { get; set; }
     [NecessaryProperty]
@@ -49,14 +53,14 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
     public string? AfterAnimation { get; set; }
 
 
-    public (RegKey, MobAnimationModel) Convert(string nameSpace, string path)
+    public (RegKey, AnimationModel) Convert(string nameSpace, string path)
     {
-        //todo: 这个倒也好办，回头重置完MobAnimation之后把它做成MobAnimationEntry的Model即可
-        throw new System.NotImplementedException();
+        NameSpace = nameSpace;
+        return (Id, this);
     }
 
 
-    public static IReadOnlyCollection<IModel<MobAnimationModel>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<AnimationModel>> FromSource(ResSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         List<string> errors = [];
 
@@ -71,7 +75,7 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
             return [];
         }
 
-        Toml.Parse(tomlFile!).TryToModel(out MobAnimationModel? model, out var diagnostics);
+        Toml.Parse(tomlFile!).TryToModel(out AnimationModel? model, out var diagnostics);
         errors.AddRange(diagnostics.Select(static diagnostic => diagnostic.ToString()));
         if (model is null)
         {
@@ -85,23 +89,24 @@ internal partial class MobAnimationModel : IResModel<MobAnimationModel>
             return [];
         }
 
-        errorMessages = new(errors.Count, errors.ToArray());
+        errorMessages    = new(errors.Count, errors.ToArray());
         model.FrameAtlas = ImageTexture.CreateFromImage(DataUtils.LoadImageFromPngBuffer(pngFile!));
 
-        model.SetId = source.Dir.Join('/');
+        model.SetName     = source.Dir.Join('/');
         model.AnimationId = source.Name;
         return [model];
     }
 
-    public static MobAnimationModel Default { get; } = new()
+    public static AnimationModel Default { get; } = new()
     {
-        SetId = RegKey.Default,
+        NameSpace   = "default",
+        SetName     = "default",
         AnimationId = "default",
-        Columns = 1,
-        Rows = 1,
+        Frames      = 1,
+        // Rows        = 1,
         FrameCenter = new() { X = 12, Y = 0 },
-        BoxSize = new() { X = 24, Y = 24 },
-        Fps = 0,
-        FrameAtlas = new PlaceholderTexture2D { Size = new(24, 24) }
+        BoxSize     = new() { X = 24, Y = 24 },
+        Fps         = 0,
+        FrameAtlas  = new PlaceholderTexture2D { Size = new(24, 24) }
     };
 }

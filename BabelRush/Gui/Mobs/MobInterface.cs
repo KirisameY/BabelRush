@@ -1,9 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
+using BabelRush.Gui.DisplayInfos.Animation;
 using BabelRush.Mobs;
 using BabelRush.Mobs.Actions;
-using BabelRush.Mobs.Animation;
 
 using Godot;
 
@@ -13,7 +12,7 @@ using KirisameLib.Logging;
 namespace BabelRush.Gui.Mobs;
 
 [EventHandlerContainer]
-public partial class MobInterface : Node2D
+public partial class MobInterface : AnimationInterface
 {
     #region Factory
 
@@ -30,7 +29,7 @@ public partial class MobInterface : Node2D
     private void GettingInitialize()
     {
         Sprite.SpriteFrames = Mob.Type.AnimationSet.SpriteFrames;
-        _ = PlayAnimation(AnimateState);
+        _                   = PlayAnimation(AnimateState);
     }
 
     private static MobInterface CreateInstance()
@@ -60,21 +59,23 @@ public partial class MobInterface : Node2D
     private Node2D ActionBar => field ??= GetNode<Node2D>("Actionbar");
 
     [field: AllowNull, MaybeNull]
-    private AnimatedSprite2D Sprite => field ??= GetNode<AnimatedSprite2D>("Sprite");
+    protected override AnimatedSprite2D Sprite => field ??= GetNode<AnimatedSprite2D>("Sprite");
 
     [field: AllowNull, MaybeNull]
     private Area2D Box => field ??= GetNode<Area2D>("Box");
 
     [field: AllowNull, MaybeNull]
-    private CollisionShape2D BoxShapeNode => field ??= GetNode<CollisionShape2D>("Box/Shape");
+    protected override CollisionShape2D BoxShapeNode => field ??= GetNode<CollisionShape2D>("Box/Shape");
 
     [field: AllowNull, MaybeNull]
-    private RectangleShape2D BoxShape => field ??= (RectangleShape2D)BoxShapeNode.Shape;
+    protected override RectangleShape2D BoxShape => field ??= (RectangleShape2D)BoxShapeNode.Shape;
 
     #endregion
 
 
     #region Properties
+
+    protected override AnimationSet AnimationSet => Mob.Type.AnimationSet;
 
     [field: AllowNull, MaybeNull]
     public Mob Mob
@@ -90,13 +91,6 @@ public partial class MobInterface : Node2D
             field = value;
             Refresh();
         }
-    }
-
-    [field: AllowNull, MaybeNull]
-    private MobAnimationId AnimateState
-    {
-        get { return field ??= MobAnimationId.Default; }
-        set;
     }
 
     #endregion
@@ -161,56 +155,6 @@ public partial class MobInterface : Node2D
     {
         if (!ActionBar.Visible || Mob.CurrentAction is not { } action) return;
         ActionBar.CallDeferred(Names.SetProgress, action.Progress / action.Time);
-    }
-
-    #endregion
-
-
-    #region Animation
-
-    private async Task PlayAnimation(MobAnimationId id)
-    {
-        var animationSet = Mob.Type.AnimationSet;
-        id = animationSet.BackToExist(id, out var info);
-
-        //case state
-        if (!id.IsAction)
-        {
-            AnimateState = id;
-            PlayIt(this, id, info);
-            return;
-        }
-
-        //case action
-        //play before
-        if (info.Start is not null)
-        {
-            await PlayAnimation(info.Start);
-        }
-
-        //Play this
-        PlayIt(this, id, info);
-        await ToSignal(Sprite, AnimatedSprite2D.SignalName.AnimationFinished);
-
-        //play after
-        if (info.End is not null)
-        {
-            await PlayAnimation(info.End);
-        }
-
-        //reset
-        _ = PlayAnimation(AnimateState);
-
-        return;
-
-
-        static void PlayIt(MobInterface mob, MobAnimationId aId, MobAnimationSet.AnimationInfo aInfo)
-        {
-            mob.BoxShape.Size = aInfo.BoxSize;
-            mob.BoxShapeNode.Position = new(0, -aInfo.BoxSize.Y / 2f);
-            mob.Sprite.Offset = aInfo.Offset;
-            mob.Sprite.Play(aId);
-        }
     }
 
     #endregion

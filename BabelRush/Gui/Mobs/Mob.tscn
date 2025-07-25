@@ -26,7 +26,7 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pk5c2"]
-size = Vector2(48, 64)
+size = Vector2(4, 4)
 
 [node name="Mob" type="Node2D"]
 script = ExtResource("1_22tyx")
@@ -44,7 +44,7 @@ position = Vector2(0, 6)
 collision_layer = 15
 
 [node name="Shape" type="CollisionShape2D" parent="Box"]
-position = Vector2(0, -32)
+position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_pk5c2")
 
 [node name="Actionbar" parent="." instance=ExtResource("5_s48sx")]
