@@ -1,7 +1,9 @@
 using BabelRush.Data;
 using BabelRush.Data.ExtendModels;
 using BabelRush.Gui.DisplayInfos;
+using BabelRush.Gui.DisplayInfos.Animation;
 using BabelRush.Registering;
+using BabelRush.Registering.Misc;
 
 using Godot;
 
@@ -26,4 +28,7 @@ public static class SpriteInfoRegisters
 
     public static IRegister<RegKey, SpriteInfo> Sprites { get; } =
         CreateSimpleRegister.Res<SpriteInfo, SpriteInfoModel>("sprites", SpriteInfo.Fallback);
+
+    public static IRegister<RegKey, AnimationSet> AnimationSets { get; } =
+        new AnimationSetRegister("animations");
 }

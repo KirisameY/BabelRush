@@ -18,10 +18,14 @@ namespace BabelRush.Gui.DisplayInfos.Animation;
 internal partial class AnimationModel : IResModel<AnimationModel>
 {
     [IgnoreDataMember]
-    public RegKey Id => (SetId.NameSpace, $"{SetId.Key}/{AnimationId}");
+    public RegKey Id => (NameSpace, $"{SetName}/{AnimationId}");
+    [IgnoreDataMember]
+    public RegKey SetId => (NameSpace, SetName);
 
     [IgnoreDataMember]
-    public RegKey SetId { get; private set; } = RegKey.Default;
+    public string NameSpace { get; private set; } = "";
+    [IgnoreDataMember]
+    public string SetName { get; private set; } = "";
     [IgnoreDataMember]
     public string AnimationId { get; private set; } = "";
 
@@ -51,8 +55,8 @@ internal partial class AnimationModel : IResModel<AnimationModel>
 
     public (RegKey, AnimationModel) Convert(string nameSpace, string path)
     {
-        //todo: 这个倒也好办，回头重置完MobAnimation之后把它做成MobAnimationEntry的Model即可
-        throw new System.NotImplementedException();
+        NameSpace = nameSpace;
+        return (Id, this);
     }
 
 
@@ -85,23 +89,24 @@ internal partial class AnimationModel : IResModel<AnimationModel>
             return [];
         }
 
-        errorMessages = new(errors.Count, errors.ToArray());
+        errorMessages    = new(errors.Count, errors.ToArray());
         model.FrameAtlas = ImageTexture.CreateFromImage(DataUtils.LoadImageFromPngBuffer(pngFile!));
 
-        model.SetId = source.Dir.Join('/');
+        model.SetName     = source.Dir.Join('/');
         model.AnimationId = source.Name;
         return [model];
     }
 
     public static AnimationModel Default { get; } = new()
     {
-        SetId = RegKey.Default,
+        NameSpace   = "default",
+        SetName     = "default",
         AnimationId = "default",
-        Columns = 1,
-        Rows = 1,
+        Columns     = 1,
+        Rows        = 1,
         FrameCenter = new() { X = 12, Y = 0 },
-        BoxSize = new() { X = 24, Y = 24 },
-        Fps = 0,
-        FrameAtlas = new PlaceholderTexture2D { Size = new(24, 24) }
+        BoxSize     = new() { X = 24, Y = 24 },
+        Fps         = 0,
+        FrameAtlas  = new PlaceholderTexture2D { Size = new(24, 24) }
     };
 }

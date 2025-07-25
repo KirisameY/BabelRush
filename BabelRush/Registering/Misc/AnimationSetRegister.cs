@@ -8,13 +8,14 @@ using BabelRush.Registering.I18n;
 
 using KirisameLib.Data.Registering;
 using KirisameLib.Data.Registers;
+using KirisameLib.Event;
 using KirisameLib.Extensions;
 
 namespace BabelRush.Registering.Misc;
 
-internal sealed class MobAnimationSetRegister : IRegister<RegKey, AnimationSet>, II18nRegTarget<AnimationModel>
+internal sealed class AnimationSetRegister : IRegister<RegKey, AnimationSet>, II18nRegTarget<AnimationModel>
 {
-    public MobAnimationSetRegister(string path)
+    public AnimationSetRegister(string path)
     {
         // ModelReg = SimpleRegisterCreate.Res<MobAnimationModel, MobAnimationModel>(path, MobAnimationModel.Default);
         ModelReg = new I18nRegisterBuilder<AnimationModel>()
@@ -47,18 +48,18 @@ internal sealed class MobAnimationSetRegister : IRegister<RegKey, AnimationSet>,
 
         if (_isRegistering) return;
         _isRegistering = true;
+
         Game.LoadEventBus.Subscribe<LocalRegisterDoneEvent>(_ =>
         {
             FinalReg.Clear();
-            var groups = ModelReg.Values.GroupBy(model => model.SetId); //todo: 改RegKey的后续处理
-            foreach (var group in groups)
+            ModelReg.Values.GroupBy(model => model.SetId).ForEach(group =>
             {
                 var builder = new AnimationSetBuilder(group.Key);
                 group.ForEach(model => builder.AddAnimation(model));
                 FinalReg[group.Key] = builder.Build();
-            }
+            });
             _isRegistering = false;
-        });
+        }, HandlerSubscribeFlag.OnlyOnce);
     }
 
     #endregion

@@ -34,7 +34,7 @@ public class AnimationSet(
 
     public AnimationId BackToExist(AnimationId id, out AnimationInfo info)
     {
-        foreach (var backId in id.Backoff())
+        foreach (var backId in id.Fallback())
         {
             if (TryGetInfo(backId, out info)) return backId;
         }
@@ -50,7 +50,7 @@ public class AnimationSet(
     [field: AllowNull, MaybeNull]
     public static AnimationSet Default => field ??=
         new AnimationSetBuilder(RegKey.Default)
-           .AddAnimation("idle", [new PlaceholderTexture2D { Size = new(48, 48) }], new(24, 48), new(48, 48))
+           .AddAnimation(AnimationId.Default, [new PlaceholderTexture2D { Size = new(48, 48) }], new(24, 48), new(48, 48))
            .Build();
 
     #endregion
