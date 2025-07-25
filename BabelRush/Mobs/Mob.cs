@@ -4,6 +4,7 @@ using BabelRush.GamePlay;
 using BabelRush.Level.Scenery;
 using BabelRush.Mobs.Actions;
 using BabelRush.Numerics;
+using BabelRush.Numerics.Modifiers;
 
 using Godot;
 
@@ -23,15 +24,19 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
 
     public MobType Type => type;
 
+    private readonly DynamicClampModifier<int> _healthClampModifier = new(0, type.Health);
+
     [field: AllowNull, MaybeNull]
     public Numeric<int> MaxHealth => field ??=
         new Numeric<int>(type.Health)
+           .WithModifier(new ClampModifier<int>(0, null))
            .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.GameEventBus.Publish(new MobHealthChangedEvent(this, oldValue, newValue)))
-           .WithFinalValueUpdatedHandler((_, _, newValue) => Health.Clamp = (0, newValue));
+           .WithFinalValueUpdatedHandler((_, _, newValue) => _healthClampModifier.Max = newValue);
 
     [field: AllowNull, MaybeNull]
     public Numeric<int> Health => field ??=
-        new Numeric<int>(MaxHealth) { Clamp = (0, MaxHealth) }
+        new Numeric<int>(MaxHealth)
+           .WithModifier(_healthClampModifier)
            .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.GameEventBus.Publish(new MobMaxHealthChangedEvent(this, oldValue, newValue)));
 
     [field: AllowNull, MaybeNull]
