@@ -34,8 +34,17 @@ public partial class Game : SceneTree
 
     #region Properties
 
+    public const string Version = "dev 0.0.1";
+
     [field: AllowNull, MaybeNull]
     public static LogBus LogBus // todo: 使Log接收来自godot的调试输出
+    {
+        get => field ?? throw new GameNotInitializedException();
+        private set;
+    }
+
+    [field: AllowNull, MaybeNull]
+    public static ScriptHub ScriptHub
     {
         get => field ?? throw new GameNotInitializedException();
         private set;
@@ -90,7 +99,7 @@ public partial class Game : SceneTree
     {
         if (_initialized)
         {
-            Logger.Log(LogLevel.Error, "Initializing", "Game class already initialized");
+            Logger.Log(LogLevel.Error, "Initializing", "Attempt to reinitialize Game class");
             return;
         }
 
@@ -107,7 +116,7 @@ public partial class Game : SceneTree
         Logger.Log(LogLevel.Info, "Initializing", "Game class loaded");
 
         Logger.Log(LogLevel.Info, "Initializing", "Loading script frame...");
-        ScriptHub.Initialize();
+        ScriptHub = new ScriptHub();
 
         Logger.Log(LogLevel.Info, "Initializing", "Loading assets...");
         RegisterManager.LoadCommonAssets();

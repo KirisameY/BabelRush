@@ -48,7 +48,12 @@ internal sealed class ScriptRootLoader(string nameSpace, bool overwriting) : Com
             return;
         }
 
-        var function = ScriptHub.Lua.LoadString(fileContent, "chunk");
+        if (!Game.ScriptHub.TryLoadString(fileContent, out var function, out var err))
+        {
+            Logger.Log(LogLevel.Warning, nameof(HandleFile),
+                       $"Error occured while parsing script Script/{CurrentPath}/{pathString}{extension}: \n" + err);
+            return;
+        }
         sourceDict.TryAdd(pathString, new(path, function));
     }
 

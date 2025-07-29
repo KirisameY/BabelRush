@@ -9,28 +9,48 @@ using NLua;
 
 namespace BabelRush.Scripting;
 
-public static class ScriptHub
+public class ScriptHub
 {
-    public static void Initialize()
+    internal ScriptHub()
     {
         Lua = new Lua();
         var initialization = ResourceLoader.Load<Text>("res://Scripting/initialize.lua").Content;
+        var sandboxLoader = ResourceLoader.Load<Text>("res://Scripting/sandbox_loader.lua").Content;
 
         Lua.LoadCLRPackage();
-        Lua.DoString(initialization);
+        Env = (LuaTable)Lua.DoString(initialization)[0];
+        Lua.DoString("GD.Print('Lua version: ' .. _VERSION)");
+        SandboxLoader = (LuaFunction)Lua.DoString(sandboxLoader)[0];
     }
 
     [field: AllowNull, MaybeNull]
-    public static Lua Lua
+    private Lua Lua { get; }
+
+    private LuaFunction SandboxLoader { get; }
+    private LuaTable Env { get; }
+
+
+    // Methods
+    private object[] LoadStringCode(object code) => SandboxLoader.Call(code, Env);
+
+    private bool TryLoadStringCode(object code, [NotNullWhen(true)] out LuaFunction? function, [NotNullWhen(false)] out string? err)
     {
-        get
+        (bool result, function, err) = LoadStringCode(code) switch
         {
-            if (field is null) throw new ScriptHubNotInitializedException();
-            return field;
-        }
-        private set;
+            [LuaFunction f]    => (true, f, (string?)null),
+            [null, string msg] => (false, null, msg),
+            _                  => throw new Exception("Idk why the fuck result of parsing a lua script is neither [func] nor [nil, err]")
+        };
+
+        return result;
     }
 
-    //Exceptions
-    public class ScriptHubNotInitializedException : Exception;
+    public bool TryLoadString(string code, [NotNullWhen(true)] out LuaFunction? function, [NotNullWhen(false)] out string? err)
+        => TryLoadStringCode(code, out function, out err);
+
+    public bool TryLoadString(byte[] code, [NotNullWhen(true)] out LuaFunction? function, [NotNullWhen(false)] out string? err)
+        => TryLoadStringCode(code, out function, out err);
+
+    public LuaFunction LoadString(string code) => (LuaFunction)SandboxLoader.Call(code, Env)[0];
+    public LuaFunction LoadString(byte[] code) => (LuaFunction)SandboxLoader.Call(code, Env)[0];
 }
