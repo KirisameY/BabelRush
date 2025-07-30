@@ -18,8 +18,7 @@ public class ScriptHub
         var sandboxLoader = ResourceLoader.Load<Text>("res://Scripting/sandbox_loader.lua").Content;
 
         Lua.LoadCLRPackage();
-        Env = (LuaTable)Lua.DoString(initialization)[0];
-        Lua.DoString("GD.Print('Lua version: ' .. _VERSION)");
+        Env           = (LuaTable)Lua.DoString(initialization)[0];
         SandboxLoader = (LuaFunction)Lua.DoString(sandboxLoader)[0];
     }
 
@@ -31,11 +30,12 @@ public class ScriptHub
 
 
     // Methods
-    private object[] LoadStringCode(object code) => SandboxLoader.Call(code, Env);
+    private object[] LoadStringCode(object code, LuaTable? modEnv) => SandboxLoader.Call(code, Env, modEnv);
 
-    private bool TryLoadStringCode(object code, [NotNullWhen(true)] out LuaFunction? function, [NotNullWhen(false)] out string? err)
+    private bool TryLoadStringCode(object code, LuaTable? modEnv,
+                                   [NotNullWhen(true)] out LuaFunction? function, [NotNullWhen(false)] out string? err)
     {
-        (bool result, function, err) = LoadStringCode(code) switch
+        (bool result, function, err) = LoadStringCode(code, modEnv) switch
         {
             [LuaFunction f]    => (true, f, (string?)null),
             [null, string msg] => (false, null, msg),
@@ -46,11 +46,19 @@ public class ScriptHub
     }
 
     public bool TryLoadString(string code, [NotNullWhen(true)] out LuaFunction? function, [NotNullWhen(false)] out string? err)
-        => TryLoadStringCode(code, out function, out err);
+        => TryLoadStringCode(code, null, out function, out err);
 
     public bool TryLoadString(byte[] code, [NotNullWhen(true)] out LuaFunction? function, [NotNullWhen(false)] out string? err)
-        => TryLoadStringCode(code, out function, out err);
+        => TryLoadStringCode(code, null, out function, out err);
 
-    public LuaFunction LoadString(string code) => (LuaFunction)SandboxLoader.Call(code, Env)[0];
-    public LuaFunction LoadString(byte[] code) => (LuaFunction)SandboxLoader.Call(code, Env)[0];
+    public bool TryLoadString(string code, LuaTable? modEnv,
+                              [NotNullWhen(true)] out LuaFunction? function, [NotNullWhen(false)] out string? err)
+        => TryLoadStringCode(code, modEnv, out function, out err);
+
+    public bool TryLoadString(byte[] code, LuaTable? modEnv,
+                              [NotNullWhen(true)] out LuaFunction? function, [NotNullWhen(false)] out string? err)
+        => TryLoadStringCode(code, modEnv, out function, out err);
+
+    public LuaFunction LoadString(string code, LuaTable? modEnv = null) => (LuaFunction)SandboxLoader.Call(code, Env, modEnv)[0];
+    public LuaFunction LoadString(byte[] code, LuaTable? modEnv = null) => (LuaFunction)SandboxLoader.Call(code, Env, modEnv)[0];
 }

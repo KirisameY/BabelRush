@@ -19,8 +19,8 @@ internal sealed class ScriptRootLoader(string nameSpace, bool overwriting) : Com
 {
     private static Dictionary<string, SourceTakerRegistrant<ScriptSourceInfo>> SourceTakerDict { get; } = new()
     {
-        // todo: modules loader
-        //["_modules"] =
+        // todo: modules loader >_<
+        // ["_modules"] =
     };
 
     public static T WithSourceTaker<T>(string path, T taker) where T : SourceTakerRegistrant<ScriptSourceInfo>
@@ -48,7 +48,7 @@ internal sealed class ScriptRootLoader(string nameSpace, bool overwriting) : Com
             return;
         }
 
-        if (!Game.ScriptHub.TryLoadString(fileContent, out var function, out var err))
+        if (!Game.ScriptHub.TryLoadString(fileContent, out var function, out var err)) // todo: mod env
         {
             Logger.Log(LogLevel.Warning, nameof(HandleFile),
                        $"Error occured while parsing script Script/{CurrentPath}/{pathString}{extension}: \n" + err);
