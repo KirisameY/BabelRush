@@ -1,5 +1,5 @@
 
-local function sandbox_load(code, env, modenv)
+local function sandbox_load(code, env, modenv, name)
 	if (modenv==nil) then
 		modenv = {}
 	end
@@ -12,7 +12,11 @@ local function sandbox_load(code, env, modenv)
 	end
 	modenv._G = modenv
 
-	local chunk, err = load(code, 'sandboxed_chunk', 't', modenv)
+	if (name==nil) then
+		name = 'unnamed_chunk'
+	end
+
+	local chunk, err = load(code, name, 't', modenv)
 	return chunk, err
 end
 

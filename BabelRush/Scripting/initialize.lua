@@ -1,6 +1,7 @@
 
 luanet.load_assembly('BabelRush')
 luanet.load_assembly('KirisameLib.Core')
+luanet.load_assembly('KirisameLib.Data')
 luanet.load_assembly('KirisameLib.Event')
 luanet.load_assembly('KirisameLib.Logging')
 luanet.load_assembly('GodotSharp')
@@ -14,7 +15,7 @@ local log_level = cstype('KirisameLib.Logging.LogLevel')
 local logger = game.LogBus:GetLogger('Lua');
 
 -- 这个可以写个工具方法
-GD.Print(luanet.ctype(game):IsInstanceOfType(game.Instance))
+-- GD.Print(luanet.ctype(game):IsInstanceOfType(game.Instance))
 
 
 -- environment
@@ -54,6 +55,7 @@ local env = {
 	-- functions:
 	cstype = luanet.import_type,
 	-- modules:
+	BabelRush = BabelRush, -- inject from C# side
 	dotnet = {
 		ctype = luanet.ctype,
 		instanceof = function(obj, type)

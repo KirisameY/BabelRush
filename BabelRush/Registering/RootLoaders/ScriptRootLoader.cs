@@ -13,20 +13,26 @@ using KirisameLib.Asynchronous;
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
 
+using NLua;
+
 namespace BabelRush.Registering.RootLoaders;
 
 internal sealed class ScriptRootLoader(string nameSpace, bool overwriting) : CommonRootLoader<ScriptSourceInfo>
 {
-    private static Dictionary<string, SourceTakerRegistrant<ScriptSourceInfo>> SourceTakerDict { get; } = new()
-    {
-        // todo: modules loader >_<
-        // ["_modules"] =
-    };
+    private static Dictionary<string, SourceTakerRegistrant<ScriptSourceInfo>> SourceTakerDict { get; } = new();
 
     public static T WithSourceTaker<T>(string path, T taker) where T : SourceTakerRegistrant<ScriptSourceInfo>
     {
         if (path.StartsWith('_'))
             throw new InvalidOperationException($"Path that begin with '_' is reserved. (Invalid path: {path})");
+        if (!SourceTakerDict.TryAdd(path, taker))
+            throw new InvalidOperationException($"SourceTaker for path {path} is already registered.");
+
+        return taker;
+    }
+
+    public static T WithReservedSourceTaker<T>(string path, T taker) where T : SourceTakerRegistrant<ScriptSourceInfo>
+    {
         if (!SourceTakerDict.TryAdd(path, taker))
             throw new InvalidOperationException($"SourceTaker for path {path} is already registered.");
 
@@ -48,7 +54,7 @@ internal sealed class ScriptRootLoader(string nameSpace, bool overwriting) : Com
             return;
         }
 
-        if (!Game.ScriptHub.TryLoadString(fileContent, out var function, out var err)) // todo: mod env
+        if (!Game.ScriptHub.TryLoadString(fileContent, Game.ScriptHub.GetModEnvironment(nameSpace), pathString, out var function, out var err))
         {
             Logger.Log(LogLevel.Warning, nameof(HandleFile),
                        $"Error occured while parsing script Script/{CurrentPath}/{pathString}{extension}: \n" + err);

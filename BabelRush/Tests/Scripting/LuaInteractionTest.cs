@@ -74,5 +74,11 @@ public partial class LuaInteractionTest : Node
         func3.Call();
         func2.Call();
         func1.Call();
+
+        scrHub.LoadString(
+            """
+            GD.Print(BabelRush.get_module('asd','dsa'))
+            """, env
+        ).Call();
     }
 }
