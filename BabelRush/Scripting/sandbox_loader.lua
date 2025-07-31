@@ -5,9 +5,11 @@ local function sandbox_load(code, env, modenv, name)
 	end
 	if (modenv._metatable == nil) then
 		setmetatable(modenv, {
-			__index = function(t, k)
+			__index = function(_t, k)
 				return env[k]
-			end
+			end,
+
+			__metatable = "protected",
 		})
 	end
 	modenv._G = modenv

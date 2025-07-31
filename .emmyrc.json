@@ -12,7 +12,10 @@
   "diagnostics": {
     "disable": [],
     "enable": true,
-    "globals": ["luanet"],
+    "globals": [
+      "luanet",
+      "BabelRush"
+    ],
     "globalsRegex": [],
     "severity": {},
     "enables": [],
