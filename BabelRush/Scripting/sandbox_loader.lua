@@ -3,7 +3,7 @@ local function sandbox_load(code, env, modenv, name)
 	if (modenv==nil) then
 		modenv = {}
 	end
-	if (modenv._metatable == nil) then
+	if (getmetatable(modenv) == nil) then
 		setmetatable(modenv, {
 			__index = function(_t, k)
 				return env[k]

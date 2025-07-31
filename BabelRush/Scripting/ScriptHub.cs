@@ -48,9 +48,9 @@ public class ScriptHub
     {
         (bool result, function, err) = LoadStringCode(code, modEnv, name) switch
         {
-            [LuaFunction f]    => (true, f, (string?)null),
-            [null, string msg] => (false, null, msg),
-            _                  => throw new Exception("Idk why the fuck result of parsing a lua script is neither [func] nor [nil, err]")
+            [LuaFunction f, ..] => (true, f, (string?)null),
+            [null, string msg]  => (false, null, msg),
+            _                   => throw new Exception("Idk why the fuck result of parsing a lua script is neither [func, ..] nor [nil, err]")
         };
 
         return result;
@@ -72,5 +72,5 @@ public class ScriptHub
 
     #endregion
 
-    public LuaTable GetModEnvironment(string nameSpace) => (LuaTable)GetModEnv.Call(nameSpace)[0];
+    internal LuaTable GetModEnvironment(string nameSpace) => (LuaTable)GetModEnv.Call(nameSpace)[0];
 }

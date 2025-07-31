@@ -25,11 +25,12 @@ local function make_readonly(tbl)
     end
 
     -- 防止重复处理
-    if processed_tables[tbl] then
-        return processed_tables[tbl] -- 直接返回之前创建的代理
+    local proxy = processed_tables[tbl]
+    if proxy ~= nil then
+        return proxy-- 直接返回之前创建的代理
     end
 
-    local proxy = setmetatable({},{
+    proxy = setmetatable({},{
     	__index = function(_t, k)
 			local result = tbl[k]
 			return make_readonly(result)
