@@ -1,0 +1,15 @@
+[remap]
+
+importer="BabelRush.Lua"
+importer_version=1
+type="Text"
+uid="uid://db5wt00aescdb"
+path="res://.godot/imported/mod_env_getter.lua-f5a215be8a32faec8a1defdf03725dcc.tres"
+
+[deps]
+
+source_file="res://Scripting/mod_env_getter.lua"
+dest_files=["res://.godot/imported/mod_env_getter.lua-f5a215be8a32faec8a1defdf03725dcc.tres"]
+
+[params]
+

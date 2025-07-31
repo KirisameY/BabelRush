@@ -1,0 +1,15 @@
+[remap]
+
+importer="BabelRush.Lua"
+importer_version=1
+type="Text"
+uid="uid://bcosrauy0opay"
+path="res://.godot/imported/sandbox_loader.lua-da006cb5efbef9ae9a0dbf12da4686f8.tres"
+
+[deps]
+
+source_file="res://Scripting/sandbox_loader.lua"
+dest_files=["res://.godot/imported/sandbox_loader.lua-da006cb5efbef9ae9a0dbf12da4686f8.tres"]
+
+[params]
+
