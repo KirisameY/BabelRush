@@ -92,11 +92,13 @@ public sealed partial class CollisionSpace : IDisposable
         if (collides)
         {
             CollidingList.Add((area, obj));
+            area.RaiseObjectEnteredEvent(obj);
             Game.GameEventBus.Publish(new ObjectEnteredAreaEvent(area, obj));
         }
         else
         {
             CollidingList.Remove((area, obj));
+            area.RaiseObjectExitedEvent(obj);
             Game.GameEventBus.Publish(new ObjectExitedAreaEvent(area, obj));
         }
     }

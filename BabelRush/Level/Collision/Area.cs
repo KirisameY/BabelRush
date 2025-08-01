@@ -4,7 +4,8 @@ using BabelRush.Level.Scenery;
 
 namespace BabelRush.Level.Collision;
 
-public sealed class Area(double position, double radius)
+public sealed class Area(double position, double radius,
+                         Action<Area, SceneObject>? objectEntered = null, Action<Area, SceneObject>? objectExited = null)
 {
     //Members
     public double Position
@@ -26,6 +27,13 @@ public sealed class Area(double position, double radius)
             Game.GameEventBus.Publish(new AreaTransformedEvent(this));
         }
     } = Math.Abs(radius);
+
+
+    public event Action<Area, SceneObject>? ObjectEntered = objectEntered;
+    public event Action<Area, SceneObject>? ObjectExited = objectExited;
+
+    internal void RaiseObjectEnteredEvent(SceneObject obj) => ObjectEntered?.Invoke(this, obj);
+    internal void RaiseObjectExitedEvent(SceneObject obj) => ObjectExited?.Invoke(this, obj);
 
 
     //Methods

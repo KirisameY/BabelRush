@@ -27,6 +27,15 @@ public sealed partial class Play : IDisposable
         CardHub     = new(Random);
         Stage       = initialStage;
 
+        _screenArea.ObjectEntered += (_, obj) =>
+        {
+            if (obj is Mob mob) BattleField.AddMob(mob);
+        };
+        _screenArea.ObjectExited += (_, obj) =>
+        {
+            if (obj is Mob mob) BattleField.RemoveMob(mob);
+        };
+
         Game.Process += Process;
         SubscribeInstanceHandler(Game.GameEventBus);
     }
@@ -113,20 +122,6 @@ public sealed partial class Play : IDisposable
         //screen area
         float offset = Node.Camera.Offset.X; //temp
         _screenArea.Position = e.NewPosition + offset;
-    }
-
-    [EventHandler]
-    public void OnEntityEntered(ObjectEnteredAreaEvent e)
-    {
-        if (e.Area != _screenArea || e.Object is not Mob mob) return;
-        BattleField.AddMob(mob);
-    }
-
-    [EventHandler]
-    public void OnEntityExited(ObjectExitedAreaEvent e)
-    {
-        if (e.Area != _screenArea || e.Object is not Mob mob) return;
-        BattleField.RemoveMob(mob);
     }
 
     #endregion
