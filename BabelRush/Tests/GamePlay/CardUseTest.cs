@@ -36,10 +36,10 @@ public partial class CardUseTest : Node
         play.BattleField.AddMobs(enemy1, enemy2, friend1);
         play.PlayerState.Ap = 6;
 
-        play.Stage.Scene.AddObject(player);
-        play.Stage.Scene.AddObject(friend1);
-        play.Stage.Scene.AddObject(enemy1);
-        play.Stage.Scene.AddObject(enemy2);
+        play.Scene.AddObject(player);
+        play.Scene.AddObject(friend1);
+        play.Scene.AddObject(enemy1);
+        play.Scene.AddObject(enemy2);
 
         player.Position  = GetNode<Marker2D>("Player").Position.X;
         friend1.Position = GetNode<Marker2D>("Friend1").Position.X;

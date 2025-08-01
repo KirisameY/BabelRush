@@ -54,7 +54,7 @@ public partial class MapScreen : Control
     {
         SubscribeInstanceHandler(Game.GameEventBus);
 
-        CurrentScene = Game.Play?.Stage.Scene;
+        CurrentScene = Game.Play?.Scene;
     }
 
     public override void _ExitTree()

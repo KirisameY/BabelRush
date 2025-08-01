@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using BabelRush.Level.Scenery;
 
@@ -73,9 +74,15 @@ public sealed partial class CollisionSpace : IDisposable
 
     #region Detect
 
-    private void RemoveCollision(Area area) => CollidingList.RemoveWhere(t => t.Area == area); //todo: 拆分碰撞检测和事件发布
+    private void RemoveCollision(Area area) => CollidingList.Where(t => t.Area == area).ToArray().ForEach(t =>
+    {
+        ObjectExitArea(t.Area, t.Obj);
+    });
 
-    private void RemoveCollision(SceneObject obj) => CollidingList.RemoveWhere(t => t.Obj == obj);
+    private void RemoveCollision(SceneObject obj) => CollidingList.Where(t => t.Obj == obj).ToArray().ForEach(t =>
+    {
+        ObjectExitArea(t.Area, t.Obj);
+    });
 
     // private void RemoveCollision(Area area, SceneObject obj) => CollidingList.Remove((area, obj));
 
@@ -89,18 +96,22 @@ public sealed partial class CollisionSpace : IDisposable
         bool collided = CollidingList.Contains((area, obj));
         if (!(collides ^ collided)) return;
 
-        if (collides)
-        {
-            CollidingList.Add((area, obj));
-            area.RaiseObjectEnteredEvent(obj);
-            Game.GameEventBus.Publish(new ObjectEnteredAreaEvent(area, obj));
-        }
-        else
-        {
-            CollidingList.Remove((area, obj));
-            area.RaiseObjectExitedEvent(obj);
-            Game.GameEventBus.Publish(new ObjectExitedAreaEvent(area, obj));
-        }
+        if (collides) ObjectEnterArea(area, obj);
+        else ObjectExitArea(area, obj);
+    }
+
+    private void ObjectEnterArea(Area area, SceneObject obj)
+    {
+        CollidingList.Add((area, obj));
+        area.RaiseObjectEnteredEvent(obj);
+        Game.GameEventBus.Publish(new ObjectEnteredAreaEvent(area, obj));
+    }
+
+    private void ObjectExitArea(Area area, SceneObject obj)
+    {
+        CollidingList.Remove((area, obj));
+        area.RaiseObjectExitedEvent(obj);
+        Game.GameEventBus.Publish(new ObjectExitedAreaEvent(area, obj));
     }
 
     #endregion

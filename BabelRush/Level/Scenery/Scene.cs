@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Level.Collision;
 using BabelRush.Level.Rooms;
@@ -12,7 +13,7 @@ using KirisameLib.Logging;
 
 namespace BabelRush.Level.Scenery;
 
-public sealed class Scene
+public sealed class Scene : IDisposable
 {
     #region Initialize&Cleanup
 
@@ -32,11 +33,15 @@ public sealed class Scene
 
     public bool Disposed { get; private set; }
 
-    internal void InternalDispose()
+    internal event Action? BeforeDispose;
+
+    public void Dispose()
     {
         if (Disposed) return;
 
         Disposed = true;
+        BeforeDispose?.Invoke();
+        PathSelector.InternalDispose();
         CollisionSpace.Dispose();
         Node.QueueFree();
         Game.GameEventBus.Publish(new SceneDisposeEvent(this));
@@ -50,11 +55,19 @@ public sealed class Scene
 
     public Node2D Node { get; } = new();
 
+    [field: AllowNull, MaybeNull]
+    internal StagePathSelector PathSelector => field ??= new(this);
+
 
     //Rooms
     private int _leftEdge = 0;
     private int _rightEdge = 0;
     private readonly LinkedList<Room> _rooms = [];
+
+    private readonly Dictionary<Room, StageNode> _roomNodeDict = [];
+
+    [field: AllowNull, MaybeNull]
+    public IReadOnlyDictionary<Room, StageNode> RoomNodeDict => field ??= _roomNodeDict.AsReadOnly();
 
     /// <summary>
     /// Adds a room to the scene at the specified position.
@@ -83,6 +96,17 @@ public sealed class Scene
 
         //setup room
         Node.AddChild(Gui.Scenery.RoomInterface.GetInstance(room.Position, room.Length));
+
+        //room area
+        var r = room.Length / 2d;
+        var area = new Area(room.Position + r, r, (_, o) =>
+        {
+            Game.GameEventBus.Publish(new ObjectEnteredRoomEvent(room, o));
+        }, (_, o) =>
+        {
+            Game.GameEventBus.Publish(new ObjectExitedRoomEvent(room, o));
+        });
+        CollisionSpace.AddArea(area);
 
         room.Objects.SelectSelf(obj => obj.Position += room.Position).ForEach(AddObject);
     }

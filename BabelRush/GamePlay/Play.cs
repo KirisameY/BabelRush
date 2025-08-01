@@ -25,7 +25,7 @@ public sealed partial class Play : IDisposable
         BattleField = battleField;
         Random      = new RandomBelt<SimpleRandomGenerator>(new XorShiftGenerator(randomSeed));
         CardHub     = new(Random);
-        Stage       = initialStage;
+        Scene       = initialStage.CreateScene();
 
         _screenArea.ObjectEntered += (_, obj) =>
         {
@@ -83,19 +83,34 @@ public sealed partial class Play : IDisposable
 
     public RandomBelt Random { get; }
 
-    public Stage Stage
+    // public Stage Stage
+    // {
+    //     get;
+    //     set
+    //     {
+    //         if (value == field) return;
+    //
+    //         field?.Dispose(); // When initializing it will be null
+    //         field = value;
+    //
+    //         var scene = value.Scene;
+    //         scene.CollisionSpace.AddArea(_screenArea);
+    //         scene.Ready(Node);
+    //     }
+    // }
+
+    public Scene Scene
     {
         get;
         set
         {
             if (value == field) return;
 
-            field?.Dispose(); // When initializing it will be null
+            field?.Dispose();
             field = value;
 
-            var scene = value.Scene;
-            scene.CollisionSpace.AddArea(_screenArea);
-            scene.Ready(Node);
+            value.CollisionSpace.AddArea(_screenArea);
+            value.Ready(Node);
         }
     }
 

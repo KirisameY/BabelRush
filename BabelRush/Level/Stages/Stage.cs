@@ -8,41 +8,14 @@ using BabelRush.Level.Stages.Template;
 
 namespace BabelRush.Level.Stages;
 
-public sealed class Stage(StageTemplate template, StageNode startNode) : IDisposable
+public sealed class Stage(StageTemplate template, StageNode startNode)
 {
-    #region Dispose
-
-    public void Dispose()
-    {
-        if (Disposed) return;
-
-        Disposed = true;
-        _sceneCleanup?.Invoke();
-        Scene.InternalDispose();
-        PathSelector.InternalDispose();
-    }
-
-    public bool Disposed { get; private set; }
-
-    #endregion
-
-
     public StageTemplate Template => template;
     public StageNode StartNode => startNode;
 
-    [field: AllowNull, MaybeNull]
-    internal StagePathSelector PathSelector => field ??= new(this);
 
-    [field: AllowNull, MaybeNull]
-    public Scene Scene => field ??= CreateScene();
-
-    private Action? _sceneCleanup;
-
-
-    private Scene CreateScene()
+    public Scene CreateScene()
     {
-        ObjectDisposedException.ThrowIf(Disposed, this);
-
         (StageNode node, Area junctionArea)? currentState = null;
         var createdScene = new Scene(this);
 
@@ -55,12 +28,12 @@ public sealed class Stage(StageTemplate template, StageNode startNode) : IDispos
 
             Game.Play.PlayerState.WantMove = false;
             Game.GameEventBus.Publish(new StagePathChosenRequestEvent(this, currentState.Value.node.NextRooms));
-            var nextNode = await PathSelector.GetNextNode();
+            var nextNode = await createdScene.PathSelector.GetNextNode();
 
             AddRooms(nextNode);
             Game.Play.PlayerState.WantMove = true;
         });
-        _sceneCleanup += unReg;
+        createdScene.BeforeDispose += unReg;
 
         return createdScene;
 
@@ -74,7 +47,7 @@ public sealed class Stage(StageTemplate template, StageNode startNode) : IDispos
             }
             createdScene.AddRoom(node.Room.CreateRoom(), true);
 
-            PathSelector.SelectableNodes = node.NextRooms;
+            createdScene.PathSelector.SelectableNodes = node.NextRooms;
 
             if (node.NextRooms is []) return;
             var pos = node.Room.Objects.Find(o => o.obj is RoomObject.Marker { Mark: "junction" }).pos;
