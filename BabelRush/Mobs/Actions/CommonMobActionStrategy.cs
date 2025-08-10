@@ -1,8 +1,9 @@
-using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+
+using BabelRush.Utils;
 
 namespace BabelRush.Mobs.Actions;
 
@@ -18,16 +19,18 @@ public class CommonMobActionStrategy(IDictionary<string, List<MobActionTemplate>
         if (t is not (list: { IsEmpty: false } list, var weightSum)) return null;
 
         var random = Game.Play!.Random;
-        var randomValue = random.NextDouble(weightSum);
+        return random.RandomItemWithWeight(list, m => m.Weight, weightSum: weightSum);
 
-        foreach (var action in list)
-        {
-            randomValue -= action.Weight;
-            if (randomValue <= 0) return action;
-        }
-
-        throw new Exception($"there's something impossible to happen in {nameof(CommonMobActionStrategy)}: "
-                          + $"random value seems more then sum of action weights of state {state}, {list}");
+        // var randomValue = random.NextDouble(weightSum);
+        //
+        // foreach (var action in list)
+        // {
+        //     randomValue -= action.Weight;
+        //     if (randomValue <= 0) return action;
+        // }
+        //
+        // throw new Exception($"there's something impossible to happen in {nameof(CommonMobActionStrategy)}: "
+        //                   + $"random value seems more than sum of action weights of state {state}, {list}");
     }
 
     public override MobActionStrategizer NewInstance(Mob mob) => new CommonMobActionStrategizer(this, mob);

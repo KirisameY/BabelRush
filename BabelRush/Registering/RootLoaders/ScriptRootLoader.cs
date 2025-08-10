@@ -7,13 +7,10 @@ using System.Threading.Tasks;
 
 using BabelRush.Data;
 using BabelRush.Registering.SourceTakers;
-using BabelRush.Scripting;
 
 using KirisameLib.Asynchronous;
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
-
-using NLua;
 
 namespace BabelRush.Registering.RootLoaders;
 
