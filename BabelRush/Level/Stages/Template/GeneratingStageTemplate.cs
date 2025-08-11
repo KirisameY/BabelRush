@@ -5,7 +5,7 @@ using System.Linq;
 
 using BabelRush.Data;
 using BabelRush.Level.Rooms;
-using BabelRush.Level.Stages.Template.GenerationRuless;
+using BabelRush.Level.Stages.Template.GenerationRules;
 using BabelRush.Utils;
 
 using Godot;
@@ -55,7 +55,7 @@ public class GeneratingStageTemplate(RegKey id, RoomTemplate startRoom, int leng
             nodeDict.Add(pos, new(room, rears.Distinct().Select(v => nodeDict[v]).ToImmutableArray(), pos.Y,
                                   pos / new Vector2(parallels / 2f, length) + new Vector2(0.5f, 0)));
         }
-        afterRules.ForEach(r => r.Process(nodeDict));
+        afterRules.ForEach(r => r.Process(nodeDict, random));
 
 
         var startNode = new StageNode(startRoom, nodeDict.Where(pair => pair.Key.Y == 1).Select(p => p.Value).ToImmutableArray(),
