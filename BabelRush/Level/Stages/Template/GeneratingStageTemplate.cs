@@ -1,11 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 using BabelRush.Data;
 using BabelRush.Level.Rooms;
 using BabelRush.Level.Stages.Template.GenerationRules;
+using BabelRush.Registers;
 using BabelRush.Utils;
 
 using Godot;
@@ -16,11 +17,17 @@ using KirisameLib.Randomization;
 namespace BabelRush.Level.Stages.Template;
 
 /// <param name="paths"> Amount of path in generated map, if less than <c>parallels</c>, limit to it. </param>
-public class GeneratingStageTemplate(RegKey id, RoomTemplate startRoom, int length, int parallels, int paths,
-                                     ImmutableArray<(RoomTemplate room, double weight)> rooms,
+public class GeneratingStageTemplate(RegKey id, RegKey startRoomId, int length, int parallels, int paths,
+                                     ImmutableArray<(RegKey roomId, double weight)> rooms,
                                      ImmutableArray<SeparationRule> separationRules,
                                      ImmutableArray<AfterRule> afterRules) : StageTemplate(id)
 {
+    private RoomTemplate StartRoom => LevelRegisters.Rooms[startRoomId];
+
+    [field: AllowNull, MaybeNull]
+    private ImmutableList<(RoomTemplate room, double weight)> Rooms =>
+        field ??= rooms.Select(t => (LevelRegisters.Rooms[t.roomId], t.weight)).ToImmutableList();
+
     private readonly double _weightSum = rooms.Sum(r => r.weight);
 
     // generate paths
@@ -51,14 +58,14 @@ public class GeneratingStageTemplate(RegKey id, RoomTemplate startRoom, int leng
         Dictionary<Vector2I, StageNode> nodeDict = new();
         foreach (var (pos, rears) in pathDict.OrderByDescending(pair => pair.Key.Y))
         {
-            var room = random.RandomItemWithWeight(rooms, _weightSum);
+            var room = random.RandomItemWithWeight(Rooms, _weightSum);
             nodeDict.Add(pos, new(room, rears.Distinct().Select(v => nodeDict[v]).ToImmutableArray(), pos.Y,
                                   pos / new Vector2(parallels / 2f, length) + new Vector2(0.5f, 0)));
         }
         afterRules.ForEach(r => r.Process(nodeDict, random));
 
 
-        var startNode = new StageNode(startRoom, nodeDict.Where(pair => pair.Key.Y == 1).Select(p => p.Value).ToImmutableArray(),
+        var startNode = new StageNode(StartRoom, nodeDict.Where(pair => pair.Key.Y == 1).Select(p => p.Value).ToImmutableArray(),
                                       0, new(0.5f, 0));
         return new(this, startNode);
     }
