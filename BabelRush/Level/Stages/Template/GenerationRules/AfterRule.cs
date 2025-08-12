@@ -23,9 +23,9 @@ public abstract class AfterRule
             {
                 var nextNodes = node.NextRooms as IEnumerable<StageNode>;
                 ns.ForEach(t => nextNodes = nextNodes.Select(n => n == t.origin ? t.@new : n));
-                var newNode1 = node with { NextRooms = nextNodes.Distinct().ToImmutableArray() };
-                effectedNodes.Add((node, newNode1));
-                nodes[pos] = newNode1;
+                var newNode = node with { NextRooms = nextNodes.Distinct().ToImmutableArray() };
+                effectedNodes.Add((node, newNode));
+                nodes[pos] = newNode;
             }
         }
     }

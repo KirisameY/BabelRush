@@ -47,7 +47,7 @@ public class GeneratingStageTemplate(RegKey id, RegKey startRoomId, int length, 
                 do
                 {
                     x = prev + random.NextInt(-1, 2);
-                } while (separations.Any(s => (prev < s && x >= s) || (prev >= s && x < s)) || x < 0 || x >= parallels);
+                } while (x < 0 || x >= parallels || separations.Any(s => (prev < s && x >= s) || (prev >= s && x < s)));
 
                 pathDict[new(prev, i - 1)].Add(new(x, i));
                 pathDict.TryAdd(new(x, i), []);
@@ -60,7 +60,7 @@ public class GeneratingStageTemplate(RegKey id, RegKey startRoomId, int length, 
         {
             var room = random.RandomItemWithWeight(Rooms, _weightSum);
             nodeDict.Add(pos, new(room, rears.Distinct().Select(v => nodeDict[v]).ToImmutableArray(), pos.Y,
-                                  pos / new Vector2(parallels / 2f, length) + new Vector2(0.5f, 0)));
+                                  pos / new Vector2(parallels - 1, length)));
         }
         afterRules.ForEach(r => r.Process(nodeDict, random));
 

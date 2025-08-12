@@ -97,7 +97,7 @@ public class AfterRuleModel : IDictionary<string, object>
         }, (model, nameSpace) =>
         {
             var roomId = (string)model["room"];
-            var room = LevelRegisters.Rooms[roomId.WithDefaultNameSpace(nameSpace)];
+            var room = roomId.WithDefaultNameSpace(nameSpace);
             var rate = model.TryGetValue("rate", out var outRate) && outRate is double or long ? (double)outRate : 1;
             var ordinalFrom = (int)(model.GetOrDefault("ordinal_from") as long? ?? 0);
             var ordinalTo = (int)(model.GetOrDefault("ordinal_to") as long? ?? int.MaxValue);
@@ -110,10 +110,6 @@ public class AfterRuleModel : IDictionary<string, object>
         {
             if (!model.TryGetValue("ordinal", out var outOrdinal) || outOrdinal is not long)
                 return ["ReplaceRuleModel expected a integer ordinal field."];
-            if (!model.TryGetValue("from", out var outFrom) || outFrom is not long)
-                return ["ReplaceRuleModel expected a integer from field."];
-            if (!model.TryGetValue("to", out var outTo) || outTo is not long)
-                return ["ReplaceRuleModel expected a integer to field."];
             if (!model.TryGetValue("new_pos", out var outNewPos) || outNewPos is not long)
                 return ["ReplaceRuleModel expected a integer new_pos field."];
             if (!model.TryGetValue("new_display_pos", out var outNewDisplayPos) ||
@@ -125,8 +121,8 @@ public class AfterRuleModel : IDictionary<string, object>
         }, (model, nameSpace) =>
         {
             var ordinal = (int)model["ordinal"];
-            var from = (int)model["from"];
-            var to = (int)model["to"];
+            var from = (int)(model.GetOrDefault("from") as long? ?? 0);
+            var to = (int)(model.GetOrDefault("to") as long? ?? int.MaxValue);
             var newPos = (int)model["new_pos"];
             var newDisplayPos = new Vector2((float)((IDictionary<string, object>)model["new_display_pos"])["x"],
                                             (float)((IDictionary<string, object>)model["new_display_pos"])["y"]);
