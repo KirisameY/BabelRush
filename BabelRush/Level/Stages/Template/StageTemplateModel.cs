@@ -7,6 +7,7 @@ using Tomlyn.Syntax;
 namespace BabelRush.Level.Stages.Template;
 
 [ModelSet<ConstantStageTemplateModel>("ConstantStage")]
+[ModelSet<GeneratingStageTemplateModel>("GeneratingStage")]
 public abstract partial class StageTemplateModel : IDataModel<StageTemplate>
 {
     [NecessaryProperty]

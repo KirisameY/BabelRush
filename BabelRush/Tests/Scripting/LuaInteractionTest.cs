@@ -1,5 +1,3 @@
-using BabelRush.Scripting;
-
 using Godot;
 
 using NLua;

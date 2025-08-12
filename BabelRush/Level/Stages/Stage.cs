@@ -1,6 +1,3 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-
 using BabelRush.Level.Collision;
 using BabelRush.Level.Rooms;
 using BabelRush.Level.Scenery;

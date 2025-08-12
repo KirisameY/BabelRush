@@ -124,7 +124,7 @@ public class ModelSetGenerator : IIncrementalGenerator
                     foreach (var set in info.Sets.Skip(1))
                     {
                         sourceBuilder.AppendLine()
-                                     .Append($"          .Concat({set.Name})");
+                                     .Append($"          .Concat<global::{info.ClassFullName}>({set.Name})");
                     }
                     sourceBuilder.AppendLine(";");
 
