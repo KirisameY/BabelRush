@@ -8,6 +8,7 @@ using BabelRush.GamePlay;
 using BabelRush.I18n;
 using BabelRush.Registering;
 using BabelRush.Scripting;
+using BabelRush.Timing;
 
 using Godot;
 
@@ -148,6 +149,12 @@ public partial class Game : SceneTree
 
 
     //Process
+    public static double TimeScale
+    {
+        get => TimeScaleManager.TimeScale;
+        set => TimeScaleManager.TimeScale = value;
+    }
+
     public static event Action<double>? Process;
 
     public override bool _Process(double delta)
@@ -155,6 +162,7 @@ public partial class Game : SceneTree
         Process?.Invoke(delta);
 
         var result = base._Process(delta);
+        TimeScaleManager.ProcessUpdate(delta);
 
         //Event Cycle
         try { InnerGameEventBus.HandleEvent(); }
