@@ -10,41 +10,42 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
-        <PackageReference Include="NLua" Version="1.7.4" />
-        <PackageReference Include="Tomlyn" Version="0.17.0" />
+        <PackageReference Include="JetBrains.Annotations" Version="2024.3.0"/>
+        <PackageReference Include="NLua" Version="1.7.4"/>
+        <PackageReference Include="Tomlyn" Version="0.17.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="KirisameLib.Core" Version="0.1.6" />
-        <PackageReference Include="KirisameLib.Data" Version="0.2.5" />
-        <PackageReference Include="KirisameLib.Event" Version="0.2.3" />
-        <PackageReference Include="KirisameLib.Godot" Version="0.1.2" />
-        <PackageReference Include="KirisameLib.Logging" Version="0.1.0" />
+        <PackageReference Include="KirisameLib.Core" Version="0.1.6"/>
+        <PackageReference Include="KirisameLib.Data" Version="0.2.5"/>
+        <PackageReference Include="KirisameLib.Event" Version="0.2.3"/>
+        <PackageReference Include="KirisameLib.Godot" Version="0.1.2"/>
+        <PackageReference Include="KirisameLib.Logging" Version="0.1.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">
-        <Compile Remove="Tests\**" />
+        <Compile Remove="Tests\**"/>
         <Compile Update="Scenery\Stages\StageNodeModel.cs">
-          <DependentUpon>StageNode.cs</DependentUpon>
+            <DependentUpon>StageNode.cs</DependentUpon>
         </Compile>
         <Compile Update="Scenery\Rooms\RoomTemplateModel.cs">
-          <DependentUpon>RoomTemplate.cs</DependentUpon>
+            <DependentUpon>RoomTemplate.cs</DependentUpon>
         </Compile>
     </ItemGroup>
 
-    <ItemGroup>
-        <EmbeddedResource Remove="Tests\**" />
+    <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">
+        <EmbeddedResource Remove="Tests\**"/>
+        <Compile Remove="Tests\**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="**\*.tscn" />
-        <None Include="**\*.gd" />
-        <None Include="**\*.lua" />
+        <None Include="**\*.tscn"/>
+        <None Include="**\*.gd"/>
+        <None Include="**\*.lua"/>
     </ItemGroup>
 
 </Project>
