@@ -18,7 +18,7 @@ public abstract partial record RoomObject
 
 
     /// <exception cref="ArgumentException"></exception>
-    public static RoomObject FromString(string from)
+    public static RoomObject FromString(string from, string nameSpace)
     {
         var match = ObjectPattern.Match(from);
         if (!match.Success) throw new ArgumentException($"Invalid room object format: {from}");
@@ -26,13 +26,39 @@ public abstract partial record RoomObject
         var @params = match.Groups["params"].Value.Split(',', StringSplitOptions.TrimEntries);
         return (type, @params) switch
         {
-            ("mob", [var id, var alignment]) => new Mob(id, Enum.Parse<Alignment>(alignment)),
+            ("mob", [var id, var alignment]) => new Mob(id.WithDefaultNameSpace(nameSpace), Enum.Parse<Alignment>(alignment)),
             ("marker", [var id])             => new Marker(id),
             _                                => throw new ArgumentException($"Invalid room object format: {from}")
         };
     }
 
-    public static bool CheckString(string from) => ObjectPattern.IsMatch(from);
+    public static bool CheckString(string from, out string[] errors)
+    {
+        var match = ObjectPattern.Match(from);
+
+        if (!match.Success)
+        {
+            errors = [$"Invalid room obj format: \"{from}\""];
+            return false;
+        }
+
+        errors = [];
+        var type = match.Groups["type"].Value.ToLower();
+        var @params = match.Groups["params"].Value.Split(',', StringSplitOptions.TrimEntries);
+        var expectedParams = type switch // less than 0 means type not found
+        {
+            "mob"    => 2,
+            "marker" => 1,
+            _        => -1,
+        };
+
+        if (expectedParams < 0)
+            errors = [$"Unknown room obj type: \"{type}\""];
+        else if (@params.Length != expectedParams)
+            errors = [$"Invalid arguments amount: {from} (expected to be {expectedParams}, actually {@params.Length})"];
+
+        return errors.Length == 0;
+    }
 
 
     #region Implements

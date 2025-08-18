@@ -26,7 +26,7 @@ public partial class RoomTemplateModel : IDataModel<RoomTemplate>
     {
         var id = RegKey.From(nameSpace, Id);
         var iconId = IconId.WithDefaultNameSpace(nameSpace);
-        var room = new RoomTemplate(id, iconId, Length, Objects.Select(o => (RoomObject.FromString(o.Obj), o.Position)));
+        var room = new RoomTemplate(id, iconId, Length, Objects.Select(o => (RoomObject.FromString(o.Obj, nameSpace), o.Position)));
         return (id, room);
     }
 
@@ -62,9 +62,9 @@ public partial class RoomTemplateModel : IDataModel<RoomTemplate>
                 errors = ["Obj type did not initialized"];
                 return false;
             }
-            if (RoomObject.CheckString(_obj))
+            if (RoomObject.CheckString(_obj, out var err))
             {
-                errors = ["Invalid room obj format"];
+                errors = err;
                 return false;
             }
             errors = [];
