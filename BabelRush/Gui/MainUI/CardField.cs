@@ -51,7 +51,7 @@ public partial class CardField : Control
     private void AddCard(Card card)
     {
         var ci = CardInterface.GetInstance(card);
-        ci.Position = new(Project.ViewportSize.X / 2, Project.ViewportSize.Y + 32); //new Vector2(200,86)
+        ci.Position = new(BabelRush.ViewportSize.X / 2, BabelRush.ViewportSize.Y + 32); //new Vector2(200,86)
         AddCard(ci);
     }
 

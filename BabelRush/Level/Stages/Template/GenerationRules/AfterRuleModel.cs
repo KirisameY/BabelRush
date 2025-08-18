@@ -7,10 +7,13 @@ using BabelRush.Data;
 
 using Godot;
 
+using JetBrains.Annotations;
+
 using KirisameLib.Extensions;
 
 namespace BabelRush.Level.Stages.Template.GenerationRules;
 
+[UsedImplicitly]
 public class AfterRuleModel : IDictionary<string, object>
 {
     #region Implement of dictionary

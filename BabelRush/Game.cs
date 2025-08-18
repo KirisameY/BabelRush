@@ -127,21 +127,21 @@ public partial class Game : SceneTree
 
     private static void LogInitialize()
     {
-        DirectoryInfo logDir = new(Project.Logging.LogDirPath);
+        DirectoryInfo logDir = new(BabelRush.Logging.LogDirPath);
         if (!logDir.Exists) logDir.Create();
         var logFiles =
             logDir.EnumerateFiles()
                   .Where(file => file.Name.Contains(".log"))
                   .OrderByDescending(log => log.Name)
                   .ToList();
-        for (int i = logFiles.Count; i > Project.Logging.MaxLogFileCount - 1; i--)
+        for (int i = logFiles.Count; i > BabelRush.Logging.MaxLogFileCount - 1; i--)
         {
             logFiles[i - 1].Delete();
         }
-        var filePath = $"{Project.Logging.LogDirPath}/{Project.Name}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.log";
+        var filePath = $"{BabelRush.Logging.LogDirPath}/{BabelRush.Name}_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.log";
         var logFile = File.Open(filePath, FileMode.OpenOrCreate);
 
-        LogBus = new WriterLogBus(Project.Logging.MinLogLevel,
+        LogBus = new WriterLogBus(BabelRush.Logging.MinLogLevel,
                                   new StreamWriter(logFile, Encoding.UTF8),
                                   new GdConsoleWriter());
     }

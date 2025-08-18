@@ -4,7 +4,7 @@ using KirisameLib.Logging;
 
 namespace BabelRush;
 
-public static class Project
+public static class BabelRush
 {
     public const string Name = "BabelRush";
     public const string NameSpace = "babelrush";

@@ -116,7 +116,7 @@ public sealed partial class Play : IDisposable
 
     public CardHub CardHub { get; }
 
-    private readonly Area _screenArea = new(0, Project.ViewportSize.X / 2);
+    private readonly Area _screenArea = new(0, BabelRush.ViewportSize.X / 2);
 
     // Settings
     public static int MinCardValue => 4;
@@ -132,7 +132,7 @@ public sealed partial class Play : IDisposable
         if (e.SceneObject != BattleField.Player) return;
 
         //camera
-        Node.Camera.TargetPositionX = (float)e.NewPosition + Project.ViewportSize.X / 2;
+        Node.Camera.TargetPositionX = (float)e.NewPosition + BabelRush.ViewportSize.X / 2;
 
         //screen area
         float offset = Node.Camera.Offset.X; //temp

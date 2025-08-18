@@ -103,7 +103,7 @@ public class ModelSetGenerator : IIncrementalGenerator
         using (sourceBuilder.Indent())
         {
             sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
-                         .AppendLine($"private partial class ModelSet : {Names.IModelSetG}<{info.ClassName}>")
+                         .AppendLine($"private partial class ModelSet : global::{Names.IModelSetG}<{info.ClassName}>")
                          .AppendLine("{");
             using (sourceBuilder.Indent())
             {
