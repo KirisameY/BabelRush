@@ -7,8 +7,6 @@ using BabelRush.Level.Stages.Template.GenerationRules;
 
 using JetBrains.Annotations;
 
-using Tomlyn.Syntax;
-
 namespace BabelRush.Level.Stages.Template;
 
 [Model] [UsedImplicitly]

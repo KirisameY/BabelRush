@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Data;
-using BabelRush.Registers;
 
 using Godot;
 
