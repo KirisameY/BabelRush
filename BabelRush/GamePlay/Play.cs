@@ -83,22 +83,6 @@ public sealed partial class Play : IDisposable
 
     public RandomBelt Random { get; }
 
-    // public Stage Stage
-    // {
-    //     get;
-    //     set
-    //     {
-    //         if (value == field) return;
-    //
-    //         field?.Dispose(); // When initializing it will be null
-    //         field = value;
-    //
-    //         var scene = value.Scene;
-    //         scene.CollisionSpace.AddArea(_screenArea);
-    //         scene.Ready(Node);
-    //     }
-    // }
-
     public Scene Scene
     {
         get;

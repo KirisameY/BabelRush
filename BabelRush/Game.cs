@@ -155,11 +155,13 @@ public partial class Game : SceneTree
         set => TimeScaleManager.TimeScale = value;
     }
 
+    public static event Action<double>? UnscaledProcess;
     public static event Action<double>? Process;
 
     public override bool _Process(double delta)
     {
-        Process?.Invoke(delta);
+        UnscaledProcess?.Invoke(delta);
+        Process?.Invoke(delta * TimeScale);
 
         var result = base._Process(delta);
         TimeScaleManager.ProcessUpdate(delta);
