@@ -13,7 +13,7 @@ namespace BabelRush.Registers;
 public static class CardFeatureRegisters
 {
     public static IRegister<RegKey, NameDesc> FeatureNameDesc { get; } =
-        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("card_features", "en", id => (id, ""));
+        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("card_features", BabelRush.I18n.DefaultLocal, id => (id, ""));
 
     public static IRegister<RegKey, Texture2D> FeatureIcon { get; } =
         SubRegister.Create(SpriteInfoRegisters.Textures, "card_features");

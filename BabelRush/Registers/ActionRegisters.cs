@@ -16,7 +16,7 @@ public static class ActionRegisters
         CreateSimpleRegister.Script<ActionStep, ActionStepModel>("action_steps", ActionStep.Default);
 
     public static IRegister<RegKey, NameDesc> ActionNameDesc { get; } =
-        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("actions", "en", id => (id, ""));
+        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("actions", BabelRush.I18n.DefaultLocal, id => (id, ""));
 
     public static IRegister<RegKey, Texture2D> ActionIcon { get; } =
         SubRegister.Create(SpriteInfoRegisters.Textures, "actions");

@@ -20,6 +20,12 @@ public static class BabelRush
     #endif
     }
 
+    // ReSharper disable once InconsistentNaming
+    public static class I18n
+    {
+        public const string DefaultLocal = "en";
+    }
+
 
     public static Vector2 ViewportSize { get; } = new((float)ProjectSettings.GetSetting("display/window/size/viewport_width"),
                                                       (float)ProjectSettings.GetSetting("display/window/size/viewport_height"));

@@ -12,7 +12,7 @@ namespace BabelRush.Registers;
 public static class CardRegisters
 {
     public static IRegister<RegKey, NameDesc> CardNameDesc { get; } =
-        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("cards", "en", id => (id, ""));
+        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("cards", BabelRush.I18n.DefaultLocal, id => (id, ""));
 
     public static IRegister<RegKey, SpriteInfo> CardIcon { get; } =
         SubRegister.Create(SpriteInfoRegisters.Sprites, "cards");

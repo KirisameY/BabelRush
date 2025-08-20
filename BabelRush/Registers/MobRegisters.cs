@@ -12,7 +12,7 @@ namespace BabelRush.Registers;
 public static class MobRegisters
 {
     public static IRegister<RegKey, NameDesc> MobNameDesc { get; } =
-        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("mobs", "en", id => (id, ""));
+        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("mobs", BabelRush.I18n.DefaultLocal, id => (id, ""));
     public static IRegister<RegKey, AnimationSet> MobAnimationSets { get; } =
         SubRegister.Create(SpriteInfoRegisters.AnimationSets, "mobs");
     public static IRegister<RegKey, MobType> Mobs { get; } =
