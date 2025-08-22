@@ -20,6 +20,9 @@ public static class EffectRegisters
     //        .WithFallback(EffectBehaviorTemplate.Default)
     //        .Build();
 
+    public static IRegister<RegKey, EffectScript> EffectScripts { get; } =
+        CreateSimpleRegister.Script<EffectScript, EffectScriptModel>("effects", EffectScript.Default);
+
     public static IRegister<RegKey, NameDesc> EffectNameDesc { get; } =
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>("effects", "en", id => (id, ""));
 
@@ -27,5 +30,5 @@ public static class EffectRegisters
         SubRegister.Create(SpriteInfoRegisters.Sprites, "effects");
 
     public static IRegister<RegKey, EffectType> Effects { get; } =
-        CreateSimpleRegister.Data<EffectType, EffectTypeModel>("cards", EffectType.Default);
+        CreateSimpleRegister.Data<EffectType, EffectTypeModel>("effects", EffectType.Default);
 }

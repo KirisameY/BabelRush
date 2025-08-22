@@ -51,7 +51,8 @@ public abstract class Effect(EffectType type, int value = 0)
             (await Game.GameEventBus.PublishAndWaitFor(new EffectRemoveRequestEvent(this, new()))).Cancel.Canceled)
             return false;
 
-        BeforeRemoved();
+        if (!BeforeRemoved() && !natural) return false;
+
         await Game.GameEventBus.PublishAndWaitFor(new EffectRemovedEvent(this));
         AffectedMob = null;
         return true;
@@ -67,9 +68,9 @@ public abstract class Effect(EffectType type, int value = 0)
         newValue = request.NewValue;
         if (newValue == Value) return null;
 
-        var prevValue = Value;
-        Value = newValue;
-        ValueUpdated(prevValue);
+        if (!BeforeValueUpdated(ref newValue) || newValue == Value) return null;
+
+        (var prevValue, Value) = (Value, newValue);
         Game.GameEventBus.Publish(new EffectValueUpdatedEvent(this, prevValue, newValue));
         return newValue;
     }
@@ -82,17 +83,18 @@ public abstract class Effect(EffectType type, int value = 0)
         if (request.Cancel.Canceled) return null;
         newTime = request.NewTime;
 
+        if (BeforeTimeUpdated(ref newTime)) return null;
+
         var prev = (TotalTime, RemainTime);
         if (newTime > TotalTime) TotalTime = newTime;
-        TimeUpdated(prev.TotalTime, prev.RemainTime);
         Game.GameEventBus.Publish(new EffectTimeUpdatedEvent(this, prev.TotalTime, prev.RemainTime, newTime));
         return newTime;
     }
 
     protected abstract void Applied();
     protected abstract void Process(double delta);
-    protected abstract void BeforeRemoved();
+    protected abstract bool BeforeRemoved();
 
-    protected virtual void ValueUpdated(int prevValue) { }
-    protected virtual void TimeUpdated(double prevTotal, double prevRemain) { }
+    protected virtual bool BeforeValueUpdated(ref int newValue) => true;
+    protected virtual bool BeforeTimeUpdated(ref double newTime) => true;
 }

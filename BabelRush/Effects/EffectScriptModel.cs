@@ -8,18 +8,18 @@ using KirisameLib.Extensions;
 using NLua;
 using NLua.Exceptions;
 
-namespace BabelRush.Actions;
+namespace BabelRush.Effects;
 
-internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<ActionStep>
+internal record EffectScriptModel(string Id, LuaFunction Action) : IScriptModel<EffectScript>
 {
-    public (RegKey, ActionStep) Convert(string nameSpace, string path)
+    public (RegKey, EffectScript) Convert(string nameSpace, string path)
     {
         RegKey id = (nameSpace, Id);
-        var step = new ScriptActionStep(id, Action);
-        return (id, step);
+        var effect = new EffectScript(id, Action);
+        return (id, effect);
     }
 
-    public static IReadOnlyCollection<IModel<ActionStep>> FromSource(ScriptSourceInfo source, out ModelParseErrorInfo errorMessages)
+    public static IReadOnlyCollection<IModel<EffectScript>> FromSource(ScriptSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         List<string> errors = [];
         object[] returnValues = [];
@@ -41,6 +41,6 @@ internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<Ac
         }
 
         errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());
-        return [new ActionStepModel(source.Path.Join('/'), func)];
+        return [new EffectScriptModel(source.Path.Join('/'), func)];
     }
 }
