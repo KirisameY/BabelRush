@@ -9,7 +9,7 @@ public class MobType(RegKey id, RegKey animationSetId, bool blocksMovement, int 
 {
     public RegKey Id => id;
     public NameDesc NameDesc => MobRegisters.MobNameDesc[Id];
-    public AnimationSet AnimationSet => MobRegisters.MobAnimationSets[animationSetId];
+    public AnimationSet AnimationSet => MobRegisters.MobAnimationSet[animationSetId];
     public bool BlocksMovement => blocksMovement;
     public int Health => health;
     public MobActionStrategy ActionStrategy => actionStrategy;

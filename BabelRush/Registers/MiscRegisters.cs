@@ -14,12 +14,19 @@ namespace BabelRush.Registers;
 [RegisterContainer]
 public static class MiscRegisters
 {
-    private const string ModulePath = "_module";
+    public static class Paths
+    {
+        // ReSharper disable MemberHidesStaticFromOuterClass
+        public const string Modules = "_module";
+        // ReSharper restore MemberHidesStaticFromOuterClass
+    }
+
+
     public static IRegister<RegKey, LuaTable?> Modules { get; } =
         new RegisterBuilder<RegKey, LuaTable?>()
            .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
-           .AddRegistrant(ScriptRootLoader.WithReservedSourceTaker(ModulePath, new SourceTakerRegistrant<ScriptSourceInfo, ScriptModuleModel, LuaTable>()))
-           .AddRegistrant(ManualRegistrant.Common<LuaTable?>(RootNames.Script, ModulePath))
+           .AddRegistrant(ScriptRootLoader.WithReservedSourceTaker(Paths.Modules, new SourceTakerRegistrant<ScriptSourceInfo, ScriptModuleModel, LuaTable>()))
+           .AddRegistrant(ManualRegistrant.Common<LuaTable?>(RootNames.Script, Paths.Modules))
            .WithFallback((LuaTable?)null)
            .Build();
 }

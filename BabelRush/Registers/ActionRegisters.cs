@@ -12,15 +12,25 @@ namespace BabelRush.Registers;
 [RegisterContainer]
 public static class ActionRegisters
 {
+    public static class Paths
+    {
+        // ReSharper disable MemberHidesStaticFromOuterClass
+        public const string ActionSteps = "action_steps";
+        public const string Actions = "actions";
+        public const string ActionIcon = $"{SpriteInfoRegisters.Paths.Textures}/{Actions}";
+        // ReSharper restore MemberHidesStaticFromOuterClass
+    }
+
+
     public static IRegister<RegKey, ActionStep> ActionSteps { get; } =
-        CreateSimpleRegister.Script<ActionStep, ActionStepModel>("action_steps", ActionStep.Default);
+        CreateSimpleRegister.Script<ActionStep, ActionStepModel>(Paths.ActionSteps, ActionStep.Default);
 
     public static IRegister<RegKey, NameDesc> ActionNameDesc { get; } =
-        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("actions", "en", id => (id, ""));
+        CreateSimpleRegister.Lang<NameDesc, NameDescModel>(Paths.Actions, BabelRush.I18n.DefaultLocal, id => (id, ""));
 
     public static IRegister<RegKey, Texture2D> ActionIcon { get; } =
-        SubRegister.Create(SpriteInfoRegisters.Textures, "actions");
+        SubRegister.Create(SpriteInfoRegisters.Textures, Paths.Actions);
 
     public static IRegister<RegKey, ActionType> Actions { get; } =
-        CreateSimpleRegister.Data<ActionType, ActionTypeModel>("actions", ActionType.Default);
+        CreateSimpleRegister.Data<ActionType, ActionTypeModel>(Paths.Actions, ActionType.Default);
 }

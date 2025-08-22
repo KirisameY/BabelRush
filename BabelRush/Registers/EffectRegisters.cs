@@ -11,24 +11,24 @@ namespace BabelRush.Registers;
 [RegisterContainer]
 public static class EffectRegisters
 {
-    // public static IRegister<RegKey, EffectBehaviorTemplate> EffectBehaviors { get; } =
-    //     new RegisterBuilder<RegKey, EffectBehaviorTemplate>()
-    //        .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
-    //        .AddRegistrant(HookSourceLoader.OnScript(PATH, new SourceTakerRegistrant<ScriptSourceInfo, MODEL, EffectBehaviorTemplate>()))
-    //        .AddRegistrant(HookSourceLoader.OnScript(PATH, new SourceTakerRegistrant<ScriptSourceInfo, MODEL, EffectBehaviorTemplate>()))
-    //        .AddRegistrant(ManualRegistrant.Common<EffectBehaviorTemplate>(RootNames.Script, PATH))
-    //        .WithFallback(EffectBehaviorTemplate.Default)
-    //        .Build();
+    public static class Paths
+    {
+        // ReSharper disable MemberHidesStaticFromOuterClass
+        public const string Effects = "effects";
+        public const string EffectIcon = $"{SpriteInfoRegisters.Paths.Textures}/{Effects}";
+        // ReSharper restore MemberHidesStaticFromOuterClass
+    }
+
 
     public static IRegister<RegKey, EffectScript> EffectScripts { get; } =
-        CreateSimpleRegister.Script<EffectScript, EffectScriptModel>("effects", EffectScript.Default);
+        CreateSimpleRegister.Script<EffectScript, EffectScriptModel>(Paths.Effects, EffectScript.Default);
 
     public static IRegister<RegKey, NameDesc> EffectNameDesc { get; } =
-        CreateSimpleRegister.Lang<NameDesc, NameDescModel>("effects", "en", id => (id, ""));
+        CreateSimpleRegister.Lang<NameDesc, NameDescModel>(Paths.Effects, BabelRush.I18n.DefaultLocal, id => (id, ""));
 
     public static IRegister<RegKey, SpriteInfo> EffectIcon { get; } =
-        SubRegister.Create(SpriteInfoRegisters.Sprites, "effects");
+        SubRegister.Create(SpriteInfoRegisters.Sprites, Paths.Effects);
 
     public static IRegister<RegKey, EffectType> Effects { get; } =
-        CreateSimpleRegister.Data<EffectType, EffectTypeModel>("effects", EffectType.Default);
+        CreateSimpleRegister.Data<EffectType, EffectTypeModel>(Paths.Effects, EffectType.Default);
 }
