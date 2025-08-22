@@ -14,8 +14,17 @@ namespace BabelRush.Registers;
 [RegisterContainer]
 public static class LocalInfoRegisters
 {
+    public static class Paths
+    {
+        // ReSharper disable MemberHidesStaticFromOuterClass
+        public const string Fonts = "fonts/res";
+        public const string FontInfos = "fonts";
+        // ReSharper restore MemberHidesStaticFromOuterClass
+    }
+
+
     public static IRegister<RegKey, Font> Fonts { get; } =
-        CreateSimpleRegister.Res<Font, FontModel>("fonts/res", new FontVariation());
+        CreateSimpleRegister.Res<Font, FontModel>(Paths.Fonts, new FontVariation());
     public static IRegister<RegKey, FontInfo> FontInfos { get; } =
-        CreateSimpleRegister.Res<FontInfo, FontInfoModel>("fonts", new FontInfo(RegKey.Default, 12));
+        CreateSimpleRegister.Res<FontInfo, FontInfoModel>(Paths.FontInfos, new FontInfo(RegKey.Default, 12));
 }
