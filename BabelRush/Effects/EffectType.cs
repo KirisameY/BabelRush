@@ -4,12 +4,13 @@ using BabelRush.Registers;
 
 namespace BabelRush.Effects;
 
-public class EffectType(RegKey id, RegKey iconId)
+public abstract class EffectType(RegKey id, RegKey iconId, EffectPolarity polarity)
 {
     public RegKey Id => id;
     public NameDesc NameDesc => EffectRegisters.EffectNameDesc[id];
     public SpriteInfo Icon => EffectRegisters.EffectIcon[iconId];
+    public EffectPolarity Polarity => polarity;
 
 
-    public static EffectType Default { get; } = new(RegKey.Default, RegKey.Default);
+    public static EffectType Default { get; } = new EmptyEffectType(RegKey.Default, RegKey.Default, EffectPolarity.None);
 }

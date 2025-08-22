@@ -11,6 +11,15 @@ namespace BabelRush.Registers;
 [RegisterContainer]
 public static class EffectRegisters
 {
+    // public static IRegister<RegKey, EffectBehaviorTemplate> EffectBehaviors { get; } =
+    //     new RegisterBuilder<RegKey, EffectBehaviorTemplate>()
+    //        .WithRegisterDoneEventSource(RegisterEventSource.CommonRegisterDone)
+    //        .AddRegistrant(HookSourceLoader.OnScript(PATH, new SourceTakerRegistrant<ScriptSourceInfo, MODEL, EffectBehaviorTemplate>()))
+    //        .AddRegistrant(HookSourceLoader.OnScript(PATH, new SourceTakerRegistrant<ScriptSourceInfo, MODEL, EffectBehaviorTemplate>()))
+    //        .AddRegistrant(ManualRegistrant.Common<EffectBehaviorTemplate>(RootNames.Script, PATH))
+    //        .WithFallback(EffectBehaviorTemplate.Default)
+    //        .Build();
+
     public static IRegister<RegKey, NameDesc> EffectNameDesc { get; } =
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>("effects", "en", id => (id, ""));
 

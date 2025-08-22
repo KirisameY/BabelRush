@@ -1,4 +1,8 @@
+using System.Linq;
+
 using Godot;
+
+using KirisameLib.Extensions;
 
 using NLua;
 
@@ -44,6 +48,14 @@ public partial class LuaInteractionTest : Node
         GD.Print(test3[0].GetType());
         GD.Print(test3[0]);
         GD.Print(test3);
+
+        var test4 = scrHub.LoadString(
+            """
+            return nil, 1, nil, 0, nil
+            """, env
+        ).Call();
+        GD.Print(test4.Length);
+        GD.Print(test4.Select(o => o?.ToString() ?? "nil").Join(", "));
 
 
         var func1 = scrHub.LoadString(
