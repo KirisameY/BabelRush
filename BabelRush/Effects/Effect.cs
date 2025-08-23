@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 
 using BabelRush.Mobs;
 
+using KirisameLib.Logging;
+
 namespace BabelRush.Effects;
 
 public abstract class Effect(EffectType type, int value = 0)
@@ -58,7 +60,13 @@ public abstract class Effect(EffectType type, int value = 0)
         return true;
     }
 
-    public async Task<int?> UpdateValue(int newValue)
+    public void UpdateValue(int newValue) => UpdateValueAsync(newValue).ContinueWith(t =>
+    {
+        Logger.Log(LogLevel.Error, nameof(UpdateValue), $"Exception thrown: {t.Exception?.Flatten()}");
+        Logger.Log(LogLevel.Debug, nameof(UpdateValue), $"StackTrace: {t.Exception?.StackTrace}");
+    }, TaskContinuationOptions.OnlyOnFaulted);
+
+    public async Task<int?> UpdateValueAsync(int newValue)
     {
         if (AffectedMob is null) throw new InvalidOperationException("Tried to update time on an effect that didn't apply to any mob");
         if (newValue == Value) return null;
@@ -75,7 +83,13 @@ public abstract class Effect(EffectType type, int value = 0)
         return newValue;
     }
 
-    public async Task<double?> UpdateTime(double newTime)
+    public void UpdateTime(int newTime) => UpdateTimeAsync(newTime).ContinueWith(t =>
+    {
+        Logger.Log(LogLevel.Error, nameof(UpdateTime), $"Exception thrown: {t.Exception?.Flatten()}");
+        Logger.Log(LogLevel.Debug, nameof(UpdateTime), $"StackTrace: {t.Exception?.StackTrace}");
+    }, TaskContinuationOptions.OnlyOnFaulted);
+
+    public async Task<double?> UpdateTimeAsync(double newTime)
     {
         if (AffectedMob is null) throw new InvalidOperationException("Tried to update time on an effect that didn't apply to any mob");
 
@@ -97,4 +111,7 @@ public abstract class Effect(EffectType type, int value = 0)
 
     protected virtual bool BeforeValueUpdated(ref int newValue) => true;
     protected virtual bool BeforeTimeUpdated(ref double newTime) => true;
+
+
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(Effect));
 }
