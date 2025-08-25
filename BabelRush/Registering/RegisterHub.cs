@@ -12,17 +12,34 @@ namespace BabelRush.Registering;
 
 public static class RegisterHub
 {
-    private static readonly Dictionary<string, (object, bool nullable)> Registers = new();
+    private static readonly Dictionary<string, (IRegister<RegKey>, bool nullable)> Registers = new();
 
-    private static Dictionary<string, (object register, bool nullable)>.AlternateLookup<ReadOnlySpan<char>>? _alter;
-    private static Dictionary<string, (object register, bool nullable)>.AlternateLookup<ReadOnlySpan<char>> Alter =>
+    private static Dictionary<string, (IRegister<RegKey> register, bool nullable)>.AlternateLookup<ReadOnlySpan<char>>? _alter;
+    private static Dictionary<string, (IRegister<RegKey> register, bool nullable)>.AlternateLookup<ReadOnlySpan<char>> Alter =>
         _alter ??= Registers.GetAlternateLookup<ReadOnlySpan<char>>();
 
 
-    public static bool AddRegister<T>(string path, IRegister<RegKey, T> register, bool nullable) => Registers.TryAdd(path, (register, nullable));
+    public static bool AddRegister(string path, IRegister<RegKey> register, bool nullable) => Registers.TryAdd(path, (register, nullable));
 
 
-    public static IRegister<RegKey, object?>? GetRegister(string path) => GetRegister<object?>(path, true);
+    public static IRegister<RegKey>? GetRegister(string path)
+    {
+        {
+            var indexes = path.Index().Where(c => c.Item == '/').Reverse();
+            foreach (var (index, _) in indexes)
+            {
+                var span = path.AsSpan()[..index];
+                if (Alter.TryGetValue(span, out var tuple))
+                {
+                    var (result, _) = tuple;
+                    var suffix = path[(index + 1)..];
+                    if (suffix == "") return result;
+                    return SubRegister.Get(result, suffix);
+                }
+            }
+            return null;
+        }
+    }
 
     public static IRegister<RegKey, T>? GetRegister<T>(string path) where T : notnull => GetRegister<T>(path, false);
 
@@ -41,7 +58,7 @@ public static class RegisterHub
 
                 var suffix = path[(index + 1)..];
                 if (suffix == "") return result;
-                SubRegister.Get(result, suffix);
+                return SubRegister.Get(result, suffix);
             }
         }
         return null;
