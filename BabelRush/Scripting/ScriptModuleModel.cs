@@ -21,8 +21,7 @@ internal record ScriptModuleModel(string Id, LuaTable Table) : IScriptModel<LuaT
     public static IReadOnlyCollection<IModel<LuaTable>> FromSource(ScriptSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
         // OPTIMIZE: 脚本这里有很长的重复代码，回头写个util
-        List<string> errors = [];
-        object[] returnValues = [];
+        object[] returnValues;
 
         try
         {
@@ -30,17 +29,19 @@ internal record ScriptModuleModel(string Id, LuaTable Table) : IScriptModel<LuaT
         }
         catch (LuaScriptException e)
         {
-            errors.Add(e.ToString());
+            errorMessages = new(1, [e.ToString()]);
+            return [];
         }
 
         if (returnValues is not [LuaTable table, ..])
         {
-            errors.Add($"Invalid script return values :" + $"[{returnValues.Select(o => o.GetType().ToString()).Join(", ")}].");
-            errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());
+            var msg = $"Invalid script return values: [{returnValues.Select(o => o.GetType().Name).Join(", ")}] "
+              + $"(expected [LuaTable]).";
+            errorMessages = new ModelParseErrorInfo(1, [msg]);
             return [];
         }
 
-        errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());
+        errorMessages = ModelParseErrorInfo.Empty;
         return [new ScriptModuleModel(source.Path.Join('/'), table)];
     }
 }

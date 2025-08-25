@@ -15,7 +15,7 @@ public static class EffectRegisters
     {
         // ReSharper disable MemberHidesStaticFromOuterClass
         public const string Effects = "effects";
-        public const string EffectIcon = $"{SpriteInfoRegisters.Paths.Textures}/{Effects}";
+        public const string EffectIcon = $"{SpriteInfoRegisters.Paths.Sprites}/{Effects}";
         // ReSharper restore MemberHidesStaticFromOuterClass
     }
 

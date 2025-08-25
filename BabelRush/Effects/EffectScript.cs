@@ -97,7 +97,7 @@ internal class EffectScriptInstance(RegKey id, LuaTable? table)
             else
             {
                 var types = res.Select(r => r.GetType().Name).Join(", ");
-                Logger.Log(LogLevel.Error, LogProcessCallLua, $"Unexpected '{funcName}' function result: [{types}]"
+                Logger.Log(LogLevel.Warning, LogProcessCallLua, $"Unexpected '{funcName}' function result: [{types}]"
                          + $" from instance of {id} (expected [bool])");
             }
         }
@@ -129,7 +129,7 @@ internal class EffectScriptInstance(RegKey id, LuaTable? table)
             if (!succeed)
             {
                 var types = res.Select(r => r.GetType().Name).Join(", ");
-                Logger.Log(LogLevel.Error, LogProcessCallLua, $"Unexpected '{funcName}' function result: [{types}]"
+                Logger.Log(LogLevel.Warning, LogProcessCallLua, $"Unexpected '{funcName}' function result: [{types}]"
                          + $" from instance of {id} (expected [bool, (number)])");
             }
         }
@@ -161,7 +161,7 @@ internal class EffectScriptInstance(RegKey id, LuaTable? table)
             if (!succeed)
             {
                 var types = res.Select(r => r.GetType().Name).Join(", ");
-                Logger.Log(LogLevel.Error, LogProcessCallLua, $"Unexpected '{funcName}' function result: [{types}]"
+                Logger.Log(LogLevel.Warning, LogProcessCallLua, $"Unexpected '{funcName}' function result: [{types}]"
                          + $" from instance of {id} (expected [bool, (number)])");
             }
         }

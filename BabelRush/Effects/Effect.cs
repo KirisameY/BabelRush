@@ -31,7 +31,7 @@ public abstract class Effect(EffectType type, int value = 0)
         TotalTime   = RemainTime = time;
         Applied();
 
-        Game.GameEventBus.Publish(new EffectAppliedEvent(this, mob, time));
+        await Game.GameEventBus.PublishAndWaitFor(new EffectAppliedEvent(this, mob, time));
         return time;
     }
 
@@ -53,7 +53,7 @@ public abstract class Effect(EffectType type, int value = 0)
             (await Game.GameEventBus.PublishAndWaitFor(new EffectRemoveRequestEvent(this, new()))).Cancel.Canceled)
             return false;
 
-        if (!BeforeRemoved() && !natural) return false;
+        if (!BeforeRemoved()) return false;
 
         await Game.GameEventBus.PublishAndWaitFor(new EffectRemovedEvent(this));
         AffectedMob = null;
@@ -68,7 +68,7 @@ public abstract class Effect(EffectType type, int value = 0)
 
     public async Task<int?> UpdateValueAsync(int newValue)
     {
-        if (AffectedMob is null) throw new InvalidOperationException("Tried to update time on an effect that didn't apply to any mob");
+        if (AffectedMob is null) throw new InvalidOperationException("Tried to update value on an effect that didn't apply to any mob");
         if (newValue == Value) return null;
 
         var request = await Game.GameEventBus.PublishAndWaitFor(new EffectValueUpdateRequestEvent(this, newValue, new()));
@@ -79,11 +79,11 @@ public abstract class Effect(EffectType type, int value = 0)
         if (!BeforeValueUpdated(ref newValue) || newValue == Value) return null;
 
         (var prevValue, Value) = (Value, newValue);
-        Game.GameEventBus.Publish(new EffectValueUpdatedEvent(this, prevValue, newValue));
+        await Game.GameEventBus.PublishAndWaitFor(new EffectValueUpdatedEvent(this, prevValue, newValue));
         return newValue;
     }
 
-    public void UpdateTime(int newTime) => UpdateTimeAsync(newTime).ContinueWith(t =>
+    public void UpdateTime(double newTime) => UpdateTimeAsync(newTime).ContinueWith(t =>
     {
         Logger.Log(LogLevel.Error, nameof(UpdateTime), $"Exception thrown: {t.Exception?.Flatten()}");
         Logger.Log(LogLevel.Debug, nameof(UpdateTime), $"StackTrace: {t.Exception?.StackTrace}");
@@ -97,10 +97,11 @@ public abstract class Effect(EffectType type, int value = 0)
         if (request.Cancel.Canceled) return null;
         newTime = request.NewTime;
 
-        if (BeforeTimeUpdated(ref newTime)) return null;
+        if (!BeforeTimeUpdated(ref newTime)) return null;
 
         var prev = (TotalTime, RemainTime);
         if (newTime > TotalTime) TotalTime = newTime;
+        RemainTime = newTime;
         Game.GameEventBus.Publish(new EffectTimeUpdatedEvent(this, prev.TotalTime, prev.RemainTime, newTime));
         return newTime;
     }

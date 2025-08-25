@@ -12,7 +12,7 @@ public abstract class EffectType(RegKey id, RegKey iconId, EffectPolarity polari
     public EffectPolarity Polarity => polarity;
 
 
-    public abstract Effect CreateInstance(int value);
+    public abstract Effect CreateInstance(int value = 0);
 
 
     public static EffectType Default { get; } = new EmptyEffectType(RegKey.Default, RegKey.Default, EffectPolarity.None);

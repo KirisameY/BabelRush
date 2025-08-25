@@ -87,8 +87,7 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
         }
 
         var result = await effect.ApplyTo(this, time);
-        if (result is null) return null;
-        _effects.Add(effect);
+        if (result is not null) _effects.Add(effect);
         return result;
     }
 
@@ -102,14 +101,13 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
     {
         if (effect.AffectedMob != this)
         {
-            Logger.Log(LogLevel.Warning, nameof(RemoveEffectAsync), $"Tried to remove an effect({effect}) that applied to other mob.");
+            Logger.Log(LogLevel.Warning, nameof(RemoveEffectAsync), $"Tried to remove an effect({effect}) that not applied to this mob.");
             return false;
         }
 
         var result = await effect.Remove(natural);
-        if (!result) return false;
-        _effects.Remove(effect);
-        return true;
+        if (result) _effects.Remove(effect);
+        return result;
     }
 
     private async Task UpdateEffects(double delta)
