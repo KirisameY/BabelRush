@@ -21,25 +21,26 @@ internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<Ac
 
     public static IReadOnlyCollection<IModel<ActionStep>> FromSource(ScriptSourceInfo source, out ModelParseErrorInfo errorMessages)
     {
-        List<string> errors = [];
-        object[] returnValues = [];
+        object[] returnValues;
         try
         {
             returnValues = source.Script.Call();
         }
         catch (LuaScriptException e)
         {
-            errors.Add(e.ToString());
+            errorMessages = new(1, [e.ToString()]);
+            return [];
         }
 
         if (returnValues is not [LuaFunction func, ..])
         {
-            errors.Add($"Invalid script return values :" + $"[{returnValues.Select(o => o.GetType().ToString()).Join(", ")}].");
-            errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());
+            var msg = $"Invalid script return values: [{returnValues.Select(o => o.GetType().Name).Join(", ")}] "
+              + $"(expected [LuaFunction]).";
+            errorMessages = new ModelParseErrorInfo(1, [msg]);
             return [];
         }
 
-        errorMessages = new ModelParseErrorInfo(errors.Count, errors.ToArray());
+        errorMessages = ModelParseErrorInfo.Empty;
         return [new ActionStepModel(source.Path.Join('/'), func)];
     }
 }

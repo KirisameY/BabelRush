@@ -1,5 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 
+using BabelRush.Effects;
 using BabelRush.GamePlay;
 using BabelRush.Level.Scenery;
 using BabelRush.Mobs.Actions;
@@ -9,6 +13,8 @@ using BabelRush.Numerics.Modifiers;
 using Godot;
 
 using KirisameLib.Event;
+using KirisameLib.Extensions;
+using KirisameLib.Logging;
 
 using MobActionInterruptedEvent = BabelRush.Mobs.Actions.MobActionInterruptedEvent;
 using MobInterface = BabelRush.Gui.Mobs.MobInterface;
@@ -59,6 +65,78 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
     #endregion
 
 
+    #region Effect
+
+    private readonly List<Effect> _effects = [];
+
+    [field: AllowNull, MaybeNull]
+    public IReadOnlyList<Effect> Effects => field ??= _effects.AsReadOnly();
+
+    public void ApplyEffect(Effect effect, double time) => ApplyEffectAsync(effect, time).ContinueWith(t =>
+    {
+        Logger.Log(LogLevel.Error, nameof(ApplyEffect), $"Exception thrown: {t.Exception?.Flatten()}");
+        Logger.Log(LogLevel.Debug, nameof(ApplyEffect), $"StackTrace: {t.Exception?.StackTrace}");
+    }, TaskContinuationOptions.OnlyOnFaulted);
+
+    public async Task<double?> ApplyEffectAsync(Effect effect, double time)
+    {
+        if (effect.AffectedMob is not null)
+        {
+            Logger.Log(LogLevel.Warning, nameof(ApplyEffectAsync), $"Tried to apply an already applied effect({effect}).");
+            return null;
+        }
+
+        var result = await effect.ApplyTo(this, time);
+        if (result is not null) _effects.Add(effect);
+        return result;
+    }
+
+    public void RemoveEffect(Effect effect, bool natural) => RemoveEffectAsync(effect, natural).ContinueWith(t =>
+    {
+        Logger.Log(LogLevel.Error, nameof(RemoveEffect), $"Exception thrown: {t.Exception?.Flatten()}");
+        Logger.Log(LogLevel.Debug, nameof(RemoveEffect), $"StackTrace: {t.Exception?.StackTrace}");
+    }, TaskContinuationOptions.OnlyOnFaulted);
+
+    public async Task<bool> RemoveEffectAsync(Effect effect, bool natural = false)
+    {
+        if (effect.AffectedMob != this)
+        {
+            Logger.Log(LogLevel.Warning, nameof(RemoveEffectAsync), $"Tried to remove an effect({effect}) that not applied to this mob.");
+            return false;
+        }
+
+        var result = await effect.Remove(natural);
+        if (result) _effects.Remove(effect);
+        return result;
+    }
+
+    private async Task UpdateEffects(double delta)
+    {
+        List<Task<(bool removed, Effect effect)>> removeTasks = [];
+        foreach (var effect in _effects)
+        {
+            if (!effect.ProcessUpdate(delta)) continue;
+            var t = CreateRemoveTask(effect);
+            removeTasks.Add(t);
+        }
+        if (removeTasks.Count == 0) return;
+
+        var results = await Task.WhenAll(removeTasks);
+        results.Where(result => result.removed)
+               .ForEach(result => _effects.Remove(result.effect));
+
+        return;
+
+        static async Task<(bool removed, Effect effect)> CreateRemoveTask(Effect effect)
+        {
+            var result = await effect.Remove(true);
+            return (result, effect);
+        }
+    }
+
+    #endregion
+
+
     #region Update&Register
 
     protected override void _EnterScene()
@@ -82,6 +160,13 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
         {
             CurrentAction.Progress += delta;
         }
+
+        // UpdateEffect
+        UpdateEffects(delta).ContinueWith(t =>
+        {
+            Logger.Log(LogLevel.Error, "RemovingEffect", $"Exception thrown: {t.Exception?.Flatten()}");
+            Logger.Log(LogLevel.Debug, "RemovingEffect", $"StackTrace: {t.Exception?.StackTrace}");
+        }, TaskContinuationOptions.OnlyOnFaulted);
     }
 
     #endregion
@@ -145,4 +230,8 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
     }
 
     #endregion
+
+
+    // Logger
+    private static Logger Logger { get; } = Game.LogBus.GetLogger("Mob");
 }

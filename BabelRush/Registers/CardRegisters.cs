@@ -15,7 +15,7 @@ public static class CardRegisters
     {
         // ReSharper disable MemberHidesStaticFromOuterClass
         public const string Cards = "cards";
-        public const string CardIcon = $"{SpriteInfoRegisters.Paths.Textures}/{Cards}";
+        public const string CardIcon = $"{SpriteInfoRegisters.Paths.Sprites}/{Cards}";
         // ReSharper restore MemberHidesStaticFromOuterClass
     }
 
