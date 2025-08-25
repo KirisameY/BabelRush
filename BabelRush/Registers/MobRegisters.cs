@@ -23,7 +23,7 @@ public static class MobRegisters
     public static IRegister<RegKey, NameDesc> MobNameDesc { get; } =
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>(Paths.Mobs, BabelRush.I18n.DefaultLocal, id => (id, ""));
     public static IRegister<RegKey, AnimationSet> MobAnimationSet { get; } =
-        SubRegister.Create(SpriteInfoRegisters.AnimationSets, Paths.Mobs);
+        SubRegister.Get(SpriteInfoRegisters.AnimationSets, Paths.Mobs);
     public static IRegister<RegKey, MobType> Mobs { get; } =
         CreateSimpleRegister.Data<MobType, MobTypeModel>(Paths.Mobs, MobType.Default);
 }

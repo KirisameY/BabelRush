@@ -25,7 +25,7 @@ public static class CardFeatureRegisters
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>(Paths.Features, BabelRush.I18n.DefaultLocal, id => (id, ""));
 
     public static IRegister<RegKey, Texture2D> FeatureIcon { get; } =
-        SubRegister.Create(SpriteInfoRegisters.Textures, Paths.Features);
+        SubRegister.Get(SpriteInfoRegisters.Textures, Paths.Features);
 
     public static IRegister<RegKey, FeatureType> Features { get; } =
         CreateSimpleRegister.Data<FeatureType, FeatureTypeModel>(Paths.Features, FeatureType.Default);

@@ -27,7 +27,7 @@ public static class EffectRegisters
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>(Paths.Effects, BabelRush.I18n.DefaultLocal, id => (id, ""));
 
     public static IRegister<RegKey, SpriteInfo> EffectIcon { get; } =
-        SubRegister.Create(SpriteInfoRegisters.Sprites, Paths.Effects);
+        SubRegister.Get(SpriteInfoRegisters.Sprites, Paths.Effects);
 
     public static IRegister<RegKey, EffectType> Effects { get; } =
         CreateSimpleRegister.Data<EffectType, EffectTypeModel>(Paths.Effects, EffectType.Default);

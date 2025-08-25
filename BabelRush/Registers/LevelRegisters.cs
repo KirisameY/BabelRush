@@ -29,7 +29,7 @@ public static class LevelRegisters
 
 
     public static IRegister<RegKey, Texture2D> RoomIcon { get; } =
-        SubRegister.Create(SpriteInfoRegisters.Textures, Paths.Sub_RoomIcons);
+        SubRegister.Get(SpriteInfoRegisters.Textures, Paths.Sub_RoomIcons);
 
     public static IRegister<RegKey, RoomTemplate> Rooms { get; } =
         CreateSimpleRegister.Data<RoomTemplate, RoomTemplateModel>(Paths.Rooms, RoomTemplate.Default);

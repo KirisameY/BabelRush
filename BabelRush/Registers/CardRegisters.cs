@@ -24,7 +24,7 @@ public static class CardRegisters
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>(Paths.Cards, BabelRush.I18n.DefaultLocal, id => (id, ""));
 
     public static IRegister<RegKey, SpriteInfo> CardIcon { get; } =
-        SubRegister.Create(SpriteInfoRegisters.Sprites, Paths.Cards);
+        SubRegister.Get(SpriteInfoRegisters.Sprites, Paths.Cards);
 
     public static IRegister<RegKey, CardType> Cards { get; } =
         CreateSimpleRegister.Data<CardType, CardTypeModel>(Paths.Cards, CardType.Default);

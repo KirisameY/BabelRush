@@ -29,7 +29,7 @@ public static class ActionRegisters
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>(Paths.Actions, BabelRush.I18n.DefaultLocal, id => (id, ""));
 
     public static IRegister<RegKey, Texture2D> ActionIcon { get; } =
-        SubRegister.Create(SpriteInfoRegisters.Textures, Paths.Actions);
+        SubRegister.Get(SpriteInfoRegisters.Textures, Paths.Actions);
 
     public static IRegister<RegKey, ActionType> Actions { get; } =
         CreateSimpleRegister.Data<ActionType, ActionTypeModel>(Paths.Actions, ActionType.Default);
