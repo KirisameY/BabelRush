@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 
 using BabelRush.Data;
-using BabelRush.Registering.FileLoading;
 using BabelRush.Registering.I18n;
-using BabelRush.Registering.RootLoaders;
 using BabelRush.Registering.SourceTakers;
 
 using KirisameLib.Data.Registering;

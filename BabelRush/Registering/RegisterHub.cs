@@ -6,8 +6,6 @@ using BabelRush.Data;
 using BabelRush.Registering.I18n;
 using BabelRush.Registering.Registers;
 
-using JetBrains.Annotations;
-
 using KirisameLib.Data.Registers;
 
 namespace BabelRush.Registering;
