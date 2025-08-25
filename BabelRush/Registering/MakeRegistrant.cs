@@ -15,40 +15,40 @@ namespace BabelRush.Registering;
 
 public static class MakeRegistrant
 {
-    public static IRegistrant<RegKey,TItem> ForScript<TItem, TModel>(string path) where TModel : IModel<ScriptSourceInfo, TItem> =>
+    public static IRegistrant<RegKey, TItem> ForScript<TItem, TModel>(string path) where TModel : IModel<ScriptSourceInfo, TItem> =>
         new MergedRegistrant<TItem>(
-            ScriptRootLoader.WithSourceTaker(path, new SourceTakerRegistrant<ScriptSourceInfo, TModel, TItem>()),
+            HookSourceLoader.OnScript(path, new SourceTakerRegistrant<ScriptSourceInfo, TModel, TItem>()),
             ManualRegistrant.Common<TItem>(RootNames.Script, path)
         );
 
-    public static IRegistrant<RegKey,TItem> ForData<TItem, TModel>(string path) where TModel : IModel<DocumentSyntax, TItem> =>
+    public static IRegistrant<RegKey, TItem> ForData<TItem, TModel>(string path) where TModel : IModel<DocumentSyntax, TItem> =>
         new MergedRegistrant<TItem>(
-            DataRootLoader.WithSourceTaker(path, new SourceTakerRegistrant<DocumentSyntax, TModel, TItem>()),
+            HookSourceLoader.OnData(path, new SourceTakerRegistrant<DocumentSyntax, TModel, TItem>()),
             ManualRegistrant.Common<TItem>(RootNames.Data, path)
         );
 
-    public static IRegistrant<RegKey,TItem> ForCommonRes<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem> =>
+    public static IRegistrant<RegKey, TItem> ForCommonRes<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem> =>
         new MergedRegistrant<TItem>(
-            ResRootLoader.WithStaticSourceTaker(path, new SourceTakerRegistrant<ResSourceInfo, TModel, TItem>()),
+            HookSourceLoader.OnCommonRes(path, new SourceTakerRegistrant<ResSourceInfo, TModel, TItem>()),
             ManualRegistrant.Common<TItem>(RootNames.Res, path)
         );
 
     public static II18nRegistrant<TItem> ForLocalRes<TItem, TModel>(string path) where TModel : IModel<ResSourceInfo, TItem> =>
         new MergedI18nRegistrant<TItem>(
-            LocalFileLoader.WithResSourceTakerFactory(path, new I18nSourceTakerRegistrant<ResSourceInfo, TModel, TItem>()),
+            HookSourceLoader.OnLocalRes(path, new I18nSourceTakerRegistrant<ResSourceInfo, TModel, TItem>()),
             ManualRegistrant.I18n<TItem>(RootNames.Res, path)
         );
 
     public static II18nRegistrant<TItem> ForLang<TItem, TModel>(string path) where TModel : IModel<IDictionary<string, object>, TItem> =>
         new MergedI18nRegistrant<TItem>(
-            LocalFileLoader.WithLangSourceTakerFactory(path, new I18nSourceTakerRegistrant<IDictionary<string, object>, TModel, TItem>()),
+            HookSourceLoader.OnLang(path, new I18nSourceTakerRegistrant<IDictionary<string, object>, TModel, TItem>()),
             ManualRegistrant.I18n<TItem>(RootNames.Lang, path)
         );
 }
 
-file class MergedRegistrant<TItem>(params IRegistrant<RegKey,TItem>[] registrants) : IRegistrant<RegKey,TItem>
+file class MergedRegistrant<TItem>(params IRegistrant<RegKey, TItem>[] registrants) : IRegistrant<RegKey, TItem>
 {
-    public void AcceptTarget(IRegTarget<RegKey,TItem> target) => registrants.ForEach(r => r.AcceptTarget(target));
+    public void AcceptTarget(IRegTarget<RegKey, TItem> target) => registrants.ForEach(r => r.AcceptTarget(target));
 }
 
 // ReSharper disable once InconsistentNaming

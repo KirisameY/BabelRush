@@ -28,5 +28,6 @@ public static class MiscRegisters
            .AddRegistrant(ScriptRootLoader.WithReservedSourceTaker(Paths.Modules, new SourceTakerRegistrant<ScriptSourceInfo, ScriptModuleModel, LuaTable>()))
            .AddRegistrant(ManualRegistrant.Common<LuaTable?>(RootNames.Script, Paths.Modules))
            .WithFallback((LuaTable?)null)
-           .Build();
+           .Build()
+           .AddToRegisterHubNullable(Paths.Modules);
 }

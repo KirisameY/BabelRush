@@ -43,5 +43,6 @@ public static class SpriteInfoRegisters
         CreateSimpleRegister.Res<SpriteInfo, SpriteInfoModel>(Paths.Sprites, SpriteInfo.Fallback);
 
     public static IRegister<RegKey, AnimationSet> AnimationSets { get; } =
-        new AnimationSetRegister(Paths.AnimationSets);
+        new AnimationSetRegister(Paths.AnimationSets)
+           .AddToRegisterHub(Paths.AnimationSets);
 }
