@@ -10,7 +10,7 @@ using NLua.Exceptions;
 
 namespace BabelRush.Actions;
 
-internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<ActionStep>
+internal record ScriptActionStepModel(string Id, LuaFunction Action) : IScriptModel<ActionStep>
 {
     public (RegKey, ActionStep) Convert(string nameSpace, string path)
     {
@@ -41,6 +41,6 @@ internal record ActionStepModel(string Id, LuaFunction Action) : IScriptModel<Ac
         }
 
         errorMessages = ModelParseErrorInfo.Empty;
-        return [new ActionStepModel(source.Path.Join('/'), func)];
+        return [new ScriptActionStepModel(source.Path.Join('/'), func)];
     }
 }

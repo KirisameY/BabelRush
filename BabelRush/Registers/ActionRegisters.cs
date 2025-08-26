@@ -23,7 +23,7 @@ public static class ActionRegisters
 
 
     public static IRegister<RegKey, ActionStep> ActionSteps { get; } =
-        CreateSimpleRegister.Script<ActionStep, ActionStepModel>(Paths.ActionSteps, ActionStep.Default);
+        CreateSimpleRegister.Script<ActionStep, ScriptActionStepModel>(Paths.ActionSteps, ActionStep.Default);
 
     public static IRegister<RegKey, NameDesc> ActionNameDesc { get; } =
         CreateSimpleRegister.Lang<NameDesc, NameDescModel>(Paths.Actions, BabelRush.I18n.DefaultLocal, id => (id, ""));
