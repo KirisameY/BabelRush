@@ -99,9 +99,8 @@ public class ModelCheckGenerator : IIncrementalGenerator //todo:继承关系
 
         sourceBuilder.AppendLine($"namespace {info.Namespace};")
                      .AppendLine()
-                     .AppendLine($"partial class {info.ClassName}")
-                     .AppendLine("{");
-        using (sourceBuilder.Indent())
+                     .AppendLine($"partial class {info.ClassName}");
+        using (sourceBuilder.IndentWithBrace())
         {
             sourceBuilder.AppendLine("//declare necessary properties");
             foreach (var property in info.NecessaryProperties)
@@ -114,9 +113,8 @@ public class ModelCheckGenerator : IIncrementalGenerator //todo:继承关系
                              .AppendLine();
 
                 if (isRefType) sourceBuilder.AppendLine($"[field: global::{Names.AllowNull}, global::{Names.MaybeNull}]");
-                sourceBuilder.AppendLine($"public partial {type} {name}")
-                             .AppendLine("{");
-                using (sourceBuilder.Indent())
+                sourceBuilder.AppendLine($"public partial {type} {name}");
+                using (sourceBuilder.IndentWithBrace())
                 {
                     sourceBuilder.AppendLine("get")
                                  .AppendLine("{")
@@ -137,8 +135,7 @@ public class ModelCheckGenerator : IIncrementalGenerator //todo:继承关系
                                  .DecreaseIndent()
                                  .AppendLine("}");
                 }
-                sourceBuilder.AppendLine("}")
-                             .AppendLine();
+                sourceBuilder.AppendLine();
             }
 
             sourceBuilder.AppendLine("//check properties")
@@ -149,9 +146,8 @@ public class ModelCheckGenerator : IIncrementalGenerator //todo:继承关系
                               (false, false) => "virtual ",
                               (false, true)  => ""
                           })
-                         .AppendLine("bool Check(out string[] errors)")
-                         .AppendLine("{");
-            using (sourceBuilder.Indent())
+                         .AppendLine("bool Check(out string[] errors)");
+            using (sourceBuilder.IndentWithBrace())
             {
                 sourceBuilder.AppendLine($"global::{Names.ListG}<string> errorList = [];")
                              .AppendLine();
@@ -183,12 +179,11 @@ public class ModelCheckGenerator : IIncrementalGenerator //todo:继承关系
                              .AppendLine("errors = errorList.ToArray();")
                              .AppendLine("return errorList.Count == 0;");
             }
-            sourceBuilder.AppendLine("}");
+            sourceBuilder.AppendLine();
 
             sourceBuilder.AppendLine("//custom check")
                          .AppendLine($"partial void CustomCheck(global::{Names.ListG}<string> errorList);");
         }
-        sourceBuilder.AppendLine("}");
 
         context.AddSource($"{info.ClassFullName}{Names.TargetFileSuffix}", sourceBuilder.ToString());
     }

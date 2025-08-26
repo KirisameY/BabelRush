@@ -24,7 +24,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false"/>
+        <!--        <ProjectReference Include="..\BabelRush.Generator\BabelRush.Generator.csproj"-->
+        <!--                          OutputItemType="Analyzer" ReferenceOutputAssembly="false" ExcludeAssets="runtime"/>-->
+        <Analyzer Include="..\BabelRush.Generator\bin\$(Configuration)\netstandard2.0\merged\*.dll"/>
     </ItemGroup>
 
     <ItemGroup Condition=" '$(Configuration)' != 'DEBUG' ">

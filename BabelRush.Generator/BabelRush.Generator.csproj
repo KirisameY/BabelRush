@@ -9,12 +9,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="KirisameLib.GeneratorTools" Version="0.1.0" />
+        <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.43">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
+        <PackageReference Include="KirisameLib.GeneratorTools" Version="0.1.1" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0"/>
     </ItemGroup>
 
 </Project>

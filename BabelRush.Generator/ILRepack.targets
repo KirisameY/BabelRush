@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <!-- ILRepack -->
+    <Target Name="ILRepacker" AfterTargets="Build">
+        <PropertyGroup>
+            <NuGetPackageRoot Condition="'$(NuGetPackageRoot)' == ''">$(UserProfile)\.nuget\packages</NuGetPackageRoot>
+            <MicrosoftCodeAnalysisCommonVersion>4.14.0</MicrosoftCodeAnalysisCommonVersion>
+            <KirisameLibGeneratorToolsVersion>0.1.1</KirisameLibGeneratorToolsVersion>
+        </PropertyGroup>
+
+        <ItemGroup>
+            <InputAssemblies Include="$(OutputPath)\*.dll"/>
+            <InputAssemblies Include="$(NuGetPackageRoot)\kirisamelib.generatortools\$(KirisameLibGeneratorToolsVersion)\lib\netstandard2.0\*.dll"/>
+        </ItemGroup>
+
+        <ItemGroup>
+            <!-- Must be a fully qualified name -->
+            <!--<DoNotInternalizeAssemblies Include="ExampleAssemblyToMerge3"/>-->
+        </ItemGroup>
+
+        <ILRepack
+                Parallel="true"
+                Internalize="true"
+                InternalizeExclude="@(DoNotInternalizeAssemblies)"
+                InputAssemblies="@(InputAssemblies)"
+                TargetKind="Dll"
+                OutputFile="$(OutputPath)\merged\$(AssemblyName).dll"
+                LibraryPath="$(NuGetPackageRoot)\microsoft.codeanalysis.common\$(MicrosoftCodeAnalysisCommonVersion)\lib\netstandard2.0"
+        />
+
+    </Target>
+    <!-- /ILRepack -->
+</Project>

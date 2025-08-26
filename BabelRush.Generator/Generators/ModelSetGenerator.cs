@@ -101,14 +101,12 @@ public class ModelSetGenerator : IIncrementalGenerator
                      .AppendLine()
                      .AppendLine($"namespace {info.Namespace};")
                      .AppendLine()
-                     .AppendLine($"partial class {info.ClassName}")
-                     .AppendLine("{");
-        using (sourceBuilder.Indent())
+                     .AppendLine($"partial class {info.ClassName}");
+        using (sourceBuilder.IndentWithBrace())
         {
             sourceBuilder.AppendLine($"[global::System.CodeDom.Compiler.GeneratedCode(\"{Project.Name}\", \"{Project.Version}\")]")
-                         .AppendLine($"private partial class ModelSet : global::{Names.IModelSetG}<{info.ClassName}>")
-                         .AppendLine("{");
-            using (sourceBuilder.Indent())
+                         .AppendLine($"private partial class ModelSet : global::{Names.IModelSetG}<{info.ClassName}>");
+            using (sourceBuilder.IndentWithBrace())
             {
                 foreach (var set in info.Sets)
                 {
@@ -116,9 +114,8 @@ public class ModelSetGenerator : IIncrementalGenerator
                 }
 
                 sourceBuilder.AppendLine()
-                             .AppendLine($"public global::{Names.IReadOnlyCollectionG}<{info.ClassName}> CheckAll(out string[] errors)")
-                             .AppendLine("{");
-                using (sourceBuilder.Indent())
+                             .AppendLine($"public global::{Names.IReadOnlyCollectionG}<{info.ClassName}> CheckAll(out string[] errors)");
+                using (sourceBuilder.IndentWithBrace())
                 {
                     sourceBuilder.AppendLine($"global::{Names.ListG}<{info.ClassName}> result = [];")
                                  .AppendLine($"global::{Names.ListG}<(string id, string[] messages)> errorList = [];")
@@ -132,9 +129,8 @@ public class ModelSetGenerator : IIncrementalGenerator
                     sourceBuilder.AppendLine(";");
 
 
-                    sourceBuilder.AppendLine("foreach (var item in sets)")
-                                 .AppendLine("{");
-                    using (sourceBuilder.Indent())
+                    sourceBuilder.AppendLine("foreach (var item in sets)");
+                    using (sourceBuilder.IndentWithBrace())
                     {
                         sourceBuilder.AppendLine("bool @checked = item.Check(out var error);")
                                      .AppendLine("errorList.Add((item.Id, error));");
@@ -147,18 +143,14 @@ public class ModelSetGenerator : IIncrementalGenerator
                                      .DecreaseIndent()
                                      .AppendLine("}");
                     }
-                    sourceBuilder.AppendLine("}");
                     sourceBuilder.AppendLine("errors = errorList.SelectMany(t => t.messages, (t, m) => $\"in ID {t.id}: {m}\").ToArray();");
                     sourceBuilder.AppendLine("return result;");
                 }
-                sourceBuilder.AppendLine("}");
 
                 sourceBuilder.AppendLine($"partial void AfterCheck(ref {info.ClassName} item, "
                                        + $"{Names.ListG}<(string id, string[] messages)> errorList);");
             }
-            sourceBuilder.AppendLine("}");
         }
-        sourceBuilder.AppendLine("}");
 
         context.AddSource($"{info.ClassFullName}{Names.TargetFileSuffix}", sourceBuilder.ToString());
     }
