@@ -1,3 +1,6 @@
+using KirisameLib.GeneratorTools;
+using KirisameLib.GeneratorTools.Extensions;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

@@ -1,3 +1,6 @@
+using KirisameLib.GeneratorTools;
+using KirisameLib.GeneratorTools.Extensions;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -69,9 +72,9 @@ public class ModelSetGenerator : IIncrementalGenerator
         {
             string setType;
 
-            if (attributeData.AttributeClass.IsDerivedFrom(Names.ModelSetAttribute))
+            if ((attributeData.AttributeClass?.OriginalDefinition).IsDerivedFrom(Names.ModelSetAttribute))
                 setType = classSymbol.ToDisplayString();
-            else if (attributeData.AttributeClass.IsDerivedFrom(Names.ModelSetAttributeGT))
+            else if ((attributeData.AttributeClass?.OriginalDefinition).IsDerivedFrom(Names.ModelSetAttributeGT))
                 setType = attributeData.AttributeClass!.TypeArguments[0].ToDisplayString();
             else continue;
 
