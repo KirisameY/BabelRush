@@ -25,15 +25,9 @@ public partial class MobTest : Node2D
     //Testing
     private MobInterface? MobInterface { get; set; }
 
-    public void SetMobMaxHealth(int value)
-    {
-        if (MobInterface is not null) MobInterface.Mob.MaxHealth.BaseValue = value;
-    }
+    public void SetMobMaxHealth(int value) => MobInterface?.Mob.MaxHealth.BaseValue = value;
 
-    public void SetMobHealth(int value)
-    {
-        if (MobInterface is not null) MobInterface.Mob.Health.BaseValue = value;
-    }
+    public void SetMobHealth(int value) => MobInterface?.Mob.Health = value;
 
 
     //Event

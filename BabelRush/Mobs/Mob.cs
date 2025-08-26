@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,20 +31,24 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
 
     public MobType Type => type;
 
-    private readonly DynamicClampModifier<int> _healthClampModifier = new(0, type.Health);
-
     [field: AllowNull, MaybeNull]
     public Numeric<int> MaxHealth => field ??=
         new Numeric<int>(type.Health)
            .WithModifier(new ClampModifier<int>(0, null))
-           .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.GameEventBus.Publish(new MobHealthChangedEvent(this, oldValue, newValue)))
-           .WithFinalValueUpdatedHandler((_, _, newValue) => _healthClampModifier.Max = newValue);
-
-    [field: AllowNull, MaybeNull]
-    public Numeric<int> Health => field ??=
-        new Numeric<int>(MaxHealth)
-           .WithModifier(_healthClampModifier)
+           .WithFinalValueUpdatedHandler((_, _, _) => Health = Health)
            .WithFinalValueUpdatedHandler((_, oldValue, newValue) => Game.GameEventBus.Publish(new MobMaxHealthChangedEvent(this, oldValue, newValue)));
+
+    public int Health
+    {
+        get;
+        set
+        {
+            var prev = field;
+            field = Math.Clamp(value, 0, MaxHealth);
+            if (field == value) return;
+            Game.GameEventBus.Publish(new MobHealthChangedEvent(this, prev, value));
+        }
+    } = type.Health;
 
     [field: AllowNull, MaybeNull]
     public MobActionStrategizer ActionStrategizer => field ??= Type.ActionStrategy.NewInstance(this);

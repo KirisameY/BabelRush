@@ -133,7 +133,7 @@ public partial class MobInterface : AnimationInterface
     private void UpdateHealthBar()
     {
         if (Mob.MaxHealth != _lastMaxHealth) HealthBar.SetDeferred(Names.MaxHealth, Mob.MaxHealth.FinalValue);
-        if (Mob.Health != _lastHealth) HealthBar.SetDeferred(Names.Health,          Mob.Health.FinalValue);
+        if (Mob.Health != _lastHealth) HealthBar.SetDeferred(Names.Health,          Mob.Health);
     }
 
     private void UpdateActionBar()
