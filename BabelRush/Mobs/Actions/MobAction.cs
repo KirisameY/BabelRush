@@ -1,6 +1,6 @@
-using System.Threading.Tasks;
-
 using BabelRush.Actions;
+
+using KirisameLib.Asynchronous.SyncTasking;
 
 namespace BabelRush.Mobs.Actions;
 
@@ -27,7 +27,7 @@ public class MobAction(Mob mob, ActionInstance action, double time)
 
     #region Public Methods
 
-    public async ValueTask<bool> Act()
+    public async SyncTask<bool> Act()
     {
         var targets = Game.Play!.BattleField.GetOppositeMobs(Mob.Alignment);
 

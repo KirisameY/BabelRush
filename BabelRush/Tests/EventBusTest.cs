@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 
 using Godot;
 
+using KirisameLib.Asynchronous.SyncTasking;
 using KirisameLib.Event;
 
 namespace BabelRush.Tests;
@@ -16,7 +17,10 @@ public partial class EventBusTest : Node
 
         Task.Delay(1000).ContinueWith(_ =>
         {
-            Game.GameEventBus.Publish(new TestEvent2("msg1", "msg22"));
+            GD.Print(11111);
+            Game.GameEventBus.PublishAndWaitFor(new TestEvent2("msg1", "msg22"))
+                .ContinueWith(() => GD.Print("done"))
+                .Ready();
         });
     }
 
@@ -26,13 +30,21 @@ public partial class EventBusTest : Node
     [EventHandler]
     private void EventHandler(BaseEvent e)
     {
-        GD.Print("E0");
+        GD.Print("E");
     }
 
     [EventHandler]
-    private void EventHandler1(TestEvent1 e)
+    private void EventHandler0(TestEvent0 e)
+    {
+        GD.Print("E0", e.Msg);
+    }
+
+    [EventHandler]
+    private async SyncTask EventHandler1(TestEvent1 e)
     {
         GD.Print("E1", e.Msg);
+        await Game.GameEventBus.PublishAndWaitFor(new TestEvent0("msg0"));
+        GD.Print("e1-done", e.Msg);
     }
 
     [EventHandler]
@@ -41,6 +53,8 @@ public partial class EventBusTest : Node
         GD.Print("E2", e.Msg, e.Msg2);
     }
 
+
+    private record TestEvent0(string Msg) : BaseEvent;
 
     private record TestEvent1(string Msg) : BaseEvent;
 

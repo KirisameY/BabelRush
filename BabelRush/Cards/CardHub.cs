@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 
 using BabelRush.GamePlay;
 
+using KirisameLib.Asynchronous.SyncTasking;
 using KirisameLib.Collections;
 using KirisameLib.Event;
 using KirisameLib.Randomization;
@@ -44,7 +44,7 @@ public partial class CardHub(RandomBelt random)
     #region Public Methods
 
     /// <returns>False if cancelled</returns>
-    public async ValueTask<bool> DiscardCard(Card card, bool cancellable = true)
+    public async SyncTask<bool> DiscardCard(Card card, bool cancellable = true)
     {
         var canceled = (
             await Game.GameEventBus.PublishAndWaitFor(new CardDiscardRequestEvent(card, new()))
@@ -61,7 +61,7 @@ public partial class CardHub(RandomBelt random)
     }
 
     /// <returns>False if cancelled</returns>
-    public async ValueTask<bool> ExhaustCard(Card card, bool cancellable = true)
+    public async SyncTask<bool> ExhaustCard(Card card, bool cancellable = true)
     {
         var canceled = (
             await Game.GameEventBus.PublishAndWaitFor(new CardExhaustRequestEvent(card, new()))

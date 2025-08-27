@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Immutable;
-using System.Threading.Tasks;
 
 using BabelRush.Gui.Screens.InGame;
 using BabelRush.Level.Scenery;
 
+using KirisameLib.Asynchronous.SyncTasking;
 using KirisameLib.Event;
 
 namespace BabelRush.Level.Stages;
@@ -49,13 +49,13 @@ internal sealed partial class StagePathSelector
     } = [];
 
     private StageNode? _nextNode;
-    private TaskCompletionSource<StageNode>? _getNextNodeTaskSource = new();
+    private SyncTaskCompletionSource<StageNode>? _getNextNodeTaskSource = new();
 
 
-    public Task<StageNode> GetNextNode()
+    public SyncTask<StageNode> GetNextNode()
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
-        if (_nextNode != null) return Task.FromResult(_nextNode);
+        if (_nextNode != null) return SyncTask.FromResult(_nextNode);
 
         _getNextNodeTaskSource ??= new();
         return _getNextNodeTaskSource.Task;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Threading.Tasks;
 
 using BabelRush.Effects;
 using BabelRush.GamePlay;
@@ -13,6 +12,7 @@ using BabelRush.Numerics.Modifiers;
 
 using Godot;
 
+using KirisameLib.Asynchronous.SyncTasking;
 using KirisameLib.Event;
 using KirisameLib.Extensions;
 using KirisameLib.Logging;
@@ -79,11 +79,12 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
 
     public void ApplyEffect(Effect effect, double time) => ApplyEffectAsync(effect, time).ContinueWith(t =>
     {
+        if (!t.IsFaulted) return;
         Logger.Log(LogLevel.Error, nameof(ApplyEffect), $"Exception thrown: {t.Exception?.Flatten()}");
         Logger.Log(LogLevel.Debug, nameof(ApplyEffect), $"StackTrace: {t.Exception?.StackTrace}");
-    }, TaskContinuationOptions.OnlyOnFaulted);
+    });
 
-    public async Task<double?> ApplyEffectAsync(Effect effect, double time)
+    public async SyncTask<double?> ApplyEffectAsync(Effect effect, double time)
     {
         if (effect.AffectedMob is not null)
         {
@@ -98,11 +99,12 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
 
     public void RemoveEffect(Effect effect, bool natural) => RemoveEffectAsync(effect, natural).ContinueWith(t =>
     {
+        if (!t.IsFaulted) return;
         Logger.Log(LogLevel.Error, nameof(RemoveEffect), $"Exception thrown: {t.Exception?.Flatten()}");
         Logger.Log(LogLevel.Debug, nameof(RemoveEffect), $"StackTrace: {t.Exception?.StackTrace}");
-    }, TaskContinuationOptions.OnlyOnFaulted);
+    });
 
-    public async Task<bool> RemoveEffectAsync(Effect effect, bool natural = false)
+    public async SyncTask<bool> RemoveEffectAsync(Effect effect, bool natural = false)
     {
         if (effect.AffectedMob != this)
         {
@@ -115,9 +117,9 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
         return result;
     }
 
-    private async Task UpdateEffects(double delta)
+    private async SyncTask UpdateEffects(double delta)
     {
-        List<Task<(bool removed, Effect effect)>> removeTasks = [];
+        List<SyncTask<(bool removed, Effect effect)>> removeTasks = [];
         foreach (var effect in _effects)
         {
             if (!effect.ProcessUpdate(delta)) continue;
@@ -126,13 +128,13 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
         }
         if (removeTasks.Count == 0) return;
 
-        var results = await Task.WhenAll(removeTasks);
+        var results = await SyncTask.WhenAll(removeTasks);
         results.Where(result => result.removed)
                .ForEach(result => _effects.Remove(result.effect));
 
         return;
 
-        static async Task<(bool removed, Effect effect)> CreateRemoveTask(Effect effect)
+        static async SyncTask<(bool removed, Effect effect)> CreateRemoveTask(Effect effect)
         {
             var result = await effect.Remove(true);
             return (result, effect);
@@ -169,9 +171,10 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
         // UpdateEffect
         UpdateEffects(delta).ContinueWith(t =>
         {
+            if (!t.IsFaulted) return;
             Logger.Log(LogLevel.Error, "RemovingEffect", $"Exception thrown: {t.Exception?.Flatten()}");
             Logger.Log(LogLevel.Debug, "RemovingEffect", $"StackTrace: {t.Exception?.StackTrace}");
-        }, TaskContinuationOptions.OnlyOnFaulted);
+        });
     }
 
     #endregion

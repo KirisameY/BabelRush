@@ -1,9 +1,10 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 using BabelRush.Gui.DisplayInfos.Animation;
 
 using Godot;
+
+using KirisameLib.Asynchronous.SyncTasking;
 
 namespace BabelRush.Gui;
 
@@ -22,7 +23,7 @@ public abstract partial class AnimationInterface : Node2D
     protected abstract CollisionShape2D? BoxShapeNode { get; }
     protected abstract RectangleShape2D? BoxShape { get; }
 
-    protected async Task PlayAnimation(AnimationId id)
+    protected async SyncTask PlayAnimation(AnimationId id)
     {
         var animationSet = AnimationSet;
         id = animationSet.BackToExist(id, out var info);

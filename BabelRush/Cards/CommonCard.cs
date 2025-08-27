@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 using BabelRush.Actions;
 using BabelRush.Cards.Features;
 using BabelRush.GamePlay;
 using BabelRush.Mobs;
+
+using KirisameLib.Asynchronous.SyncTasking;
 
 namespace BabelRush.Cards;
 
@@ -23,7 +24,7 @@ public class CommonCard(CardType type) : Card
              TargetSelector.GetTargets(action.Type.TargetPattern).Count > 0
         );
 
-    public override async ValueTask<bool> Use(Mob user)
+    public override async SyncTask<bool> Use(Mob user)
     {
         if (!TargetSelected()) return false;
 
