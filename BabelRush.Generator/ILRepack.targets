@@ -5,7 +5,7 @@
         <PropertyGroup>
             <NuGetPackageRoot Condition="'$(NuGetPackageRoot)' == ''">$(UserProfile)\.nuget\packages</NuGetPackageRoot>
             <MicrosoftCodeAnalysisCommonVersion>4.14.0</MicrosoftCodeAnalysisCommonVersion>
-            <KirisameLibGeneratorToolsVersion>0.1.1</KirisameLibGeneratorToolsVersion>
+            <KirisameLibGeneratorToolsVersion>0.1.2</KirisameLibGeneratorToolsVersion>
         </PropertyGroup>
 
         <ItemGroup>

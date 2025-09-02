@@ -1,7 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 
-using BabelRush.Generator.Tools;
-
 using KirisameLib.GeneratorTools;
 using KirisameLib.GeneratorTools.Extensions;
 
@@ -25,7 +23,7 @@ public class LogToSyncGenerator : IIncrementalGenerator
     [SuppressMessage("MicrosoftCodeAnalysisReleaseTracking", "RS2008:Enable analyzer release tracking for the analyzer project containing rule")]
     private static class Diagnostics
     {
-        public static readonly DiagnosticDescriptor MethodNameNotEndWithAsync = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor MethodNameNotEndWithAsync = new(
             id: "BABELRUSH_LTS001",
             title: "Method name is not end with 'Async'",
             messageFormat: "The method name '{0}' is not end with 'Async'",
@@ -34,7 +32,7 @@ public class LogToSyncGenerator : IIncrementalGenerator
             isEnabledByDefault: true,
             description: "Method with LogToSyncAttribute should have a name end with 'Async', otherwise generator will not work."
         );
-        public static readonly DiagnosticDescriptor MethodNotAsync = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor MethodNotAsync = new(
             id: "BABELRUSH_LTS002",
             title: "Method is not async or abstract",
             messageFormat: "The method '{0}' is not async or abstract",
@@ -43,7 +41,7 @@ public class LogToSyncGenerator : IIncrementalGenerator
             isEnabledByDefault: true,
             description: "Method with LogToSyncAttribute should have a name end with 'Async', otherwise generator will not work."
         );
-        public static readonly DiagnosticDescriptor ClassNotHaveLogger = new DiagnosticDescriptor(
+        public static readonly DiagnosticDescriptor ClassNotHaveLogger = new(
             id: "BABELRUSH_LTS003",
             title: "Class do not have a Logger",
             messageFormat: "The class '{0}' do not have a 'Logger' property",
