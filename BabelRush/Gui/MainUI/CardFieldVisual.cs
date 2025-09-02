@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BabelRush.Gui.Utils;
+using BabelRush.Utils;
 
 using Godot;
+
+using KirisameLib.Asynchronous.SyncTasking;
 
 using CardInterface = BabelRush.Gui.Cards.CardInterface;
 
@@ -49,7 +52,8 @@ partial class CardField
         return result;
     }
 
-    private async void UpdateCardPosition()
+    [LogToSync]
+    private async SyncTask UpdateCardPositionAsync()
     {
         await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame); //wait 1 frame
 

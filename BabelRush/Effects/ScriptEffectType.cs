@@ -7,7 +7,7 @@ public class ScriptEffectType(RegKey id, RegKey iconId, EffectPolarity polarity,
 {
     private EffectScript Script => EffectRegisters.EffectScripts[scriptId];
 
-    public override Effect CreateInstance(int value) => new ScriptEffect(this, value, Script.CreateInstance());
+    public override Effect CreateInstance(int value = 0) => new ScriptEffect(this, value, Script.CreateInstance());
 }
 
 file class ScriptEffect(EffectType type, int value, EffectScriptInstance script) : Effect(type, value)

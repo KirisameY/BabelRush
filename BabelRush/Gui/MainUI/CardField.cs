@@ -3,11 +3,14 @@ using System.Linq;
 
 using BabelRush.Cards;
 using BabelRush.Gui.Cards;
+using BabelRush.Utils;
 
 using Godot;
 
+using KirisameLib.Asynchronous.SyncTasking;
 using KirisameLib.Extensions;
 using KirisameLib.Event;
+using KirisameLib.Logging;
 
 using CardInterface = BabelRush.Gui.Cards.CardInterface;
 
@@ -83,7 +86,7 @@ public partial class CardField : Control
             _selected = value;
 
             OnSelectChanged(old, @new);
-            if (old is not null) Game.GameEventBus.Publish(new CardSelectedEvent(old.Card,   false));
+            if (old is not null) Game.GameEventBus.Publish(new CardSelectedEvent(old.Card, false));
             if (@new is not null) Game.GameEventBus.Publish(new CardSelectedEvent(@new.Card, true));
         }
     }
@@ -110,13 +113,14 @@ public partial class CardField : Control
         }
     }
 
-    private async void OnPickedChanged(CardInterface? old, bool oldOut, CardInterface? @new)
+    [LogToSync]
+    private async SyncTask OnPickedChangedAsync(CardInterface? old, bool oldOut, CardInterface? @new)
     {
         if (old is not null)
         {
             old.Selectable = false;
             Game.GameEventBus.Publish(new CardPickedEvent(old.Card, false));
-            if (!oldOut || !await old.Card.Use(Game.Play!.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
+            if (!oldOut || !await old.Card.UseAsync(Game.Play!.BattleField.Player)) //偷懒了，先检查oldOut再进行TryUse，任何一个失败则执行InsertCard
                 InsertCard(old);
         }
 
@@ -196,4 +200,8 @@ public partial class CardField : Control
     }
 
     #endregion
+
+
+    // Logging
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(CardField));
 }

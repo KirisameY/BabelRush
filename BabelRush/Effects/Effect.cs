@@ -1,13 +1,14 @@
 using System;
 
 using BabelRush.Mobs;
+using BabelRush.Utils;
 
 using KirisameLib.Asynchronous.SyncTasking;
 using KirisameLib.Logging;
 
 namespace BabelRush.Effects;
 
-public abstract class Effect(EffectType type, int value = 0)
+public abstract partial class Effect(EffectType type, int value = 0)
 {
     public EffectType Type => type;
 
@@ -19,7 +20,8 @@ public abstract class Effect(EffectType type, int value = 0)
     public double RemainTime { get; private set; }
 
 
-    internal async SyncTask<double?> ApplyTo(Mob mob, double time)
+    [LogToSync]
+    internal async SyncTask<double?> ApplyToAsync(Mob mob, double time)
     {
         if (AffectedMob is not null) throw new InvalidOperationException("Tried to apply an effect that was already applied to some mob");
 
@@ -45,7 +47,8 @@ public abstract class Effect(EffectType type, int value = 0)
         return RemainTime <= 0;
     }
 
-    internal async SyncTask<bool> Remove(bool natural)
+    [LogToSync]
+    internal async SyncTask<bool> RemoveAsync(bool natural)
     {
         if (AffectedMob is null) throw new InvalidOperationException("Tried to remove an effect that didn't apply to any mob");
 
@@ -60,13 +63,14 @@ public abstract class Effect(EffectType type, int value = 0)
         return true;
     }
 
-    public void UpdateValue(int newValue) => UpdateValueAsync(newValue).ContinueWith(t =>
-    {
-        if (!t.IsFaulted) return;
-        Logger.Log(LogLevel.Error, nameof(UpdateValue), $"Exception thrown: {t.Exception?.Flatten()}");
-        Logger.Log(LogLevel.Debug, nameof(UpdateValue), $"StackTrace: {t.Exception?.StackTrace}");
-    });
+    // public void UpdateValue(int newValue) => UpdateValueAsync(newValue).ContinueWith(t =>
+    // {
+    //     if (!t.IsFaulted) return;
+    //     Logger.Log(LogLevel.Error, nameof(UpdateValue), $"Exception thrown: {t.Exception?.Flatten()}");
+    //     Logger.Log(LogLevel.Debug, nameof(UpdateValue), $"StackTrace: {t.Exception?.StackTrace}");
+    // });
 
+    [LogToSync]
     public async SyncTask<int?> UpdateValueAsync(int newValue)
     {
         if (AffectedMob is null) throw new InvalidOperationException("Tried to update value on an effect that didn't apply to any mob");
@@ -84,13 +88,14 @@ public abstract class Effect(EffectType type, int value = 0)
         return newValue;
     }
 
-    public void UpdateTime(double newTime) => UpdateTimeAsync(newTime).ContinueWith(t =>
-    {
-        if (!t.IsFaulted) return;
-        Logger.Log(LogLevel.Error, nameof(UpdateTime), $"Exception thrown: {t.Exception?.Flatten()}");
-        Logger.Log(LogLevel.Debug, nameof(UpdateTime), $"StackTrace: {t.Exception?.StackTrace}");
-    });
+    // public void UpdateTime(double newTime) => UpdateTimeAsync(newTime).ContinueWith(t =>
+    // {
+    //     if (!t.IsFaulted) return;
+    //     Logger.Log(LogLevel.Error, nameof(UpdateTime), $"Exception thrown: {t.Exception?.Flatten()}");
+    //     Logger.Log(LogLevel.Debug, nameof(UpdateTime), $"StackTrace: {t.Exception?.StackTrace}");
+    // });
 
+    [LogToSync]
     public async SyncTask<double?> UpdateTimeAsync(double newTime)
     {
         if (AffectedMob is null) throw new InvalidOperationException("Tried to update time on an effect that didn't apply to any mob");

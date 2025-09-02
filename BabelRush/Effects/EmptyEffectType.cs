@@ -4,7 +4,7 @@ namespace BabelRush.Effects;
 
 public class EmptyEffectType(RegKey id, RegKey iconId, EffectPolarity polarity) : EffectType(id, iconId, polarity)
 {
-    public override Effect CreateInstance(int value) => new EmptyEffect(this, value);
+    public override Effect CreateInstance(int value = 0) => new EmptyEffect(this, value);
 }
 
 file class EmptyEffect(EmptyEffectType type, int value) : Effect(type, value)

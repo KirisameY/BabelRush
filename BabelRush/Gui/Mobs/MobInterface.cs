@@ -29,7 +29,7 @@ public partial class MobInterface : AnimationInterface
     private void GettingInitialize()
     {
         Sprite.SpriteFrames = Mob.Type.AnimationSet.SpriteFrames;
-        _                   = PlayAnimation(AnimateState);
+        _                   = PlayAnimationAsync(AnimateState);
     }
 
     private static MobInterface CreateInstance()

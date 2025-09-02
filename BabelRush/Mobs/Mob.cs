@@ -9,6 +9,7 @@ using BabelRush.Level.Scenery;
 using BabelRush.Mobs.Actions;
 using BabelRush.Numerics;
 using BabelRush.Numerics.Modifiers;
+using BabelRush.Utils;
 
 using Godot;
 
@@ -77,13 +78,14 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
     [field: AllowNull, MaybeNull]
     public IReadOnlyList<Effect> Effects => field ??= _effects.AsReadOnly();
 
-    public void ApplyEffect(Effect effect, double time) => ApplyEffectAsync(effect, time).ContinueWith(t =>
-    {
-        if (!t.IsFaulted) return;
-        Logger.Log(LogLevel.Error, nameof(ApplyEffect), $"Exception thrown: {t.Exception?.Flatten()}");
-        Logger.Log(LogLevel.Debug, nameof(ApplyEffect), $"StackTrace: {t.Exception?.StackTrace}");
-    });
+    // public void ApplyEffect(Effect effect, double time) => ApplyEffectAsync(effect, time).ContinueWith(t =>
+    // {
+    //     if (!t.IsFaulted) return;
+    //     Logger.Log(LogLevel.Error, nameof(ApplyEffect), $"Exception thrown: {t.Exception?.Flatten()}");
+    //     Logger.Log(LogLevel.Debug, nameof(ApplyEffect), $"StackTrace: {t.Exception?.StackTrace}");
+    // });
 
+    [LogToSync]
     public async SyncTask<double?> ApplyEffectAsync(Effect effect, double time)
     {
         if (effect.AffectedMob is not null)
@@ -92,18 +94,19 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
             return null;
         }
 
-        var result = await effect.ApplyTo(this, time);
+        var result = await effect.ApplyToAsync(this, time);
         if (result is not null) _effects.Add(effect);
         return result;
     }
 
-    public void RemoveEffect(Effect effect, bool natural) => RemoveEffectAsync(effect, natural).ContinueWith(t =>
-    {
-        if (!t.IsFaulted) return;
-        Logger.Log(LogLevel.Error, nameof(RemoveEffect), $"Exception thrown: {t.Exception?.Flatten()}");
-        Logger.Log(LogLevel.Debug, nameof(RemoveEffect), $"StackTrace: {t.Exception?.StackTrace}");
-    });
+    // public void RemoveEffect(Effect effect, bool natural) => RemoveEffectAsync(effect, natural).ContinueWith(t =>
+    // {
+    //     if (!t.IsFaulted) return;
+    //     Logger.Log(LogLevel.Error, nameof(RemoveEffect), $"Exception thrown: {t.Exception?.Flatten()}");
+    //     Logger.Log(LogLevel.Debug, nameof(RemoveEffect), $"StackTrace: {t.Exception?.StackTrace}");
+    // });
 
+    [LogToSync]
     public async SyncTask<bool> RemoveEffectAsync(Effect effect, bool natural = false)
     {
         if (effect.AffectedMob != this)
@@ -112,7 +115,7 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
             return false;
         }
 
-        var result = await effect.Remove(natural);
+        var result = await effect.RemoveAsync(natural);
         if (result) _effects.Remove(effect);
         return result;
     }
@@ -136,7 +139,7 @@ public partial class Mob(MobType type, Alignment alignment) : VisualObject
 
         static async SyncTask<(bool removed, Effect effect)> CreateRemoveTask(Effect effect)
         {
-            var result = await effect.Remove(true);
+            var result = await effect.RemoveAsync(true);
             return (result, effect);
         }
     }

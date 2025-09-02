@@ -24,7 +24,8 @@ public class CommonCard(CardType type) : Card
              TargetSelector.GetTargets(action.Type.TargetPattern).Count > 0
         );
 
-    public override async SyncTask<bool> Use(Mob user)
+
+    public override async SyncTask<bool> UseAsync(Mob user)
     {
         if (!TargetSelected()) return false;
 
@@ -43,8 +44,8 @@ public class CommonCard(CardType type) : Card
         ).ToExhaust;
 
         var removed = toExhause
-            ? await Game.Play!.CardHub.ExhaustCard(this)
-            : await Game.Play!.CardHub.DiscardCard(this);
+            ? await Game.Play!.CardHub.ExhaustCardAsync(this)
+            : await Game.Play!.CardHub.DiscardCardAsync(this);
 
         return removed;
     }

@@ -1,10 +1,12 @@
 using BabelRush.Actions;
+using BabelRush.Utils;
 
 using KirisameLib.Asynchronous.SyncTasking;
+using KirisameLib.Logging;
 
 namespace BabelRush.Mobs.Actions;
 
-public class MobAction(Mob mob, ActionInstance action, double time)
+public partial class MobAction(Mob mob, ActionInstance action, double time)
 {
     #region Properties
 
@@ -16,7 +18,7 @@ public class MobAction(Mob mob, ActionInstance action, double time)
         set
         {
             field = value;
-            if (field >= value) _ = Act();
+            if (field >= value) _ = ActAsync();
         }
     }
     public double Time => time;
@@ -27,7 +29,8 @@ public class MobAction(Mob mob, ActionInstance action, double time)
 
     #region Public Methods
 
-    public async SyncTask<bool> Act()
+    [LogToSync]
+    public async SyncTask<bool> ActAsync()
     {
         var targets = Game.Play!.BattleField.GetOppositeMobs(Mob.Alignment);
 
@@ -44,4 +47,8 @@ public class MobAction(Mob mob, ActionInstance action, double time)
     }
 
     #endregion
+
+
+    // Logging
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(MobAction));
 }

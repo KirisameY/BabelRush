@@ -1,10 +1,12 @@
 using System.Diagnostics.CodeAnalysis;
 
 using BabelRush.Gui.DisplayInfos.Animation;
+using BabelRush.Utils;
 
 using Godot;
 
 using KirisameLib.Asynchronous.SyncTasking;
+using KirisameLib.Logging;
 
 namespace BabelRush.Gui;
 
@@ -23,7 +25,8 @@ public abstract partial class AnimationInterface : Node2D
     protected abstract CollisionShape2D? BoxShapeNode { get; }
     protected abstract RectangleShape2D? BoxShape { get; }
 
-    protected async SyncTask PlayAnimation(AnimationId id)
+    [LogToSync]
+    protected async SyncTask PlayAnimationAsync(AnimationId id)
     {
         var animationSet = AnimationSet;
         id = animationSet.BackToExist(id, out var info);
@@ -40,7 +43,7 @@ public abstract partial class AnimationInterface : Node2D
         //play before
         if (info.Before is not null)
         {
-            await PlayAnimation(info.Before);
+            await PlayAnimationAsync(info.Before);
         }
 
         //Play this
@@ -50,11 +53,11 @@ public abstract partial class AnimationInterface : Node2D
         //play after
         if (info.After is not null)
         {
-            await PlayAnimation(info.After);
+            await PlayAnimationAsync(info.After);
         }
 
         //reset
-        _ = PlayAnimation(AnimateState);
+        _ = PlayAnimationAsync(AnimateState);
 
         return;
 
@@ -67,4 +70,8 @@ public abstract partial class AnimationInterface : Node2D
             obj.Sprite.Play(aId);
         }
     }
+
+
+    // Logging
+    private static Logger Logger { get; } = Game.LogBus.GetLogger(nameof(AnimationInterface));
 }
