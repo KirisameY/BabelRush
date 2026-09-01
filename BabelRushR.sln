@@ -1,0 +1,27 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BabelRushR", "BabelRush\BabelRushR.csproj", "{D3A3E57A-386F-4AFD-831A-0A6A2F5FEFCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BabelRushR.Core", "BabelRushR.Core\BabelRushR.Core.csproj", "{63F5CC95-9D5C-4C88-86DB-74289CC3823A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D3A3E57A-386F-4AFD-831A-0A6A2F5FEFCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3A3E57A-386F-4AFD-831A-0A6A2F5FEFCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3A3E57A-386F-4AFD-831A-0A6A2F5FEFCC}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{D3A3E57A-386F-4AFD-831A-0A6A2F5FEFCC}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{D3A3E57A-386F-4AFD-831A-0A6A2F5FEFCC}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{D3A3E57A-386F-4AFD-831A-0A6A2F5FEFCC}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+		{63F5CC95-9D5C-4C88-86DB-74289CC3823A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63F5CC95-9D5C-4C88-86DB-74289CC3823A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63F5CC95-9D5C-4C88-86DB-74289CC3823A}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63F5CC95-9D5C-4C88-86DB-74289CC3823A}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{63F5CC95-9D5C-4C88-86DB-74289CC3823A}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{63F5CC95-9D5C-4C88-86DB-74289CC3823A}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+EndGlobal
