@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\BabelRushR.Core\BabelRushR.Core.csproj"/>
+        <ProjectReference Include="..\BabelRushR.Mvvm\BabelRushR.Mvvm.csproj" />
     </ItemGroup>
 
 </Project>
