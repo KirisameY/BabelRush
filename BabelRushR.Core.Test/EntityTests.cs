@@ -1,4 +1,5 @@
 ﻿using BabelRushR.Core.Entity;
+using BabelRushR.Core.Numeric;
 
 namespace BabelRushR.Core.Test;
 
@@ -86,5 +87,55 @@ public class EntityTests
         entity.Position = 0;
 
         Assert.Empty(changed);
+    }
+
+    [Fact]
+    public void MaxHP_Update_Raises_PropertyChanged()
+    {
+        var entity = new TestEntity(maxHP: 10);
+        var changed = new List<string?>();
+        entity.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
+
+        entity.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 5));
+
+        Assert.Contains(nameof(IEntity.MaxHP), changed);
+        Assert.Equal(15, entity.MaxHP.Value);
+    }
+
+    [Fact]
+    public void Lowering_MaxHP_Reclamps_Current_HP()
+    {
+        var entity = new TestEntity(maxHP: 10);
+        entity.HP = 10;
+
+        entity.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v -= 4));
+
+        Assert.Equal(6, entity.MaxHP.Value);
+        Assert.Equal(6, entity.HP);
+    }
+
+    [Fact]
+    public void Raising_MaxHP_Leaves_Current_HP_Untouched()
+    {
+        var entity = new TestEntity(maxHP: 10);
+        entity.HP = 4;
+
+        entity.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 5));
+
+        Assert.Equal(15, entity.MaxHP.Value);
+        Assert.Equal(4, entity.HP);
+    }
+
+    [Fact]
+    public void Removing_A_MaxHP_Modifier_Restores_The_Original_Value()
+    {
+        var entity = new TestEntity(maxHP: 10);
+        var modifier = Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 5);
+
+        entity.MaxHP.AddModifier(modifier);
+        Assert.Equal(15, entity.MaxHP.Value);
+
+        Assert.True(entity.MaxHP.RemoveModifier(modifier));
+        Assert.Equal(10, entity.MaxHP.Value);
     }
 }

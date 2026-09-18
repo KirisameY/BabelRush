@@ -1,9 +1,11 @@
 ﻿using BabelRushR.Core.Card;
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
+using BabelRushR.Core.Numeric;
 
 using KirisameY.EventBus;
 using KirisameY.NotifiableCollections.Collections;
+using KirisameY.Numeric;
 
 namespace BabelRushR.Core.GamePlay;
 
@@ -22,14 +24,17 @@ public class CommonPlayerState(
     public INotifiableList<ICard> DrawPile { get; } = new NotifiableList<ICard>();
     public INotifiableList<ICard> DiscardPile { get; } = new NotifiableList<ICard>();
 
-    public int MaxAP => maxAP;
+    public IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxAP =>
+        field ??= INumeric.CreateReadonly<int, CommonNumericModifyOrder>(maxAP)
+            .WithUpdateHandler((_, _) => AP = AP)          // 上限下调时把当前 AP 一起削下来
+            .WithUpdateHandler(PropertyChangedHandler());  // 再通知
 
     public int AP
     {
         get;
         set
         {
-            var clamped = Math.Clamp(value, 0, MaxAP);
+            var clamped = Math.Clamp(value, 0, MaxAP.Value);
             var old = field;
             if (!SetProperty(ref field, clamped)) return;
 
@@ -44,25 +49,27 @@ public class CommonPlayerState(
         private set => SetProperty(ref field, value);
     }
 
-    public double APRegeneration => apRegeneration;
+    public IModifierEditableNumeric<double, CommonNumericModifyOrder> APRegeneration =>
+        field ??= INumeric.CreateReadonly<double, CommonNumericModifyOrder>(apRegeneration)
+            .WithUpdateHandler(PropertyChangedHandler());
 
     public void Update(double delta)
     {
-        // 满费时锁在 1：此时花掉一点，下一帧立刻回满。这是刻意的设计，不是漏写重置。
-        if (AP >= MaxAP)
+        // 满费锁1
+        if (AP >= MaxAP.Value)
         {
             APRegenerated = 1.0;
             return;
         }
 
-        APRegenerated += APRegeneration * delta;
+        APRegenerated += APRegeneration.Value * delta;
 
         while (APRegenerated >= 1.0)
         {
             APRegenerated -= 1.0;
-            AP++; // 经由属性设置器发布 APChangedEvent
+            AP++; // 将经由属性设置器发布 APChangedEvent
 
-            if (AP < MaxAP) continue;
+            if (AP < MaxAP.Value) continue;
 
             APRegenerated = 1.0;
             break;

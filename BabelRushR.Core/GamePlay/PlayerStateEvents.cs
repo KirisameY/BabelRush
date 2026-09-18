@@ -3,7 +3,7 @@
 namespace BabelRushR.Core.GamePlay;
 
 /// <summary>
-/// 玩家状态相关事件的基类型。事件总线按基类分发，订阅它即可一次收到全部玩家状态事件。
+/// 玩家状态相关事件的基类型。
 /// </summary>
 public abstract record PlayerStateEvent : BaseEvent;
 

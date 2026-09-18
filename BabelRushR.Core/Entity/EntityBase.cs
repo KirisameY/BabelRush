@@ -1,4 +1,7 @@
 ﻿using BabelRushR.Core.Common;
+using BabelRushR.Core.Numeric;
+
+using KirisameY.Numeric;
 
 namespace BabelRushR.Core.Entity;
 
@@ -7,12 +10,18 @@ namespace BabelRushR.Core.Entity;
 /// </summary>
 public abstract class EntityBase(int maxHP) : ObservableObject, IEntity
 {
-    public int MaxHP { get; } = maxHP;
+    // 初值单独存一份：主构造参数若同时被初始化器和成员体引用，会触发 CS9124。
+    private readonly int _baseMaxHP = maxHP;
+
+    public IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxHP =>
+        field ??= INumeric.CreateReadonly<int, CommonNumericModifyOrder>(_baseMaxHP)
+            .WithUpdateHandler((_, _) => HP = HP)          // 更新时重新赋值HP触发钳制
+            .WithUpdateHandler(PropertyChangedHandler());
 
     public int HP
     {
         get;
-        set => SetProperty(ref field, Math.Clamp(value, 0, MaxHP));
+        set => SetProperty(ref field, Math.Clamp(value, 0, MaxHP.Value));
     } = maxHP;
 
     public bool IsAlive => HP > 0;
@@ -23,9 +32,6 @@ public abstract class EntityBase(int maxHP) : ObservableObject, IEntity
         set => SetProperty(ref field, value);
     }
 
-    /// <summary>
-    /// 已死亡的实体不再推进逻辑，等待所属场景在本帧末尾清扫。
-    /// </summary>
     public void Update(double delta)
     {
         if (!IsAlive) return;
