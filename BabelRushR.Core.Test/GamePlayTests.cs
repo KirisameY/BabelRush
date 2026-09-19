@@ -41,7 +41,7 @@ public class GamePlayTests
         var pc = new TestEntity(maxHP: 10);
         var enemy = new TestEntity(maxHP: 5);
         var game = CommonGamePlay.Create(pc, maxAP: 3, apRegeneration: 1.0);
-        game.Scene.AddEntity(enemy).Submit();
+        game.Scene.AddEntity(enemy);
 
         game.Update(0.5);
 
@@ -70,7 +70,7 @@ public class GamePlayTests
     [Fact]
     public void Injected_Constructor_Leaves_The_Scene_Untouched()
     {
-        var bus = new AutoEventBus();
+        var bus = new SimpleEventBus();
         var scene = new CommonScene(bus);
         var playerState = new CommonPlayerState(new TestEntity(maxHP: 10), bus, maxAP: 2);
 

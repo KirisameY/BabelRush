@@ -26,8 +26,8 @@ public class CommonPlayerState(
 
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxAP =>
         field ??= INumeric.CreateReadonly<int, CommonNumericModifyOrder>(maxAP)
-            .WithUpdateHandler((_, _) => AP = AP)          // 上限下调时把当前 AP 一起削下来
-            .WithUpdateHandler(PropertyChangedHandler());  // 再通知
+                          .WithUpdateHandler((_, _) => AP = AP)         // 上限下调时把当前 AP 一起削下来
+                          .WithUpdateHandler(PropertyChangedHandler()); // 再通知
 
     public int AP
     {
@@ -38,8 +38,7 @@ public class CommonPlayerState(
             var old = field;
             if (!SetProperty(ref field, clamped)) return;
 
-            // 属性访问器无法把 Order 交给调用方，这里自行接管分发。
-            eventBus.OrderPost(new APChangedEvent(old, clamped)).Submit();
+            eventBus.Publish(new APChangedEvent(old, clamped));
         }
     }
 
@@ -51,7 +50,7 @@ public class CommonPlayerState(
 
     public IModifierEditableNumeric<double, CommonNumericModifyOrder> APRegeneration =>
         field ??= INumeric.CreateReadonly<double, CommonNumericModifyOrder>(apRegeneration)
-            .WithUpdateHandler(PropertyChangedHandler());
+                          .WithUpdateHandler(PropertyChangedHandler());
 
     public void Update(double delta)
     {

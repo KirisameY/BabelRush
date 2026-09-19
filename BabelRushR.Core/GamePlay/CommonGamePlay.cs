@@ -14,13 +14,13 @@ public class CommonGamePlay(IScene scene, IPlayerState playerState, IEventBus ev
     /// </summary>
     public static CommonGamePlay Create(IEntity pcEntity, int maxAP = 3, double apRegeneration = 1.0)
     {
-        var eventBus = new AutoEventBus();
+        var eventBus = new SimpleEventBus();
         var gamePlay = new CommonGamePlay(
             new CommonScene(eventBus),
             new CommonPlayerState(pcEntity, eventBus, maxAP, apRegeneration),
             eventBus);
 
-        gamePlay.Scene.AddEntity(pcEntity).Submit();
+        gamePlay.Scene.AddEntity(pcEntity);
         return gamePlay;
     }
 

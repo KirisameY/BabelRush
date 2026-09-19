@@ -3,7 +3,6 @@ using BabelRushR.Core.Entity;
 
 using KirisameY.EventBus;
 using KirisameY.NotifiableCollections.Collections;
-using KirisameY.SyncOrder;
 
 namespace BabelRushR.Core.Scenery;
 
@@ -17,14 +16,21 @@ public class CommonScene(IEventBus eventBus) : ObservableObject, IScene
 
     public INotifiableList<IEntity> Entities { get; } = new NotifiableList<IEntity>();
 
-    public Order AddEntity(IEntity entity)
+    public bool AddEntity(IEntity entity)
     {
+        if (Entities.Contains(entity)) return false;
         Entities.Add(entity);
-        return eventBus.OrderPost(new EntityAddedEvent(entity));
+        eventBus.Publish(new EntityAddedEvent(entity));
+        return true;
     }
 
-    public Order? RemoveEntity(IEntity entity)
-        => Entities.Remove(entity) ? eventBus.OrderPost(new EntityRemovedEvent(entity)) : null;
+    public bool RemoveEntity(IEntity entity)
+    {
+        if (!Entities.Remove(entity)) return false;
+
+        eventBus.Publish(new EntityRemovedEvent(entity));
+        return true;
+    }
 
     public void Update(double delta)
     {
@@ -41,11 +47,10 @@ public class CommonScene(IEventBus eventBus) : ObservableObject, IScene
         }
         if (_deadBuffer.Count == 0) return;
 
-        // 3. 状态全部变更完毕后再分发。Submit 是同步的，
+        // 3. 状态全部变更完毕后再分发。Publish 是同步的，
         //    若边改边发，处理函数里的增删会破坏正在进行的遍历。
         foreach (var entity in _deadBuffer) Entities.Remove(entity);
 
-        // Died 派生自 Removed，基类分发会把两者一起送达，不需要重复 post。
-        foreach (var entity in _deadBuffer) eventBus.OrderPost(new EntityDiedEvent(entity)).Submit();
+        foreach (var entity in _deadBuffer) eventBus.Publish(new EntityDiedEvent(entity));
     }
 }

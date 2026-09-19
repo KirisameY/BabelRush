@@ -4,7 +4,6 @@ using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
 
 using KirisameY.NotifiableCollections.Collections;
-using KirisameY.SyncOrder;
 
 namespace BabelRushR.Core.Scenery;
 
@@ -13,13 +12,18 @@ public interface IScene : INotifyPropertyChanged, IUpdatable
     INotifiableList<IEntity> Entities { get; }
 
     /// <summary>
-    /// 实体已加入 <see cref="Entities"/>，返回该次加入的事件 Order。
-    /// 由调用方决定何时 <c>Submit</c>，或先 <c>ContinueWith</c> 注册接续处理再链式提交。
+    /// 向 <see cref="Entities"/> 中加入给定的实体。
     /// </summary>
-    Order AddEntity(IEntity entity);
+    /// <returns>
+    /// 若加入为 <c>true</c>，反之（已存在于列表中）为 <c>false</c>。
+    /// </returns>
+    bool AddEntity(IEntity entity);
 
     /// <summary>
-    /// 实体已移出 <see cref="Entities"/>，返回该次移除的事件 Order；实体本就不在场景中时返回 <c>null</c>。
+    /// 从 <see cref="Entities"/> 移除该实体。
     /// </summary>
-    Order? RemoveEntity(IEntity entity);
+    /// <returns>
+    /// 若成功找到并移除则为 <c>true</c>，反之为 <c>false</c>。
+    /// </returns>
+    bool RemoveEntity(IEntity entity);
 }
