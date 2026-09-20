@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BabelRushR.Mvvm", "BabelRus
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BabelRushR.Core.Test", "BabelRushR.Core.Test\BabelRushR.Core.Test.csproj", "{FCD90AD8-3188-4784-82DB-5186C8E1CB05}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FD3FEC64-BCC8-410A-B18E-CCA3F897E638}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BabelRushR.Mvvm.Test", "BabelRushR.Mvvm.Test\BabelRushR.Mvvm.Test.csproj", "{739F197B-EC22-44D7-BD36-02565C2AFF18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,8 +125,36 @@ Global
 		{FCD90AD8-3188-4784-82DB-5186C8E1CB05}.Release|x64.Build.0 = Release|Any CPU
 		{FCD90AD8-3188-4784-82DB-5186C8E1CB05}.Release|x86.ActiveCfg = Release|Any CPU
 		{FCD90AD8-3188-4784-82DB-5186C8E1CB05}.Release|x86.Build.0 = Release|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Debug|x64.Build.0 = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Debug|x86.Build.0 = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportDebug|x64.ActiveCfg = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportDebug|x64.Build.0 = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportDebug|x86.ActiveCfg = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportDebug|x86.Build.0 = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportRelease|Any CPU.ActiveCfg = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportRelease|Any CPU.Build.0 = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportRelease|x64.ActiveCfg = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportRelease|x64.Build.0 = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportRelease|x86.ActiveCfg = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.ExportRelease|x86.Build.0 = Debug|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Release|x64.ActiveCfg = Release|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Release|x64.Build.0 = Release|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Release|x86.ActiveCfg = Release|Any CPU
+		{739F197B-EC22-44D7-BD36-02565C2AFF18}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FCD90AD8-3188-4784-82DB-5186C8E1CB05} = {FD3FEC64-BCC8-410A-B18E-CCA3F897E638}
+		{739F197B-EC22-44D7-BD36-02565C2AFF18} = {FD3FEC64-BCC8-410A-B18E-CCA3F897E638}
 	EndGlobalSection
 EndGlobal

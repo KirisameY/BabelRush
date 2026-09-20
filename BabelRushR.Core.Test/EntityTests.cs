@@ -77,7 +77,7 @@ public class EntityTests
     }
 
     [Fact]
-    public void Unchanged_Value_Does_Not_Raise_PropertyChanged()
+    public void Unchanged_Noncomputed_Value_Does_Not_Raise_PropertyChanged()
     {
         var entity = new TestEntity(maxHP: 10);
         var changed = new List<string?>();

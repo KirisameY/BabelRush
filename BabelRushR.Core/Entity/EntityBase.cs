@@ -15,13 +15,17 @@ public abstract class EntityBase(int maxHP) : ObservableObject, IEntity
 
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxHP =>
         field ??= INumeric.CreateReadonly<int, CommonNumericModifyOrder>(_baseMaxHP)
-            .WithUpdateHandler((_, _) => HP = HP)          // 更新时重新赋值HP触发钳制
-            .WithUpdateHandler(PropertyChangedHandler());
+                          .WithUpdateHandler((_, _) => HP = HP) // 更新时重新赋值HP触发钳制
+                          .WithUpdateHandler(PropertyChangedHandler());
 
     public int HP
     {
         get;
-        set => SetProperty(ref field, Math.Clamp(value, 0, MaxHP.Value));
+        set
+        {
+            if (SetProperty(ref field, Math.Clamp(value, 0, MaxHP.Value)))
+                OnPropertyChanged(nameof(IsAlive));
+        }
     } = maxHP;
 
     public bool IsAlive => HP > 0;
