@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Scenery;
 using BabelRushR.Mvvm.ViewModels;
@@ -45,8 +47,8 @@ public class GamePlayViewModelTests
         viewModel.Dispose();
         gamePlay.Scene.AddEntity(new TestEntity(maxHP: 5));
 
-        // 只剩下开局时放进场景的玩家实体
-        Assert.Single(viewModel.Scene.Entities);
+        // Dispose 会把场景 VM 连同里面的实体 VM 一起放空，之后场景再变也不反应
+        Assert.Empty(viewModel.Scene.Entities);
     }
 
     [Fact]
@@ -81,11 +83,11 @@ public class GamePlayViewModelTests
     [Fact]
     public void Unknown_GamePlay_Property_Change_Is_Ignored()
     {
-        var gamePlay = NewRaisableGamePlay();
+        var gamePlay = NewTestGamePlay(new TestEntity(maxHP: 10));
         var viewModel = new GamePlayViewModel(gamePlay);
         var notified = NotificationRecorder.PropertyNames(viewModel);
 
-        gamePlay.NotifyUnknownPropertyChanged();
+        gamePlay.Raise("NotAGamePlayProperty");
 
         Assert.Empty(notified);
     }
@@ -93,11 +95,11 @@ public class GamePlayViewModelTests
     [Fact]
     public void Empty_Property_Name_Notifies_Every_Mapped_Property()
     {
-        var gamePlay = NewRaisableGamePlay();
+        var gamePlay = NewTestGamePlay(new TestEntity(maxHP: 10));
         var viewModel = new GamePlayViewModel(gamePlay);
         var notified = NotificationRecorder.PropertyNames(viewModel);
 
-        gamePlay.NotifyAllPropertiesChanged();
+        gamePlay.Raise(null);
 
         // 逐个断言而不是比序列：映射表内部的枚举次序不属于对外契约。
         var count = notified.Count;
@@ -120,21 +122,111 @@ public class GamePlayViewModelTests
         Assert.Empty(notified);
     }
 
-    /// <summary>
-    ///     额外开放属性通知的 <see cref="CommonGamePlay"/>，用来构造它自己发不出的属性名。
-    /// </summary>
-    private sealed class RaisableGamePlay(IScene scene, IPlayerState playerState, IEventBus eventBus)
-        : CommonGamePlay(scene, playerState, eventBus)
+    [Fact]
+    public void Switching_The_Scene_Rebuilds_The_Scene_ViewModel()
     {
-        public void NotifyAllPropertiesChanged() => OnPropertyChanged(null);
+        var player = new TestEntity(maxHP: 10) { HP = 5 };
+        var gamePlay = NewTestGamePlay(player);
+        var viewModel = new GamePlayViewModel(gamePlay);
+        var oldSceneViewModel = viewModel.Scene;
+        var oldPlayerViewModel = oldSceneViewModel.Find(player)!;
 
-        public void NotifyUnknownPropertyChanged() => OnPropertyChanged("NotAGamePlayProperty");
+        gamePlay.SwitchScene(NewScene(player));
+
+        Assert.NotSame(oldSceneViewModel, viewModel.Scene);
+        Assert.Same(gamePlay.Scene, viewModel.Scene.SourceScene);
+        Assert.NotSame(oldPlayerViewModel, viewModel.Scene.Find(player));
+
+        var oldNotified = NotificationRecorder.PropertyNames(oldPlayerViewModel);
+        var newNotified = NotificationRecorder.PropertyNames(viewModel.Scene.Find(player)!);
+        player.HP = 3;
+
+        // 旧树已被拆干净，新树接着跟
+        Assert.Empty(oldNotified);
+        Assert.Contains(nameof(EntityViewModel.HPRatio), newNotified);
     }
 
-    private static RaisableGamePlay NewRaisableGamePlay()
+    [Fact]
+    public void Repeating_The_Same_Scene_Does_Not_Rebuild_It()
+    {
+        var player = new TestEntity(maxHP: 10);
+        var gamePlay = NewTestGamePlay(player);
+        var viewModel = new GamePlayViewModel(gamePlay);
+        var sceneViewModel = viewModel.Scene;
+        var playerViewModel = sceneViewModel.Find(player)!;
+
+        // 没真换场景时，点名通知和"全部失效"都不该推倒重来
+        gamePlay.Raise(nameof(IGamePlay.Scene));
+        gamePlay.Raise(null);
+
+        Assert.Same(sceneViewModel, viewModel.Scene);
+        Assert.Same(playerViewModel, viewModel.Scene.Find(player));
+    }
+
+    [Fact]
+    public void Disposing_After_A_Scene_Switch_Releases_The_New_Scene()
+    {
+        var player = new TestEntity(maxHP: 10) { HP = 5 };
+        var gamePlay = NewTestGamePlay(player);
+        var viewModel = new GamePlayViewModel(gamePlay);
+
+        gamePlay.SwitchScene(NewScene(player));
+        var playerViewModel = viewModel.Scene.Find(player)!;
+        var notified = NotificationRecorder.PropertyNames(playerViewModel);
+
+        viewModel.Dispose();
+        player.HP = 3;
+
+        // 换进来的那个场景 VM 也得被 Track 上，Dispose 时才摘得干净
+        Assert.Empty(notified);
+    }
+
+    /// <summary>
+    ///     可以随意发属性通知、也能真的换掉场景的 <see cref="IGamePlay"/> 替身——
+    ///     <see cref="CommonGamePlay"/> 的 <c>Scene</c> 建好就换不了了，只能手写。
+    /// </summary>
+    private sealed class TestGamePlay(IScene scene, IPlayerState playerState, IEventBus eventBus) : IGamePlay
+    {
+        public IEventBus EventBus => eventBus;
+
+        public IPlayerState PlayerState => playerState;
+
+        public IScene Scene { get; private set; } = scene;
+
+        public double Time { get; private set; }
+
+        public double DeltaTime { get; private set; }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void Update(double delta)
+        {
+            DeltaTime =  delta;
+            Time      += delta;
+        }
+
+        public void SwitchScene(IScene newScene)
+        {
+            Scene = newScene;
+            Raise(nameof(Scene));
+        }
+
+        public void Raise(string? propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    private static TestGamePlay NewTestGamePlay(TestEntity pcEntity)
     {
         var eventBus = new SimpleEventBus();
-        var pcEntity = new TestEntity(maxHP: 10);
-        return new RaisableGamePlay(new CommonScene(eventBus), new CommonPlayerState(pcEntity, eventBus), eventBus);
+        var scene = new CommonScene(eventBus);
+        scene.AddEntity(pcEntity);
+        return new TestGamePlay(scene, new CommonPlayerState(pcEntity, eventBus), eventBus);
+    }
+
+    private static CommonScene NewScene(TestEntity entity)
+    {
+        var scene = new CommonScene(new SimpleEventBus());
+        scene.AddEntity(entity);
+        return scene;
     }
 }

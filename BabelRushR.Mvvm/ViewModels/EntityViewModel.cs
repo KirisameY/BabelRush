@@ -17,18 +17,21 @@ namespace BabelRushR.Mvvm.ViewModels;
 public sealed class EntityViewModel : ViewModelBase
 {
     /// <summary>
-    ///     Core 属性名 → 本 VM 中受其影响、需要一并通知的属性名。
+    ///     Core 属性名 → 该变化引发的更新与需要一并通知的属性名。
     /// </summary>
     /// <remarks>
     ///     Core 只发它自己那层属性的变化，派生量（比例之类）与计算属性都要在这里接出来。
+    ///     本 VM 的值都是现取的，无需就地更新，所以更新列表一律为空。
     /// </remarks>
-    private static readonly PropertyChangeForwarder Notifications = new(new Dictionary<string, ImmutableArray<string>>
-    {
-        [nameof(IEntity.HP)]       = [nameof(HP), nameof(HPRatio)],
-        [nameof(IEntity.MaxHP)]    = [nameof(MaxHP), nameof(HPRatio)],
-        [nameof(IEntity.IsAlive)]  = [nameof(IsAlive)],
-        [nameof(IEntity.Position)] = [nameof(Position)],
-    }.ToFrozenDictionary());
+    private static readonly PropertyChangeReactor<EntityViewModel> Reactions = new(
+        new Dictionary<string, (ImmutableArray<Action<EntityViewModel>> Updates, ImmutableArray<string> Notifications)>
+        {
+            [nameof(IEntity.HP)]       = ([], [nameof(HP), nameof(HPRatio)]),
+            [nameof(IEntity.MaxHP)]    = ([], [nameof(MaxHP), nameof(HPRatio)]),
+            [nameof(IEntity.IsAlive)]  = ([], [nameof(IsAlive)]),
+            [nameof(IEntity.Position)] = ([], [nameof(Position)]),
+        }.ToFrozenDictionary()
+    );
 
     private readonly IEntity _entity;
 
@@ -52,5 +55,5 @@ public sealed class EntityViewModel : ViewModelBase
     public double Position => _entity.Position;
 
     private void OnEntityPropertyChanged(object? sender, PropertyChangedEventArgs e) =>
-        Notifications.Forward(e.PropertyName, OnPropertyChanged);
+        Reactions.Forward(e.PropertyName, this, OnPropertyChanged);
 }

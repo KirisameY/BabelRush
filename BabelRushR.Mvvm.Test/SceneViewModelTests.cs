@@ -89,6 +89,21 @@ public class SceneViewModelTests
     }
 
     [Fact]
+    public void Disposing_Disposes_The_Entity_ViewModels()
+    {
+        var scene = NewScene();
+        var entity = new TestEntity(maxHP: 5) { HP = 5 };
+        scene.AddEntity(entity);
+        var viewModel = new SceneViewModel(scene);
+        var notified = NotificationRecorder.PropertyNames(viewModel.Find(entity)!);
+
+        viewModel.Dispose();
+        entity.HP = 1;
+
+        Assert.Empty(notified);
+    }
+
+    [Fact]
     public void Replacing_An_Entity_Swaps_The_ViewModel()
     {
         var scene = NewScene();

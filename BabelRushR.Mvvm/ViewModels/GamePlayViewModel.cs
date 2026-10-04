@@ -13,19 +13,16 @@ namespace BabelRushR.Mvvm.ViewModels;
 public sealed class GamePlayViewModel : ViewModelBase
 {
     /// <summary>
-    ///     <see cref="IGamePlay"/> 属性名 → 本 VM 中受其影响、需要一并通知的属性名。
+    ///     <see cref="IGamePlay"/> 属性名 → 该变化引发的更新与需要一并通知的属性名。
     /// </summary>
-    private static readonly PropertyChangeForwarder Notifications = new(new Dictionary<string, ImmutableArray<string>>
-    {
-        [nameof(IGamePlay.Scene)]     = [nameof(Scene)],
-        [nameof(IGamePlay.Time)]      = [nameof(Time)],
-        [nameof(IGamePlay.DeltaTime)] = [nameof(DeltaTime)],
-    }.ToFrozenDictionary());
-
-    private static readonly PropertyChangeReactor<GamePlayViewModel> Updates = new(new Dictionary<string, ImmutableArray<Action<GamePlayViewModel>>>
-    {
-        [nameof(IGamePlay.Scene)] = [UpdateScene],
-    }.ToFrozenDictionary());
+    private static readonly PropertyChangeReactor<GamePlayViewModel> Reactions = new(
+        new Dictionary<string, (ImmutableArray<Action<GamePlayViewModel>> Updates, ImmutableArray<string> Notifications)>
+        {
+            [nameof(IGamePlay.Scene)]     = ([UpdateScene], [nameof(Scene)]),
+            [nameof(IGamePlay.Time)]      = ([], [nameof(Time)]),
+            [nameof(IGamePlay.DeltaTime)] = ([], [nameof(DeltaTime)]),
+        }.ToFrozenDictionary()
+    );
 
     private readonly IGamePlay _gamePlay;
 
@@ -74,9 +71,6 @@ public sealed class GamePlayViewModel : ViewModelBase
 
     #endregion
 
-    private void OnGamePlayPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        Updates.React(e.PropertyName, this);
-        Notifications.Forward(e.PropertyName, OnPropertyChanged);
-    }
+    private void OnGamePlayPropertyChanged(object? sender, PropertyChangedEventArgs e) =>
+        Reactions.Forward(e.PropertyName, this, OnPropertyChanged);
 }
