@@ -1,3 +1,6 @@
+using System.Collections.Immutable;
+using System.ComponentModel;
+
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Mvvm.Infrastructure;
 
@@ -8,9 +11,16 @@ namespace BabelRushR.Mvvm.ViewModels;
 /// </summary>
 public sealed class GamePlayViewModel : ViewModelBase
 {
-    private readonly IGamePlay _gamePlay;
+    /// <summary>
+    ///     <see cref="IGamePlay"/> 属性名 → 本 VM 中受其影响、需要一并通知的属性名。
+    /// </summary>
+    private static readonly PropertyChangeForwarder Notifications = new(new Dictionary<string, ImmutableArray<string>>
+    {
+        [nameof(IGamePlay.Time)]      = [nameof(Time)],
+        [nameof(IGamePlay.DeltaTime)] = [nameof(DeltaTime)],
+    });
 
-    public SceneViewModel Scene { get; }
+    private readonly IGamePlay _gamePlay;
 
     public GamePlayViewModel(IGamePlay gamePlay)
     {
@@ -18,10 +28,26 @@ public sealed class GamePlayViewModel : ViewModelBase
 
         Scene = new SceneViewModel(gamePlay.Scene);
         Track(Scene);
+        Track(gamePlay.Subscribe(OnGamePlayPropertyChanged));
     }
+
+    public SceneViewModel Scene { get; }
+
+    /// <summary>
+    ///     开局以来的累计时间（秒）。
+    /// </summary>
+    public double Time => _gamePlay.Time;
+
+    /// <summary>
+    ///     上一帧实际推进的时间（秒）。
+    /// </summary>
+    public double DeltaTime => _gamePlay.DeltaTime;
 
     /// <summary>
     ///     由视图每帧调用，推进逻辑层。
     /// </summary>
     public void Update(double delta) => _gamePlay.Update(delta);
+
+    private void OnGamePlayPropertyChanged(object? sender, PropertyChangedEventArgs e) =>
+        Notifications.Forward(e.PropertyName, OnPropertyChanged);
 }

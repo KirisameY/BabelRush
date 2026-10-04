@@ -4,20 +4,29 @@ using BabelRushR.Mvvm.Infrastructure;
 
 using KirisameY.NotifiableCollections.Collections;
 using KirisameY.NotifiableCollections.EventArgs;
+using KirisameY.Relinq.Extensions;
 
 namespace BabelRushR.Mvvm.ViewModels;
 
 /// <summary>
 ///     场景的视图代理：维护 <see cref="IEntity"/> 到 <see cref="EntityViewModel"/> 的映射，
-///     并把实体的增删以标准通知模型暴露给视图。
+///     并把实体的增删以可通知集合暴露给视图。
 /// </summary>
 /// <remarks>
-///     本 VM 只负责在映射表里增删；从映射表到视图的通知链路（<c>Values</c> →
-///     <c>AsReadOnlyObservableCollection</c>）由库自身完成，此处不消费集合事件。
+///     本 VM 只负责在映射表里增删；从映射表到视图的通知链路由库自身完成
+///     （映射表的值视图本身即是 <see cref="IReadOnlyNotifiableCollection{T}"/>），此处不消费集合事件。
 /// </remarks>
 public sealed class SceneViewModel : ViewModelBase
 {
     private readonly NotifiableDictionary<IEntity, EntityViewModel> _entities = [];
+
+    public SceneViewModel(IScene scene)
+    {
+        Add(scene.Entities);
+
+        scene.Entities.ListUpdated += OnEntitiesUpdated;
+        Track(new ActionDisposable(() => scene.Entities.ListUpdated -= OnEntitiesUpdated));
+    }
 
     /// <summary>
     ///     场景中的全部实体。
@@ -25,17 +34,7 @@ public sealed class SceneViewModel : ViewModelBase
     /// <remarks>
     ///     <b>顺序无关</b>：底层是字典的值视图，视图不应依赖遍历顺序。
     /// </remarks>
-    public IReadOnlyObservableCollection<EntityViewModel> Entities { get; }
-
-    public SceneViewModel(IScene scene)
-    {
-        Entities = _entities.Values.AsReadOnlyObservableCollection();
-
-        foreach (var entity in scene.Entities) Add(entity);
-
-        scene.Entities.ListUpdated += OnEntitiesUpdated;
-        Track(new ActionDisposable(() => scene.Entities.ListUpdated -= OnEntitiesUpdated));
-    }
+    public IReadOnlyNotifiableCollection<EntityViewModel> Entities => field ??= _entities.Values;
 
     /// <summary>
     ///     取得实体对应的 VM，不存在时返回 <see langword="null"/>。
@@ -48,30 +47,33 @@ public sealed class SceneViewModel : ViewModelBase
         {
             case IListItemAddedEventArgs<IEntity> added:
             {
-                foreach (var entity in added.AddedItems) Add(entity);
+                Add(added.AddedItems);
                 break;
             }
             // Cleared 派生自 Removed，语义一致，一并在此处理
             case IListItemRemovedEventArgs<IEntity> removed:
             {
-                foreach (var entity in removed.RemovedItems) Remove(entity);
+                Remove(removed.RemovedItems);
                 break;
             }
             case IListItemReplacedEventArgs<IEntity> replaced:
             {
-                for (var i = 0; i < replaced.OldItems.Count; i++)
-                {
-                    Remove(replaced.OldItems[i]);
-                    Add(replaced.NewItems[i]);
-                }
+                Remove(replaced.OldItems);
+                Add(replaced.NewItems);
                 break;
             }
-            // 元素无增删，仅整表重排；顺序对视图无意义，忽略
-            case IListSortedEventArgs<IEntity>: break;
+            case IListResetEventArgs<IEntity> reset:
+            {
+                _entities.Clear();
+                Add(reset.ListView);
+                break;
+            }
+            // 仅关注元素增删替换，忽略其余情形
         }
     }
 
     private void Add(IEntity entity) => _entities[entity] = new EntityViewModel(entity);
+    private void Add(IEnumerable<IEntity> entities) => entities.ForEach(Add); // todo: 回头库里做个字典批量添加然后这里换了实现减少通知次数
 
     private void Remove(IEntity entity)
     {
@@ -79,4 +81,6 @@ public sealed class SceneViewModel : ViewModelBase
         if (!_entities.Remove(entity, out var viewModel)) return;
         viewModel.Dispose();
     }
+
+    private void Remove(IEnumerable<IEntity> entities) => entities.ForEach(Remove); // todo: 同上
 }

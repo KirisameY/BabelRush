@@ -21,13 +21,13 @@ public sealed class EntityViewModel : ViewModelBase
     /// <remarks>
     ///     Core 只发它自己那层属性的变化，派生量（比例之类）与计算属性都要在这里接出来。
     /// </remarks>
-    private static readonly Dictionary<string, ImmutableArray<string>> Dependencies = new()
+    private static readonly PropertyChangeForwarder Notifications = new(new Dictionary<string, ImmutableArray<string>>
     {
         [nameof(IEntity.HP)]       = [nameof(HP), nameof(HPRatio)],
         [nameof(IEntity.MaxHP)]    = [nameof(MaxHP), nameof(HPRatio)],
         [nameof(IEntity.IsAlive)]  = [nameof(IsAlive)],
         [nameof(IEntity.Position)] = [nameof(Position)],
-    };
+    });
 
     private readonly IEntity _entity;
 
@@ -50,19 +50,6 @@ public sealed class EntityViewModel : ViewModelBase
 
     public double Position => _entity.Position;
 
-    private void OnEntityPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        // 空属性名表示"全部失效"，此时无从查表，按最保守的方式全量通知。
-        if (string.IsNullOrEmpty(e.PropertyName))
-        {
-            foreach (var propertyName in Dependencies.Values.SelectMany(names => names).Distinct())
-                OnPropertyChanged(propertyName);
-
-            return;
-        }
-
-        if (!Dependencies.TryGetValue(e.PropertyName, out var affected)) return;
-
-        foreach (var propertyName in affected) OnPropertyChanged(propertyName);
-    }
+    private void OnEntityPropertyChanged(object? sender, PropertyChangedEventArgs e) =>
+        Notifications.Forward(e.PropertyName, OnPropertyChanged);
 }

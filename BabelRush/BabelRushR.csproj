@@ -13,4 +13,9 @@
         <ProjectReference Include="..\BabelRushR.Mvvm\BabelRushR.Mvvm.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="KirisameY.BindingBridge" Version="0.1.2" />
+      <PackageReference Include="KirisameY.BindingBridge.NotifiableCollections" Version="0.0.1" />
+    </ItemGroup>
+
 </Project>

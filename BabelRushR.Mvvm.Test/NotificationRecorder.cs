@@ -1,5 +1,7 @@
-using System.Collections.Specialized;
 using System.ComponentModel;
+
+using KirisameY.NotifiableCollections.Collections;
+using KirisameY.NotifiableCollections.EventArgs;
 
 namespace BabelRushR.Mvvm.Test;
 
@@ -15,10 +17,10 @@ internal static class NotificationRecorder
     }
 
     /// <summary>记录集合变更通知。</summary>
-    public static List<NotifyCollectionChangedEventArgs> CollectionChanges(INotifyCollectionChanged source)
+    public static List<ICollectionUpdateEventArgs<T>> CollectionChanges<T>(ICollectionUpdateNotifier<T> source)
     {
-        var changes = new List<NotifyCollectionChangedEventArgs>();
-        source.CollectionChanged += (_, e) => changes.Add(e);
+        var changes = new List<ICollectionUpdateEventArgs<T>>();
+        source.CollectionUpdated += (_, e) => changes.Add(e);
         return changes;
     }
 }

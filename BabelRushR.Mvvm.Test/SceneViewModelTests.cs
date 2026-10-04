@@ -1,11 +1,10 @@
-using System.Collections.Specialized;
-
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.Scenery;
 using BabelRushR.Mvvm.ViewModels;
 
 using KirisameY.EventBus.Bus;
 using KirisameY.NotifiableCollections.Collections;
+using KirisameY.NotifiableCollections.EventArgs;
 
 namespace BabelRushR.Mvvm.Test;
 
@@ -44,10 +43,12 @@ public class SceneViewModelTests
         var viewModel = new SceneViewModel(scene);
         var changes = NotificationRecorder.CollectionChanges(viewModel.Entities);
 
-        scene.AddEntity(new TestEntity(maxHP: 5));
+        var entity = new TestEntity(maxHP: 5);
+        scene.AddEntity(entity);
 
         var change = Assert.Single(changes);
-        Assert.Equal(NotifyCollectionChangedAction.Add, change.Action);
+        var added = Assert.IsAssignableFrom<ICollectionItemAddedEventArgs<EntityViewModel>>(change);
+        Assert.Same(viewModel.Find(entity), Assert.Single(added.AddedItems));
     }
 
     [Fact]
