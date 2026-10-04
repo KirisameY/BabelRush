@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.ComponentModel;
 
@@ -27,7 +28,7 @@ public sealed class EntityViewModel : ViewModelBase
         [nameof(IEntity.MaxHP)]    = [nameof(MaxHP), nameof(HPRatio)],
         [nameof(IEntity.IsAlive)]  = [nameof(IsAlive)],
         [nameof(IEntity.Position)] = [nameof(Position)],
-    });
+    }.ToFrozenDictionary());
 
     private readonly IEntity _entity;
 

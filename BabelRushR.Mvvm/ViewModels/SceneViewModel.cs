@@ -18,10 +18,12 @@ namespace BabelRushR.Mvvm.ViewModels;
 /// </remarks>
 public sealed class SceneViewModel : ViewModelBase
 {
+    public IScene SourceScene { get; }
     private readonly NotifiableDictionary<IEntity, EntityViewModel> _entities = [];
 
     public SceneViewModel(IScene scene)
     {
+        SourceScene = scene;
         Add(scene.Entities);
 
         scene.Entities.ListUpdated += OnEntitiesUpdated;
@@ -73,6 +75,7 @@ public sealed class SceneViewModel : ViewModelBase
     }
 
     private void Add(IEntity entity) => _entities[entity] = new EntityViewModel(entity);
+
     private void Add(IEnumerable<IEntity> entities) => entities.ForEach(Add); // todo: 回头库里做个字典批量添加然后这里换了实现减少通知次数
 
     private void Remove(IEntity entity)
@@ -83,4 +86,12 @@ public sealed class SceneViewModel : ViewModelBase
     }
 
     private void Remove(IEnumerable<IEntity> entities) => entities.ForEach(Remove); // todo: 同上
+
+
+    protected override void DisposeCore()
+    {
+        var snapshot = _entities.Values.ToArray();
+        _entities.Clear();
+        foreach (var viewModel in snapshot) viewModel.Dispose();
+    }
 }

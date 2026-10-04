@@ -101,7 +101,8 @@ public class GamePlayViewModelTests
 
         // 逐个断言而不是比序列：映射表内部的枚举次序不属于对外契约。
         var count = notified.Count;
-        Assert.Equal(2, count);
+        Assert.Equal(3, count);
+        Assert.Contains(nameof(GamePlayViewModel.Scene), notified);
         Assert.Contains(nameof(GamePlayViewModel.Time), notified);
         Assert.Contains(nameof(GamePlayViewModel.DeltaTime), notified);
     }

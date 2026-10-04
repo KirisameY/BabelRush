@@ -15,9 +15,14 @@ public abstract class ViewModelBase : ObservableObject, IDisposable
     private readonly List<IDisposable> _subscriptions = [];
 
     /// <summary>
-    ///     登记一个订阅，其生命周期与本 VM 绑定。
+    ///     登记一个子 IDisposable，其生命周期与本 VM 绑定。
     /// </summary>
     protected void Track(IDisposable subscription) => _subscriptions.Add(subscription);
+
+    /// <summary>
+    ///     移除一个被 Track 的对象。
+    /// </summary>
+    protected void Untrack(IDisposable subscription) => _subscriptions.Remove(subscription);
 
     public void Dispose()
     {

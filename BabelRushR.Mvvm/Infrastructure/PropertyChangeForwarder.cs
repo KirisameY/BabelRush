@@ -12,7 +12,7 @@ namespace BabelRushR.Mvvm.Infrastructure;
 ///     源只发它自己那层属性的变化，派生量与计算属性都要靠这张表接出来。
 ///     表里没有的源属性会被忽略；空属性名表示"全部失效"，无从查表，按表中出现过的全部目标属性通知。
 /// </remarks>
-internal sealed class PropertyChangeForwarder(IReadOnlyDictionary<string, ImmutableArray<string>> dependencies)
+public class PropertyChangeForwarder(IReadOnlyDictionary<string, ImmutableArray<string>> dependencies)
 {
     private readonly ImmutableArray<string> _allProperties =
         [..dependencies.Values.SelectMany(names => names).Distinct()];
@@ -22,14 +22,10 @@ internal sealed class PropertyChangeForwarder(IReadOnlyDictionary<string, Immuta
     /// </summary>
     public void Forward(string? propertyName, Action<string?> notify)
     {
-        if (string.IsNullOrEmpty(propertyName))
-        {
-            foreach (var name in _allProperties) notify(name);
-            return;
-        }
+        ImmutableArray<string>? notifies = string.IsNullOrEmpty(propertyName) ? _allProperties :
+            dependencies.TryGetValue(propertyName, out var affected) ? affected : null;
 
-        if (!dependencies.TryGetValue(propertyName, out var affected)) return;
-
-        foreach (var name in affected) notify(name);
+        if (notifies is null) return;
+        foreach (var name in notifies) notify.Invoke(name);
     }
 }

@@ -6,7 +6,7 @@ namespace BabelRushR.Mvvm.Infrastructure;
 /// <remarks>
 ///     重复 <see cref="Dispose"/> 是安全的：底层委托至多被执行一次。
 /// </remarks>
-internal sealed class ActionDisposable(Action dispose) : IDisposable
+public class ActionDisposable(Action dispose) : IDisposable
 {
     private Action? _dispose = dispose;
 

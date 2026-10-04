@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.ComponentModel;
 
@@ -16,9 +17,15 @@ public sealed class GamePlayViewModel : ViewModelBase
     /// </summary>
     private static readonly PropertyChangeForwarder Notifications = new(new Dictionary<string, ImmutableArray<string>>
     {
+        [nameof(IGamePlay.Scene)]     = [nameof(Scene)],
         [nameof(IGamePlay.Time)]      = [nameof(Time)],
         [nameof(IGamePlay.DeltaTime)] = [nameof(DeltaTime)],
-    });
+    }.ToFrozenDictionary());
+
+    private static readonly PropertyChangeReactor<GamePlayViewModel> Updates = new(new Dictionary<string, ImmutableArray<Action<GamePlayViewModel>>>
+    {
+        [nameof(IGamePlay.Scene)] = [UpdateScene],
+    }.ToFrozenDictionary());
 
     private readonly IGamePlay _gamePlay;
 
@@ -31,7 +38,9 @@ public sealed class GamePlayViewModel : ViewModelBase
         Track(gamePlay.Subscribe(OnGamePlayPropertyChanged));
     }
 
-    public SceneViewModel Scene { get; }
+    #region Properties
+
+    public SceneViewModel Scene { get; private set; }
 
     /// <summary>
     ///     开局以来的累计时间（秒）。
@@ -48,6 +57,26 @@ public sealed class GamePlayViewModel : ViewModelBase
     /// </summary>
     public void Update(double delta) => _gamePlay.Update(delta);
 
-    private void OnGamePlayPropertyChanged(object? sender, PropertyChangedEventArgs e) =>
+    #endregion
+
+    #region Reacts
+
+    private static void UpdateScene(GamePlayViewModel instance)
+    {
+        if (ReferenceEquals(instance.Scene.SourceScene, instance._gamePlay.Scene)) return;
+
+        var (oldScene, newScene) = (instance.Scene, new SceneViewModel(instance._gamePlay.Scene));
+        oldScene.Dispose();
+        instance.Untrack(oldScene);
+        instance.Scene = newScene;
+        instance.Track(newScene);
+    }
+
+    #endregion
+
+    private void OnGamePlayPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        Updates.React(e.PropertyName, this);
         Notifications.Forward(e.PropertyName, OnPropertyChanged);
+    }
 }
