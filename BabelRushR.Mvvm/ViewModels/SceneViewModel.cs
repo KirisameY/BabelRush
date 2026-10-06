@@ -76,7 +76,9 @@ public sealed class SceneViewModel : ViewModelBase
 
     private void Add(IEntity entity) => _entities[entity] = new EntityViewModel(entity);
 
-    private void Add(IEnumerable<IEntity> entities) => entities.ForEach(Add); // todo: 回头库里做个字典批量添加然后这里换了实现减少通知次数
+    private void Add(IEnumerable<IEntity> entities) => _entities.AddRange(
+        entities.Select(e => KeyValuePair.Create(e, new EntityViewModel(e)))
+    );
 
     private void Remove(IEntity entity)
     {
@@ -85,7 +87,11 @@ public sealed class SceneViewModel : ViewModelBase
         viewModel.Dispose();
     }
 
-    private void Remove(IEnumerable<IEntity> entities) => entities.ForEach(Remove); // todo: 同上
+    private void Remove(IEnumerable<IEntity> entities)
+    {
+        var removed = _entities.RemoveRange(entities);
+        removed.ForEach(p => p.Value.Dispose());
+    }
 
 
     protected override void DisposeCore()
