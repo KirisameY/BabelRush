@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://chnirw0h5jvdv"]
+
+[ext_resource type="Script" uid="uid://b1u7lc6lqfm43" path="res://Test/TestGamePlay.cs" id="1_testgameplay"]
+[ext_resource type="PackedScene" path="res://GUI/GamePlayUI.tscn" id="2_gameplayui"]
+
+[node name="TestGamePlay" type="Node" unique_id=2042557803]
+script = ExtResource("1_testgameplay")
+
+[node name="GamePlayUI" parent="." unique_id=1547320576 instance=ExtResource("2_gameplayui")]

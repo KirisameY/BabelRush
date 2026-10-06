@@ -1,21 +1,37 @@
 <Project Sdk="Godot.NET.Sdk/4.7.2">
-    
+
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <TargetFramework Condition=" '$(GodotTargetPlatform)' == 'android' ">net9.0</TargetFramework>
         <EnableDynamicLoading>true</EnableDynamicLoading>
         <RootNamespace>BabelRushR.Game</RootNamespace>
         <LangVersion>14</LangVersion>
+        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\BabelRushR.Core\BabelRushR.Core.csproj"/>
-        <ProjectReference Include="..\BabelRushR.Mvvm\BabelRushR.Mvvm.csproj" />
+        <ProjectReference Include="..\BabelRushR.Mvvm\BabelRushR.Mvvm.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="KirisameY.BindingBridge" Version="0.1.3" />
-      <PackageReference Include="KirisameY.BindingBridge.NotifiableCollections" Version="0.0.1" />
+        <PackageReference Include="KirisameY.BindingBridge" Version="0.1.5" />
+        <PackageReference Include="KirisameY.BindingBridge.NotifiableCollections" Version="0.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="**/*.tres"/>
+        <None Include="**/*.tscn"/>
+        <None Include="**/*.gd"/>
+
+        <None Update="**/*.tscn">
+            <DependentUpon>%(Filename).cs</DependentUpon>
+        </None>
+    </ItemGroup>
+
+    <!-- 导出时排除 Test/  -->
+    <ItemGroup Condition=" '$(Configuration)' == 'Release' or '$(Configuration)' == 'ExportRelease' ">
+        <Compile Remove="Test/**/*.cs"/>
     </ItemGroup>
 
 </Project>

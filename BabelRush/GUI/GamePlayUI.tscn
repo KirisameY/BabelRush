@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://dr8f6j4eowedt"]
+
+[ext_resource type="Script" uid="uid://bky7uduf0wrvo" path="res://GUI/GamePlayUI.cs" id="1_gameplayui"]
+[ext_resource type="Script" uid="uid://bnvi1n1vg65yu" path="res://GUI/SceneUI.cs" id="2_sceneui"]
+
+[node name="GamePlayUI" type="Node" unique_id=379892510]
+script = ExtResource("1_gameplayui")
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=1033995049]
+
+[node name="TimeLabel" type="Label" parent="HUD" unique_id=1026918047]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 336.0
+offset_bottom = 40.0
+text = "Time: 0.00"
+
+[node name="DeltaTimeLabel" type="Label" parent="HUD" unique_id=1397795617]
+offset_left = 16.0
+offset_top = 44.0
+offset_right = 336.0
+offset_bottom = 72.0
+text = "Delta: 0.000"
+
+[node name="Scene" type="Node2D" parent="." unique_id=1537654679]
+position = Vector2(640, 360)
+script = ExtResource("2_sceneui")
