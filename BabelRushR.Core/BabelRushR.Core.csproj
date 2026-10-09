@@ -8,8 +8,9 @@
 
     <ItemGroup>
       <PackageReference Include="KirisameY.EventBus" Version="0.2.0" />
-      <PackageReference Include="KirisameY.NotifiableCollections" Version="0.1.4" />
+      <PackageReference Include="KirisameY.NotifiableCollections" Version="0.1.5" />
       <PackageReference Include="KirisameY.Numeric" Version="0.1.4" />
+      <PackageReference Include="KirisameY.Registration" Version="0.1.0" />
     </ItemGroup>
 
 </Project>

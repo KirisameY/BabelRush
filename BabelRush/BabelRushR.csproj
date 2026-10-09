@@ -15,7 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="KirisameY.BindingBridge" Version="0.1.5" />
+        <PackageReference Include="KirisameY.BindingBridge" Version="0.1.6" />
         <PackageReference Include="KirisameY.BindingBridge.NotifiableCollections" Version="0.0.1"/>
     </ItemGroup>
 
