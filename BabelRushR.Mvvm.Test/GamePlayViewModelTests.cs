@@ -1,11 +1,6 @@
-using System.ComponentModel;
-
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Scenery;
 using BabelRushR.Mvvm.ViewModels;
-
-using KirisameY.EventBus;
-using KirisameY.EventBus.Bus;
 
 namespace BabelRushR.Mvvm.Test;
 
@@ -131,7 +126,7 @@ public class GamePlayViewModelTests
         var oldSceneViewModel = viewModel.Scene;
         var oldPlayerViewModel = oldSceneViewModel.Find(player)!;
 
-        gamePlay.SwitchScene(NewScene(player));
+        gamePlay.Scene = NewScene(player);
 
         Assert.NotSame(oldSceneViewModel, viewModel.Scene);
         Assert.Same(gamePlay.Scene, viewModel.Scene.SourceScene);
@@ -155,9 +150,10 @@ public class GamePlayViewModelTests
         var sceneViewModel = viewModel.Scene;
         var playerViewModel = sceneViewModel.Find(player)!;
 
-        // 没真换场景时，点名通知和"全部失效"都不该推倒重来
+        // 没真换场景时，点名通知、"全部失效"、以及把同一个场景实例再赋一次，都不该推倒重来
         gamePlay.Raise(nameof(IGamePlay.Scene));
         gamePlay.Raise(null);
+        gamePlay.Scene = gamePlay.Scene;
 
         Assert.Same(sceneViewModel, viewModel.Scene);
         Assert.Same(playerViewModel, viewModel.Scene.Find(player));
@@ -170,7 +166,7 @@ public class GamePlayViewModelTests
         var gamePlay = NewTestGamePlay(player);
         var viewModel = new GamePlayViewModel(gamePlay);
 
-        gamePlay.SwitchScene(NewScene(player));
+        gamePlay.Scene = NewScene(player);
         var playerViewModel = viewModel.Scene.Find(player)!;
         var notified = NotificationRecorder.PropertyNames(playerViewModel);
 
@@ -182,50 +178,32 @@ public class GamePlayViewModelTests
     }
 
     /// <summary>
-    ///     可以随意发属性通知、也能真的换掉场景的 <see cref="IGamePlay"/> 替身——
-    ///     <see cref="CommonGamePlay"/> 的 <c>Scene</c> 建好就换不了了，只能手写。
+    ///     真的 <see cref="CommonGamePlay"/>，只是额外开一个把属性通知发出去的口子——
+    ///     <c>OnPropertyChanged</c> 是 protected，测试只能靠派生类拿到它。
     /// </summary>
-    private sealed class TestGamePlay(IScene scene, IPlayerState playerState, IEventBus eventBus) : IGamePlay
+    /// <remarks>
+    ///     <c>Scene</c> 现在本身就是可写的，换场景不再需要替身。
+    /// </remarks>
+    private sealed class RaisableGamePlay : CommonGamePlay
     {
-        public IEventBus EventBus => eventBus;
-
-        public IPlayerState PlayerState => playerState;
-
-        public IScene Scene { get; private set; } = scene;
-
-        public double Time { get; private set; }
-
-        public double DeltaTime { get; private set; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public void Update(double delta)
-        {
-            DeltaTime =  delta;
-            Time      += delta;
-        }
-
-        public void SwitchScene(IScene newScene)
-        {
-            Scene = newScene;
-            Raise(nameof(Scene));
-        }
-
-        public void Raise(string? propertyName) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        public void Raise(string? propertyName) => OnPropertyChanged(propertyName);
     }
 
-    private static TestGamePlay NewTestGamePlay(TestEntity pcEntity)
+    private static RaisableGamePlay NewTestGamePlay(TestEntity pcEntity)
     {
-        var eventBus = new SimpleEventBus();
-        var scene = new CommonScene(eventBus);
+        // 先往场景里放实体再挂上去：这条路上不会发 EntityAddedEvent，本类也不关心事件。
+        var scene = new CommonScene();
         scene.AddEntity(pcEntity);
-        return new TestGamePlay(scene, new CommonPlayerState(pcEntity, eventBus), eventBus);
+        return new RaisableGamePlay
+        {
+            Scene       = scene,
+            PlayerState = new CommonPlayerState(pcEntity),
+        };
     }
 
     private static CommonScene NewScene(TestEntity entity)
     {
-        var scene = new CommonScene(new SimpleEventBus());
+        var scene = new CommonScene();
         scene.AddEntity(entity);
         return scene;
     }

@@ -14,7 +14,6 @@ public class CommonGamePlay : ObservableObject, IGamePlay
     /// </summary>
     public static CommonGamePlay Create(IEntity pcEntity, int maxAP = 6, double apRegeneration = 1.0)
     {
-        var eventBus = new SimpleEventBus<GamePlayEvent>();
         var gamePlay = new CommonGamePlay
         {
             Scene       = new CommonScene(),

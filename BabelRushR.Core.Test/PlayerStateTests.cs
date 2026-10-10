@@ -1,5 +1,6 @@
 ﻿using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Numeric;
+using BabelRushR.Core.Scenery;
 
 namespace BabelRushR.Core.Test;
 
@@ -213,5 +214,47 @@ public class PlayerStateTests
 
         Assert.Equal(1, game.PlayerState.AP);
         Assert.Equal(0.5, game.PlayerState.APRegenerated, 6);
+    }
+
+    [Fact]
+    public void APChangedEvent_Also_Reaches_GamePlayEvent_Subscribers()
+    {
+        var game = NewGame(maxAP: 3);
+        var events = new List<GamePlayEvent>();
+        game.EventBus.Subscribe<GamePlayEvent>(events.Add);
+
+        game.PlayerState.AP = 1;
+
+        Assert.IsType<APChangedEvent>(Assert.Single(events));
+    }
+
+    [Fact]
+    public void Player_State_Without_A_GamePlay_Throws_On_AP_Change()
+    {
+        // Initialize 是 protected internal：测试程序集既调不到它，也没有别的手动装配途径。
+        // 因此「玩家状态必须先被 CommonGamePlay 收编」是由类型系统保证的，这里钉的是它失守时的表现。
+        var playerState = new CommonPlayerState(new TestEntity(maxHP: 10));
+
+        var ex = Assert.Throws<Exception>(() => playerState.AP = 1);
+
+        Assert.Contains("uninitialized", ex.Message);
+    }
+
+    [Fact]
+    public void Assembling_A_Player_State_Into_A_GamePlay_Is_What_Makes_It_Usable()
+    {
+        var playerState = new CommonPlayerState(new TestEntity(maxHP: 10));
+        var game = new CommonGamePlay
+        {
+            Scene       = new CommonScene(),
+            PlayerState = playerState,
+        };
+        var events = new List<APChangedEvent>();
+        game.EventBus.Subscribe<APChangedEvent>(events.Add);
+
+        playerState.AP = 1;
+
+        var published = Assert.Single(events);
+        Assert.Equal((0, 1), (published.OldAP, published.NewAP));
     }
 }

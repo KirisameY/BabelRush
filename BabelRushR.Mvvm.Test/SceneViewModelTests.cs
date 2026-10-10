@@ -2,7 +2,6 @@ using BabelRushR.Core.Entity;
 using BabelRushR.Core.Scenery;
 using BabelRushR.Mvvm.ViewModels;
 
-using KirisameY.EventBus.Bus;
 using KirisameY.NotifiableCollections.Collections;
 using KirisameY.NotifiableCollections.EventArgs;
 
@@ -10,7 +9,8 @@ namespace BabelRushR.Mvvm.Test;
 
 public class SceneViewModelTests
 {
-    private static CommonScene NewScene() => new(new SimpleEventBus());
+    // 场景不再自带事件总线，本类只关心 Entities 的增删，不挂到 GamePlay 上也够用。
+    private static CommonScene NewScene() => new();
 
     [Fact]
     public void Picks_Up_Entities_Already_In_The_Scene()
