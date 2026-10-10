@@ -11,12 +11,15 @@ namespace BabelRushR.Core.GamePlay;
 
 public class CommonPlayerState(
     IEntity pcEntity,
-    IEventBus eventBus,
-    int maxAP = 3,
+    int maxAP = 6,
     double apRegeneration = 1.0)
     : ObservableObject, IPlayerState
 {
-    public IEventBus EventBus => eventBus;
+    private IEventBus<GamePlayEvent> EventBus
+    {
+        get => field ?? throw new Exception($"{nameof(CommonPlayerState)} uninitialized");
+        set;
+    }
 
     public IEntity PCEntity => pcEntity;
 
@@ -38,7 +41,7 @@ public class CommonPlayerState(
             var old = field;
             if (!SetProperty(ref field, clamped)) return;
 
-            eventBus.Publish(new APChangedEvent(old, clamped));
+            EventBus.Publish(new APChangedEvent(old, clamped));
         }
     }
 
@@ -74,4 +77,7 @@ public class CommonPlayerState(
             break;
         }
     }
+
+    internal void Initialize(IGamePlay gamePlay) => EventBus = gamePlay.EventBus;
+    void IPlayerState.Initialize(IGamePlay gamePlay) => Initialize(gamePlay);
 }

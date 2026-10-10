@@ -1,11 +1,13 @@
-﻿using KirisameY.EventBus;
+﻿using BabelRushR.Core.GamePlay;
+
+using KirisameY.EventBus;
 
 namespace BabelRushR.Core.Entity;
 
 /// <summary>
 /// 实体相关事件的基类型。
 /// </summary>
-public abstract record EntityEvent(IEntity Entity) : BaseEvent;
+public abstract record EntityEvent(IEntity Entity) : GamePlayEvent;
 
 /// <summary>实体已被加入场景之后发布。</summary>
 public record EntityAddedEvent(IEntity Entity) : EntityEvent(Entity);

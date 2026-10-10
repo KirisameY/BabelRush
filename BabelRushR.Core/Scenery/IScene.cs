@@ -2,6 +2,7 @@
 
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
+using BabelRushR.Core.GamePlay;
 
 using KirisameY.NotifiableCollections.Collections;
 
@@ -9,6 +10,8 @@ namespace BabelRushR.Core.Scenery;
 
 public interface IScene : INotifyPropertyChanged, IUpdatable
 {
+    public IGamePlay? GamePlay { get; }
+
     INotifiableList<IEntity> Entities { get; }
 
     /// <summary>
@@ -26,4 +29,7 @@ public interface IScene : INotifyPropertyChanged, IUpdatable
     /// 若成功找到并移除则为 <c>true</c>，反之为 <c>false</c>。
     /// </returns>
     bool RemoveEntity(IEntity entity);
+
+    protected internal void Attach(IGamePlay gamePlay);
+    protected internal void Unattach();
 }

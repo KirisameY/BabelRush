@@ -5,7 +5,7 @@ namespace BabelRushR.Core.GamePlay;
 /// <summary>
 /// 玩家状态相关事件的基类型。
 /// </summary>
-public abstract record PlayerStateEvent : BaseEvent;
+public abstract record PlayerStateEvent : GamePlayEvent;
 
 /// <summary>
 /// 整数费用 AP 发生变化时发布。

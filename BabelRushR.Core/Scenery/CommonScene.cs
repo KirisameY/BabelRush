@@ -1,18 +1,19 @@
 ﻿using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
+using BabelRushR.Core.GamePlay;
 
 using KirisameY.EventBus;
 using KirisameY.NotifiableCollections.Collections;
 
 namespace BabelRushR.Core.Scenery;
 
-public class CommonScene(IEventBus eventBus) : ObservableObject, IScene
+public class CommonScene : ObservableObject, IScene
 {
     // 复用缓冲，避免每帧产生垃圾。
     private readonly List<IEntity> _updateBuffer = [];
     private readonly List<IEntity> _deadBuffer = [];
 
-    public IEventBus EventBus => eventBus;
+    public IGamePlay? GamePlay { get; private set; }
 
     public INotifiableList<IEntity> Entities { get; } = new NotifiableList<IEntity>();
 
@@ -20,7 +21,7 @@ public class CommonScene(IEventBus eventBus) : ObservableObject, IScene
     {
         if (Entities.Contains(entity)) return false;
         Entities.Add(entity);
-        eventBus.Publish(new EntityAddedEvent(entity));
+        GamePlay?.EventBus.Publish(new EntityAddedEvent(entity));
         return true;
     }
 
@@ -28,9 +29,10 @@ public class CommonScene(IEventBus eventBus) : ObservableObject, IScene
     {
         if (!Entities.Remove(entity)) return false;
 
-        eventBus.Publish(new EntityRemovedEvent(entity));
+        GamePlay?.EventBus.Publish(new EntityRemovedEvent(entity));
         return true;
     }
+
 
     public void Update(double delta)
     {
@@ -51,6 +53,12 @@ public class CommonScene(IEventBus eventBus) : ObservableObject, IScene
         //    若边改边发，处理函数里的增删会破坏正在进行的遍历。
         foreach (var entity in _deadBuffer) Entities.Remove(entity);
 
-        foreach (var entity in _deadBuffer) eventBus.Publish(new EntityDiedEvent(entity));
+        foreach (var entity in _deadBuffer) GamePlay?.EventBus.Publish(new EntityDiedEvent(entity));
     }
+
+    internal void Attach(IGamePlay gamePlay) => GamePlay = gamePlay;
+    void IScene.Attach(IGamePlay gamePlay) => Attach(gamePlay);
+
+    internal void Unattach() => GamePlay = null;
+    void IScene.Unattach() => Unattach();
 }

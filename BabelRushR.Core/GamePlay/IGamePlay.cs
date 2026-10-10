@@ -10,7 +10,7 @@ namespace BabelRushR.Core.GamePlay;
 public interface IGamePlay : INotifyPropertyChanged, IUpdatable
 {
     /// <summary>供逻辑层内部通信，表现层同步请订阅 Notify 相关接口。</summary>
-    IEventBus EventBus { get; }
+    IEventBus<GamePlayEvent> EventBus { get; }
 
     IScene Scene { get; }
     IPlayerState PlayerState { get; }

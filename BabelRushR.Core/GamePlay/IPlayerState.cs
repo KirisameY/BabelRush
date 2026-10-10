@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 using BabelRushR.Core.Card;
 using BabelRushR.Core.Common;
@@ -29,4 +29,7 @@ public interface IPlayerState : INotifyPropertyChanged, IUpdatable
 
     /// <summary>每秒回复的费用点数。</summary>
     IModifierEditableNumeric<double, CommonNumericModifyOrder> APRegeneration { get; }
+
+
+    protected internal void Initialize(IGamePlay gamePlay);
 }

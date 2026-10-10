@@ -7,28 +7,49 @@ using KirisameY.EventBus.Bus;
 
 namespace BabelRushR.Core.GamePlay;
 
-public class CommonGamePlay(IScene scene, IPlayerState playerState, IEventBus eventBus) : ObservableObject, IGamePlay
+public class CommonGamePlay : ObservableObject, IGamePlay
 {
     /// <summary>
     /// 自建事件总线、场景与玩家状态，并把玩家实体放入场景。
     /// </summary>
-    public static CommonGamePlay Create(IEntity pcEntity, int maxAP = 3, double apRegeneration = 1.0)
+    public static CommonGamePlay Create(IEntity pcEntity, int maxAP = 6, double apRegeneration = 1.0)
     {
-        var eventBus = new SimpleEventBus();
-        var gamePlay = new CommonGamePlay(
-            new CommonScene(eventBus),
-            new CommonPlayerState(pcEntity, eventBus, maxAP, apRegeneration),
-            eventBus);
+        var eventBus = new SimpleEventBus<GamePlayEvent>();
+        var gamePlay = new CommonGamePlay
+        {
+            Scene       = new CommonScene(),
+            PlayerState = new CommonPlayerState(pcEntity, maxAP, apRegeneration),
+        };
 
         gamePlay.Scene.AddEntity(pcEntity);
         return gamePlay;
     }
 
-    public IEventBus EventBus => eventBus;
+    public IEventBus<GamePlayEvent> EventBus => field ??= new SimpleEventBus<GamePlayEvent>();
 
-    public IScene Scene => scene;
+    public required IScene Scene
+    {
+        get;
+        set
+        {
+            var old = field;
+            if (!SetProperty(ref field, value)) return;
+            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
+            old?.Unattach();
+            value.Attach(this);
+            if (old is not null) EventBus.Publish(new GameSceneReplacedEvent(old, value));
+        }
+    }
 
-    public IPlayerState PlayerState => playerState;
+    public required IPlayerState PlayerState
+    {
+        get;
+        init
+        {
+            field = value;
+            value.Initialize(this);
+        }
+    }
 
     public double Time
     {
