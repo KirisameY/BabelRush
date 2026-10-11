@@ -1,4 +1,4 @@
-﻿namespace BabelRushR.Core.EntityAction;
+﻿namespace BabelRushR.Core.EntityAction.Types;
 
 public interface IEntityActionType
 {
