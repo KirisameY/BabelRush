@@ -1,3 +1,5 @@
+using System.ComponentModel;
+
 using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace BabelRushR.Mvvm.Infrastructure;
@@ -17,7 +19,11 @@ public abstract class ViewModelBase : ObservableObject, IDisposable
     /// <summary>
     ///     登记一个子 IDisposable，其生命周期与本 VM 绑定。
     /// </summary>
-    protected void Track(IDisposable subscription) => _subscriptions.Add(subscription);
+    protected T Track<T>(T subscription) where T : IDisposable
+    {
+        _subscriptions.Add(subscription);
+        return subscription;
+    }
 
     /// <summary>
     ///     移除一个被 Track 的对象。
@@ -37,4 +43,13 @@ public abstract class ViewModelBase : ObservableObject, IDisposable
     ///     释放本 VM 自有资源的钩子，在全部订阅撤销之后调用。
     /// </summary>
     protected virtual void DisposeCore() { }
+}
+
+public abstract class ViewModelBase<TSelf> : ViewModelBase, IDisposable
+    where TSelf : ViewModelBase<TSelf>
+{
+    public ViewModelBase(INotifyPropertyChanged model, PropertyChangeReactor<TSelf> reactions)
+    {
+        Track(model.Subscribe((sender, args) => reactions.Forward(args.PropertyName, (TSelf)this, OnPropertyChanged)));
+    }
 }

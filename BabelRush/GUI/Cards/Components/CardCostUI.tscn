@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://4j0dp1wb1so6"]
+
+[ext_resource type="Script" uid="uid://cat2l3vbthony" path="res://GUI/Cards/Components/CardCostUI.cs" id="1_100tu"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_1vivr"]
+font_size = 24
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[node name="CardCostUI" type="Control" unique_id=458085328]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_100tu")
+
+[node name="Label" type="Label" parent="." unique_id=1243353300]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -17.0
+offset_right = 20.0
+offset_bottom = 17.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "12"
+label_settings = SubResource("LabelSettings_1vivr")
+horizontal_alignment = 1

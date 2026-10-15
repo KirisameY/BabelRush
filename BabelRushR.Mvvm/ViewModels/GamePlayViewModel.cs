@@ -1,6 +1,7 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Mvvm.Infrastructure;
@@ -10,7 +11,7 @@ namespace BabelRushR.Mvvm.ViewModels;
 /// <summary>
 ///     一局游戏的根 VM。视图只需要认识这一个对象。
 /// </summary>
-public sealed class GamePlayViewModel : ViewModelBase
+public sealed class GamePlayViewModel(IGamePlay gamePlay) : ViewModelBase<GamePlayViewModel>(gamePlay, Reactions)
 {
     /// <summary>
     ///     <see cref="IGamePlay"/> 属性名 → 该变化引发的更新与需要一并通知的属性名。
@@ -24,20 +25,25 @@ public sealed class GamePlayViewModel : ViewModelBase
         }.ToFrozenDictionary()
     );
 
-    private readonly IGamePlay _gamePlay;
+    private readonly IGamePlay _gamePlay = gamePlay;
 
-    public GamePlayViewModel(IGamePlay gamePlay)
-    {
-        _gamePlay = gamePlay;
-
-        Scene = new SceneViewModel(gamePlay.Scene);
-        Track(Scene);
-        Track(gamePlay.Subscribe(OnGamePlayPropertyChanged));
-    }
 
     #region Properties
 
-    public SceneViewModel Scene { get; private set; }
+    public SceneViewModel Scene
+    {
+        get => field ??= Track(new SceneViewModel(_gamePlay.Scene));
+        private set
+        {
+            if (field == value) return;
+            // ReSharper disable AssignNullToNotNullAttribute
+            (var old, field) = (field, Track(value));
+            // ReSharper restore AssignNullToNotNullAttribute
+            if (old is null) return;
+            Untrack(old);
+            old.Dispose();
+        }
+    }
 
     /// <summary>
     ///     开局以来的累计时间（秒）。
@@ -56,21 +62,14 @@ public sealed class GamePlayViewModel : ViewModelBase
 
     #endregion
 
+
     #region Reacts
 
     private static void UpdateScene(GamePlayViewModel instance)
     {
         if (ReferenceEquals(instance.Scene.SourceScene, instance._gamePlay.Scene)) return;
-
-        var (oldScene, newScene) = (instance.Scene, new SceneViewModel(instance._gamePlay.Scene));
-        oldScene.Dispose();
-        instance.Untrack(oldScene);
-        instance.Scene = newScene;
-        instance.Track(newScene);
+        instance.Scene = new SceneViewModel(instance._gamePlay.Scene);
     }
 
     #endregion
-
-    private void OnGamePlayPropertyChanged(object? sender, PropertyChangedEventArgs e) =>
-        Reactions.Forward(e.PropertyName, this, OnPropertyChanged);
 }

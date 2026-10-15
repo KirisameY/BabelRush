@@ -1,6 +1,8 @@
-﻿namespace BabelRushR.Core.EntityAction;
+﻿using System.ComponentModel;
 
-public interface IEntityAction
+namespace BabelRushR.Core.EntityAction;
+
+public interface IEntityAction: INotifyPropertyChanged
 {
     void Act(EntityActionContext ctx);
 }

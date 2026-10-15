@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://ddw1c2cuwq1et"]
+
+[ext_resource type="Script" uid="uid://g56ilja5ciw2" path="res://GUI/Cards/CardUI.cs" id="1_d3n6d"]
+[ext_resource type="PackedScene" uid="uid://4j0dp1wb1so6" path="res://GUI/Cards/Components/CardCostUI.tscn" id="2_8en22"]
+[ext_resource type="PackedScene" uid="uid://b4ksx561kc08v" path="res://GUI/Cards/Components/CardActionsUI.tscn" id="3_3g3dy"]
+
+[node name="CardUI" type="ColorRect" unique_id=1200438347]
+custom_minimum_size = Vector2(144, 180)
+offset_right = 144.0
+offset_bottom = 180.0
+color = Color(0.6955032, 0.6955031, 0.6955031, 0.5647059)
+script = ExtResource("1_d3n6d")
+
+[node name="CardCostUI" parent="." unique_id=458085328 instance=ExtResource("2_8en22")]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 11.0
+offset_right = 15.0
+offset_bottom = 11.0
+
+[node name="CardActionsUI" parent="." unique_id=2075893427 instance=ExtResource("3_3g3dy")]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 26.0
+offset_right = 19.0
+offset_bottom = 42.0

@@ -14,7 +14,7 @@ namespace BabelRushR.Mvvm.ViewModels;
 ///     与 Core 一一对应，实例由 <see cref="SceneViewModel"/> 独占创建与释放，
 ///     以保证同一个实体在整棵 VM 树里只有一份代理。
 /// </remarks>
-public sealed class EntityViewModel : ViewModelBase
+public sealed class EntityViewModel(IEntity entity) : ViewModelBase<EntityViewModel>(entity, Reactions)
 {
     /// <summary>
     ///     Core 属性名 → 该变化引发的更新与需要一并通知的属性名。
@@ -33,27 +33,16 @@ public sealed class EntityViewModel : ViewModelBase
         }.ToFrozenDictionary()
     );
 
-    private readonly IEntity _entity;
+    public int HP => entity.HP;
 
-    public EntityViewModel(IEntity entity)
-    {
-        _entity = entity;
-        Track(entity.Subscribe(OnEntityPropertyChanged));
-    }
-
-    public int HP => _entity.HP;
-
-    public int MaxHP => _entity.MaxHP.Value;
+    public int MaxHP => entity.MaxHP.Value;
 
     /// <summary>
     ///     血量比例，供血条一类的控件直接使用。
     /// </summary>
     public double HPRatio => MaxHP > 0 ? HP / (double)MaxHP : 0;
 
-    public bool IsAlive => _entity.IsAlive;
+    public bool IsAlive => entity.IsAlive;
 
-    public double Position => _entity.Position;
-
-    private void OnEntityPropertyChanged(object? sender, PropertyChangedEventArgs e) =>
-        Reactions.Forward(e.PropertyName, this, OnPropertyChanged);
+    public double Position => entity.Position;
 }

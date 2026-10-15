@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 using BabelRushR.Game.Binding;
@@ -12,7 +11,29 @@ namespace BabelRushR.Game.GUI.Entities;
 
 public partial class EntityUI : Node2D
 {
+    #region Scene & Lifetime
+
+    private EntityUI() { }
+
+    private static PackedScene Scene => field ??= GD.Load<PackedScene>("res://GUI/Entities/EntityUI.tscn");
+    public static EntityUI New() => Scene.Instantiate<EntityUI>();
+
+    #endregion
+
+
+    #region Nodes & Properties
+
     private ProgressBar HPBar => field ??= GetNode<ProgressBar>("ProgressBar");
+
+    public double PositionX
+    {
+        get => Position.X;
+        set => Position = Position with { X = (float)value };
+    }
+
+    #endregion
+
+    #region Binding
 
     private readonly List<IBindHandle> _binds = [];
 
@@ -27,16 +48,6 @@ public partial class EntityUI : Node2D
             else Unbind();
         }
     }
-
-    public double PositionX
-    {
-        get => Position.X;
-        set => Position = Position with { X = (float)value };
-    }
-
-    public override void _EnterTree() => Rebind();
-
-    public override void _ExitTree() => Unbind();
 
     private void Rebind()
     {
@@ -63,4 +74,10 @@ public partial class EntityUI : Node2D
         _binds.ForEach(b => b.Dispose());
         _binds.Clear();
     }
+
+    public override void _EnterTree() => Rebind();
+
+    public override void _ExitTree() => Unbind();
+
+    #endregion
 }

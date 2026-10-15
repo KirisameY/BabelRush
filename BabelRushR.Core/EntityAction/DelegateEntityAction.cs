@@ -1,11 +1,13 @@
-﻿namespace BabelRushR.Core.EntityAction;
+﻿using BabelRushR.Core.Common;
 
-public class DelegateEntityAction(Action<EntityActionContext> action) : IEntityAction
+namespace BabelRushR.Core.EntityAction;
+
+public class DelegateEntityAction(Action<EntityActionContext> action) : ObservableObject, IEntityAction
 {
     public void Act(EntityActionContext ctx) => action.Invoke(ctx);
 }
 
-public class ValuedDelegateEntityAction(Action<EntityActionContext, int> action, int value) : IEntityAction
+public class ValuedDelegateEntityAction(Action<EntityActionContext, int> action, int value) : ObservableObject, IEntityAction
 {
     public void Act(EntityActionContext ctx) => action.Invoke(ctx, value);
 }
