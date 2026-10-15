@@ -76,6 +76,13 @@ public partial class SceneUI : Node2D, ISimpleCollectionObserver<EntityViewModel
         Detach(view);
     }
 
+    public void Replace(EntityViewModel oldElement, EntityViewModel newElement)
+    {
+        if (!_views.Remove(oldElement, out var view)) return;
+        view.ViewModel = newElement;
+        _views.Add(newElement, view);
+    }
+
     public void Clear()
     {
         foreach (var view in _views.Values) Detach(view);

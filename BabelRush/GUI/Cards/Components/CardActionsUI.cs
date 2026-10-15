@@ -100,6 +100,14 @@ public partial class CardActionsUI : Control, ISimpleListObserver<EntityActionVi
         AddChild(node);
     }
 
+    public void Move(int oldIndex, int newIndex)
+    {
+        var node = _list[oldIndex];
+        _list.RemoveAt(oldIndex);
+        _list.Insert(newIndex, node);
+        MoveChild(node, newIndex);
+    }
+
     public void Clear()
     {
         foreach (var node in _list)
