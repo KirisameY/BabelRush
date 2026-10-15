@@ -66,5 +66,9 @@ public partial class CardUI : Control
         _binds.Clear();
     }
 
+    public override void _EnterTree() => Rebind();
+
+    public override void _ExitTree() => Unbind();
+
     #endregion
 }

@@ -1,0 +1,101 @@
+﻿[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Test/TestCard.cs" id="1_testcard"]
+[ext_resource type="PackedScene" path="res://GUI/Cards/CardUI.tscn" id="2_cardui"]
+
+[node name="TestCard" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_testcard")
+
+[node name="CardUI" parent="." instance=ExtResource("2_cardui")]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -72.0
+offset_top = -90.0
+offset_right = 72.0
+offset_bottom = 90.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Controls" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_top = 40.0
+offset_right = -32.0
+offset_bottom = 40.0
+grow_horizontal = 0
+theme_override_constants/separation = 16
+
+[node name="CostModifierRow" type="HBoxContainer" parent="Controls"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Controls/CostModifierRow"]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+text = "Cost 修正"
+
+[node name="CostModifierSlider" type="HSlider" parent="Controls/CostModifierRow"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+min_value = -10.0
+max_value = 10.0
+step = 1.0
+
+[node name="CostModifierValue" type="Label" parent="Controls/CostModifierRow"]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+text = "0"
+horizontal_alignment = 2
+
+[node name="TypeCostRow" type="HBoxContainer" parent="Controls"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Controls/TypeCostRow"]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+text = "类型 Cost"
+
+[node name="TypeCostBox" type="SpinBox" parent="Controls/TypeCostRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 99.0
+step = 1.0
+value = 3.0
+
+[node name="ActionCountRow" type="HBoxContainer" parent="Controls"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Controls/ActionCountRow"]
+custom_minimum_size = Vector2(96, 0)
+layout_mode = 2
+text = "Action 数量"
+
+[node name="ActionCountBox" type="SpinBox" parent="Controls/ActionCountRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.0
+max_value = 8.0
+step = 1.0
+value = 2.0
+
+[node name="RebuildButton" type="Button" parent="Controls"]
+layout_mode = 2
+text = "重建 CardType 与 Card"

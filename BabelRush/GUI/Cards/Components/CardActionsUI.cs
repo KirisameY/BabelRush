@@ -116,4 +116,11 @@ public partial class CardActionsUI : Control, ISimpleListObserver<EntityActionVi
     }
 
     #endregion
+
+    public override void _Ready()
+    {
+        var preview = FindChild("_preview");
+        RemoveChild(preview);
+        preview.QueueFree();
+    }
 }

@@ -35,6 +35,7 @@ public class CardViewModel(ICard card) : ViewModelBase<CardViewModel>(card, Reac
     {
         var result = _card.Actions.Select(action => new EntityActionViewModel(action)).ToNotifiableList();
         _card.Actions.ListUpdated += ActionsUpdate;
+        Track(new ActionDisposable(() => _card.Actions.ListUpdated -= ActionsUpdate));
         return result;
     }
 

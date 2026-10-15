@@ -57,11 +57,4 @@ public partial class CardActionUI : Control
     public override void _ExitTree() => Unbind();
 
     #endregion
-
-    public override void _Ready()
-    {
-        var preview = FindChild("_preview");
-        RemoveChild(preview);
-        preview.QueueFree();
-    }
 }
