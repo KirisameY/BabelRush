@@ -158,15 +158,4 @@ public class HandViewModelTests
         Assert.Empty(viewModel.Cards);
         Assert.Empty(notified);
     }
-
-    [Fact]
-    public void Dispose_Is_Idempotent()
-    {
-        var viewModel = new HandViewModel(NewHand(TestCards.New(1)));
-
-        viewModel.Dispose();
-        viewModel.Dispose();
-
-        Assert.Empty(viewModel.Cards);
-    }
 }

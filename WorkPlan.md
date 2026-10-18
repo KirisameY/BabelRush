@@ -25,8 +25,7 @@
 - [ ] 
 
 ## 琐碎的短期目标
-- [ ] Empty_Property_Name_Notifies_Every_Mapped_Property 这种实际上针对的不是具体类型而是基类行为的东西都改成对基类的测试
-- [ ] VM 里维护了集合的给集合更新时候先检查以下是否已经 Disposed
+- [x] Empty_Property_Name_Notifies_Every_Mapped_Property 这种实际上针对的不是具体类型而是基类行为的东西都改成对基类的测试
 
 ## 日后再说的重要目标
 - [ ] 资源从外部包加载（不过最好提前处理好目录结构）

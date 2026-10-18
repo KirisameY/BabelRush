@@ -74,46 +74,6 @@ public class GamePlayViewModelTests
     }
 
     [Fact]
-    public void Unknown_GamePlay_Property_Change_Is_Ignored()
-    {
-        var gamePlay = NewTestGamePlay(new TestEntity(maxHP: 10));
-        var viewModel = new GamePlayViewModel(gamePlay);
-        var notified = NotificationRecorder.PropertyNames(viewModel);
-
-        gamePlay.Raise("NotAGamePlayProperty");
-
-        Assert.Empty(notified);
-    }
-
-    [Fact]
-    public void Empty_Property_Name_Notifies_Every_Mapped_Property()
-    {
-        var gamePlay = NewTestGamePlay(new TestEntity(maxHP: 10));
-        var viewModel = new GamePlayViewModel(gamePlay);
-        var notified = NotificationRecorder.PropertyNames(viewModel);
-
-        gamePlay.Raise(null);
-
-        // 逐个断言而不是钉条数：映射表内部的枚举次序与去重细节由基类测试覆盖。
-        Assert.Contains(nameof(GamePlayViewModel.Scene), notified);
-        Assert.Contains(nameof(GamePlayViewModel.Time), notified);
-        Assert.Contains(nameof(GamePlayViewModel.DeltaTime), notified);
-    }
-
-    [Fact]
-    public void Disposed_ViewModel_Stops_Listening_To_The_GamePlay()
-    {
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
-        var viewModel = new GamePlayViewModel(gamePlay);
-        var notified = NotificationRecorder.PropertyNames(viewModel);
-
-        viewModel.Dispose();
-        gamePlay.Update(0.5);
-
-        Assert.Empty(notified);
-    }
-
-    [Fact]
     public void Switching_The_Scene_Rebuilds_The_Scene_ViewModel()
     {
         var player = new TestEntity(maxHP: 10) { HP = 5 };
