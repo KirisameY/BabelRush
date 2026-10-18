@@ -33,6 +33,8 @@ public partial class HandCardsUI : Control, ISimpleListObserver<CardViewModel>
 
     public override void _ExitTree() => Unbind();
 
+    public override void _Process(double delta) => DraggingProcess();
+
     #endregion
 
 

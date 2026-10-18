@@ -4,13 +4,25 @@
 [ext_resource type="PackedScene" uid="uid://4j0dp1wb1so6" path="res://GUI/Cards/Components/CardCostUI.tscn" id="2_8en22"]
 [ext_resource type="PackedScene" uid="uid://b4ksx561kc08v" path="res://GUI/Cards/Components/CardActionsUI.tscn" id="3_3g3dy"]
 
-[node name="CardUI" type="ColorRect" unique_id=1200438347]
+[node name="CardUI" type="Button" unique_id=723620256]
 custom_minimum_size = Vector2(144, 180)
 offset_right = 144.0
 offset_bottom = 180.0
-mouse_filter = 0
-color = Color(0.6955032, 0.6955031, 0.6955031, 0.5647059)
+focus_mode = 0
+focus_behavior_recursive = 1
+action_mode = 0
+flat = true
 script = ExtResource("1_d3n6d")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=968390665]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.8732984, 0.8732984, 0.8732984, 1)
 
 [node name="CardCostUI" parent="." unique_id=458085328 instance=ExtResource("2_8en22")]
 layout_mode = 0
@@ -18,6 +30,7 @@ offset_left = 15.0
 offset_top = 11.0
 offset_right = 15.0
 offset_bottom = 11.0
+mouse_filter = 0
 
 [node name="CardActionsUI" parent="." unique_id=2075893427 instance=ExtResource("3_3g3dy")]
 layout_mode = 0
@@ -25,3 +38,4 @@ offset_left = 3.0
 offset_top = 26.0
 offset_right = 19.0
 offset_bottom = 42.0
+mouse_filter = 1

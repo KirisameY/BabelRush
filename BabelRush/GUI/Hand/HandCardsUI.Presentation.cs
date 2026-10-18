@@ -50,7 +50,7 @@ public partial class HandCardsUI
     private sealed class CardState
     {
         public (Tween? X, Tween? Y, Tween? Rotation, Tween? Scale) Tweens;
-        public (Action Entered, Action Exited, Action Pressed) Handlers;
+        public (Action Entered, Action Exited, Action Pressed, Action Released) Handlers;
         public Vector2 BasePosition;
         public float BaseRotation;
     }
@@ -79,39 +79,34 @@ public partial class HandCardsUI
 
     private void AttachCard(CardUI card)
     {
-        Action entered = () => OnCardMouseEntered(card);
-        Action exited = () => OnCardMouseExited(card);
-        Action pressed = () => OnCardLeftPressed(card);
+        Action entered = () => OnCardMouseEntered(card),
+               exited = () => OnCardMouseExited(card),
+               pressed = () => OnCardPressed(card),
+               released = () => OnCardReleased(card);
 
         card.MouseEntered += entered;
         card.MouseExited  += exited;
-        card.LeftPressed  += pressed;
+        card.ButtonDown   += pressed;
+        card.ButtonUp     += released;
 
         _states[card] = new CardState
         {
-            Handlers = (entered, exited, pressed),
+            Handlers = (entered, exited, pressed, released),
         };
     }
 
     private void DetachCardState(CardUI card)
     {
-        var state = _states[card];
+        if (!_states.Remove(card, out var state)) return;
 
         card.MouseEntered -= state.Handlers.Entered;
         card.MouseExited  -= state.Handlers.Exited;
-        card.LeftPressed  -= state.Handlers.Pressed;
-
-        KillTween(state.Tweens.X);
-        KillTween(state.Tweens.Y);
-        KillTween(state.Tweens.Rotation);
-        KillTween(state.Tweens.Scale);
-        state.Tweens = default;
+        card.ButtonDown   -= state.Handlers.Pressed;
+        card.ButtonUp     -= state.Handlers.Released;
 
         if (_hovered == card) _hovered         = null;
         if (_dragging == card) _dragging       = null;
         if (_pointerCard == card) _pointerCard = null;
-
-        _states.Remove(card);
     }
 
     private void ResetInteraction()
@@ -189,11 +184,10 @@ public partial class HandCardsUI
 
             if (firstLayout)
             {
-                KillTween(state.Tweens.X);
-                KillTween(state.Tweens.Y);
-                KillTween(state.Tweens.Rotation);
-                KillTween(state.Tweens.Scale);
-                state.Tweens = default;
+                state.Tweens.X?.Kill();
+                state.Tweens.Y?.Kill();
+                state.Tweens.Rotation?.Kill();
+                state.Tweens.Scale?.Kill();
 
                 card.Position = card == _hovered
                     ? state.BasePosition - new Vector2(0, HoverLift)
@@ -255,14 +249,9 @@ public partial class HandCardsUI
 
     #region Tween
 
-    private static void KillTween(Tween? tween)
+    private Tween NewTween(Node card) // 通过传入的 card 创建来让 tween 的生命周期和 card 绑定，于是不需要转成清理。
     {
-        if (tween is not null && GodotObject.IsInstanceValid(tween)) tween.Kill();
-    }
-
-    private Tween NewTween()
-    {
-        var tween = CreateTween();
+        var tween = card.CreateTween();
         tween.SetTrans(Tween.TransitionType.Cubic).SetEase(Tween.EaseType.Out);
         return tween;
     }
@@ -276,9 +265,9 @@ public partial class HandCardsUI
         }
 
         var state = _states[card];
-        KillTween(state.Tweens.X);
+        state.Tweens.X?.Kill();
 
-        var tween = NewTween();
+        var tween = NewTween(card);
         tween.TweenProperty(card, "position:x", target, duration);
         state.Tweens.X = tween;
     }
@@ -292,9 +281,9 @@ public partial class HandCardsUI
         }
 
         var state = _states[card];
-        KillTween(state.Tweens.Y);
+        state.Tweens.Y?.Kill();
 
-        var tween = NewTween();
+        var tween = NewTween(card);
         tween.TweenProperty(card, "position:y", target, duration);
         state.Tweens.Y = tween;
     }
@@ -309,9 +298,9 @@ public partial class HandCardsUI
         }
 
         var state = _states[card];
-        KillTween(state.Tweens.Scale);
+        state.Tweens.Scale?.Kill();
 
-        var tween = NewTween();
+        var tween = NewTween(card);
         tween.TweenProperty(card, "scale", scale, duration);
         state.Tweens.Scale = tween;
     }
@@ -325,9 +314,9 @@ public partial class HandCardsUI
         }
 
         var state = _states[card];
-        KillTween(state.Tweens.Rotation);
+        state.Tweens.Rotation?.Kill();
 
-        var tween = NewTween();
+        var tween = NewTween(card);
         tween.TweenProperty(card, "rotation", target, duration);
         state.Tweens.Rotation = tween;
     }
@@ -372,7 +361,7 @@ public partial class HandCardsUI
         }
     }
 
-    private void OnCardLeftPressed(CardUI card)
+    private void OnCardPressed(CardUI card)
     {
         if (_dragging is not null) return;
 
@@ -382,14 +371,19 @@ public partial class HandCardsUI
         ApplyChildOrder();
 
         var state = _states[card];
-        KillTween(state.Tweens.X);
-        KillTween(state.Tweens.Y);
-        KillTween(state.Tweens.Rotation);
-        KillTween(state.Tweens.Scale);
-        state.Tweens = default;
+        state.Tweens.X?.Kill();
+        state.Tweens.Y?.Kill();
 
+        TweenRotation(card, 0, LiftDuration);
         TweenScale(card, HoverScale, ScaleDuration);
         _dragOffset = GetLocalMousePosition() - card.Position;
+    }
+
+    private void OnCardReleased(CardUI card)
+    {
+        if (_dragging != card) return;
+
+        EndDrag();
     }
 
     private bool PrepareReplacement(CardUI card)
@@ -407,35 +401,16 @@ public partial class HandCardsUI
         else TweenScale(card, 1f, ScaleDuration);
     }
 
-    public override void _Input(InputEvent @event)
+    private void DraggingProcess()
     {
         if (!IsVisibleInTree() || _dragging is not { } card) return;
-
-        switch (@event)
-        {
-            case InputEventMouseMotion:
-                card.Position = GetLocalMousePosition() - _dragOffset;
-                break;
-            case InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: false }:
-                EndDrag();
-                GetViewport().SetInputAsHandled();
-                break;
-        }
+        card.Position = GetLocalMousePosition() - _dragOffset;
     }
 
     private void EndDrag()
     {
         if (_dragging is not { } card) return;
         _dragging = null;
-
-        // 拖动中牌一直跟着鼠标，_pointerCard 很可能仍是它；但牌接下来要回位，
-        // 不能因此让它保持悬停。只有当指针真的落在另一张牌上时才交接悬停。
-        var hovered = _pointerCard == card ? null : _pointerCard;
-        _pointerCard = hovered;
-        _hovered     = null;
-
-        if (hovered is not null && _cards.Contains(hovered)) SetHovered(hovered);
-        else ApplyChildOrder();
 
         TweenX(card, _states[card].BasePosition.X, LayoutMoveDuration);
         TweenY(card, TargetY(card), LiftDuration);
@@ -447,9 +422,7 @@ public partial class HandCardsUI
     {
         if (_dragging is not { } card) return;
 
-        _dragging    = null;
-        _hovered     = null;
-        _pointerCard = null;
+        _dragging = null;
         ApplyChildOrder();
 
         TweenX(card, _states[card].BasePosition.X, LayoutMoveDuration);
@@ -460,10 +433,8 @@ public partial class HandCardsUI
 
     public override void _Notification(int what)
     {
-        if (what != (int)NotificationWMWindowFocusOut &&
-            what != (int)NotificationApplicationFocusOut) return;
-
-        CancelDrag();
+        if (what is (int)NotificationWMWindowFocusOut or (int)NotificationApplicationFocusOut)
+            CancelDrag();
     }
 
     #endregion

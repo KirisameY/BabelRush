@@ -12,7 +12,7 @@ using static BabelRushR.Game.Binding.DataBinding;
 
 namespace BabelRushR.Game.GUI.Cards;
 
-public partial class CardUI : Control
+public partial class CardUI : Button
 {
     #region Scene & Lifetime
 
@@ -71,17 +71,4 @@ public partial class CardUI : Control
     }
 
     #endregion
-
-    /// <summary>
-    ///     鼠标左键在本卡上按下。牌面上的子控件都不接收鼠标，所以整张牌 Surface 都可以触发。
-    /// </summary>
-    public event Action? LeftPressed;
-
-    public override void _GuiInput(InputEvent @event)
-    {
-        if (@event is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true }) return;
-
-        LeftPressed?.Invoke();
-        AcceptEvent();
-    }
 }

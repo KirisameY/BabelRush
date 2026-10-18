@@ -23,7 +23,9 @@ offset_right = 336.0
 offset_bottom = 72.0
 text = "Delta: 0.000"
 
-[node name="HandCardsUI" parent="HUD" instance=ExtResource("3_handcards")]
+[node name="HandCardsUI" parent="HUD" unique_id=65172584 instance=ExtResource("3_handcards")]
+ArcRadius = 960.0
+MaxAngleStepDegrees = 8.0
 
 [node name="Scene" type="Node2D" parent="." unique_id=1537654679]
 position = Vector2(640, 360)
