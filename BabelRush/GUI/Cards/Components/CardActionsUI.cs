@@ -18,6 +18,9 @@ public partial class CardActionsUI : Control, ISimpleListObserver<EntityActionVi
 
     private CardActionsUI() { }
 
+    public override void _EnterTree() => Rebind();
+    public override void _ExitTree() => Unbind();
+
     #endregion
 
 
@@ -52,10 +55,6 @@ public partial class CardActionsUI : Control, ISimpleListObserver<EntityActionVi
         _binds.ForEach(b => b.Dispose());
         _binds.Clear();
     }
-
-    public override void _EnterTree() => Rebind();
-
-    public override void _ExitTree() => Unbind();
 
     #endregion
 

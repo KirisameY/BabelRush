@@ -12,6 +12,19 @@ namespace BabelRushR.Game.GUI;
 
 public partial class GamePlayUI : Node
 {
+    #region Scene & Lifetime
+
+    public override void _EnterTree() => Rebind();
+
+    public override void _ExitTree() => Unbind();
+
+    public override void _Process(double delta) => ViewModel?.Update(delta);
+
+    #endregion
+
+
+    #region Nodes & Properties
+
     private SceneUI SceneUI => field ??= GetNode<SceneUI>("Scene");
 
     private HandCardsUI HandCardsUI => field ??= GetNode<HandCardsUI>("HUD/HandCardsUI");
@@ -19,6 +32,11 @@ public partial class GamePlayUI : Node
     private Label TimeLabel => field ??= GetNode<Label>("HUD/TimeLabel");
 
     private Label DeltaTimeLabel => field ??= GetNode<Label>("HUD/DeltaTimeLabel");
+
+    #endregion
+
+
+    #region Binding
 
     private readonly List<IBindHandle> _binds = [];
 
@@ -29,17 +47,9 @@ public partial class GamePlayUI : Node
         {
             if (field == value) return;
             field = value;
-            if (IsInsideTree()) Rebind(); else Unbind();
+            if (IsInsideTree()) Rebind();
+            else Unbind();
         }
-    }
-
-    public override void _EnterTree() => Rebind();
-
-    public override void _ExitTree() => Unbind();
-
-    public override void _Process(double delta)
-    {
-        ViewModel?.Update(delta);
     }
 
     private void Rebind()
@@ -70,4 +80,6 @@ public partial class GamePlayUI : Node
         _binds.ForEach(b => b.Dispose());
         _binds.Clear();
     }
+
+    #endregion
 }

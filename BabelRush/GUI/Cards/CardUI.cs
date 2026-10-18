@@ -20,6 +20,9 @@ public partial class CardUI : Control
     private static PackedScene Scene => field ??= GD.Load<PackedScene>("res://GUI/Cards/CardUI.tscn");
     public static CardUI New() => Scene.Instantiate<CardUI>();
 
+    public override void _EnterTree() => Rebind();
+    public override void _ExitTree() => Unbind();
+
     #endregion
 
 
@@ -66,10 +69,6 @@ public partial class CardUI : Control
         _binds.ForEach(b => b.Dispose());
         _binds.Clear();
     }
-
-    public override void _EnterTree() => Rebind();
-
-    public override void _ExitTree() => Unbind();
 
     #endregion
 

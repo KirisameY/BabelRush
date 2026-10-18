@@ -18,6 +18,19 @@ namespace BabelRushR.Game.GUI;
 /// </summary>
 public partial class SceneUI : Node2D, ISimpleCollectionObserver<EntityViewModel>
 {
+    #region Scene & Lifetime
+
+    private SceneUI() { }
+
+    public override void _EnterTree() => Rebind();
+
+    public override void _ExitTree() => Unbind();
+
+    #endregion
+
+
+    #region Binding
+
     private readonly Dictionary<EntityViewModel, EntityUI> _views = [];
     private readonly List<IBindHandle> _binds = [];
 
@@ -32,10 +45,6 @@ public partial class SceneUI : Node2D, ISimpleCollectionObserver<EntityViewModel
             else Unbind();
         }
     }
-
-    public override void _EnterTree() => Rebind();
-
-    public override void _ExitTree() => Unbind();
 
 
     private void Rebind()
@@ -57,6 +66,9 @@ public partial class SceneUI : Node2D, ISimpleCollectionObserver<EntityViewModel
         _binds.ForEach(b => b.Dispose());
         _binds.Clear();
     }
+
+    #endregion
+
 
     #region Collection Observe
 

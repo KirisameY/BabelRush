@@ -13,9 +13,12 @@ public partial class CardActionUI : Control
     #region Scene & Lifetime
 
     private CardActionUI() { }
-
     private static PackedScene Scene => field ??= GD.Load<PackedScene>("res://GUI/Cards/Components/CardActionUI.tscn");
     public static CardActionUI New() => Scene.Instantiate<CardActionUI>();
+
+    public override void _EnterTree() => Rebind();
+
+    public override void _ExitTree() => Unbind();
 
     #endregion
 
@@ -51,10 +54,6 @@ public partial class CardActionUI : Control
         _binds.ForEach(b => b.Dispose());
         _binds.Clear();
     }
-
-    public override void _EnterTree() => Rebind();
-
-    public override void _ExitTree() => Unbind();
 
     #endregion
 }

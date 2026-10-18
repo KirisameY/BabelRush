@@ -18,6 +18,9 @@ public partial class EntityUI : Node2D
     private static PackedScene Scene => field ??= GD.Load<PackedScene>("res://GUI/Entities/EntityUI.tscn");
     public static EntityUI New() => Scene.Instantiate<EntityUI>();
 
+    public override void _EnterTree() => Rebind();
+    public override void _ExitTree() => Unbind();
+
     #endregion
 
 
@@ -74,10 +77,6 @@ public partial class EntityUI : Node2D
         _binds.ForEach(b => b.Dispose());
         _binds.Clear();
     }
-
-    public override void _EnterTree() => Rebind();
-
-    public override void _ExitTree() => Unbind();
 
     #endregion
 }
