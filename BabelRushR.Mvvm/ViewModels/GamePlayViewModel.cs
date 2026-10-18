@@ -46,6 +46,15 @@ public sealed class GamePlayViewModel(IGamePlay gamePlay) : ViewModelBase<GamePl
     }
 
     /// <summary>
+    ///     玩家状态。首次访问时创建，生命周期跟随本 VM。
+    /// </summary>
+    /// <remarks>
+    ///     <see cref="IGamePlay.PlayerState"/> 是 <c>init</c> 的，整局内不会被替换，因此不需要反应表。
+    /// </remarks>
+    public PlayerStateViewModel PlayerState =>
+        field ??= Track(new PlayerStateViewModel(_gamePlay.PlayerState));
+
+    /// <summary>
     ///     开局以来的累计时间（秒）。
     /// </summary>
     public double Time => _gamePlay.Time;

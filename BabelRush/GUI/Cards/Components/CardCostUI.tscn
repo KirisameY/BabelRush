@@ -10,11 +10,13 @@ outline_color = Color(0, 0, 0, 1)
 [node name="CardCostUI" type="Control" unique_id=458085328]
 layout_mode = 3
 anchors_preset = 0
+mouse_filter = 2
 script = ExtResource("1_100tu")
 
 [node name="Label" type="Label" parent="." unique_id=1243353300]
 layout_mode = 1
 anchors_preset = 8
+mouse_filter = 2
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5

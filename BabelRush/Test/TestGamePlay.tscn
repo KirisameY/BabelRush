@@ -7,3 +7,26 @@
 script = ExtResource("1_testgameplay")
 
 [node name="GamePlayUI" parent="." unique_id=1547320576 instance=ExtResource("2_gameplayui")]
+
+[node name="TestControls" type="CanvasLayer" parent="."]
+layer = 100
+
+[node name="Buttons" type="HBoxContainer" parent="TestControls"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -320.0
+offset_top = 16.0
+offset_right = -16.0
+offset_bottom = 56.0
+grow_horizontal = 0
+theme_override_constants/separation = 8
+
+[node name="AddCardButton" type="Button" parent="TestControls/Buttons"]
+layout_mode = 2
+text = "加一张随机牌"
+
+[node name="ClearHandButton" type="Button" parent="TestControls/Buttons"]
+layout_mode = 2
+text = "清空手牌"

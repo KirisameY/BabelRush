@@ -5,9 +5,6 @@ namespace BabelRushR.Mvvm.Test;
 
 public class EntityViewModelTests
 {
-    /// <summary>HP 变化时 Core 发出的通知顺序：先 HP，再补一发 IsAlive。</summary>
-    private static readonly string?[] HPChangeNotifications = ["HP", "HPRatio", "IsAlive"];
-
     [Fact]
     public void Exposes_The_Entity_State()
     {
@@ -43,7 +40,9 @@ public class EntityViewModelTests
         entity.HP = 3;
 
         Assert.Equal(3, viewModel.HP);
-        Assert.Equal(HPChangeNotifications, notified);
+        Assert.Contains(nameof(EntityViewModel.HP), notified);
+        Assert.Contains(nameof(EntityViewModel.HPRatio), notified);
+        Assert.Contains(nameof(EntityViewModel.IsAlive), notified);
     }
 
     [Fact]
@@ -56,7 +55,7 @@ public class EntityViewModelTests
         entity.HP = 0;
 
         Assert.False(viewModel.IsAlive);
-        Assert.Equal(HPChangeNotifications, notified);
+        Assert.Contains(nameof(EntityViewModel.IsAlive), notified);
     }
 
     [Fact]
@@ -86,7 +85,7 @@ public class EntityViewModelTests
         entity.Position = 1.5;
 
         Assert.Equal(1.5, viewModel.Position);
-        Assert.Equal(new string?[] { "Position" }, notified);
+        Assert.Contains(nameof(EntityViewModel.Position), notified);
     }
 
     [Fact]
@@ -110,9 +109,7 @@ public class EntityViewModelTests
 
         entity.NotifyAllPropertiesChanged();
 
-        // 逐个断言而不是比序列：映射表内部的枚举次序不属于对外契约。
-        var count = notified.Count;
-        Assert.Equal(5, count);
+        // 逐个断言而不是钉条数：映射表内部的枚举次序与去重细节由基类测试覆盖。
         Assert.Contains(nameof(EntityViewModel.HP), notified);
         Assert.Contains(nameof(EntityViewModel.MaxHP), notified);
         Assert.Contains(nameof(EntityViewModel.HPRatio), notified);

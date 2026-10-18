@@ -6,9 +6,11 @@
 size = Vector2(4, 4)
 
 [node name="CardActionUI" type="HBoxContainer" unique_id=1336379646]
+mouse_filter = 2
 script = ExtResource("1_rfbdw")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=2075293091]
 custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
+mouse_filter = 2
 texture = SubResource("PlaceholderTexture2D_1vivr")

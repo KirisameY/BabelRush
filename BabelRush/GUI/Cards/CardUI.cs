@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using BabelRushR.Game.GUI.Cards.Components;
@@ -71,4 +72,17 @@ public partial class CardUI : Control
     public override void _ExitTree() => Unbind();
 
     #endregion
+
+    /// <summary>
+    ///     鼠标左键在本卡上按下。牌面上的子控件都不接收鼠标，所以整张牌 Surface 都可以触发。
+    /// </summary>
+    public event Action? LeftPressed;
+
+    public override void _GuiInput(InputEvent @event)
+    {
+        if (@event is not InputEventMouseButton { ButtonIndex: MouseButton.Left, Pressed: true }) return;
+
+        LeftPressed?.Invoke();
+        AcceptEvent();
+    }
 }

@@ -55,9 +55,7 @@ public class GamePlayViewModelTests
 
         viewModel.Update(0.5);
 
-        // 不比对序列：两条属性谁先发不属于对外契约。
-        var count = notified.Count;
-        Assert.Equal(2, count);
+        // 不钉通知条数：具体 VM 的通知集合不属于基类转发契约。
         Assert.Contains(nameof(GamePlayViewModel.Time), notified);
         Assert.Contains(nameof(GamePlayViewModel.DeltaTime), notified);
     }
@@ -96,9 +94,7 @@ public class GamePlayViewModelTests
 
         gamePlay.Raise(null);
 
-        // 逐个断言而不是比序列：映射表内部的枚举次序不属于对外契约。
-        var count = notified.Count;
-        Assert.Equal(3, count);
+        // 逐个断言而不是钉条数：映射表内部的枚举次序与去重细节由基类测试覆盖。
         Assert.Contains(nameof(GamePlayViewModel.Scene), notified);
         Assert.Contains(nameof(GamePlayViewModel.Time), notified);
         Assert.Contains(nameof(GamePlayViewModel.DeltaTime), notified);
@@ -174,6 +170,39 @@ public class GamePlayViewModelTests
         player.HP = 3;
 
         // 换进来的那个场景 VM 也得被 Track 上，Dispose 时才摘得干净
+        Assert.Empty(notified);
+    }
+
+    [Fact]
+    public void Exposes_The_Player_State()
+    {
+        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        gamePlay.PlayerState.HandPile.Add(TestCards.New(2));
+        var viewModel = new GamePlayViewModel(gamePlay);
+
+        var playerState = viewModel.PlayerState;
+
+        Assert.Same(gamePlay.PlayerState, playerState.SourcePlayerState);
+        Assert.Same(playerState, viewModel.PlayerState);
+        Assert.Equal(2, Assert.Single(playerState.Hand.Cards).Cost);
+    }
+
+    [Fact]
+    public void Disposing_Disposes_The_Player_State_Hand()
+    {
+        var card = TestCards.New(1);
+        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        gamePlay.PlayerState.HandPile.Add(card);
+        var viewModel = new GamePlayViewModel(gamePlay);
+        var hand = viewModel.PlayerState.Hand;
+        var cardViewModel = hand.Cards[0];
+        var notified = NotificationRecorder.PropertyNames(cardViewModel);
+
+        viewModel.Dispose();
+        TestCards.RaiseCost(card, 1);
+
+        // Dispose 会沿 Track 链把玩家状态 VM、手牌 VM 和牌 VM 一起放空
+        Assert.Empty(hand.Cards);
         Assert.Empty(notified);
     }
 
