@@ -49,7 +49,7 @@ public class PlayerStateTests
     }
 
     [Fact]
-    public void Regenerated_Stays_Locked_At_One_While_AP_Is_Full()
+    public void Regenerated_Stays_At_One_While_AP_Is_Full()
     {
         var game = NewGame(maxAP: 3, apRegeneration: 1.0);
         game.Update(10.0);
@@ -61,7 +61,7 @@ public class PlayerStateTests
     }
 
     [Fact]
-    public void Spending_One_AP_At_Full_Is_Refunded_On_The_Next_Frame()
+    public void Spending_AP_At_Full_Will_Regenerate_One_On_The_Next_Frame()
     {
         var game = NewGame(maxAP: 3, apRegeneration: 1.0);
         game.Update(10.0);
@@ -73,7 +73,18 @@ public class PlayerStateTests
         game.Update(1.0 / 60);
 
         Assert.Equal(3, game.PlayerState.AP);
-        Assert.Equal(1.0, game.PlayerState.APRegenerated, 6);
+        Assert.Equal(1.0 / 60, game.PlayerState.APRegenerated, 6);
+
+        game.Update(2.0);
+        Assert.Equal(1.0, game.PlayerState.APRegenerated);
+
+        game.PlayerState.AP -= 3;
+        Assert.Equal(0, game.PlayerState.AP);
+
+        game.Update(1.0 / 60);
+
+        Assert.Equal(1, game.PlayerState.AP);
+        Assert.Equal(1.0 / 60, game.PlayerState.APRegenerated, 6);
     }
 
     [Fact]

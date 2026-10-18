@@ -57,24 +57,20 @@ public class CommonPlayerState(
 
     public void Update(double delta)
     {
-        // 满费锁1
-        if (AP >= MaxAP.Value)
-        {
-            APRegenerated = 1.0;
-            return;
-        }
+        if (AP >= MaxAP.Value && APRegenerated >= 1.0) return;
 
         APRegenerated += APRegeneration.Value * delta;
 
         while (APRegenerated >= 1.0)
         {
+            if (AP >= MaxAP.Value)
+            {
+                APRegenerated = 1.0;
+                break;
+            }
+
             APRegenerated -= 1.0;
             AP++; // 将经由属性设置器发布 APChangedEvent
-
-            if (AP < MaxAP.Value) continue;
-
-            APRegenerated = 1.0;
-            break;
         }
     }
 
