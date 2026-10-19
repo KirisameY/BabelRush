@@ -51,8 +51,8 @@ public sealed class GamePlayViewModel(IGamePlay gamePlay) : ViewModelBase<GamePl
     /// <remarks>
     ///     <see cref="IGamePlay.PlayerState"/> 是 <c>init</c> 的，整局内不会被替换，因此不需要反应表。
     /// </remarks>
-    public PlayerStateViewModel PlayerState =>
-        field ??= Track(new PlayerStateViewModel(_gamePlay.PlayerState));
+    public CardDeckViewModel CardDeck =>
+        field ??= Track(new CardDeckViewModel(_gamePlay.PlayerState));
 
     /// <summary>
     ///     开局以来的累计时间（秒）。

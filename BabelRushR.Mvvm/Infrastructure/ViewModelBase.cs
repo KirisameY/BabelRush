@@ -44,6 +44,8 @@ public abstract class ViewModelBase : ObservableObject, IDisposable
         return subscription;
     }
 
+    protected void Track(IDisposable subscription) => Track<IDisposable>(subscription);
+
     /// <summary>
     ///     移除一个被 Track 的对象。
     /// </summary>
@@ -70,11 +72,11 @@ public abstract class ViewModelBase : ObservableObject, IDisposable
     protected virtual void DisposeCore() { }
 }
 
-public abstract class ViewModelBase<TSelf> : ViewModelBase, IDisposable
+public abstract class ViewModelBase<TSelf> : ViewModelBase
     where TSelf : ViewModelBase<TSelf>
 {
     protected ViewModelBase(INotifyPropertyChanged model, PropertyChangeReactor<TSelf> reactions)
     {
-        Track(model.Subscribe((sender, args) => reactions.Forward(args.PropertyName, (TSelf)this, OnPropertyChanged)));
+        Track(model.Subscribe((_, args) => reactions.Forward(args.PropertyName, (TSelf)this, OnPropertyChanged)));
     }
 }

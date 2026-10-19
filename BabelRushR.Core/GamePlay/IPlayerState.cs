@@ -1,11 +1,9 @@
 using System.ComponentModel;
 
-using BabelRushR.Core.Card;
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.Numeric;
 
-using KirisameY.NotifiableCollections.Collections;
 using KirisameY.Numeric;
 
 namespace BabelRushR.Core.GamePlay;
@@ -14,9 +12,7 @@ public interface IPlayerState : INotifyPropertyChanged, IUpdatable
 {
     IEntity PCEntity { get; }
 
-    INotifiableList<ICard> HandPile { get; }
-    INotifiableList<ICard> DrawPile { get; }
-    INotifiableList<ICard> DiscardPile { get; }
+    ICardDeck CardDeck { get; }
 
     /// <summary>费用上限。可挂 Modifier 修改，数值变化时应重新钳制 <see cref="AP"/>。</summary>
     IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxAP { get; }

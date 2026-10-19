@@ -15,6 +15,9 @@ public class CommonPlayerState(
     double apRegeneration = 1.0)
     : ObservableObject, IPlayerState
 {
+    internal void Initialize(IGamePlay gamePlay) => EventBus = gamePlay.EventBus;
+    void IPlayerState.Initialize(IGamePlay gamePlay) => Initialize(gamePlay);
+
     private IEventBus<GamePlayEvent> EventBus
     {
         get => field ?? throw new Exception($"{nameof(CommonPlayerState)} uninitialized");
@@ -23,9 +26,7 @@ public class CommonPlayerState(
 
     public IEntity PCEntity => pcEntity;
 
-    public INotifiableList<ICard> HandPile { get; } = new NotifiableList<ICard>();
-    public INotifiableList<ICard> DrawPile { get; } = new NotifiableList<ICard>();
-    public INotifiableList<ICard> DiscardPile { get; } = new NotifiableList<ICard>();
+    public ICardDeck CardDeck => field ??= new CommonCardDeck();
 
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxAP =>
         field ??= INumeric.CreateReadonly<int, CommonNumericModifyOrder>(maxAP)
@@ -73,7 +74,4 @@ public class CommonPlayerState(
             AP++; // 将经由属性设置器发布 APChangedEvent
         }
     }
-
-    internal void Initialize(IGamePlay gamePlay) => EventBus = gamePlay.EventBus;
-    void IPlayerState.Initialize(IGamePlay gamePlay) => Initialize(gamePlay);
 }

@@ -59,10 +59,10 @@ public partial class TestGamePlay : Node
             [.. Enumerable.Range(0, actionCount).Select(i => (TestActionType, i + 1))]
         );
 
-        gamePlay.PlayerState.HandPile.Add(cardType.CreateCard());
+        gamePlay.PlayerState.CardDeck.HandPile.Add(cardType.CreateCard());
     }
 
-    private void ClearHand() => _gamePlay?.PlayerState.HandPile.Clear();
+    private void ClearHand() => _gamePlay?.PlayerState.CardDeck.HandPile.Clear();
 
     /// <summary>Action 的占位类型：目标选择与打牌都还没做，这里只关心数量。</summary>
     private static readonly IEntityActionType TestActionType =

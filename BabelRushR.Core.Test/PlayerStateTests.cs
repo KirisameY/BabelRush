@@ -18,9 +18,9 @@ public class PlayerStateTests
         Assert.Same(pc, game.PlayerState.PCEntity);
         Assert.Equal(4, game.PlayerState.MaxAP.Value);
         Assert.Equal(2.0, game.PlayerState.APRegeneration.Value, 6);
-        Assert.Empty(game.PlayerState.HandPile);
-        Assert.Empty(game.PlayerState.DrawPile);
-        Assert.Empty(game.PlayerState.DiscardPile);
+        Assert.Empty(game.PlayerState.CardDeck.HandPile);
+        Assert.Empty(game.PlayerState.CardDeck.DrawPile);
+        Assert.Empty(game.PlayerState.CardDeck.DiscardPile);
     }
 
     [Fact]
@@ -168,7 +168,7 @@ public class PlayerStateTests
         var changed = new List<string?>();
         game.PlayerState.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
 
-        game.PlayerState.MaxAP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 2));
+        game.PlayerState.MaxAP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref v) => v += 2));
 
         Assert.Contains(nameof(IPlayerState.MaxAP), changed);
         Assert.Equal(5, game.PlayerState.MaxAP.Value);
@@ -181,7 +181,7 @@ public class PlayerStateTests
         game.Update(10.0);
         Assert.Equal(3, game.PlayerState.AP);
 
-        game.PlayerState.MaxAP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v -= 1));
+        game.PlayerState.MaxAP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref v) => v -= 1));
 
         Assert.Equal(2, game.PlayerState.MaxAP.Value);
         Assert.Equal(2, game.PlayerState.AP);
@@ -196,7 +196,7 @@ public class PlayerStateTests
         var events = new List<APChangedEvent>();
         game.EventBus.Subscribe<APChangedEvent>(events.Add);
 
-        game.PlayerState.MaxAP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v -= 1));
+        game.PlayerState.MaxAP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref v) => v -= 1));
 
         var published = Assert.Single(events);
         Assert.Equal((3, 2), (published.OldAP, published.NewAP));
@@ -209,7 +209,7 @@ public class PlayerStateTests
         var changed = new List<string?>();
         game.PlayerState.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
 
-        game.PlayerState.APRegeneration.AddModifier(Modifier.Of(CommonNumericModifyOrder.Multiple, static (ref double v) => v *= 3));
+        game.PlayerState.APRegeneration.AddModifier(Modifier.Of(CommonNumericModifyOrder.Multiple, static (ref v) => v *= 3));
 
         Assert.Contains(nameof(IPlayerState.APRegeneration), changed);
         Assert.Equal(3.0, game.PlayerState.APRegeneration.Value, 6);
@@ -219,7 +219,7 @@ public class PlayerStateTests
     public void APRegeneration_Modifier_Changes_Actual_Regen_Rate()
     {
         var game = NewGame(maxAP: 3, apRegeneration: 1.0);
-        game.PlayerState.APRegeneration.AddModifier(Modifier.Of(CommonNumericModifyOrder.Multiple, static (ref double v) => v *= 3));
+        game.PlayerState.APRegeneration.AddModifier(Modifier.Of(CommonNumericModifyOrder.Multiple, static (ref v) => v *= 3));
 
         game.Update(0.5);
 

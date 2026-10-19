@@ -15,7 +15,7 @@ using KirisameY.NotifiableCollections.Collections;
 namespace BabelRushR.Game.GUI.Hand;
 
 /// <summary>
-///     手牌区的视图节点：维护 <see cref="HandViewModel.Cards"/> 与 <see cref="CardUI"/> 节点的集合映射。
+///     手牌区的视图节点：维护 <see cref="CardPileViewModel.Cards"/> 与 <see cref="CardUI"/> 节点的集合映射。
 /// </summary>
 /// <remarks>
 ///     布局、Tween 与鼠标交互在 <c>HandCardsUI.Presentation.cs</c> 分部里；本文件只保留场景生命周期、

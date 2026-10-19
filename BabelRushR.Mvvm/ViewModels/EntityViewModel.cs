@@ -33,6 +33,8 @@ public sealed class EntityViewModel(IEntity entity) : ViewModelBase<EntityViewMo
         }.ToFrozenDictionary()
     );
 
+    public IEntity SourceEntity => entity;
+
     public int HP => entity.HP;
 
     public int MaxHP => entity.MaxHP.Value;
