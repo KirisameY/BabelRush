@@ -1,20 +1,16 @@
-using BabelRushR.Core.Entity;
 using BabelRushR.Core.Scenery;
 using BabelRushR.Mvvm.Infrastructure;
 
 using KirisameY.NotifiableCollections.Collections;
-using KirisameY.NotifiableCollections.EventArgs;
-using KirisameY.Relinq.Extensions;
 
 namespace BabelRushR.Mvvm.ViewModels;
 
 /// <summary>
-///     场景的视图代理：维护 <see cref="IEntity"/> 到 <see cref="EntityViewModel"/> 的映射，
-///     并把实体的增删以可通知集合暴露给视图。
+///     场景的视图代理：把 <see cref="IScene.Entities"/> 包装成 <see cref="EntityViewModel"/> 的可通知集合。
 /// </summary>
 /// <remarks>
-///     本 VM 只负责在映射表里增删；从映射表到视图的通知链路由库自身完成
-///     （映射表的值视图本身即是 <see cref="IReadOnlyNotifiableCollection{T}"/>），此处不消费集合事件。
+///     集合翻译交给 <see cref="CollectionWrapper.Collection"/>；本 VM 只负责选择包装类型并暴露源场景。
+///     <see cref="Entities"/> 底层是字典值视图，<b>顺序无关</b>，视图不应依赖遍历顺序。
 /// </remarks>
 public sealed class SceneViewModel(IScene scene) : ViewModelBase
 {

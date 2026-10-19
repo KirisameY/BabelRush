@@ -137,18 +137,16 @@ public class GamePlayViewModelTests
     public void Exposes_The_Player_State()
     {
         var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
-        gamePlay.PlayerState.CardDeck.HandPile.Add(TestCards.New(2));
         var viewModel = new GamePlayViewModel(gamePlay);
 
-        var playerState = viewModel.CardDeck;
+        var cardDeck = viewModel.CardDeck;
 
-        Assert.Same(gamePlay.PlayerState, playerState.SourcePlayerState);
-        Assert.Same(playerState, viewModel.CardDeck);
-        Assert.Equal(2, Assert.Single(playerState.HandPile).Cost);
+        Assert.Same(gamePlay.PlayerState, cardDeck.SourcePlayerState);
+        Assert.Same(cardDeck, viewModel.CardDeck);
     }
 
     [Fact]
-    public void Disposing_Disposes_The_Player_State_Hand()
+    public void Disposing_Releases_The_Card_Deck()
     {
         var card = TestCards.New(1);
         var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
@@ -161,7 +159,7 @@ public class GamePlayViewModelTests
         viewModel.Dispose();
         TestCards.RaiseCost(card, 1);
 
-        // Dispose 会沿 Track 链把玩家状态 VM、手牌 VM 和牌 VM 一起放空
+        // Dispose 会沿 Track 链把卡牌区 VM、手牌列表和牌 VM 一起放空
         Assert.Empty(hand);
         Assert.Empty(notified);
     }

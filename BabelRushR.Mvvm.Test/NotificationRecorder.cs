@@ -1,8 +1,5 @@
 using System.ComponentModel;
 
-using KirisameY.NotifiableCollections.Collections;
-using KirisameY.NotifiableCollections.EventArgs;
-
 namespace BabelRushR.Mvvm.Test;
 
 /// <summary>订阅通知并把它们记录下来，供断言使用。</summary>
@@ -14,13 +11,5 @@ internal static class NotificationRecorder
         var names = new List<string?>();
         source.PropertyChanged += (_, e) => names.Add(e.PropertyName);
         return names;
-    }
-
-    /// <summary>记录集合变更通知。</summary>
-    public static List<ICollectionUpdateEventArgs<T>> CollectionChanges<T>(ICollectionUpdateNotifier<T> source)
-    {
-        var changes = new List<ICollectionUpdateEventArgs<T>>();
-        source.CollectionUpdated += (_, e) => changes.Add(e);
-        return changes;
     }
 }
