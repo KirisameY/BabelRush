@@ -18,7 +18,8 @@ public static class ConstantCardTypes
     // ReSharper disable UnusedMember.Global
 
     public static readonly ICardType Strike = New("strike", 1, [
-        (new ValuedDelegateEntityActionType((ctx, value) => ctx.Targets.ForEach(t => t.HP -= value)), 6)
+        // todo: 目标选择还没接（EntityActionContext 目前只带 Actor），先只保留数值
+        (new ValuedDelegateEntityActionType((_, _) => { }), 6)
     ]);
 
     public static readonly ICardType Defense = New("defense", 1, []);

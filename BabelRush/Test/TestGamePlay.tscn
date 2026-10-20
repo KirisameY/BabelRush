@@ -1,18 +1,17 @@
 [gd_scene format=3 uid="uid://chnirw0h5jvdv"]
 
 [ext_resource type="Script" uid="uid://b1u7lc6lqfm43" path="res://Test/TestGamePlay.cs" id="1_testgameplay"]
-[ext_resource type="PackedScene" path="res://GUI/GamePlayUI.tscn" id="2_gameplayui"]
+[ext_resource type="PackedScene" uid="uid://dr8f6j4eowedt" path="res://GUI/GamePlayUI.tscn" id="2_gameplayui"]
 
 [node name="TestGamePlay" type="Node" unique_id=2042557803]
 script = ExtResource("1_testgameplay")
 
 [node name="GamePlayUI" parent="." unique_id=1547320576 instance=ExtResource("2_gameplayui")]
 
-[node name="TestControls" type="CanvasLayer" parent="."]
+[node name="TestControls" type="CanvasLayer" parent="." unique_id=719313891]
 layer = 100
 
-[node name="Buttons" type="HBoxContainer" parent="TestControls"]
-layout_mode = 1
+[node name="Buttons" type="HBoxContainer" parent="TestControls" unique_id=1929001472]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -23,10 +22,10 @@ offset_bottom = 56.0
 grow_horizontal = 0
 theme_override_constants/separation = 8
 
-[node name="AddCardButton" type="Button" parent="TestControls/Buttons"]
+[node name="AddCardButton" type="Button" parent="TestControls/Buttons" unique_id=2005460580]
 layout_mode = 2
 text = "加一张随机牌"
 
-[node name="ClearHandButton" type="Button" parent="TestControls/Buttons"]
+[node name="ClearHandButton" type="Button" parent="TestControls/Buttons" unique_id=964730839]
 layout_mode = 2
 text = "清空手牌"

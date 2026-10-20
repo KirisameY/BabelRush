@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bky7uduf0wrvo" path="res://GUI/GamePlayUI.cs" id="1_gameplayui"]
 [ext_resource type="Script" uid="uid://bnvi1n1vg65yu" path="res://GUI/SceneUI.cs" id="2_sceneui"]
-[ext_resource type="PackedScene" path="res://GUI/Hand/HandCardsUI.tscn" id="3_handcards"]
+[ext_resource type="PackedScene" uid="uid://c5wlawy7ldtue" path="res://GUI/Hand/HandCardsUI.tscn" id="3_handcards"]
 
 [node name="GamePlayUI" type="Node" unique_id=379892510]
 script = ExtResource("1_gameplayui")
@@ -24,8 +24,6 @@ offset_bottom = 72.0
 text = "Delta: 0.000"
 
 [node name="HandCardsUI" parent="HUD" unique_id=65172584 instance=ExtResource("3_handcards")]
-ArcRadius = 960.0
-MaxAngleStepDegrees = 8.0
 
 [node name="Scene" type="Node2D" parent="." unique_id=1537654679]
 position = Vector2(640, 360)

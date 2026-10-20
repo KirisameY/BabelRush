@@ -1,8 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://c5wlawy7ldtue"]
 
-[ext_resource type="Script" path="res://GUI/Hand/HandCardsUI.cs" id="1_handcards"]
+[ext_resource type="Script" uid="uid://b50mn47acwewi" path="res://GUI/Hand/HandCardsUI.cs" id="1_handcards"]
 
-[node name="HandCardsUI" type="Control"]
+[node name="HandCardsUI" type="Control" unique_id=1068854036]
 layout_mode = 3
 anchors_preset = 12
 anchor_top = 1.0
@@ -13,3 +13,12 @@ grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 2
 script = ExtResource("1_handcards")
+ArcRadius = 2160.0
+MaxAngleStepDegrees = 3.0
+MaxTotalArcDegrees = 15.0
+BottomPadding = -32.0
+HoverLift = 32.0
+
+[node name="CardCenter" type="Control" parent="." unique_id=462675717]
+anchors_preset = 0
+mouse_filter = 2
