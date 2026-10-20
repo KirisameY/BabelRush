@@ -1,5 +1,6 @@
 ﻿using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
+using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Core.Scenery;
 
 using KirisameY.EventBus;
@@ -49,6 +50,8 @@ public class CommonGamePlay : ObservableObject, IGamePlay
             value.Initialize(this);
         }
     }
+
+    public ICardDirector CardDirector => field ??= new CommonCardDirector(this);
 
     public double Time
     {

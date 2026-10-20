@@ -2,7 +2,7 @@
 
 namespace BabelRushR.Core.EntityAction;
 
-public record EntityActionContext(IEntity? Actor, IReadOnlyCollection<IEntity> Targets)
+public record EntityActionContext(IEntity? Actor)
 {
-    public static EntityActionContext Empty => field ??= new(null, []);
+    public static EntityActionContext Empty => field ??= new((IEntity?)null);
 }
