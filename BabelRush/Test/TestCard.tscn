@@ -1,9 +1,9 @@
-﻿[gd_scene format=3]
+[gd_scene format=3 uid="uid://o28mbghyqo7c"]
 
-[ext_resource type="Script" path="res://Test/TestCard.cs" id="1_testcard"]
-[ext_resource type="PackedScene" path="res://GUI/Cards/CardUI.tscn" id="2_cardui"]
+[ext_resource type="Script" uid="uid://sqjnn5xo314s" path="res://Test/TestCard.cs" id="1_testcard"]
+[ext_resource type="PackedScene" uid="uid://ddw1c2cuwq1et" path="res://GUI/Cards/CardUI.tscn" id="2_cardui"]
 
-[node name="TestCard" type="Control"]
+[node name="TestCard" type="Control" unique_id=2109155942]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,7 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_testcard")
 
-[node name="CardUI" parent="." instance=ExtResource("2_cardui")]
+[node name="CardUI" parent="." unique_id=1478786703 instance=ExtResource("2_cardui")]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -26,7 +26,7 @@ offset_bottom = 90.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Controls" type="VBoxContainer" parent="."]
+[node name="Controls" type="VBoxContainer" parent="." unique_id=1147298417]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -38,64 +38,59 @@ offset_bottom = 40.0
 grow_horizontal = 0
 theme_override_constants/separation = 16
 
-[node name="CostModifierRow" type="HBoxContainer" parent="Controls"]
+[node name="CostModifierRow" type="HBoxContainer" parent="Controls" unique_id=1329642158]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Controls/CostModifierRow"]
+[node name="Label" type="Label" parent="Controls/CostModifierRow" unique_id=422552542]
 custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 text = "Cost 修正"
 
-[node name="CostModifierSlider" type="HSlider" parent="Controls/CostModifierRow"]
+[node name="CostModifierSlider" type="HSlider" parent="Controls/CostModifierRow" unique_id=2102832623]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 min_value = -10.0
 max_value = 10.0
-step = 1.0
 
-[node name="CostModifierValue" type="Label" parent="Controls/CostModifierRow"]
+[node name="CostModifierValue" type="Label" parent="Controls/CostModifierRow" unique_id=1699957738]
 custom_minimum_size = Vector2(32, 0)
 layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
-[node name="TypeCostRow" type="HBoxContainer" parent="Controls"]
+[node name="TypeCostRow" type="HBoxContainer" parent="Controls" unique_id=1721168867]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Controls/TypeCostRow"]
+[node name="Label" type="Label" parent="Controls/TypeCostRow" unique_id=866694680]
 custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 text = "类型 Cost"
 
-[node name="TypeCostBox" type="SpinBox" parent="Controls/TypeCostRow"]
+[node name="TypeCostBox" type="SpinBox" parent="Controls/TypeCostRow" unique_id=411479536]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = 0.0
 max_value = 99.0
-step = 1.0
 value = 3.0
 
-[node name="ActionCountRow" type="HBoxContainer" parent="Controls"]
+[node name="ActionCountRow" type="HBoxContainer" parent="Controls" unique_id=1879661596]
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Label" type="Label" parent="Controls/ActionCountRow"]
+[node name="Label" type="Label" parent="Controls/ActionCountRow" unique_id=1011853900]
 custom_minimum_size = Vector2(96, 0)
 layout_mode = 2
 text = "Action 数量"
 
-[node name="ActionCountBox" type="SpinBox" parent="Controls/ActionCountRow"]
+[node name="ActionCountBox" type="SpinBox" parent="Controls/ActionCountRow" unique_id=1168196948]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = 0.0
 max_value = 8.0
-step = 1.0
 value = 2.0
 
-[node name="RebuildButton" type="Button" parent="Controls"]
+[node name="RebuildButton" type="Button" parent="Controls" unique_id=1329202194]
 layout_mode = 2
 text = "重建 CardType 与 Card"

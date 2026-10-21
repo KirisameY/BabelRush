@@ -1,12 +1,13 @@
-using System;
 using System.Collections.Generic;
 
+using BabelRushR.Game.Assets;
 using BabelRushR.Game.GUI.Cards.Components;
 using BabelRushR.Mvvm.ViewModels;
 
 using Godot;
 
 using KirisameY.BindingBridge;
+using KirisameY.Registration.Data;
 
 using static BabelRushR.Game.Binding.DataBinding;
 
@@ -28,10 +29,25 @@ public partial class CardUI : Button
 
     #region Nodes & Properties
 
-    private CardCostUI Cost => field ??= GetNode<CardCostUI>("CardCostUI");
-    private CardActionsUI Actions => field ??= GetNode<CardActionsUI>("CardActionsUI");
+    private Label Title => field ??= GetNode<Label>("Title");
+    private TextureRect Image => field ??= GetNode<TextureRect>("Image");
+    private CardCostUI Cost => field ??= GetNode<CardCostUI>("Cost");
+    private CardActionsUI Actions => field ??= GetNode<CardActionsUI>("Actions");
+
+    private RegKey DisplayKey
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field         = value;
+            Title.Text    = value;
+            Image.Texture = AssetLoader.Load<Texture2D>("graphic/card", value, "png") ?? new PlaceholderTexture2D();
+        }
+    } = RegKey.Default;
 
     #endregion
+
 
     #region Binding
 
@@ -60,6 +76,9 @@ public partial class CardUI : Button
             ),
             Binder.BindPropertyOneWay(
                 viewModel, vm => vm.Actions, this, ui => ui.Actions.ViewModel
+            ),
+            Binder.BindPropertyOneWay(
+                viewModel, vm => vm.DisplayKey, this, ui => ui.DisplayKey
             )
         );
     }

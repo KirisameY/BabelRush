@@ -4,6 +4,12 @@
 [ext_resource type="PackedScene" uid="uid://4j0dp1wb1so6" path="res://GUI/Cards/Components/CardCostUI.tscn" id="2_8en22"]
 [ext_resource type="PackedScene" uid="uid://b4ksx561kc08v" path="res://GUI/Cards/Components/CardActionsUI.tscn" id="3_3g3dy"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_1vivr"]
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1vivr"]
+
 [node name="CardUI" type="Button" unique_id=723620256]
 custom_minimum_size = Vector2(144, 180)
 offset_right = 144.0
@@ -24,7 +30,26 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0.8732984, 0.8732984, 0.8732984, 1)
 
-[node name="CardCostUI" parent="." unique_id=458085328 instance=ExtResource("2_8en22")]
+[node name="Title" type="Label" parent="." unique_id=1510899323]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 135.0
+offset_bottom = 29.0
+text = "Name"
+label_settings = SubResource("LabelSettings_1vivr")
+horizontal_alignment = 1
+clip_text = true
+
+[node name="Image" type="TextureRect" parent="." unique_id=465479530]
+layout_mode = 0
+offset_left = 9.0
+offset_top = 40.0
+offset_right = 135.0
+offset_bottom = 166.0
+texture = SubResource("PlaceholderTexture2D_1vivr")
+
+[node name="Cost" parent="." unique_id=458085328 instance=ExtResource("2_8en22")]
 layout_mode = 0
 offset_left = 15.0
 offset_top = 11.0
@@ -32,7 +57,7 @@ offset_right = 15.0
 offset_bottom = 11.0
 mouse_filter = 0
 
-[node name="CardActionsUI" parent="." unique_id=2075893427 instance=ExtResource("3_3g3dy")]
+[node name="Actions" parent="." unique_id=2075893427 instance=ExtResource("3_3g3dy")]
 layout_mode = 0
 offset_left = 3.0
 offset_top = 26.0

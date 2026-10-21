@@ -85,7 +85,7 @@ public partial class TestCard : Control
         )
     );
 
-    private static readonly RegKey TestCardTypeId = RegKey.From("babelrush.test", "test_card");
+    private static readonly RegKey TestCardTypeId = RegKey.From("babelrush", "test");
 
     /// <summary>
     ///     Action 的占位类型：目标选择与打牌都还没做，现在只关心数量，效果留空。
