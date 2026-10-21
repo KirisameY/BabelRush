@@ -134,14 +134,15 @@ public class GamePlayViewModelTests
     }
 
     [Fact]
-    public void Exposes_The_Player_State()
+    public void Exposes_The_Card_Deck()
     {
         var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
         var viewModel = new GamePlayViewModel(gamePlay);
 
         var cardDeck = viewModel.CardDeck;
 
-        Assert.Same(gamePlay.PlayerState, cardDeck.SourceCardDeck);
+        Assert.Same(gamePlay.PlayerState.CardDeck, cardDeck.SourceCardDeck);
+        Assert.Same(gamePlay.CardDirector, cardDeck.SourceCardDirector);
         Assert.Same(cardDeck, viewModel.CardDeck);
     }
 
