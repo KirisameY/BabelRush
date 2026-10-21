@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,7 +43,7 @@ public partial class HandCardsUI : Control, ISimpleListObserver<CardViewModel>
 
     private readonly List<IBindHandle> _binds = [];
 
-    public IReadOnlyNotifiableList<CardViewModel>? ViewModel
+    public CardDeckViewModel? ViewModel
     {
         get;
         set
@@ -59,7 +60,10 @@ public partial class HandCardsUI : Control, ISimpleListObserver<CardViewModel>
         Unbind();
         if (ViewModel is not { } viewModel) return;
 
-        _binds.Add(DataBinding.Binder.BindCollection(viewModel, this, TypeA.Of<CardViewModel>()));
+        _binds.AddRange(
+            DataBinding.Binder.BindCollection(viewModel.HandPile, this, TypeA.Of<CardViewModel>()),
+            DataBinding.Binder.BindEvent(this, nameof(CardPlayRequested), viewModel, vm => (Action<CardViewModel>)vm.TryPlayCard)
+        );
     }
 
     private void Unbind()
@@ -68,6 +72,13 @@ public partial class HandCardsUI : Control, ISimpleListObserver<CardViewModel>
         _binds.Clear();
         Clear();
     }
+
+    #endregion
+
+
+    #region Events & Methods
+
+    public event Action<CardViewModel>? CardPlayRequested;
 
     #endregion
 

@@ -70,7 +70,7 @@ public partial class GamePlayUI : Node
             ),
             // 玩家状态整局不变，但手牌集合会持续增删；HandCardsUI 自己再对 Cards 做集合绑定。
             DataBinding.Binder.BindPropertyOneWay(
-                viewModel, vm => vm.CardDeck.HandPile, this, ui => ui.HandCardsUI.ViewModel!
+                viewModel, vm => vm.CardDeck, this, ui => ui.HandCardsUI.ViewModel!
             )
         );
     }

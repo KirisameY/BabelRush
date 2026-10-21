@@ -141,7 +141,7 @@ public class GamePlayViewModelTests
 
         var cardDeck = viewModel.CardDeck;
 
-        Assert.Same(gamePlay.PlayerState, cardDeck.SourcePlayerState);
+        Assert.Same(gamePlay.PlayerState, cardDeck.SourceCardDeck);
         Assert.Same(cardDeck, viewModel.CardDeck);
     }
 

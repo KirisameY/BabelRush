@@ -22,6 +22,8 @@ public class CardViewModel(ICard card) : ViewModelBase<CardViewModel>(card, Reac
         }.ToFrozenDictionary()
     );
 
+    public ICard SourceCard => card;
+
     public int Cost => card.Cost.Value;
 
     public IReadOnlyNotifiableList<EntityActionViewModel> Actions => field ??= CollectionWrapper.List(

@@ -64,6 +64,9 @@ public partial class HandCardsUI
     /// <summary>圆弧圆心：尺寸为 0，只用来当卡片的父节点；旋转它等于让整把牌绕圆心转。</summary>
     private Control CardCenter => field ??= GetNode<Control>("CardCenter");
 
+    /// <summary>打出判定线：牌心高过这条线就算拖出手牌区。挂在手牌区下面，随窗口一起动。</summary>
+    private Marker2D PlayThreshold => field ??= GetNode<Marker2D>("PlayThreshold");
+
     private bool _layoutValid;
     private float _step;
     private Vector2 _centerBase;
@@ -254,7 +257,7 @@ public partial class HandCardsUI
         if (cardSize == Vector2.Zero) cardSize = _cards[0].CustomMinimumSize;
         if (cardSize == Vector2.Zero) return false;
 
-        _step = ComputeStep(_cards.Count, cardSize);
+        _step       = ComputeStep(_cards.Count, cardSize);
         _centerBase = CenterBaseOf(_step * (_cards.Count - 1) * 0.5f, cardSize);
         var firstLayout = !_layoutValid;
         _layoutValid = true;
@@ -270,8 +273,8 @@ public partial class HandCardsUI
             {
                 KillTweens(state);
 
-                card.Position             = HandBasePosition(card);
-                card.Rotation             = angle;
+                card.Position = HandBasePosition(card);
+                card.Rotation = angle;
                 SetHandRadius(card, RadiusFor(card));
                 card.OffsetTransformScale = Vector2.One * TargetScale(card);
                 continue;
@@ -317,7 +320,7 @@ public partial class HandCardsUI
         var state = _states[card];
 
         // 入场只做下沉与放大；角度与半径先落位——Relayout 对新加入的牌会跳过它们。
-        card.Rotation             = state.BaseRotation;
+        card.Rotation = state.BaseRotation;
         SetHandRadius(card, RadiusFor(card));
         card.OffsetTransformScale = Vector2.One * EntryStartScale;
         card.Position             = HandBasePosition(card) + new Vector2(0f, EntryDrop);
@@ -368,7 +371,7 @@ public partial class HandCardsUI
         _centerTween?.Kill();
         _centerTween = null;
 
-        _centerBase = CenterBaseOf(0f, Vector2.Zero);
+        _centerBase         = CenterBaseOf(0f, Vector2.Zero);
         CardCenter.Rotation = 0f;
         CardCenter.Position = _centerBase;
     }
@@ -531,9 +534,21 @@ public partial class HandCardsUI
         card.Position = MouseInCardCenter() - _dragOffset;
     }
 
-    private void EndDrag()
+    /// <summary>
+    ///     结束拖动。<paramref name="allowPlay"/> 为 <see langword="false"/> 时只把牌放回去——
+    ///     焦点丢失、数据被替换这类「不是玩家松手」的结束不该打出牌。
+    /// </summary>
+    private void EndDrag(bool allowPlay = true)
     {
         if (_dragging is not { } card) return;
+
+        if (allowPlay && IsDraggedOut(card))
+        {
+            CardPlayRequested?.Invoke(card.ViewModel!);
+
+            // 如果被成功打出，进行处理
+            if (!_cards.Contains(card)) return; // 因为拖到了区域外所以指针现在一定没放在其它卡上，不用重新判定 hover
+        }
 
         // 松手时指针必然还压在牌上（拖动时牌跟着指针走），看不出它底下是谁；
         // 牌飞回原位的这段时间指针事件都不作数，等落位了再一次性判定。
@@ -548,6 +563,20 @@ public partial class HandCardsUI
         if (tween is null) SettleHoverAfterDrag(card);
         else tween.Finished += () => SettleHoverAfterDrag(card);
     }
+
+    /// <summary>松手时牌心有没有越过判定线。</summary>
+    /// <remarks>
+    ///     判定线是场景里的 <see cref="PlayThreshold"/>（Marker2D），挂在手牌区下面，窗口缩放时跟着走；
+    ///     用节点而不是一个导出数字，是为了能在编辑器里直接拖着这条线调手感。
+    ///     比的是牌心而不是指针：拖动时牌和指针之间有个固定偏移，抓牌的位置不同，指针过线时牌还差得远。
+    /// </remarks>
+    private bool IsDraggedOut(CardUI card) => CardVisualCenter(card).Y < PlayThreshold.GlobalPosition.Y;
+
+    /// <summary>
+    ///     卡片视觉矩形的中心（全局坐标）。手牌给的旋转、半径偏移与悬停缩放都在
+    ///     <see cref="Control.GetGlobalTransform"/> 里，不用再补。
+    /// </summary>
+    private static Vector2 CardVisualCenter(CardUI card) => card.GetGlobalTransform() * (card.Size * 0.5f);
 
     /// <summary>
     ///     牌落回原位后按「指针现在压着谁」重新定一次悬停。
@@ -592,11 +621,12 @@ public partial class HandCardsUI
     }
 
     /// <summary>替换数据前先把这张牌从拖动里摘出来，之后 <see cref="Relayout()"/> 才能正常安排它。</summary>
+    /// <remarks>换数据不是玩家松手，不能顺带把牌打出去，所以走 <c>allowPlay: false</c>。</remarks>
     private bool PrepareReplacement(CardUI card)
     {
         if (_dragging != card) return false;
 
-        EndDrag();
+        EndDrag(false);
         _hovered = null;
         if (_layoutValid) TweenCardCenter();
         return true;
@@ -623,8 +653,9 @@ public partial class HandCardsUI
 
     public override void _Notification(int what)
     {
+        // 窗口失去焦点不是玩家松手：拖动取消，牌放回原位，不能顺手打出去。
         if (what is (int)NotificationWMWindowFocusOut or (int)NotificationApplicationFocusOut)
-            EndDrag();
+            EndDrag(false);
     }
 
     #endregion

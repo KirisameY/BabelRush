@@ -22,3 +22,6 @@ HoverLift = 32.0
 [node name="CardCenter" type="Control" parent="." unique_id=462675717]
 anchors_preset = 0
 mouse_filter = 2
+
+[node name="PlayThreshold" type="Marker2D" parent="."]
+position = Vector2(640, 0)
