@@ -5,6 +5,7 @@ using BabelRushR.Mvvm.ViewModels;
 using Godot;
 
 using KirisameY.BindingBridge;
+using KirisameY.GenericUtils;
 
 namespace BabelRushR.Game.GUI.Cards.Components;
 
@@ -19,6 +20,25 @@ public partial class CardActionUI : Control
     public override void _EnterTree() => Rebind();
 
     public override void _ExitTree() => Unbind();
+
+    #endregion
+
+
+    #region Nodes & Properties
+
+    private Label ValueLabel => field ??= GetNode<Label>("Label");
+
+    private Optional<int> Value
+    {
+        get;
+        set
+        {
+            if (field == value) return;
+            field              = value;
+            ValueLabel.Visible = value.HasValue;
+            if (value.HasValue) ValueLabel.Text = value.Value.ToString();
+        }
+    }
 
     #endregion
 

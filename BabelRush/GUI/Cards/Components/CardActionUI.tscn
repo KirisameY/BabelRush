@@ -5,12 +5,34 @@
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1vivr"]
 size = Vector2(4, 4)
 
-[node name="CardActionUI" type="HBoxContainer" unique_id=1336379646]
+[sub_resource type="LabelSettings" id="LabelSettings_1vivr"]
+font_size = 20
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[node name="CardActionUI" type="Control" unique_id=1606726453]
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 16.0
+offset_bottom = 16.0
+size_flags_horizontal = 0
 mouse_filter = 2
 script = ExtResource("1_rfbdw")
 
 [node name="TextureRect" type="TextureRect" parent="." unique_id=2075293091]
-custom_minimum_size = Vector2(16, 16)
-layout_mode = 2
+custom_minimum_size = Vector2(24, 24)
+layout_mode = 0
+offset_right = 16.0
+offset_bottom = 16.0
 mouse_filter = 2
 texture = SubResource("PlaceholderTexture2D_1vivr")
+
+[node name="Label" type="Label" parent="." unique_id=318035759]
+visible = false
+layout_mode = 0
+offset_left = 20.0
+offset_right = 46.0
+offset_bottom = 31.0
+text = "0"
+label_settings = SubResource("LabelSettings_1vivr")
