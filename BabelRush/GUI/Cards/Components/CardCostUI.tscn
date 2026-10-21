@@ -16,7 +16,6 @@ script = ExtResource("1_100tu")
 [node name="Label" type="Label" parent="." unique_id=1243353300]
 layout_mode = 1
 anchors_preset = 8
-mouse_filter = 2
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -27,6 +26,6 @@ offset_right = 20.0
 offset_bottom = 17.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "12"
+text = "0"
 label_settings = SubResource("LabelSettings_1vivr")
 horizontal_alignment = 1
