@@ -1,6 +1,5 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
-using System.ComponentModel;
 
 using BabelRushR.Core.Entity;
 using BabelRushR.Mvvm.Infrastructure;

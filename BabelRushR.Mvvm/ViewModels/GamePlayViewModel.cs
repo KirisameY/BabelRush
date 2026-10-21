@@ -1,7 +1,5 @@
 using System.Collections.Frozen;
 using System.Collections.Immutable;
-using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Mvvm.Infrastructure;

@@ -5,12 +5,13 @@ using BabelRushR.Core.Numeric;
 
 using KirisameY.NotifiableCollections.Collections;
 using KirisameY.Numeric;
+using KirisameY.Registration.Data;
 
 namespace BabelRushR.Core.Card;
 
 public interface ICard : INotifyPropertyChanged // use empty string for all property changed
 {
-    string DisplayKey { get; }
+    RegKey DisplayKey { get; }
 
     IModifierEditableNumeric<int, CommonNumericModifyOrder> Cost { get; }
 

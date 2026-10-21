@@ -8,6 +8,7 @@ using BabelRushR.Core.Numeric;
 using KirisameY.GenericUtils;
 using KirisameY.NotifiableCollections.Collections;
 using KirisameY.Numeric;
+using KirisameY.Registration.Data;
 
 namespace BabelRushR.Core.Card;
 
@@ -15,7 +16,7 @@ public class TypedCard(ICardType type) : ObservableObject, ICard
 {
     public ICardType Type => type;
 
-    public string DisplayKey => field ??= type.Id;
+    public RegKey DisplayKey => field ??= type.Id;
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> Cost => field ??=
         INumeric.CreateReadonly(type.Cost, TypeA.Of<CommonNumericModifyOrder>())
                 .WithUpdateHandler(PropertyChangedHandler());
