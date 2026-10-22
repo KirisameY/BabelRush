@@ -1,4 +1,6 @@
-﻿using BabelRushR.Core.Common;
+﻿using System.Collections.Immutable;
+
+using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.GamePlay;
 
@@ -38,17 +40,18 @@ public class CommonBattle : ObservableObject, IBattle
     // 与 EntityBase.IsAlive 同样的写法：派生值，只在真正翻转时补一次属性通知。
     public bool IsInBattle => _enemies.Count > 0;
 
-    public BattleSide? GetSideOf(IEntity unit) => _sides.TryGetValue(unit, out var side) ? side : null;
+    public BattleSide GetSideOf(IEntity unit) => _sides.GetValueOrDefault(unit, BattleSide.None);
 
-    public IReadOnlyList<IEntity> GetOpponentsOf(IEntity unit) => GetSideOf(unit) switch
+    public IReadOnlyList<IEntity>? GetSideEntities(BattleSide side) => side switch
     {
-        BattleSide.Ally  => _enemies,
-        BattleSide.Enemy => _allies,
-        _                => [],
+        BattleSide.Ally  => _allies,
+        BattleSide.Enemy => _enemies,
+        _                => null,
     };
 
     public bool TryJoinBattle(IEntity unit, BattleSide side)
     {
+        if (side is BattleSide.None) return false;
         // 同一个实体同时只能属于一方；换边要先离开再加入。
         if (_sides.ContainsKey(unit)) return false;
         // 参战单位必须在当前的场景里，否则「离开场景自动退出」会留下对不上的状态。

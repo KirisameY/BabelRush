@@ -284,7 +284,23 @@ public class BattleTests
         Assert.False(battle.TryJoinBattle(outsider, BattleSide.Enemy));
 
         Assert.False(battle.IsInBattle);
-        Assert.Null(battle.GetSideOf(outsider));
+        Assert.Equal(BattleSide.None, battle.GetSideOf(outsider));
+        Assert.Empty(events);
+    }
+
+    [Fact]
+    public void Joining_With_No_Side_Returns_False()
+    {
+        var gamePlay = NewGamePlay();
+        var battle = gamePlay.Battle;
+        var unit = AddEntity(gamePlay);
+        var events = RecordBattleEvents(gamePlay);
+
+        Assert.False(battle.TryJoinBattle(unit, BattleSide.None));
+
+        Assert.Equal(BattleSide.None, battle.GetSideOf(unit));
+        Assert.Empty(battle.Allies);
+        Assert.Empty(battle.Enemies);
         Assert.Empty(events);
     }
 
@@ -318,7 +334,7 @@ public class BattleTests
         Assert.True(gamePlay.Scene.RemoveEntity(ally));
 
         Assert.Empty(battle.Allies);
-        Assert.Null(battle.GetSideOf(ally));
+        Assert.Equal(BattleSide.None, battle.GetSideOf(ally));
         Assert.IsType<BattleUnitLeftEvent>(Assert.Single(events));
     }
 
@@ -395,8 +411,8 @@ public class BattleTests
         Assert.False(battle.IsInBattle);
         Assert.Empty(battle.Allies);
         Assert.Empty(battle.Enemies);
-        Assert.Null(battle.GetSideOf(ally));
-        Assert.Null(battle.GetSideOf(enemy));
+        Assert.Equal(BattleSide.None, battle.GetSideOf(ally));
+        Assert.Equal(BattleSide.None, battle.GetSideOf(enemy));
 
         // 先我方后敌方；最后一个敌人离开时补上战斗结束。
         Assert.Collection(events,
@@ -427,7 +443,7 @@ public class BattleTests
     #region Queries
 
     [Fact]
-    public void GetSideOf_Returns_The_Side_And_Null_For_Non_Participants()
+    public void GetSideOf_Returns_The_Side_And_None_For_Non_Participants()
     {
         var gamePlay = NewGamePlay();
         var battle = gamePlay.Battle;
@@ -437,25 +453,41 @@ public class BattleTests
         battle.TryJoinBattle(ally, BattleSide.Ally);
         battle.TryJoinBattle(enemy, BattleSide.Enemy);
 
-        Assert.Equal<BattleSide?>(BattleSide.Ally, battle.GetSideOf(ally));
-        Assert.Equal<BattleSide?>(BattleSide.Enemy, battle.GetSideOf(enemy));
-        Assert.Null(battle.GetSideOf(outsider));
+        Assert.Equal(BattleSide.Ally, battle.GetSideOf(ally));
+        Assert.Equal(BattleSide.Enemy, battle.GetSideOf(enemy));
+        Assert.Equal(BattleSide.None, battle.GetSideOf(outsider));
     }
 
     [Fact]
-    public void GetOpponentsOf_Returns_The_Other_Sides_Units()
+    public void GetSideEntities_Returns_Each_Sides_Units()
     {
         var gamePlay = NewGamePlay();
         var battle = gamePlay.Battle;
         var ally = AddEntity(gamePlay);
         var enemy = AddEntity(gamePlay);
-        var outsider = AddEntity(gamePlay);
         battle.TryJoinBattle(ally, BattleSide.Ally);
         battle.TryJoinBattle(enemy, BattleSide.Enemy);
 
-        Assert.Equal(new IEntity[] { enemy }, battle.GetOpponentsOf(ally));
-        Assert.Equal(new IEntity[] { ally }, battle.GetOpponentsOf(enemy));
-        Assert.Empty(battle.GetOpponentsOf(outsider));
+        Assert.Equal(new IEntity[] { ally }, battle.GetSideEntities(BattleSide.Ally));
+        Assert.Equal(new IEntity[] { enemy }, battle.GetSideEntities(BattleSide.Enemy));
+        Assert.Null(battle.GetSideEntities(BattleSide.None));
+    }
+
+    [Fact]
+    public void Opponent_Side_Leads_To_The_Other_Camp()
+    {
+        var gamePlay = NewGamePlay();
+        var battle = gamePlay.Battle;
+        var ally = AddEntity(gamePlay);
+        var enemy = AddEntity(gamePlay);
+        battle.TryJoinBattle(ally, BattleSide.Ally);
+        battle.TryJoinBattle(enemy, BattleSide.Enemy);
+
+        // 目标选择预期的用法：先定位自己所在阵营，再取其对阵方的列表。
+        Assert.Equal(new IEntity[] { enemy },
+            battle.GetSideEntities(battle.GetSideOf(ally).Opponent));
+        Assert.Equal(new IEntity[] { ally },
+            battle.GetSideEntities(battle.GetSideOf(enemy).Opponent));
     }
 
     [Fact]
