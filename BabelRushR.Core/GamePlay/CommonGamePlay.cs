@@ -1,4 +1,5 @@
-﻿using BabelRushR.Core.Common;
+﻿using BabelRushR.Core.Battle;
+using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Core.Scenery;
@@ -52,6 +53,8 @@ public class CommonGamePlay : ObservableObject, IGamePlay
     }
 
     public ICardDirector CardDirector => field ??= new CommonCardDirector(this);
+
+    public IBattle Battle => field ??= new CommonBattle(this);
 
     public double Time
     {
