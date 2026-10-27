@@ -22,7 +22,7 @@ public class TypedCard(ICardType type) : ObservableObject, ICard
                 .WithUpdateHandler(PropertyChangedHandler());
 
     public IReadOnlyNotifiableList<IEntityAction> Actions => field ??= _actions.AsReadOnlyNotifiableList();
-    private readonly NotifiableList<IEntityAction> _actions = type.Actions
+    private readonly INotifiableList<IEntityAction> _actions = type.Actions
                                                                   .Select(t => t.Type.CreateAction(t.Value))
                                                                   .ToNotifiableList();
 }

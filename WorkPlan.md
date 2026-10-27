@@ -25,7 +25,9 @@
     - 最晚交付时间：toml 资源加载系统施工前
 - [x] lib 重构：为NotifiableList提供一套能对接库里批量通知的方法
 - [ ] core 重构：Type 对象基础接口仅保留 id 属性和创建实例的功能，具体依赖转至具体实现
-- [ ] lib 重构：将 NotifiableCollection 的批量操作提取至接口定义以便直接使用接口，同时创建一个抽象基类以便简易实现
+- [ ] lib 重构：NotifiableCollection
+  - [x] 将 NotifiableCollection 的批量操作提取至接口定义以便直接使用接口，同时创建一个抽象基类以便简易实现
+  - [ ] 想办法做个包装过可以 Try 形式修改和成功修改后（事件处理结束后）进行逻辑层通知的 NotifiableCollections
   - [ ] 此后参考 IBattle 的枚举+列表，重构 CardDeck 组织方式
 - [ ] core 新增：包装的 NotifiableList 接口和实现，以便在发生变更前后进行事件请求和通知且不增加父对象API复杂度
 - [ ] 

@@ -11,24 +11,24 @@ namespace BabelRushR.Core.GamePlay.CardRelated;
 
 public interface ICardDeck
 {
-    [Immutable] NotifiableList<ICard> HandPile { get; }
-    [Immutable] NotifiableList<ICard> DrawPile { get; }
-    [Immutable] NotifiableList<ICard> DiscardPile { get; }
+    [Immutable] INotifiableList<ICard> HandPile { get; }
+    [Immutable] INotifiableList<ICard> DrawPile { get; }
+    [Immutable] INotifiableList<ICard> DiscardPile { get; }
 }
 
 public static class CardDeckExtensions
 {
-    private static readonly ConditionalWeakTable<ICardDeck, ImmutableList<NotifiableList<ICard>>> PilesCache = [];
+    private static readonly ConditionalWeakTable<ICardDeck, ImmutableList<INotifiableList<ICard>>> PilesCache = [];
     private static readonly ConditionalWeakTable<ICardDeck, IReadOnlyList<ICard>> FullDeckCache = [];
 
     extension(ICardDeck cardDeck)
     {
-        public ImmutableList<NotifiableList<ICard>> Piles =>
+        public ImmutableList<INotifiableList<ICard>> Piles =>
             PilesCache.GetOrAdd(cardDeck, deck => [deck.HandPile, deck.DrawPile, deck.DiscardPile]);
 
         public IReadOnlyList<ICard> FullDeck => FullDeckCache.GetOrAdd(cardDeck, deck => CombinedListView.Create(deck.Piles));
 
-        public (NotifiableList<ICard> Pile, int Index)? FindCard(ICard card)
+        public (INotifiableList<ICard> Pile, int Index)? FindCard(ICard card)
         {
             foreach (var pile in cardDeck.Piles)
             {
