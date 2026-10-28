@@ -1,7 +1,5 @@
 ﻿using BabelRushR.Core.GamePlay;
 
-using KirisameY.EventBus;
-
 namespace BabelRushR.Core.Entity;
 
 /// <summary>

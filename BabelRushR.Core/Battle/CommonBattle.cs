@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-using BabelRushR.Core.Common;
+﻿using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.GamePlay;
 
@@ -16,7 +14,7 @@ namespace BabelRushR.Core.Battle;
 ///     单位离开场景时自动退出：死亡清扫发的是 <see cref="EntityDiedEvent"/>，它派生自
 ///     <see cref="EntityRemovedEvent"/>，所以这里只订阅后者。<br/>
 ///     场景整体替换时旧场景的成员不会再收到单独的移除事件，故另外订阅
-///     <see cref="GameSceneReplacedEvent"/> 做全量驱逐。<br/>
+///     <see cref="GamePlaySceneReplacedEvent"/> 做全量驱逐。<br/>
 ///     订阅与一局游戏同寿（<see cref="IGamePlay"/> 没有释放时机），因此不做撤销。
 /// </remarks>
 public class CommonBattle : ObservableObject, IBattle
@@ -30,7 +28,7 @@ public class CommonBattle : ObservableObject, IBattle
     {
         _gamePlay = gamePlay;
         gamePlay.EventBus.Subscribe<EntityRemovedEvent>(OnEntityRemoved);
-        gamePlay.EventBus.Subscribe<GameSceneReplacedEvent>(OnSceneReplaced);
+        gamePlay.EventBus.Subscribe<GamePlaySceneReplacedEvent>(OnSceneReplaced);
     }
 
     public IReadOnlyNotifiableList<IEntity> Allies => field ??= _allies.AsReadOnlyNotifiableList();
@@ -96,7 +94,7 @@ public class CommonBattle : ObservableObject, IBattle
 
     private void OnEntityRemoved(EntityRemovedEvent e) => TryLeaveBattle(e.Entity);
 
-    private void OnSceneReplaced(GameSceneReplacedEvent e)
+    private void OnSceneReplaced(GamePlaySceneReplacedEvent e)
     {
         // 旧场景的成员已经不在新场景里。先快照再逐个移出：移出会改列表并发事件。
         // 先我方后敌方：最后一个敌人离开时两边都已清空，BattleEndedEvent 的终态才一致。

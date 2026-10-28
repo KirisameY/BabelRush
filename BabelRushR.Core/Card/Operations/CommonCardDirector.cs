@@ -1,9 +1,9 @@
-﻿using BabelRushR.Core.Card;
-using BabelRushR.Core.EntityAction;
+﻿using BabelRushR.Core.EntityAction;
+using BabelRushR.Core.GamePlay;
 
 using KirisameY.EventBus.EventComponents;
 
-namespace BabelRushR.Core.GamePlay.CardRelated;
+namespace BabelRushR.Core.Card.Operations;
 
 public class CommonCardDirector(IGamePlay gamePlay) : ICardDirector
 {

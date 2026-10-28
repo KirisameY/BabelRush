@@ -1,10 +1,10 @@
 using System;
 using System.Linq;
 
+using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.Card.Types;
 using BabelRushR.Core.EntityAction.Types;
 using BabelRushR.Core.GamePlay;
-using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Game.GUI;
 using BabelRushR.Mvvm.ViewModels;
 

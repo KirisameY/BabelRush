@@ -1,10 +1,8 @@
-﻿using BabelRushR.Core.Card;
+﻿using KirisameY.EventBus.EventComponents;
 
-using KirisameY.EventBus.EventComponents;
+namespace BabelRushR.Core.Card.Operations;
 
-namespace BabelRushR.Core.GamePlay.CardRelated;
-
-public abstract record CardOperationEvent(ICard Card) : GamePlayEvent;
+public abstract record CardOperationEvent(ICard Card) : CardEvent(Card);
 
 public record CardPlayRequestEvent(ICard Card, EventCancelToken CancelToken) : CardOperationEvent(Card), ICancelableEvent;
 

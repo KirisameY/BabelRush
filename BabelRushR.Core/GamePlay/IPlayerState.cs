@@ -1,8 +1,8 @@
 using System.ComponentModel;
 
+using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
-using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Core.Numeric;
 
 using KirisameY.Numeric;

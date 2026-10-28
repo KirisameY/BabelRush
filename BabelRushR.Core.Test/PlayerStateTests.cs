@@ -103,8 +103,8 @@ public class PlayerStateTests
     public void APChangedEvent_Is_Published_Only_When_AP_Actually_Changes()
     {
         var game = NewGame(maxAP: 3);
-        var events = new List<APChangedEvent>();
-        game.EventBus.Subscribe<APChangedEvent>(events.Add);
+        var events = new List<PlayerAPChangedEvent>();
+        game.EventBus.Subscribe<PlayerAPChangedEvent>(events.Add);
 
         game.Update(2.0);
         Assert.Equal(2, events.Count);
@@ -128,7 +128,7 @@ public class PlayerStateTests
 
         game.PlayerState.AP = 1;
 
-        Assert.IsType<APChangedEvent>(Assert.Single(events));
+        Assert.IsType<PlayerAPChangedEvent>(Assert.Single(events));
     }
 
     [Fact]
@@ -137,8 +137,8 @@ public class PlayerStateTests
         var game = NewGame(maxAP: 3, apRegeneration: 1.0);
         var changed = new List<string?>();
         game.PlayerState.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
-        var events = new List<APChangedEvent>();
-        game.EventBus.Subscribe<APChangedEvent>(events.Add);
+        var events = new List<PlayerAPChangedEvent>();
+        game.EventBus.Subscribe<PlayerAPChangedEvent>(events.Add);
 
         // 只累积了 0.5 点，整数费用没有变化。
         game.Update(0.5);
@@ -193,8 +193,8 @@ public class PlayerStateTests
         var game = NewGame(maxAP: 3, apRegeneration: 1.0);
         game.Update(10.0);
 
-        var events = new List<APChangedEvent>();
-        game.EventBus.Subscribe<APChangedEvent>(events.Add);
+        var events = new List<PlayerAPChangedEvent>();
+        game.EventBus.Subscribe<PlayerAPChangedEvent>(events.Add);
 
         game.PlayerState.MaxAP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref v) => v -= 1));
 
@@ -236,7 +236,7 @@ public class PlayerStateTests
 
         game.PlayerState.AP = 1;
 
-        Assert.IsType<APChangedEvent>(Assert.Single(events));
+        Assert.IsType<PlayerAPChangedEvent>(Assert.Single(events));
     }
 
     [Fact]
@@ -260,8 +260,8 @@ public class PlayerStateTests
             Scene       = new CommonScene(),
             PlayerState = playerState,
         };
-        var events = new List<APChangedEvent>();
-        game.EventBus.Subscribe<APChangedEvent>(events.Add);
+        var events = new List<PlayerAPChangedEvent>();
+        game.EventBus.Subscribe<PlayerAPChangedEvent>(events.Add);
 
         playerState.AP = 1;
 

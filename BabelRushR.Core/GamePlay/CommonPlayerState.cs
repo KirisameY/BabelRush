@@ -1,11 +1,8 @@
-﻿using BabelRushR.Core.Card;
+﻿using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
-using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Core.Numeric;
 
-using KirisameY.EventBus;
-using KirisameY.NotifiableCollections.Collections;
 using KirisameY.Numeric;
 
 namespace BabelRushR.Core.GamePlay;
@@ -43,7 +40,7 @@ public class CommonPlayerState(
             var old = field;
             if (!SetProperty(ref field, clamped)) return;
 
-            GamePlay.EventBus.Publish(new APChangedEvent(old, clamped));
+            GamePlay.EventBus.Publish(new PlayerAPChangedEvent(old, clamped));
         }
     }
 

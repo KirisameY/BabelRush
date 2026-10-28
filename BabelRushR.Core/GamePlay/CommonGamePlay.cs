@@ -1,7 +1,7 @@
 ﻿using BabelRushR.Core.Battle;
+using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
-using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Core.Scenery;
 
 using KirisameY.EventBus;
@@ -38,7 +38,7 @@ public class CommonGamePlay : ObservableObject, IGamePlay
             // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
             old?.Unattach();
             value.Attach(this);
-            if (old is not null) EventBus.Publish(new GameSceneReplacedEvent(old, value));
+            if (old is not null) EventBus.Publish(new GamePlaySceneReplacedEvent(old, value));
         }
     }
 

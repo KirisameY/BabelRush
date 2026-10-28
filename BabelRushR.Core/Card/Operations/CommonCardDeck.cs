@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-using BabelRushR.Core.Card;
+using BabelRushR.Core.GamePlay;
 
 using KirisameY.NotifiableCollections.Collections;
 
-namespace BabelRushR.Core.GamePlay.CardRelated;
+namespace BabelRushR.Core.Card.Operations;
 
 public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
 {

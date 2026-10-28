@@ -2,14 +2,13 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-using BabelRushR.Core.Card;
 using BabelRushR.Core.Common;
 
 using KirisameY.CollectionViews.Combined;
 using KirisameY.NotifiableCollections.Collections;
 using KirisameY.Relinq.Extensions;
 
-namespace BabelRushR.Core.GamePlay.CardRelated;
+namespace BabelRushR.Core.Card.Operations;
 
 public interface ICardDeck
 {

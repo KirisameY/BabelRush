@@ -1,4 +1,4 @@
-﻿namespace BabelRushR.Core.GamePlay.CardRelated;
+﻿namespace BabelRushR.Core.Card.Operations;
 
 public enum CardPile
 {

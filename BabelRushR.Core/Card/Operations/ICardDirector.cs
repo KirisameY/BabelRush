@@ -1,6 +1,4 @@
-﻿using BabelRushR.Core.Card;
-
-namespace BabelRushR.Core.GamePlay.CardRelated;
+﻿namespace BabelRushR.Core.Card.Operations;
 
 public interface ICardDirector
 {

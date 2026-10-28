@@ -1,6 +1,6 @@
-﻿using BabelRushR.Core.Card;
+﻿using BabelRushR.Core.GamePlay;
 
-namespace BabelRushR.Core.GamePlay.CardRelated;
+namespace BabelRushR.Core.Card.Operations;
 
 public abstract record CardDeckEvent : GamePlayEvent;
 

@@ -1,5 +1,5 @@
+using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.GamePlay;
-using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Mvvm.ViewModels;
 
 namespace BabelRushR.Mvvm.Test;

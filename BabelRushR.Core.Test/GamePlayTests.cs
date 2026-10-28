@@ -133,8 +133,8 @@ public class GamePlayTests
     {
         var first = new CommonScene();
         var gamePlay = NewGamePlay(first);
-        var replaced = new List<GameSceneReplacedEvent>();
-        gamePlay.EventBus.Subscribe<GameSceneReplacedEvent>(replaced.Add);
+        var replaced = new List<GamePlaySceneReplacedEvent>();
+        gamePlay.EventBus.Subscribe<GamePlaySceneReplacedEvent>(replaced.Add);
 
         var second = new CommonScene();
         gamePlay.Scene = second;
@@ -172,8 +172,8 @@ public class GamePlayTests
     {
         var scene = new CommonScene();
         var gamePlay = NewGamePlay(scene);
-        var replaced = new List<GameSceneReplacedEvent>();
-        gamePlay.EventBus.Subscribe<GameSceneReplacedEvent>(replaced.Add);
+        var replaced = new List<GamePlaySceneReplacedEvent>();
+        gamePlay.EventBus.Subscribe<GamePlaySceneReplacedEvent>(replaced.Add);
         var changed = new List<string?>();
         gamePlay.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
 
@@ -209,7 +209,7 @@ public class GamePlayTests
 
         Assert.Collection(events,
             e => Assert.IsType<EntityAddedEvent>(e),
-            e => Assert.IsType<APChangedEvent>(e),
-            e => Assert.IsType<GameSceneReplacedEvent>(e));
+            e => Assert.IsType<PlayerAPChangedEvent>(e),
+            e => Assert.IsType<GamePlaySceneReplacedEvent>(e));
     }
 }

@@ -1,4 +1,4 @@
-using BabelRushR.Core.GamePlay.CardRelated;
+using BabelRushR.Core.Card.Operations;
 using BabelRushR.Mvvm.Infrastructure;
 
 using KirisameY.NotifiableCollections.Collections;

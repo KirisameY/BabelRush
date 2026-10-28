@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using BabelRushR.Game.Binding;
 using BabelRushR.Game.GUI.Cards;
@@ -11,7 +10,6 @@ using Godot;
 using KirisameY.BindingBridge;
 using KirisameY.BindingBridge.CollectionBinding.SimpleCollectionObservers;
 using KirisameY.GenericUtils;
-using KirisameY.NotifiableCollections.Collections;
 
 namespace BabelRushR.Game.GUI.Hand;
 

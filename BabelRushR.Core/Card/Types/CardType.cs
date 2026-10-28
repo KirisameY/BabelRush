@@ -1,6 +1,5 @@
 ﻿using BabelRushR.Core.Registration;
 
-using KirisameY.Registration.Data;
 using KirisameY.Registration.Registering;
 using KirisameY.Registration.Registry;
 
