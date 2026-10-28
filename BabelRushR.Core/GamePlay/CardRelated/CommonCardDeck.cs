@@ -6,7 +6,7 @@ using KirisameY.NotifiableCollections.Collections;
 
 namespace BabelRushR.Core.GamePlay.CardRelated;
 
-public class CommonCardDeck : ICardDeck
+public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
 {
     private readonly NotifiableList<ICard> _handPile = [];
     private readonly NotifiableList<ICard> _drawPile = [];
@@ -32,6 +32,7 @@ public class CommonCardDeck : ICardDeck
         var pile = PileOf(targetPile);
         if (pos < 0) pos = pile.Count;
         pile.Insert(pos, card);
+        gamePlay.EventBus.Publish(new CardDeckAddedCardEvent(card, targetPile, pos));
         return true;
     }
 
@@ -43,17 +44,20 @@ public class CommonCardDeck : ICardDeck
         var to = PileOf(targetPile);
         if (fromPos < 0) fromPos = from.Count - 1;
 
+        ICard card;
         if (fromPile == targetPile)
         {
             if (targetPos < 0) targetPos = to.Count - 1;
-            to.Move(fromPos, targetPos);
+            card = from[fromPos];
+            from.Move(fromPos, targetPos);
         }
         else
         {
             if (targetPos < 0) targetPos = to.Count;
-            var card = from.RemoveAt(fromPos);
+            card = from.RemoveAt(fromPos);
             to.Insert(targetPos, card);
         }
+        gamePlay.EventBus.Publish(new CardDeckMovedCardEvent(card, fromPile, fromPos, targetPile, targetPos));
         return true;
     }
 
@@ -72,6 +76,7 @@ public class CommonCardDeck : ICardDeck
         if (fromPile is CardPile.None) return false;
 
         removed = PileOf(fromPile).RemoveAt(pos);
+        gamePlay.EventBus.Publish(new CardDeckRemovedCardEvent(removed, fromPile, pos));
         return true;
     }
 

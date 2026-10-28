@@ -16,10 +16,10 @@ public class CommonPlayerState(
     double apRegeneration = 1.0)
     : ObservableObject, IPlayerState
 {
-    internal void Initialize(IGamePlay gamePlay) => EventBus = gamePlay.EventBus;
+    internal void Initialize(IGamePlay gamePlay) => GamePlay = gamePlay;
     void IPlayerState.Initialize(IGamePlay gamePlay) => Initialize(gamePlay);
 
-    private IEventBus<GamePlayEvent> EventBus
+    private IGamePlay GamePlay
     {
         get => field ?? throw new Exception($"{nameof(CommonPlayerState)} uninitialized");
         set;
@@ -27,7 +27,7 @@ public class CommonPlayerState(
 
     public IEntity PCEntity => pcEntity;
 
-    public ICardDeck CardDeck => field ??= new CommonCardDeck();
+    public ICardDeck CardDeck => field ??= new CommonCardDeck(GamePlay);
 
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxAP =>
         field ??= INumeric.CreateReadonly<int, CommonNumericModifyOrder>(maxAP)
@@ -43,7 +43,7 @@ public class CommonPlayerState(
             var old = field;
             if (!SetProperty(ref field, clamped)) return;
 
-            EventBus.Publish(new APChangedEvent(old, clamped));
+            GamePlay.EventBus.Publish(new APChangedEvent(old, clamped));
         }
     }
 
