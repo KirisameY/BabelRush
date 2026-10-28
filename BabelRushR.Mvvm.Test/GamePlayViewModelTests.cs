@@ -1,4 +1,5 @@
 using BabelRushR.Core.GamePlay;
+using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Core.Scenery;
 using BabelRushR.Mvvm.ViewModels;
 
@@ -151,7 +152,7 @@ public class GamePlayViewModelTests
     {
         var card = TestCards.New(1);
         var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
-        gamePlay.PlayerState.CardDeck.HandPile.Add(card);
+        gamePlay.PlayerState.CardDeck.AddCard(card, CardPile.Hand);
         var viewModel = new GamePlayViewModel(gamePlay);
         var hand = viewModel.CardDeck.HandPile;
         var cardViewModel = hand[0];

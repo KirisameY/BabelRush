@@ -12,7 +12,7 @@ public interface IScene : INotifyPropertyChanged, IUpdatable
 {
     public IGamePlay? GamePlay { get; }
 
-    INotifiableList<IEntity> Entities { get; }
+    IReadOnlyNotifiableList<IEntity> Entities { get; }
 
     /// <summary>
     /// 向 <see cref="Entities"/> 中加入给定的实体。

@@ -2,7 +2,6 @@
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.GamePlay;
 
-using KirisameY.EventBus;
 using KirisameY.NotifiableCollections.Collections;
 
 namespace BabelRushR.Core.Scenery;
@@ -15,19 +14,20 @@ public class CommonScene : ObservableObject, IScene
 
     public IGamePlay? GamePlay { get; private set; }
 
-    public INotifiableList<IEntity> Entities { get; } = new NotifiableList<IEntity>();
+    private readonly NotifiableList<IEntity> _entities = [];
+    public IReadOnlyNotifiableList<IEntity> Entities => field ??= _entities.AsReadOnlyNotifiableList();
 
     public bool AddEntity(IEntity entity)
     {
         if (Entities.Contains(entity)) return false;
-        Entities.Add(entity);
+        _entities.Add(entity);
         GamePlay?.EventBus.Publish(new EntityAddedEvent(entity));
         return true;
     }
 
     public bool RemoveEntity(IEntity entity)
     {
-        if (!Entities.Remove(entity)) return false;
+        if (!_entities.Remove(entity)) return false;
 
         GamePlay?.EventBus.Publish(new EntityRemovedEvent(entity));
         return true;
@@ -51,7 +51,7 @@ public class CommonScene : ObservableObject, IScene
 
         // 3. 状态全部变更完毕后再分发。Publish 是同步的，
         //    若边改边发，处理函数里的增删会破坏正在进行的遍历。
-        foreach (var entity in _deadBuffer) Entities.Remove(entity);
+        foreach (var entity in _deadBuffer) _entities.Remove(entity);
 
         foreach (var entity in _deadBuffer) GamePlay?.EventBus.Publish(new EntityDiedEvent(entity));
     }

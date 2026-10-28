@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-using BabelRushR.Core.Card.Types;
+﻿using BabelRushR.Core.Card.Types;
 using BabelRushR.Core.Common;
 using BabelRushR.Core.EntityAction;
 using BabelRushR.Core.Numeric;

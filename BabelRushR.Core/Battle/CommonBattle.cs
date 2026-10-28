@@ -44,8 +44,8 @@ public class CommonBattle : ObservableObject, IBattle
 
     public IReadOnlyList<IEntity>? GetSideEntities(BattleSide side) => side switch
     {
-        BattleSide.Ally  => _allies,
-        BattleSide.Enemy => _enemies,
+        BattleSide.Ally  => Allies,
+        BattleSide.Enemy => Enemies,
         _                => null,
     };
 

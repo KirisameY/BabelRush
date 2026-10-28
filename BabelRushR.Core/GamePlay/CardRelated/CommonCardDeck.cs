@@ -1,13 +1,83 @@
-﻿using BabelRushR.Core.Card;
+﻿using System.Diagnostics.CodeAnalysis;
 
-using KirisameY.CollectionViews.Combined;
+using BabelRushR.Core.Card;
+
 using KirisameY.NotifiableCollections.Collections;
 
 namespace BabelRushR.Core.GamePlay.CardRelated;
 
 public class CommonCardDeck : ICardDeck
 {
-    public INotifiableList<ICard> HandPile { get; } = new NotifiableList<ICard>();
-    public INotifiableList<ICard> DrawPile { get; } = new NotifiableList<ICard>();
-    public INotifiableList<ICard> DiscardPile { get; } = new NotifiableList<ICard>();
+    private readonly NotifiableList<ICard> _handPile = [];
+    private readonly NotifiableList<ICard> _drawPile = [];
+    private readonly NotifiableList<ICard> _discardPile = [];
+
+    public IReadOnlyNotifiableList<ICard> HandPile => field ??= _handPile.AsReadOnlyNotifiableList();
+    public IReadOnlyNotifiableList<ICard> DrawPile => field ??= _drawPile.AsReadOnlyNotifiableList();
+    public IReadOnlyNotifiableList<ICard> DiscardPile => field ??= _discardPile.AsReadOnlyNotifiableList();
+
+
+    private NotifiableList<ICard> PileOf(CardPile pile) => pile switch
+    {
+        CardPile.Hand    => _handPile,
+        CardPile.Draw    => _drawPile,
+        CardPile.Discard => _discardPile,
+        _                => throw new ArgumentOutOfRangeException() // todo: 等待 closed enums
+    };
+
+    public bool AddCard(ICard card, CardPile targetPile, int pos = -1)
+    {
+        if (this.FindCard(card) is not { Pile: CardPile.None }) return false;
+
+        var pile = PileOf(targetPile);
+        if (pos < 0) pos = pile.Count;
+        pile.Insert(pos, card);
+        return true;
+    }
+
+    public bool MoveCard(CardPile fromPile, int fromPos, CardPile targetPile, int targetPos = -1)
+    {
+        if (fromPile is CardPile.None || targetPile is CardPile.None) return false;
+
+        var from = PileOf(fromPile);
+        var to = PileOf(targetPile);
+        if (fromPos < 0) fromPos = from.Count - 1;
+
+        if (fromPile == targetPile)
+        {
+            if (targetPos < 0) targetPos = to.Count - 1;
+            to.Move(fromPos, targetPos);
+        }
+        else
+        {
+            if (targetPos < 0) targetPos = to.Count;
+            var card = from.RemoveAt(fromPos);
+            to.Insert(targetPos, card);
+        }
+        return true;
+    }
+
+    public bool SetCardTo(ICard card, CardPile targetPile, int pos = -1)
+    {
+        if (this.FindCard(card) is { Pile: not CardPile.None and var pile, Index: var index })
+        {
+            return MoveCard(pile, index, targetPile, pos);
+        }
+        return AddCard(card, targetPile, pos);
+    }
+
+    public bool RemoveCard(CardPile fromPile, int pos, [MaybeNullWhen(false)] out ICard removed)
+    {
+        removed = null;
+        if (fromPile is CardPile.None) return false;
+
+        removed = PileOf(fromPile).RemoveAt(pos);
+        return true;
+    }
+
+    public bool RemoveCard(ICard card)
+    {
+        var (pile, index) = this.FindCard(card);
+        return RemoveCard(pile, index, out _);
+    }
 }

@@ -24,17 +24,15 @@
     - 目的：将游戏事件和生命周期事件等分为不同基类，利用类型检查根本上杜绝业务层意外串线的问题。
     - 最晚交付时间：toml 资源加载系统施工前
 - [x] lib 重构：为NotifiableList提供一套能对接库里批量通知的方法
+- [x] lib 重构：NotifiableCollection
 - [ ] core 重构：Type 对象基础接口仅保留 id 属性和创建实例的功能，具体依赖转至具体实现
-- [ ] lib 重构：NotifiableCollection
-  - [x] 将 NotifiableCollection 的批量操作提取至接口定义以便直接使用接口，同时创建一个抽象基类以便简易实现
-  - [ ] 想办法做个包装过可以 Try 形式修改和成功修改后（事件处理结束后）进行逻辑层通知的 NotifiableCollections
-  - [ ] 此后参考 IBattle 的枚举+列表，重构 CardDeck 组织方式
 - [ ] core 新增：包装的 NotifiableList 接口和实现，以便在发生变更前后进行事件请求和通知且不增加父对象API复杂度
 - [ ] 
 
 ## 琐碎的短期目标
 
 - [x] Empty_Property_Name_Notifies_Every_Mapped_Property 这种实际上针对的不是具体类型而是基类行为的东西都改成对基类的测试
+- [ ] 待会儿重构统一一下Card这边和Battle这边的写法
 - [ ]
 
 ## 顺带做了的事情
@@ -47,7 +45,7 @@
 ## 日后再说的重要目标
 
 - [x] 重构手牌
-- [ ] Card 实例新增动态增减 Action 的效果
+- [ ] Card 上的 Actions 改成可操作列表并带上通知
 - [ ] 资源从外部包加载（不过最好提前处理好目录结构）
 - [ ] 为游戏文本提供 format 参数和配套逻辑
 - [ ] 卡牌选中时高亮自动选择的目标

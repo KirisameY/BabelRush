@@ -6,7 +6,7 @@
 public enum BattleSide
 {
     /// <summary>不属于任何阵营（默认值，也用于无效阵营）。</summary>
-    None = 0,
+    None = -1,
 
     /// <summary>我方：玩家、召唤物与友军。</summary>
     Ally,

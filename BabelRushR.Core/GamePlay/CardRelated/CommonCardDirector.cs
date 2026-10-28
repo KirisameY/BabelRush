@@ -11,12 +11,7 @@ public class CommonCardDirector(IGamePlay gamePlay) : ICardDirector
 
     public void PlayCard(ICard card)
     {
-        var fromDeck = true;
-        var cardPlace = CardDeck.FindCard(card);
         gamePlay.EventBus.Publish(new CardPlayingEvent(card));
-
-        if (cardPlace is { Pile: var pile, Index: var i }) pile.RemoveAt(i);
-        else fromDeck = false;
 
         var ctx = new EntityActionContext(gamePlay.PlayerState.PCEntity);
         foreach (var action in card.Actions)
@@ -25,7 +20,7 @@ public class CommonCardDirector(IGamePlay gamePlay) : ICardDirector
         }
 
         gamePlay.EventBus.Publish(new CardPlayedEvent(card));
-        if (fromDeck) CardDeck.DiscardPile.Add(card);
+        CardDeck.SetCardTo(card, CardPile.Discard);
     }
 
     public bool TryPlayCard(ICard card)

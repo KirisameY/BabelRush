@@ -1,4 +1,5 @@
 using BabelRushR.Core.GamePlay;
+using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Mvvm.ViewModels;
 
 namespace BabelRushR.Mvvm.Test;
@@ -25,7 +26,7 @@ public class CardDeckViewModelTests
     public void HandPile_Maps_Cards_To_ViewModels()
     {
         var gamePlay = NewGamePlay();
-        gamePlay.PlayerState.CardDeck.HandPile.Add(TestCards.New(2));
+        gamePlay.PlayerState.CardDeck.AddCard(TestCards.New(2), CardPile.Hand);
 
         var viewModel = NewViewModel(gamePlay);
 
@@ -48,7 +49,7 @@ public class CardDeckViewModelTests
     {
         var gamePlay = NewGamePlay();
         var card = TestCards.New(2);
-        gamePlay.PlayerState.CardDeck.HandPile.Add(card);
+        gamePlay.PlayerState.CardDeck.AddCard(card, CardPile.Hand);
         gamePlay.PlayerState.AP = 6;
         var viewModel = NewViewModel(gamePlay);
         var cardViewModel = Assert.Single(viewModel.HandPile);

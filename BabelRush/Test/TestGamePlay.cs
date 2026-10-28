@@ -4,6 +4,7 @@ using System.Linq;
 using BabelRushR.Core.Card.Types;
 using BabelRushR.Core.EntityAction.Types;
 using BabelRushR.Core.GamePlay;
+using BabelRushR.Core.GamePlay.CardRelated;
 using BabelRushR.Game.GUI;
 using BabelRushR.Mvvm.ViewModels;
 
@@ -35,10 +36,10 @@ public partial class TestGamePlay : Node
     {
         _gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 30));
 
-        _viewModel = new GamePlayViewModel(_gamePlay);
+        _viewModel                                  = new GamePlayViewModel(_gamePlay);
         GetNode<GamePlayUI>("GamePlayUI").ViewModel = _viewModel;
 
-        AddCardButton.Pressed += AddRandomCard;
+        AddCardButton.Pressed   += AddRandomCard;
         ClearHandButton.Pressed += ClearHand;
 
         // 走在 VM 建好之后：这条走的是集合绑定的增量 Add 分支，而不是绑定时的那次全量同步。
@@ -59,10 +60,17 @@ public partial class TestGamePlay : Node
             [.. Enumerable.Range(0, actionCount).Select(i => (TestActionType, i + 1))]
         );
 
-        gamePlay.PlayerState.CardDeck.HandPile.Add(cardType.CreateCard());
+        gamePlay.PlayerState.CardDeck.AddCard(cardType.CreateCard(), CardPile.Hand);
     }
 
-    private void ClearHand() => _gamePlay?.PlayerState.CardDeck.HandPile.Clear();
+    private void ClearHand()
+    {
+        var c = _gamePlay?.PlayerState.CardDeck.HandPile.Count ?? 0;
+        for (int i = c - 1; i >= 0; i--)
+        {
+            _gamePlay?.PlayerState.CardDeck.RemoveCard(CardPile.Hand, i, out _);
+        }
+    }
 
     /// <summary>Action 的占位类型：目标选择与打牌都还没做，这里只关心数量。</summary>
     private static readonly IEntityActionType TestActionType =
