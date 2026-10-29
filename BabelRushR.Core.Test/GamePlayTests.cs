@@ -11,7 +11,7 @@ public class GamePlayTests
     ///     只能经由对象初始化器交给它。与 <see cref="CommonGamePlay.Create"/> 不同，这里不塞玩家实体。
     /// </summary>
     private static CommonGamePlay NewGamePlay(IScene? scene = null, IPlayerState? playerState = null)
-        => new()
+        => new((ulong)Random.Shared.NextInt64())
         {
             Scene       = scene ?? new CommonScene(),
             PlayerState = playerState ?? new CommonPlayerState(new TestEntity(maxHP: 10)),
@@ -20,7 +20,7 @@ public class GamePlayTests
     [Fact]
     public void Update_Accumulates_Time_And_Tracks_Last_Delta()
     {
-        var game = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var game = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
 
         game.Update(0.25);
         game.Update(0.75);
@@ -36,7 +36,7 @@ public class GamePlayTests
     [InlineData(double.PositiveInfinity)]
     public void Update_Ignores_Invalid_Delta(double delta)
     {
-        var game = CommonGamePlay.Create(new TestEntity(maxHP: 10), maxAP: 3, apRegeneration: 1.0);
+        var game = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10), maxAP: 3, apRegeneration: 1.0);
         game.Update(0.5);
 
         game.Update(delta);
@@ -50,7 +50,7 @@ public class GamePlayTests
     {
         var pc = new TestEntity(maxHP: 10);
         var enemy = new TestEntity(maxHP: 5);
-        var game = CommonGamePlay.Create(pc, maxAP: 3, apRegeneration: 1.0);
+        var game = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), pc, maxAP: 3, apRegeneration: 1.0);
         game.Scene.AddEntity(enemy);
 
         game.Update(0.5);
@@ -71,7 +71,7 @@ public class GamePlayTests
             DoUpdateCallback = _ => apSeenByEntity = game!.PlayerState.AP,
         };
 
-        game = CommonGamePlay.Create(pc, maxAP: 3, apRegeneration: 4.0);
+        game = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), pc, maxAP: 3, apRegeneration: 4.0);
         game.Update(0.25);
 
         Assert.Equal(1, apSeenByEntity);
@@ -95,7 +95,7 @@ public class GamePlayTests
     {
         var pc = new TestEntity(maxHP: 10);
 
-        var gamePlay = CommonGamePlay.Create(pc);
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), pc);
 
         Assert.Same(pc, gamePlay.PlayerState.PCEntity);
         Assert.Same(pc, Assert.Single(gamePlay.Scene.Entities));
@@ -104,7 +104,7 @@ public class GamePlayTests
     [Fact]
     public void Create_Defaults_To_Six_Max_AP()
     {
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
 
         Assert.Equal(6, gamePlay.PlayerState.MaxAP.Value);
     }
@@ -112,10 +112,10 @@ public class GamePlayTests
     [Fact]
     public void EventBus_Is_One_Cached_Instance_Per_GamePlay()
     {
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
 
         Assert.Same(gamePlay.EventBus, gamePlay.EventBus);
-        Assert.NotSame(gamePlay.EventBus, CommonGamePlay.Create(new TestEntity(maxHP: 10)).EventBus);
+        Assert.NotSame(gamePlay.EventBus, CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10)).EventBus);
     }
 
     [Fact]
@@ -199,7 +199,7 @@ public class GamePlayTests
     [Fact]
     public void Every_Kind_Of_Game_Event_Shares_The_GamePlayEvent_Base()
     {
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
         var events = new List<GamePlayEvent>();
         gamePlay.EventBus.Subscribe<GamePlayEvent>(events.Add);
 

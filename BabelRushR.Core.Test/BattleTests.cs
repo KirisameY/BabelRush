@@ -7,7 +7,7 @@ namespace BabelRushR.Core.Test;
 
 public class BattleTests
 {
-    private static CommonGamePlay NewGamePlay() => CommonGamePlay.Create(new TestEntity(maxHP: 10));
+    private static CommonGamePlay NewGamePlay() => CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
 
     /// <summary>加入一个已在场景里的实体，供参战用。</summary>
     private static TestEntity AddEntity(CommonGamePlay gamePlay, int maxHP = 5)

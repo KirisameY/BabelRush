@@ -34,7 +34,7 @@ public partial class TestGamePlay : Node
 
     public override void _Ready()
     {
-        _gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 30));
+        _gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 30));
 
         _viewModel                                  = new GamePlayViewModel(_gamePlay);
         GetNode<GamePlayUI>("GamePlayUI").ViewModel = _viewModel;

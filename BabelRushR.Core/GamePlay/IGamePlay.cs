@@ -6,6 +6,7 @@ using BabelRushR.Core.Common;
 using BabelRushR.Core.Scenery;
 
 using KirisameY.EventBus;
+using KirisameY.Randomizer;
 
 namespace BabelRushR.Core.GamePlay;
 
@@ -13,6 +14,10 @@ public interface IGamePlay : INotifyPropertyChanged, IUpdatable
 {
     /// <summary>供逻辑层内部通信，表现层同步请订阅 Notify 相关接口。</summary>
     [Immutable] IEventBus<GamePlayEvent> EventBus { get; }
+
+    [Immutable] ulong RandomSeed { get; }
+
+    IRandomizer GetRandomizer(string scopeName);
 
     IScene Scene { get; }
     [Immutable] IPlayerState PlayerState { get; }

@@ -6,7 +6,7 @@ namespace BabelRushR.Mvvm.Test;
 
 public class CardDeckViewModelTests
 {
-    private static CommonGamePlay NewGamePlay() => CommonGamePlay.Create(new TestEntity(maxHP: 10));
+    private static CommonGamePlay NewGamePlay() => CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
 
     private static CardDeckViewModel NewViewModel(CommonGamePlay gamePlay) =>
         new(gamePlay.PlayerState.CardDeck, gamePlay.CardDirector);

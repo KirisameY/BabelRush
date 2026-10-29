@@ -6,17 +6,18 @@ using BabelRushR.Core.Scenery;
 
 using KirisameY.EventBus;
 using KirisameY.EventBus.Bus;
+using KirisameY.Randomizer;
 
 namespace BabelRushR.Core.GamePlay;
 
-public class CommonGamePlay : ObservableObject, IGamePlay
+public class CommonGamePlay(ulong seed) : ObservableObject, IGamePlay
 {
     /// <summary>
     /// 自建事件总线、场景与玩家状态，并把玩家实体放入场景。
     /// </summary>
-    public static CommonGamePlay Create(IEntity pcEntity, int maxAP = 6, double apRegeneration = 1.0)
+    public static CommonGamePlay Create(ulong seed, IEntity pcEntity, int maxAP = 6, double apRegeneration = 1.0)
     {
-        var gamePlay = new CommonGamePlay
+        var gamePlay = new CommonGamePlay(seed)
         {
             Scene       = new CommonScene(),
             PlayerState = new CommonPlayerState(pcEntity, maxAP, apRegeneration),
@@ -27,6 +28,12 @@ public class CommonGamePlay : ObservableObject, IGamePlay
     }
 
     public IEventBus<GamePlayEvent> EventBus => field ??= new SimpleEventBus<GamePlayEvent>();
+
+
+    private readonly GameRandoms _randoms = new(seed);
+    public ulong RandomSeed => _randoms.Seed;
+    public IRandomizer GetRandomizer(string scopeName) => _randoms.GetRandomizer(scopeName);
+
 
     public required IScene Scene
     {

@@ -13,7 +13,7 @@ public class SceneTests
     private static (CommonScene Scene, IGamePlay GamePlay) NewAttachedScene()
     {
         var scene = new CommonScene();
-        var gamePlay = new CommonGamePlay
+        var gamePlay = new CommonGamePlay((ulong)Random.Shared.NextInt64())
         {
             Scene       = scene,
             PlayerState = new CommonPlayerState(new TestEntity(maxHP: 10)),

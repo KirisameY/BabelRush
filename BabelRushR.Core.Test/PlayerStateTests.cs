@@ -7,13 +7,13 @@ namespace BabelRushR.Core.Test;
 public class PlayerStateTests
 {
     private static CommonGamePlay NewGame(int maxAP = 3, double apRegeneration = 1.0)
-        => CommonGamePlay.Create(new TestEntity(maxHP: 10), maxAP, apRegeneration);
+        => CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10), maxAP, apRegeneration);
 
     [Fact]
     public void Exposes_PCEntity_Config_And_Empty_Piles()
     {
         var pc = new TestEntity(maxHP: 10);
-        var game = CommonGamePlay.Create(pc, maxAP: 4, apRegeneration: 2.0);
+        var game = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), pc, maxAP: 4, apRegeneration: 2.0);
 
         Assert.Same(pc, game.PlayerState.PCEntity);
         Assert.Equal(4, game.PlayerState.MaxAP.Value);
@@ -255,7 +255,7 @@ public class PlayerStateTests
     public void Assembling_A_Player_State_Into_A_GamePlay_Is_What_Makes_It_Usable()
     {
         var playerState = new CommonPlayerState(new TestEntity(maxHP: 10));
-        var game = new CommonGamePlay
+        var game = new CommonGamePlay((ulong)Random.Shared.NextInt64())
         {
             Scene       = new CommonScene(),
             PlayerState = playerState,

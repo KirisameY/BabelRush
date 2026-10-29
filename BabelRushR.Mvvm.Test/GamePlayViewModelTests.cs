@@ -10,7 +10,7 @@ public class GamePlayViewModelTests
     [Fact]
     public void Update_Advances_The_GamePlay()
     {
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
         var viewModel = new GamePlayViewModel(gamePlay);
 
         viewModel.Update(0.5);
@@ -25,7 +25,7 @@ public class GamePlayViewModelTests
     public void Player_Entity_Appears_Exactly_Once_In_The_Scene()
     {
         var player = new TestEntity(maxHP: 10);
-        var gamePlay = CommonGamePlay.Create(player);
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), player);
         var viewModel = new GamePlayViewModel(gamePlay);
 
         var playerViewModel = viewModel.Scene.Find(gamePlay.PlayerState.PCEntity);
@@ -37,7 +37,7 @@ public class GamePlayViewModelTests
     [Fact]
     public void Disposing_Stops_Reflecting_The_Scene()
     {
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
         var viewModel = new GamePlayViewModel(gamePlay);
 
         viewModel.Dispose();
@@ -50,7 +50,7 @@ public class GamePlayViewModelTests
     [Fact]
     public void Advancing_Time_Notifies_Time_And_DeltaTime()
     {
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
         var viewModel = new GamePlayViewModel(gamePlay);
         var notified = NotificationRecorder.PropertyNames(viewModel);
 
@@ -64,7 +64,7 @@ public class GamePlayViewModelTests
     [Fact]
     public void Ignored_Update_Does_Not_Notify()
     {
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
         var viewModel = new GamePlayViewModel(gamePlay);
         var notified = NotificationRecorder.PropertyNames(viewModel);
 
@@ -137,7 +137,7 @@ public class GamePlayViewModelTests
     [Fact]
     public void Exposes_The_Card_Deck()
     {
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
         var viewModel = new GamePlayViewModel(gamePlay);
 
         var cardDeck = viewModel.CardDeck;
@@ -151,7 +151,7 @@ public class GamePlayViewModelTests
     public void Disposing_Releases_The_Card_Deck()
     {
         var card = TestCards.New(1);
-        var gamePlay = CommonGamePlay.Create(new TestEntity(maxHP: 10));
+        var gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
         gamePlay.PlayerState.CardDeck.AddCard(card, CardPile.Hand);
         var viewModel = new GamePlayViewModel(gamePlay);
         var hand = viewModel.CardDeck.HandPile;
@@ -173,7 +173,7 @@ public class GamePlayViewModelTests
     /// <remarks>
     ///     <c>Scene</c> 现在本身就是可写的，换场景不再需要替身。
     /// </remarks>
-    private sealed class RaisableGamePlay : CommonGamePlay
+    private sealed class RaisableGamePlay(ulong seed) : CommonGamePlay(seed)
     {
         public void Raise(string? propertyName) => OnPropertyChanged(propertyName);
     }
@@ -183,7 +183,7 @@ public class GamePlayViewModelTests
         // 先往场景里放实体再挂上去：这条路上不会发 EntityAddedEvent，本类也不关心事件。
         var scene = new CommonScene();
         scene.AddEntity(pcEntity);
-        return new RaisableGamePlay
+        return new RaisableGamePlay((ulong)Random.Shared.NextInt64())
         {
             Scene       = scene,
             PlayerState = new CommonPlayerState(pcEntity),
