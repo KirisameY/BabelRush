@@ -1,13 +1,23 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
 using BabelRushR.Core.GamePlay;
+using BabelRushR.Core.Numeric;
 
+using KirisameY.GenericUtils;
 using KirisameY.NotifiableCollections.Collections;
+using KirisameY.Numeric;
+using KirisameY.Randomizer;
 
 namespace BabelRushR.Core.Card.Operations;
 
 public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
 {
+    public IModifierEditableNumeric<int, CommonNumericModifyOrder> DrawThreshold => field ??=
+        INumeric.CreateReadonly(4, TypeA.Of<CommonNumericModifyOrder>())
+                 // .WithModifier()
+                .WithUpdateHandler((_, _) => CheckHandAndDrawPile());
+
+
     private readonly NotifiableList<ICard> _handPile = [];
     private readonly NotifiableList<ICard> _drawPile = [];
     private readonly NotifiableList<ICard> _discardPile = [];
@@ -25,6 +35,9 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
         _                => throw new ArgumentOutOfRangeException() // todo: 等待 closed enums
     };
 
+
+    #region Operations
+
     public bool AddCard(ICard card, CardPile targetPile, int pos = -1)
     {
         if (this.FindCard(card) is not { Pile: CardPile.None }) return false;
@@ -33,6 +46,7 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
         if (pos < 0) pos = pile.Count;
         pile.Insert(pos, card);
         gamePlay.EventBus.Publish(new CardDeckAddedCardEvent(card, targetPile, pos));
+        CheckHandAndDrawPile();
         return true;
     }
 
@@ -58,6 +72,7 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
             to.Insert(targetPos, card);
         }
         gamePlay.EventBus.Publish(new CardDeckMovedCardEvent(card, fromPile, fromPos, targetPile, targetPos));
+        CheckHandAndDrawPile();
         return true;
     }
 
@@ -77,6 +92,7 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
 
         removed = PileOf(fromPile).RemoveAt(pos);
         gamePlay.EventBus.Publish(new CardDeckRemovedCardEvent(removed, fromPile, pos));
+        CheckHandAndDrawPile();
         return true;
     }
 
@@ -85,4 +101,35 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
         var (pile, index) = this.FindCard(card);
         return RemoveCard(pile, index, out _);
     }
+
+    #endregion
+
+
+    #region CardLoop
+
+    public void ShuffleDiscardPileToDrawPile()
+    {
+        var randomizer = gamePlay.GetRandomizer("core.card_shuffle");
+        while (DiscardPile.Count > 0)
+        {
+            var from = randomizer.NextI32(DiscardPile.Count);
+            MoveCard(CardPile.Discard, from, CardPile.Draw);
+        }
+    }
+
+    private void CheckHandAndDrawPile()
+    {
+        var draw = DrawThreshold.Value;
+        var inHand = HandPile.Count();
+        if (inHand >= draw) return;
+
+        if (inHand == 0 && DrawPile.Count == 0) ShuffleDiscardPileToDrawPile();
+        while (inHand < draw && DrawPile.Count > 0)
+        {
+            MoveCard(CardPile.Draw, -1, CardPile.Hand);
+            if (true) inHand++;
+        }
+    }
+
+    #endregion
 }

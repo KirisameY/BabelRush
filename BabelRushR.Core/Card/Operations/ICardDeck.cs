@@ -3,15 +3,19 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 using BabelRushR.Core.Common;
+using BabelRushR.Core.Numeric;
 
 using KirisameY.CollectionViews.Combined;
 using KirisameY.NotifiableCollections.Collections;
+using KirisameY.Numeric;
 using KirisameY.Relinq.Extensions;
 
 namespace BabelRushR.Core.Card.Operations;
 
 public interface ICardDeck
 {
+    [Immutable] IModifierEditableNumeric<int, CommonNumericModifyOrder> DrawThreshold { get; }
+
     [Immutable] IReadOnlyNotifiableList<ICard> HandPile { get; }
     [Immutable] IReadOnlyNotifiableList<ICard> DrawPile { get; }
     [Immutable] IReadOnlyNotifiableList<ICard> DiscardPile { get; }
