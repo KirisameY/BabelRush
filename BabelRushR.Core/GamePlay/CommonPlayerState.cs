@@ -2,6 +2,7 @@
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.Numeric;
+using BabelRushR.Core.Numeric.CommonModifiers;
 
 using KirisameY.Numeric;
 
@@ -28,6 +29,7 @@ public class CommonPlayerState(
 
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxAP =>
         field ??= INumeric.CreateReadonly<int, CommonNumericModifyOrder>(maxAP)
+                          .WithModifier(new CommonLimitModifier(min: 1))
                           .WithUpdateHandler((_, _) => AP = AP)         // 上限下调时把当前 AP 一起削下来
                           .WithUpdateHandler(PropertyChangedHandler()); // 再通知
 
@@ -52,6 +54,7 @@ public class CommonPlayerState(
 
     public IModifierEditableNumeric<double, CommonNumericModifyOrder> APRegeneration =>
         field ??= INumeric.CreateReadonly<double, CommonNumericModifyOrder>(apRegeneration)
+                          .WithModifier(new CommonLimitModifier(min: 0))
                           .WithUpdateHandler(PropertyChangedHandler());
 
     public void Update(double delta)

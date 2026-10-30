@@ -29,7 +29,7 @@
     - 最晚交付时间：toml 资源加载系统施工前
 - [x] lib 重构：为NotifiableList提供一套能对接库里批量通知的方法
 - [x] lib 重构：NotifiableCollection
-- [ ] core：LimitModifier 及其应用
+- [x] core：LimitModifier 及其应用
 - [ ] core 重构：Type 对象基础接口仅保留 id 属性和创建实例的功能，具体依赖转至具体实现
 - [ ] core 新增：包装的 NotifiableList 接口和实现，以便在发生变更前后进行事件请求和通知且不增加父对象API复杂度
 - [ ] 
@@ -37,7 +37,6 @@
 ## 琐碎的短期目标
 
 - [x] Empty_Property_Name_Notifies_Every_Mapped_Property 这种实际上针对的不是具体类型而是基类行为的东西都改成对基类的测试
-- [ ] 待会儿重构统一一下Card这边和Battle这边的写法
 - [ ]
 
 ## 顺带做了的事情

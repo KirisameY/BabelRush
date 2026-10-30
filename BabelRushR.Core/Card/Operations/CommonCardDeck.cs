@@ -3,6 +3,7 @@
 using BabelRushR.Core.Common;
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Numeric;
+using BabelRushR.Core.Numeric.CommonModifiers;
 
 using KirisameY.GenericUtils;
 using KirisameY.NotifiableCollections.Collections;
@@ -15,7 +16,7 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
 {
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> DrawThreshold => field ??=
         INumeric.CreateReadonly(4, TypeA.Of<CommonNumericModifyOrder>())
-                 // .WithModifier()
+                .WithModifier(new CommonLimitModifier(min: 1, max: ICardDeck.HandLimit))
                 .WithUpdateHandler((_, _) => CheckHandAndDrawPile());
 
 
@@ -42,6 +43,11 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
     public bool AddCard(ICard card, CardPile targetPile, int pos = -1)
     {
         if (this.FindCard(card) is not { Pile: CardPile.None }) return false;
+        if (targetPile is CardPile.Hand && _handPile.Count >= ICardDeck.HandLimit) // 手牌溢出处理
+        {
+            targetPile = CardPile.Draw;
+            pos        = -1;
+        }
 
         var pile = PileOf(targetPile);
         if (pos < 0) pos = pile.Count;
@@ -54,6 +60,11 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
     public bool MoveCard(CardPile fromPile, int fromPos, CardPile targetPile, int targetPos = -1)
     {
         if (fromPile is CardPile.None || targetPile is CardPile.None) return false;
+        if (targetPile is CardPile.Hand && fromPile is not CardPile.Hand && _handPile.Count >= ICardDeck.HandLimit) // 手牌溢出处理
+        {
+            targetPile = fromPile is CardPile.Draw ? CardPile.Discard : CardPile.Draw;
+            targetPos  = -1;
+        }
 
         var from = PileOf(fromPile);
         var to = PileOf(targetPile);

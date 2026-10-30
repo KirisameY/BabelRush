@@ -1,5 +1,6 @@
 ﻿using BabelRushR.Core.Common;
 using BabelRushR.Core.Numeric;
+using BabelRushR.Core.Numeric.CommonModifiers;
 
 using KirisameY.GenericUtils;
 using KirisameY.Numeric;
@@ -15,6 +16,7 @@ public class ValuedDelegateEntityAction(Action<EntityActionContext, int> action,
 {
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> Value =>
         INumeric.CreateReadonly(value, TypeA.Of<CommonNumericModifyOrder>())
+                .WithModifier(new CommonLimitModifier(min: 0))
                 .WithUpdateHandler(PropertyChangedHandler());
     public void Act(EntityActionContext ctx) => action.Invoke(ctx, Value.Value);
 }

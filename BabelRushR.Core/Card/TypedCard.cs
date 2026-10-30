@@ -2,6 +2,7 @@
 using BabelRushR.Core.Common;
 using BabelRushR.Core.EntityAction;
 using BabelRushR.Core.Numeric;
+using BabelRushR.Core.Numeric.CommonModifiers;
 
 using KirisameY.GenericUtils;
 using KirisameY.NotifiableCollections.Collections;
@@ -17,10 +18,11 @@ public class TypedCard(ICardType type) : ObservableObject, ICard
     public RegKey DisplayKey => field ??= type.Id;
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> Cost => field ??=
         INumeric.CreateReadonly(type.Cost, TypeA.Of<CommonNumericModifyOrder>())
+                .WithModifier(new CommonLimitModifier(min: 0))
                 .WithUpdateHandler(PropertyChangedHandler());
 
     public IReadOnlyNotifiableList<IEntityAction> Actions => field ??= _actions.AsReadOnlyNotifiableList();
     private readonly INotifiableList<IEntityAction> _actions = type.Actions
-                                                                  .Select(t => t.Type.CreateAction(t.Value))
-                                                                  .ToNotifiableList();
+                                                                   .Select(t => t.Type.CreateAction(t.Value))
+                                                                   .ToNotifiableList();
 }

@@ -17,7 +17,7 @@ public class CommonBaseAdditionModifier(double value) : INumericModifier<CommonN
     public CommonNumericModifyOrder Order => CommonNumericModifyOrder.BaseAdd;
 }
 
-public class MutableCommonBaseAdditionModifier(double value) : INumericModifier<CommonNumericModifyOrder>
+public class MutableCommonBaseAdditionModifier(double value = 0) : INumericModifier<CommonNumericModifyOrder>
 {
     public double Value
     {

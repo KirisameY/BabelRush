@@ -1,5 +1,6 @@
 ﻿using BabelRushR.Core.Common;
 using BabelRushR.Core.Numeric;
+using BabelRushR.Core.Numeric.CommonModifiers;
 
 using KirisameY.Numeric;
 
@@ -15,6 +16,7 @@ public abstract class EntityBase(int maxHP) : ObservableObject, IEntity
 
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxHP =>
         field ??= INumeric.CreateReadonly<int, CommonNumericModifyOrder>(_baseMaxHP)
+                          .WithModifier(new CommonLimitModifier(min: 1))
                           .WithUpdateHandler((_, _) => HP = HP) // 更新时重新赋值HP触发钳制
                           .WithUpdateHandler(PropertyChangedHandler());
 

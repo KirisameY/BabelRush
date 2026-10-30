@@ -14,6 +14,8 @@ namespace BabelRushR.Core.Card.Operations;
 
 public interface ICardDeck
 {
+    public const int HandLimit = 12;
+
     [Immutable] IModifierEditableNumeric<int, CommonNumericModifyOrder> DrawThreshold { get; }
 
     [Immutable] IReadOnlyNotifiableList<ICard> HandPile { get; }
@@ -24,7 +26,7 @@ public interface ICardDeck
     bool MoveCard(CardPile fromPile, int fromPos, CardPile targetPile, int targetPos = -1);
     bool SetCardTo(ICard card, CardPile targetPile, int pos = -1);
     bool RemoveCard(CardPile fromPile, int pos, [MaybeNullWhen(false)] out ICard removed);
-    public bool RemoveCard(ICard card);
+    bool RemoveCard(ICard card);
 }
 
 public static class CardDeckExtensions
