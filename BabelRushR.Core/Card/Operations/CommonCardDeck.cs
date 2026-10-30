@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
+using BabelRushR.Core.Common;
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Numeric;
 
@@ -107,6 +108,8 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
 
     #region CardLoop
 
+    private bool _checking = false;
+
     public void ShuffleDiscardPileToDrawPile()
     {
         var randomizer = gamePlay.GetRandomizer("core.card_shuffle");
@@ -119,6 +122,9 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
 
     private void CheckHandAndDrawPile()
     {
+        if (Interlocked.Exchange(ref _checking, true)) return;
+        using var flagHolder = new FlagHolder(ref _checking);
+
         var draw = DrawThreshold.Value;
         var inHand = HandPile.Count();
         if (inHand >= draw) return;
