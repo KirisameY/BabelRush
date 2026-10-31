@@ -18,10 +18,11 @@ public static class RegistrationManager
     internal static void InitializeRegisters()
     {
         // initialize registers
-        var selfAsm = Assembly.GetAssembly(typeof(RegistrationManager));
+        var selfAsm = Assembly.GetAssembly(typeof(RegistrationManager))!;
         AppDomain.CurrentDomain
                  .GetAssemblies()
-                 .Where(asm => asm.GetReferencedAssemblies().Contains(selfAsm!.GetName()))
+                 .Where(asm => asm.GetReferencedAssemblies().Contains(selfAsm.GetName()))
+                 .Prepend(selfAsm)
                  .SelectMany(assembly => assembly.DefinedTypes)
                  .Where(type => type.GetCustomAttribute<RegisterInitializeAttribute>() is not null)
                  .ForEach(type => RuntimeHelpers.RunClassConstructor(type.TypeHandle));
