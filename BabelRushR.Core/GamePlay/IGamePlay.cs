@@ -10,7 +10,7 @@ using KirisameY.Randomizer;
 
 namespace BabelRushR.Core.GamePlay;
 
-public interface IGamePlay : INotifyPropertyChanged, IUpdatable
+public interface IGamePlay : INotifyPropertyChanged, IUpdatable, IDisposable
 {
     /// <summary>供逻辑层内部通信，表现层同步请订阅 Notify 相关接口。</summary>
     [Immutable] IEventBus<GamePlayEvent> EventBus { get; }

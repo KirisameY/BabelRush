@@ -9,6 +9,10 @@ namespace BabelRushR.Mvvm.ViewModels;
 /// <summary>
 ///     一局游戏的根 VM。视图只需要认识这一个对象。
 /// </summary>
+/// <remarks>
+///     本 VM 不拥有 <see cref="IGamePlay"/>：<see cref="ViewModelBase.Dispose"/> 只撤销自身订阅，
+///     不会释放游戏。游戏的创建者负责在适当时机调用 <see cref="IDisposable.Dispose"/>。
+/// </remarks>
 public sealed class GamePlayViewModel(IGamePlay gamePlay) : ViewModelBase<GamePlayViewModel>(gamePlay, Reactions)
 {
     /// <summary>

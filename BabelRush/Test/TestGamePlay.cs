@@ -46,7 +46,11 @@ public partial class TestGamePlay : Node
         _gamePlay.Scene.AddEntity(new TestEntity(maxHP: 12) { Position = 200 });
     }
 
-    public override void _ExitTree() => _viewModel?.Dispose();
+    public override void _ExitTree()
+    {
+        _viewModel?.Dispose();
+        _gamePlay?.Dispose();
+    }
 
     private void AddRandomCard()
     {

@@ -17,4 +17,8 @@
       <PackageReference Include="KirisameY.Relinq" Version="0.1.5" />
     </ItemGroup>
 
+    <ItemGroup>
+        <InternalsVisibleTo Include="BabelRushR.Core.Test" />
+    </ItemGroup>
+
 </Project>

@@ -15,7 +15,8 @@ namespace BabelRushR.Core.Battle;
 ///     <see cref="EntityRemovedEvent"/>，所以这里只订阅后者。<br/>
 ///     场景整体替换时旧场景的成员不会再收到单独的移除事件，故另外订阅
 ///     <see cref="GamePlaySceneReplacedEvent"/> 做全量驱逐。<br/>
-///     订阅与一局游戏同寿（<see cref="IGamePlay"/> 没有释放时机），因此不做撤销。
+///     订阅与一局游戏同寿。Battle 是 GamePlay 的常驻子系统，不参与自动注册处理器的清理；
+///     <see cref="CommonGamePlay.Dispose"/> 只释放处理器，不会撤销这里的订阅。
 /// </remarks>
 public class CommonBattle : ObservableObject, IBattle
 {
