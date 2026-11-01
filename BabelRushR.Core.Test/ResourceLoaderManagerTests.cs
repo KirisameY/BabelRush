@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.ExceptionServices;
 
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Resources;
@@ -7,7 +8,7 @@ namespace BabelRushR.Core.Test;
 
 public class ResourceLoaderManagerTests
 {
-    public ResourceLoaderManagerTests() => ResourceLoaderManager.ClearRegistrations();
+    public ResourceLoaderManagerTests() => InvokePrivateStatic("ClearRegistrations");
 
 
     [Fact]
@@ -124,24 +125,22 @@ public class ResourceLoaderManagerTests
     }
 
     [Fact]
-    public void ValidateLoaderType_Accepts_A_Self_Typed_Factory()
+    public void RegisterAttributedLoaders_Registers_Every_Path_To_One_Instance()
     {
-        ResourceLoaderManager.ValidateLoaderType(typeof(RecordingLoader));
-    }
+        InvokePrivateStatic("RegisterAttributedLoaders");
 
-    [Fact]
-    public void CreateLoader_Instantiates_A_Self_Typed_Loader()
-    {
-        var loader = ResourceLoaderManager.CreateLoader(typeof(RecordingLoader));
-
-        Assert.IsType<RecordingLoader>(loader);
+        var loader = ResourceLoaderManager.FindLoader("cards/strike.toml");
+        Assert.NotNull(loader);
+        Assert.IsType<MultiTargetLoader>(loader);
+        Assert.Same(loader, ResourceLoaderManager.FindLoader("cards"));
+        Assert.Same(loader, ResourceLoaderManager.FindLoader("cards/actions"));
     }
 
     [Fact]
     public void ValidateLoaderType_Rejects_A_Base_Only_Loader()
     {
         var ex = Assert.Throws<InvalidOperationException>(
-            () => ResourceLoaderManager.ValidateLoaderType(typeof(BaseOnlyLoader)));
+            () => InvokePrivateStatic("ValidateLoaderType", typeof(BaseOnlyLoader)));
 
         Assert.Contains("IResourceLoader<BaseOnlyLoader>", ex.Message);
     }
@@ -150,7 +149,7 @@ public class ResourceLoaderManagerTests
     public void ValidateLoaderType_Rejects_A_Factory_For_Another_Type()
     {
         var ex = Assert.Throws<InvalidOperationException>(
-            () => ResourceLoaderManager.ValidateLoaderType(typeof(WrongSelfLoader)));
+            () => InvokePrivateStatic("ValidateLoaderType", typeof(WrongSelfLoader)));
 
         Assert.Contains("IResourceLoader<WrongSelfLoader>", ex.Message);
     }
@@ -176,6 +175,25 @@ public class ResourceLoaderManagerTests
 
         // 一个类型标注多次也只应被发现一次，且 private 嵌套类型也要能看到。
         Assert.Equal(1, types.Count(type => type == typeof(MultiTargetLoader)));
+    }
+
+
+    // 自动扫描按要求保持 private；这里用反射守住它，避免为了测试把实现细节提升到 internal。
+    private static object? InvokePrivateStatic(string methodName, params object?[]? arguments)
+    {
+        var method = typeof(ResourceLoaderManager).GetMethod(
+                         methodName, BindingFlags.Static | BindingFlags.NonPublic)
+                  ?? throw new MissingMethodException(typeof(ResourceLoaderManager).FullName, methodName);
+
+        try
+        {
+            return method.Invoke(null, arguments);
+        }
+        catch (TargetInvocationException ex) when (ex.InnerException is not null)
+        {
+            ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
+            throw;
+        }
     }
 
 

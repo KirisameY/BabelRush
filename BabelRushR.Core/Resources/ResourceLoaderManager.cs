@@ -3,6 +3,8 @@ using System.Reflection;
 
 using BabelRushR.Core.Common;
 
+using JetBrains.Annotations;
+
 namespace BabelRushR.Core.Resources;
 
 /// <summary>
@@ -61,8 +63,8 @@ public static class ResourceLoaderManager
         }
     }
 
-    /// <summary>仅供测试：清空全部注册。</summary>
-    internal static void ClearRegistrations() => Loaders.Clear();
+    // 仅供测试通过反射调用；不提升到 internal，避免测试细节进入程序集契约。
+    [UsedImplicitly] private static void ClearRegistrations() => Loaders.Clear();
 
     /// <summary>
     ///     发现标注了 <see cref="AutoResourceLoaderAttribute"/> 的加载器类型，实例化并按特性上的路径注册。
@@ -90,17 +92,16 @@ public static class ResourceLoaderManager
         }
     }
 
-    // internal 以便测试能直接钉住自动实例化的校验分支；扫描方法本身仍是 private。
-    internal static void ValidateLoaderType(Type loaderType)
+    private static void ValidateLoaderType(Type loaderType)
     {
         AttributedTypeScanner.ValidateRegistrationType(loaderType, typeof(IResourceLoader), "Resource loader");
 
         // 自动实例化要求实现的是 IResourceLoader<自己>，而不是别的 TSelf。
         // 不能用 MakeGenericType 来检查：约束不满足时它自己就会抛 ArgumentException。
         var implementsSelfFactory = loaderType.GetInterfaces().Any(implemented =>
-            implemented.IsGenericType
-            && implemented.GetGenericTypeDefinition() == typeof(IResourceLoader<>)
-            && implemented.GetGenericArguments()[0] == loaderType);
+                                                                       implemented.IsGenericType
+                                                                    && implemented.GetGenericTypeDefinition() == typeof(IResourceLoader<>)
+                                                                    && implemented.GetGenericArguments()[0] == loaderType);
         if (!implementsSelfFactory)
         {
             throw new InvalidOperationException(
@@ -108,8 +109,7 @@ public static class ResourceLoaderManager
         }
     }
 
-    // internal 以便测试能直接验证反射构造；扫描方法本身仍是 private。
-    internal static IResourceLoader CreateLoader(Type loaderType)
+    private static IResourceLoader CreateLoader(Type loaderType)
     {
         try
         {
@@ -117,7 +117,7 @@ public static class ResourceLoaderManager
                         .GetMethod(nameof(CreateLoaderCore), BindingFlags.Static | BindingFlags.NonPublic)!
                         .MakeGenericMethod(loaderType);
             return method.Invoke(null, null) as IResourceLoader
-                ?? throw new InvalidOperationException(
+             ?? throw new InvalidOperationException(
                     $"Resource loader '{loaderType.FullName}' returned null from IResourceLoader<{loaderType.Name}>.Create().");
         }
         catch (TargetInvocationException ex)
