@@ -14,7 +14,7 @@
       <PackageReference Include="KirisameY.Numeric" Version="0.1.5" />
       <PackageReference Include="KirisameY.Randomizer" Version="0.0.1" />
       <PackageReference Include="KirisameY.Registration" Version="0.1.0" />
-      <PackageReference Include="KirisameY.Relinq" Version="0.1.5" />
+      <PackageReference Include="KirisameY.Relinq" Version="0.1.6" />
       <PackageReference Include="Zio" Version="0.25.0" />
     </ItemGroup>
 

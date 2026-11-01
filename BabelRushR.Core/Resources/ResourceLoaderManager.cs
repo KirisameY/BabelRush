@@ -1,11 +1,16 @@
 using System.Collections.Concurrent;
+using System.Collections.Immutable;
+using System.IO.Compression;
 using System.Reflection;
 
 using BabelRushR.Core.Common;
 
 using JetBrains.Annotations;
 
+using KirisameY.Relinq.Extensions;
+
 using Zio;
+using Zio.FileSystems;
 
 namespace BabelRushR.Core.Resources;
 
@@ -91,7 +96,48 @@ public static class ResourceLoaderManager
     #endregion
 
 
-    #region Private Methods
+    #region Scan Packs
+
+    private static bool _loaded = false;
+
+    public static Task LoadPacksAsync(UPath relativeContentsPath, IProgress<IReadOnlyList<string>> progress) =>
+        Task.Run(() => LoadPacks(relativeContentsPath, progress));
+
+    public static void LoadPacks(UPath relativeContentsPath, IProgress<IReadOnlyList<string>> progress)
+    {
+        if (Interlocked.Exchange(ref _loaded, true)) throw new InvalidOperationException("ResourceLoader cannot load packs duplicately.");
+
+        progress.Report(["directing_contents_path"]);
+        using var fileSys = new PhysicalFileSystem();
+        var contentsPath = fileSys.ConvertPathFromInternal(Directory.GetCurrentDirectory()) / relativeContentsPath;
+        var contentsDir = fileSys.GetDirectoryEntry(contentsPath);
+
+        progress.Report(["solving_content_packs"]);
+        var entries = contentsDir.EnumerateEntries();
+        // 目前只硬编码适配目录和zip包，哪天有需要的话可以写个接口支持更多格式的拓展不过我觉得很难会有这个必要
+        var packs = entries.SelectExist(IFileSystem? (entry) => entry switch
+        {
+            // ReSharper disable once AccessToDisposedClosure
+            DirectoryEntry directory => new SubFileSystem(fileSys, directory.Path),
+            FileEntry { ExtensionWithDot: ".zip" } file =>
+                new ZipArchiveFileSystem(file.Open(FileMode.Open, FileAccess.Read), ZipArchiveMode.Read),
+            _ => null
+        }).ToImmutableList();
+        // todo: metadata checking
+
+        progress.Report(["solving_load_order"]);
+        var sortedPacks = packs; //todo: load order resolving
+
+        foreach (var pack in sortedPacks)
+        {
+            // 扫包
+        }
+    }
+
+    #endregion
+
+
+    #region Private Utils
 
     /// <summary>
     ///     确认 <paramref name="path"/> 是包内路径，并原样返回它。
