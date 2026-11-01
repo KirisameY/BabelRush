@@ -127,19 +127,19 @@ public class ResourceLoaderManagerTests
     {
         public static RecordingLoader Create() => new RecordingLoader();
 
-        public void Load(string packageName, UPath path, Stream stream) { }
+        public void Load(string packageName, DirectoryEntry directory) { }
     }
 
     private sealed class BaseOnlyLoader : IResourceLoader
     {
-        public void Load(string packageName, UPath path, Stream stream) { }
+        public void Load(string packageName, DirectoryEntry directory) { }
     }
 
     private sealed class WrongSelfLoader : IResourceLoader<RecordingLoader>
     {
         public static RecordingLoader Create() => new RecordingLoader();
 
-        public void Load(string packageName, UPath path, Stream stream) { }
+        public void Load(string packageName, DirectoryEntry directory) { }
     }
 
     [AutoResourceLoader("/cards")]
@@ -148,7 +148,7 @@ public class ResourceLoaderManagerTests
     {
         public static MultiTargetLoader Create() => new MultiTargetLoader();
 
-        public void Load(string packageName, UPath path, Stream stream) { }
+        public void Load(string packageName, DirectoryEntry directory) { }
     }
 }
 

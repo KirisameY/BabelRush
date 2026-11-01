@@ -12,12 +12,11 @@ namespace BabelRushR.Core.Resources;
 public interface IResourceLoader
 {
     /// <summary>
-    ///     加载包内 <paramref name="path"/> 指向的文件。
+    ///     加载包内的文件。
     /// </summary>
     /// <param name="packageName">文件所属包的命名空间。</param>
-    /// <param name="path">文件在包内的绝对路径，从包根算起（例如 <c>/cards/strike.toml</c>）；已由 <see cref="UPath"/> 归一化。</param>
-    /// <param name="stream">文件内容流；生命周期由调用方管理，加载器不应关闭它。</param>
-    void Load(string packageName, UPath path, Stream stream);
+    /// <param name="directory">要加载的内容目录。</param>
+    void Load(string packageName, DirectoryEntry directory);
 }
 
 /// <summary>
