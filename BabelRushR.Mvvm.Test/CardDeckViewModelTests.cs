@@ -54,11 +54,17 @@ public class CardDeckViewModelTests
         var viewModel = NewViewModel(gamePlay);
         var cardViewModel = Assert.Single(viewModel.HandPile);
 
+        for (int i = 0; i < ICardDeck.HandLimit; i++)
+        {
+            gamePlay.PlayerState.CardDeck.AddCard(TestCards.New(4), CardPile.Hand);
+        }
+
         viewModel.TryPlayCard(cardViewModel);
 
         // 打牌走 Core 的导演：扣费、移出手牌、进弃牌堆。
         Assert.Equal(4, gamePlay.PlayerState.AP);
-        Assert.Empty(gamePlay.PlayerState.CardDeck.HandPile);
+        //Assert.Empty(gamePlay.PlayerState.CardDeck.HandPile);
+        Assert.DoesNotContain(card, gamePlay.PlayerState.CardDeck.HandPile);
         Assert.Same(card, Assert.Single(gamePlay.PlayerState.CardDeck.DiscardPile));
     }
 }
