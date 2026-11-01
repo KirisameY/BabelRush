@@ -2,7 +2,7 @@ namespace BabelRushR.Core.GamePlay;
 
 /// <summary>标记一个可在每局游戏创建时自动装配的事件处理器。</summary>
 /// <remarks>
-///     必须同时标注 <see cref="GamePlayEventHandlerAttribute"/>，否则不会被自动发现。
+///     必须同时标注 <see cref="AutoGamePlayEventHandlerAttribute"/>，否则不会被自动发现。
 /// </remarks>
 public interface IGamePlayEventHandler
 {

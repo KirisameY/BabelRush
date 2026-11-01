@@ -99,7 +99,7 @@ public class CommonGamePlay(ulong seed) : ObservableObject, IGamePlay
         if (_eventHandlersInitialized || _disposed) return;
         _eventHandlersInitialized = true;
 
-        var registrations = GamePlayEventHandlerRegistry.RegisterAll(this);
+        var registrations = GamePlayEventHandlerDiscoverer.RegisterAll(this);
         // 处理器可能在注册过程中释放了本局；此时刚建立的注册也不能留下。
         if (_disposed)
         {

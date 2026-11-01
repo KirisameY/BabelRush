@@ -2,15 +2,15 @@ using System.Reflection;
 
 namespace BabelRushR.Core.GamePlay;
 
-// 由于是 Deepseek 写的类代码对人类来说可能有点乱，但是因为算是独立模块所以没关系，保持现状就好
+// 由于是 Vibe 的类代码对人类来说可能有点乱，但是因为算是独立模块所以没关系，不涉及相关逻辑时保持现状就好
 
 /// <summary>
-///     发现并注册标注了 <see cref="GamePlayEventHandlerAttribute"/> 的事件处理器。
+///     发现并注册标注了 <see cref="AutoGamePlayEventHandlerAttribute"/> 的事件处理器。
 /// </summary>
 /// <remarks>
 ///     只处理带特性的类型；带特性但无法注册的类型会直接抛异常，避免静默失败。
 /// </remarks>
-internal static class GamePlayEventHandlerRegistry
+internal static class GamePlayEventHandlerDiscoverer
 {
     private static readonly Lazy<IReadOnlyList<Type>> DiscoveredTypes =
         new(() => DiscoverHandlerTypes(), LazyThreadSafetyMode.ExecutionAndPublication);
@@ -57,7 +57,7 @@ internal static class GamePlayEventHandlerRegistry
 
         var handlerTypes = (assemblies ?? CandidateAssemblies(coreAssembly))
                           .SelectMany(LoadableTypes)
-                          .Where(type => type.GetCustomAttribute<GamePlayEventHandlerAttribute>(inherit: false) is not null)
+                          .Where(type => type.GetCustomAttribute<AutoGamePlayEventHandlerAttribute>(inherit: false) is not null)
                           .Distinct()
                           .ToList();
 
@@ -150,7 +150,7 @@ internal static class GamePlayEventHandlerRegistry
     {
         try
         {
-            var method = typeof(GamePlayEventHandlerRegistry)
+            var method = typeof(GamePlayEventHandlerDiscoverer)
                         .GetMethod(nameof(RegisterHandlerCore), BindingFlags.Static | BindingFlags.NonPublic)!
                         .MakeGenericMethod(handlerType);
             return (IDisposable?)method.Invoke(null, [gamePlay]);

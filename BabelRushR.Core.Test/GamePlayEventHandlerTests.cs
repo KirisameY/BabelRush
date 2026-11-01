@@ -121,7 +121,7 @@ public class GamePlayEventHandlerTests
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
         {
-            GamePlayEventHandlerRegistry.RegisterAll(
+            GamePlayEventHandlerDiscoverer.RegisterAll(
                 game, [typeof(GoodExplicitHandler), typeof(ThrowingRegisterHandler)]);
         });
 
@@ -139,7 +139,7 @@ public class GamePlayEventHandlerTests
         GoodExplicitHandler.Reset();
         using var game = NewHandAssembledGame(NewSeed());
 
-        var registrations = GamePlayEventHandlerRegistry.RegisterAll(
+        var registrations = GamePlayEventHandlerDiscoverer.RegisterAll(
             game, [typeof(GoodExplicitHandler), typeof(ThrowingDisposeHandler)]);
 
         var ex = Assert.Throws<AggregateException>(() => registrations.Dispose());
@@ -153,7 +153,7 @@ public class GamePlayEventHandlerTests
     {
         using var game = NewHandAssembledGame(NewSeed());
 
-        var registrations = GamePlayEventHandlerRegistry.RegisterAll(game, [typeof(NullReturnHandler)]);
+        var registrations = GamePlayEventHandlerDiscoverer.RegisterAll(game, [typeof(NullReturnHandler)]);
 
         registrations.Dispose();
     }
@@ -165,7 +165,7 @@ public class GamePlayEventHandlerTests
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
         {
-            GamePlayEventHandlerRegistry.RegisterAll(game, [typeof(string)]);
+            GamePlayEventHandlerDiscoverer.RegisterAll(game, [typeof(string)]);
         });
 
         Assert.Contains(nameof(IGamePlayEventHandler), ex.Message);
@@ -178,7 +178,7 @@ public class GamePlayEventHandlerTests
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
         {
-            GamePlayEventHandlerRegistry.DiscoverHandlerTypes([assembly]);
+            GamePlayEventHandlerDiscoverer.DiscoverHandlerTypes([assembly]);
         });
 
         Assert.Contains("NotAHandler", ex.Message);
@@ -192,7 +192,7 @@ public class GamePlayEventHandlerTests
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
         {
-            GamePlayEventHandlerRegistry.DiscoverHandlerTypes([assembly]);
+            GamePlayEventHandlerDiscoverer.DiscoverHandlerTypes([assembly]);
         });
 
         Assert.Contains("AbstractHandler", ex.Message);
@@ -206,7 +206,7 @@ public class GamePlayEventHandlerTests
 
         var ex = Assert.Throws<InvalidOperationException>(() =>
         {
-            GamePlayEventHandlerRegistry.DiscoverHandlerTypes([assembly]);
+            GamePlayEventHandlerDiscoverer.DiscoverHandlerTypes([assembly]);
         });
 
         Assert.Contains("GenericHandler", ex.Message);
@@ -227,7 +227,7 @@ public class GamePlayEventHandlerTests
         var typeBuilder = module.DefineType(typeName, attributes);
         if (isGeneric) typeBuilder.DefineGenericParameters("T");
 
-        var attributeConstructor = typeof(GamePlayEventHandlerAttribute).GetConstructor(Type.EmptyTypes)!;
+        var attributeConstructor = typeof(AutoGamePlayEventHandlerAttribute).GetConstructor(Type.EmptyTypes)!;
         typeBuilder.SetCustomAttribute(new CustomAttributeBuilder(attributeConstructor, []));
 
         typeBuilder.CreateType();
@@ -237,7 +237,7 @@ public class GamePlayEventHandlerTests
 
     private sealed record ProbeEvent(string Token) : GamePlayEvent;
 
-    [GamePlayEventHandler]
+    [AutoGamePlayEventHandler]
     private sealed class ProbeHandler : IGamePlayEventHandler, IDisposable
     {
         private readonly ulong _seed;
