@@ -3,7 +3,7 @@ using Zio;
 namespace BabelRushR.Core.Resources;
 
 /// <summary>
-///     包内某一类文件的加载器：<see cref="ResourceLoaderManager"/> 按包内路径把文件转发给具体实现。
+///     包内某一类文件的加载器：按包内路径向 <see cref="ResourceLoaderManager"/> 注册自己负责的范围。
 /// </summary>
 /// <remarks>
 ///     加载器实现通常同时实现 <c>IResourceLoader&lt;TSelf&gt;</c>，以便管理器通过静态工厂自动实例化。

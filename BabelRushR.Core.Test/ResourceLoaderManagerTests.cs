@@ -14,78 +14,21 @@ public class ResourceLoaderManagerTests
 
 
     [Fact]
-    public void Register_Exact_File_Is_Found_By_Its_Path()
+    public void Register_Allows_Duplicate_Paths_And_Keeps_Registration_Order()
     {
-        var loader = new RecordingLoader();
+        var first = new RecordingLoader();
+        var second = new RecordingLoader();
 
-        ResourceLoaderManager.Register("/cards/strike.toml", loader);
+        ResourceLoaderManager.Register("/a/b", first);
+        ResourceLoaderManager.Register(new UPath("/a//b/"), second);
 
-        Assert.Same(loader, ResourceLoaderManager.FindLoader("/cards/strike.toml"));
-        Assert.Null(ResourceLoaderManager.FindLoader("/cards/defend.toml"));
-        Assert.Null(ResourceLoaderManager.FindLoader("/cards"));
-        Assert.Null(ResourceLoaderManager.FindLoader("/"));
-    }
-
-    [Fact]
-    public void FindLoader_Returns_The_Most_Specific_Registration()
-    {
-        var directoryLoader = new RecordingLoader();
-        var nestedLoader = new RecordingLoader();
-
-        ResourceLoaderManager.Register("/a/b", directoryLoader);
-        ResourceLoaderManager.Register("/a/b/c", nestedLoader);
-
-        // 分段前缀匹配：/a/b/c 及其后代命中后者，/a/b 的其它后代仍归前者。
-        Assert.Same(nestedLoader, ResourceLoaderManager.FindLoader("/a/b/c"));
-        Assert.Same(nestedLoader, ResourceLoaderManager.FindLoader("/a/b/c/d/e.toml"));
-        Assert.Same(directoryLoader, ResourceLoaderManager.FindLoader("/a/b/d"));
-        Assert.Same(directoryLoader, ResourceLoaderManager.FindLoader("/a/b"));
-        Assert.Null(ResourceLoaderManager.FindLoader("/a"));
-    }
-
-    [Fact]
-    public void Register_And_Find_Normalize_Separators_And_Dot_Segments()
-    {
-        var loader = new RecordingLoader();
-
-        ResourceLoaderManager.Register(new UPath(@"\a\b\.\c\"), loader);
-
-        Assert.Same(loader, ResourceLoaderManager.FindLoader("/a/b/c"));
-        Assert.Same(loader, ResourceLoaderManager.FindLoader("/a//b/c/"));
-        Assert.Same(loader, ResourceLoaderManager.FindLoader("/a/b/x/../c"));
-    }
-
-    [Fact]
-    public void Root_Registration_Is_The_Fallback()
-    {
-        var fallbackLoader = new RecordingLoader();
-        var cardsLoader = new RecordingLoader();
-
-        ResourceLoaderManager.Register(UPath.Root, fallbackLoader);
-        ResourceLoaderManager.Register("/cards", cardsLoader);
-
-        Assert.Same(cardsLoader, ResourceLoaderManager.FindLoader("/cards/strike.toml"));
-        Assert.Same(fallbackLoader, ResourceLoaderManager.FindLoader("/audio/bgm.ogg"));
-        Assert.Same(fallbackLoader, ResourceLoaderManager.FindLoader("/"));
-    }
-
-    [Fact]
-    public void FindLoader_Is_Case_Sensitive()
-    {
-        ResourceLoaderManager.Register("/Cards", new RecordingLoader());
-
-        Assert.Null(ResourceLoaderManager.FindLoader("/cards"));
-    }
-
-    [Fact]
-    public void Register_Rejects_Duplicate_Normalized_Path()
-    {
-        ResourceLoaderManager.Register("/a/b", new RecordingLoader());
-
-        var ex = Assert.Throws<InvalidOperationException>(() =>
-                                                              ResourceLoaderManager.Register(new UPath("/a//b/"), new RecordingLoader()));
-
-        Assert.Contains("/a/b", ex.Message);
+        // 同一路径（归一化后相同）允许重复注册：列表按调用顺序追加，两项都保留，后注册的不覆盖先前的。
+        var registrations = ResourceLoaderManagerAccessor.Registrations;
+        Assert.Equal(2, registrations.Count);
+        Assert.Equal(new UPath("/a/b"), registrations[0].Path);
+        Assert.Same(first, registrations[0].Loader);
+        Assert.Equal(new UPath("/a/b"), registrations[1].Path);
+        Assert.Same(second, registrations[1].Loader);
     }
 
     [Fact]
@@ -106,12 +49,6 @@ public class ResourceLoaderManagerTests
     }
 
     [Fact]
-    public void FindLoader_Rejects_Relative_Path()
-    {
-        Assert.Throws<ArgumentException>(() => ResourceLoaderManager.FindLoader("a/b"));
-    }
-
-    [Fact]
     public void Path_Escaping_The_Package_Root_Is_Rejected()
     {
         // 越过包根的 ".." 在 UPath 归一化时就被拦下，管理器根本收不到这个值。
@@ -128,7 +65,6 @@ public class ResourceLoaderManagerTests
     public void Null_Path_Is_Rejected()
     {
         Assert.Throws<ArgumentNullException>(() => ResourceLoaderManager.Register(default(UPath), new RecordingLoader()));
-        Assert.Throws<ArgumentNullException>(() => ResourceLoaderManager.FindLoader(default(UPath)));
     }
 
     [Fact]
@@ -138,18 +74,6 @@ public class ResourceLoaderManagerTests
 
         Assert.Single(loaders);
         Assert.IsType<RecordingLoader>(loaders[0]);
-    }
-
-    [Fact]
-    public void RegisterAttributedLoaders_Registers_Every_Path_To_One_Instance()
-    {
-        ResourceLoaderManagerAccessor.InvokePrivateStatic("RegisterAttributedLoaders");
-
-        var loader = ResourceLoaderManager.FindLoader("/cards/strike.toml");
-        Assert.NotNull(loader);
-        Assert.IsType<MultiTargetLoader>(loader);
-        Assert.Same(loader, ResourceLoaderManager.FindLoader("/cards"));
-        Assert.Same(loader, ResourceLoaderManager.FindLoader("/cards/actions"));
     }
 
     [Fact]
@@ -230,6 +154,18 @@ public class ResourceLoaderManagerTests
 
 public static class ResourceLoaderManagerAccessor
 {
+    // 注册表是私有的，这里只读取；不为测试把字段提升到 internal，理由同下面的反射调用。
+    public static IReadOnlyList<(UPath Path, IResourceLoader Loader)> Registrations
+    {
+        get
+        {
+            var loadersField = typeof(ResourceLoaderManager).GetField("Loaders", BindingFlags.Static | BindingFlags.NonPublic)
+             ?? throw new MissingFieldException(typeof(ResourceLoaderManager).FullName, "Loaders");
+
+            return (IReadOnlyList<(UPath Path, IResourceLoader Loader)>)loadersField.GetValue(null)!;
+        }
+    }
+
     // 自动扫描按要求保持 private；这里用反射守住它，避免为了测试把实现细节提升到 internal。
     public static object? InvokePrivateStatic(string methodName, params object?[]? arguments)
     {
@@ -246,10 +182,5 @@ public static class ResourceLoaderManagerAccessor
             ExceptionDispatchInfo.Capture(ex.InnerException).Throw();
             throw;
         }
-    }
-
-    extension(ResourceLoaderManager)
-    {
-        public static IResourceLoader? FindLoader(UPath path) => (IResourceLoader?)InvokePrivateStatic("FindLoader", path);
     }
 }
