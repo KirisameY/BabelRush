@@ -1,6 +1,6 @@
 ﻿namespace BabelRushR.Game.Bootstrap;
 
-public class ResourcesInfo
+public class ContentsInfo
 {
     // temp
     public const string RelativePackPath =

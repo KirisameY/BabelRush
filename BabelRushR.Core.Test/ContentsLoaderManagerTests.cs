@@ -2,15 +2,15 @@ using System.Reflection;
 using System.Runtime.ExceptionServices;
 
 using BabelRushR.Core.Common;
-using BabelRushR.Core.Resources;
+using BabelRushR.Core.Contents;
 
 using Zio;
 
 namespace BabelRushR.Core.Test;
 
-public class ResourceLoaderManagerTests
+public class ContentsLoaderManagerTests
 {
-    public ResourceLoaderManagerTests() => ResourceLoaderManagerAccessor.InvokePrivateStatic("ClearRegistrations");
+    public ContentsLoaderManagerTests() => ResourceLoaderManagerAccessor.InvokePrivateStatic("ClearRegistrations");
 
 
     [Fact]
@@ -19,8 +19,8 @@ public class ResourceLoaderManagerTests
         var first = new RecordingLoader();
         var second = new RecordingLoader();
 
-        ResourceLoaderManager.Register("/a/b", first);
-        ResourceLoaderManager.Register(new UPath("/a//b/"), second);
+        ContentsLoaderManager.Register("/a/b", first);
+        ContentsLoaderManager.Register(new UPath("/a//b/"), second);
 
         // 同一路径（归一化后相同）允许重复注册：列表按调用顺序追加，两项都保留，后注册的不覆盖先前的。
         var registrations = ResourceLoaderManagerAccessor.Registrations;
@@ -36,7 +36,7 @@ public class ResourceLoaderManagerTests
     {
         // 包内路径的约定是绝对的：相对路径不会被悄悄补上 "/"。
         var ex = Assert.Throws<ArgumentException>(() =>
-                                                      ResourceLoaderManager.Register("cards/strike.toml", new RecordingLoader()));
+                                                      ContentsLoaderManager.Register("cards/strike.toml", new RecordingLoader()));
 
         Assert.Contains("absolute", ex.Message);
     }
@@ -45,7 +45,7 @@ public class ResourceLoaderManagerTests
     public void Register_Rejects_The_Empty_Path()
     {
         // 空路径曾经表示包根，现在包根只认 UPath.Root。
-        Assert.Throws<ArgumentException>(() => ResourceLoaderManager.Register(new UPath(""), new RecordingLoader()));
+        Assert.Throws<ArgumentException>(() => ContentsLoaderManager.Register(new UPath(""), new RecordingLoader()));
     }
 
     [Fact]
@@ -58,19 +58,19 @@ public class ResourceLoaderManagerTests
     [Fact]
     public void Register_Rejects_Null_Loader()
     {
-        Assert.Throws<ArgumentNullException>(() => ResourceLoaderManager.Register("/a", null!));
+        Assert.Throws<ArgumentNullException>(() => ContentsLoaderManager.Register("/a", null!));
     }
 
     [Fact]
     public void Null_Path_Is_Rejected()
     {
-        Assert.Throws<ArgumentNullException>(() => ResourceLoaderManager.Register(default(UPath), new RecordingLoader()));
+        Assert.Throws<ArgumentNullException>(() => ContentsLoaderManager.Register(default(UPath), new RecordingLoader()));
     }
 
     [Fact]
     public void Factory_Returns_The_Concrete_Type_And_Base_Interface_Works_In_Collections()
     {
-        List<IResourceLoader> loaders = [RecordingLoader.Create()];
+        List<IContentsLoader> loaders = [RecordingLoader.Create()];
 
         Assert.Single(loaders);
         Assert.IsType<RecordingLoader>(loaders[0]);
@@ -96,7 +96,7 @@ public class ResourceLoaderManagerTests
     public void AutoResourceLoaderAttribute_Allows_Multiple_Registrations()
     {
         var paths = typeof(MultiTargetLoader)
-                   .GetCustomAttributes<AutoResourceLoaderAttribute>(inherit: false)
+                   .GetCustomAttributes<AutoContentsLoaderAttribute>(inherit: false)
                    .Select(attribute => attribute.Path)
                    .ToList();
 
@@ -108,7 +108,7 @@ public class ResourceLoaderManagerTests
     [Fact]
     public void AutoResourceLoaderAttribute_Normalizes_Its_Path()
     {
-        var attribute = new AutoResourceLoaderAttribute(@"\cards//actions\");
+        var attribute = new AutoContentsLoaderAttribute(@"\cards//actions\");
 
         Assert.Equal(new UPath("/cards/actions"), attribute.Path);
     }
@@ -116,35 +116,35 @@ public class ResourceLoaderManagerTests
     [Fact]
     public void AttributedTypeScanner_Handles_Multiple_Attributes_On_One_Type()
     {
-        var types = AttributedTypeScanner.FindTypesWithAttribute<AutoResourceLoaderAttribute>(
-            [typeof(ResourceLoaderManagerTests).Assembly]);
+        var types = AttributedTypeScanner.FindTypesWithAttribute<AutoContentsLoaderAttribute>(
+            [typeof(ContentsLoaderManagerTests).Assembly]);
 
         // 一个类型标注多次也只应被发现一次，且 private 嵌套类型也要能看到。
         Assert.Equal(1, types.Count(type => type == typeof(MultiTargetLoader)));
     }
 
-    private sealed class RecordingLoader : IResourceLoader<RecordingLoader>
+    private sealed class RecordingLoader : IContentsLoader<RecordingLoader>
     {
         public static RecordingLoader Create() => new RecordingLoader();
 
         public void Load(string packageName, DirectoryEntry directory) { }
     }
 
-    private sealed class BaseOnlyLoader : IResourceLoader
+    private sealed class BaseOnlyLoader : IContentsLoader
     {
         public void Load(string packageName, DirectoryEntry directory) { }
     }
 
-    private sealed class WrongSelfLoader : IResourceLoader<RecordingLoader>
+    private sealed class WrongSelfLoader : IContentsLoader<RecordingLoader>
     {
         public static RecordingLoader Create() => new RecordingLoader();
 
         public void Load(string packageName, DirectoryEntry directory) { }
     }
 
-    [AutoResourceLoader("/cards")]
-    [AutoResourceLoader("/cards/actions")]
-    private sealed class MultiTargetLoader : IResourceLoader<MultiTargetLoader>
+    [AutoContentsLoader("/cards")]
+    [AutoContentsLoader("/cards/actions")]
+    private sealed class MultiTargetLoader : IContentsLoader<MultiTargetLoader>
     {
         public static MultiTargetLoader Create() => new MultiTargetLoader();
 
@@ -155,23 +155,23 @@ public class ResourceLoaderManagerTests
 public static class ResourceLoaderManagerAccessor
 {
     // 注册表是私有的，这里只读取；不为测试把字段提升到 internal，理由同下面的反射调用。
-    public static IReadOnlyList<(UPath Path, IResourceLoader Loader)> Registrations
+    public static IReadOnlyList<(UPath Path, IContentsLoader Loader)> Registrations
     {
         get
         {
-            var loadersField = typeof(ResourceLoaderManager).GetField("Loaders", BindingFlags.Static | BindingFlags.NonPublic)
-             ?? throw new MissingFieldException(typeof(ResourceLoaderManager).FullName, "Loaders");
+            var loadersField = typeof(ContentsLoaderManager).GetField("Loaders", BindingFlags.Static | BindingFlags.NonPublic)
+             ?? throw new MissingFieldException(typeof(ContentsLoaderManager).FullName, "Loaders");
 
-            return (IReadOnlyList<(UPath Path, IResourceLoader Loader)>)loadersField.GetValue(null)!;
+            return (IReadOnlyList<(UPath Path, IContentsLoader Loader)>)loadersField.GetValue(null)!;
         }
     }
 
     // 自动扫描按要求保持 private；这里用反射守住它，避免为了测试把实现细节提升到 internal。
     public static object? InvokePrivateStatic(string methodName, params object?[]? arguments)
     {
-        var method = typeof(ResourceLoaderManager).GetMethod(
+        var method = typeof(ContentsLoaderManager).GetMethod(
                 methodName, BindingFlags.Static | BindingFlags.NonPublic)
-         ?? throw new MissingMethodException(typeof(ResourceLoaderManager).FullName, methodName);
+         ?? throw new MissingMethodException(typeof(ContentsLoaderManager).FullName, methodName);
 
         try
         {

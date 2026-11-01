@@ -2,7 +2,7 @@ using JetBrains.Annotations;
 
 using Zio;
 
-namespace BabelRushR.Core.Resources;
+namespace BabelRushR.Core.Contents;
 
 /// <summary>
 ///     标记一个 <c>IResourceLoader&lt;TSelf&gt;</c> 实现，并声明它负责的包内路径。
@@ -12,7 +12,7 @@ namespace BabelRushR.Core.Resources;
 ///     也可以是具体文件；注册顺序沿用标注顺序，同一路径重复标注不会被去重。
 /// </remarks>
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false), MeansImplicitUse]
-public sealed class AutoResourceLoaderAttribute(string path) : Attribute
+public sealed class AutoContentsLoaderAttribute(string path) : Attribute
 {
     /// <summary>从包根开始的绝对路径，例如 <c>/cards</c>。</summary>
     /// <remarks>

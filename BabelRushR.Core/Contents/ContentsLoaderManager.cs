@@ -12,10 +12,10 @@ using KirisameY.Relinq.Extensions;
 using Zio;
 using Zio.FileSystems;
 
-namespace BabelRushR.Core.Resources;
+namespace BabelRushR.Core.Contents;
 
 /// <summary>
-///     维护「包内路径 → <see cref="IResourceLoader"/>」的注册表，并提供内容包的枚举入口。
+///     维护「包内路径 → <see cref="IContentsLoader"/>」的注册表，并提供内容包的枚举入口。
 /// </summary>
 /// <remarks>
 ///     <para>
@@ -33,16 +33,16 @@ namespace BabelRushR.Core.Resources;
 ///         注意 <c>..</c> 越过包根的写法（如 <c>/a/../../b</c>）在构造 <see cref="UPath"/> 时就会抛
 ///         <see cref="ArgumentException"/>，管理器根本收不到这种值；管理器自己只拦「不是绝对路径」。
 ///     </para>
-///     管理器只依赖 <see cref="IResourceLoader"/>；带静态工厂的是派生接口 <c>IResourceLoader&lt;TSelf&gt;</c>。
+///     管理器只依赖 <see cref="IContentsLoader"/>；带静态工厂的是派生接口 <c>IResourceLoader&lt;TSelf&gt;</c>。
 ///     管理器是进程级静态状态：注册应在加载任何包之前完成，列表本身不做并发保护。
 /// </remarks>
-public static class ResourceLoaderManager
+public static class ContentsLoaderManager
 {
     #region Loader Register
 
     // 用列表而不是字典：同一路径允许注册多次，且注册顺序本身就是信息，字典的去重与无序性都不合适。
     // 元组不做校验，Path 的归一化与「必须是绝对路径」在 Register 里一次完成。
-    private static readonly List<(UPath Path, IResourceLoader Loader)> Loaders = [];
+    private static readonly List<(UPath Path, IContentsLoader Loader)> Loaders = [];
 
     /// <summary>
     ///     把包内绝对路径 <paramref name="path"/> 注册给 <paramref name="loader"/>。
@@ -55,7 +55,7 @@ public static class ResourceLoaderManager
     /// <param name="loader">负责该路径及其后代路径的加载器。</param>
     /// <exception cref="ArgumentNullException"><paramref name="loader"/> 为 <c>null</c>，或 <paramref name="path"/> 是 null 路径。</exception>
     /// <exception cref="ArgumentException"><paramref name="path"/> 不是从包根开始的绝对路径。</exception>
-    public static void Register(UPath path, IResourceLoader loader)
+    public static void Register(UPath path, IContentsLoader loader)
     {
         if (_loaded) throw new InvalidOperationException("ResourceLoader already loaded content packs.");
         ArgumentNullException.ThrowIfNull(loader);
@@ -64,7 +64,7 @@ public static class ResourceLoaderManager
     }
 
     /// <summary>
-    ///     发现标注了 <see cref="AutoResourceLoaderAttribute"/> 的加载器类型，实例化并按特性上的路径注册。
+    ///     发现标注了 <see cref="AutoContentsLoaderAttribute"/> 的加载器类型，实例化并按特性上的路径注册。
     /// </summary>
     /// <remarks>
     ///     尚未接线：等包的遍历完成后由加载流程调用。同一类型只创建一个实例，供它的所有路径复用；
@@ -72,7 +72,7 @@ public static class ResourceLoaderManager
     /// </remarks>
     private static void RegisterAttributedLoaders()
     {
-        var loaderTypes = AttributedTypeScanner.FindTypesWithAttribute<AutoResourceLoaderAttribute>();
+        var loaderTypes = AttributedTypeScanner.FindTypesWithAttribute<AutoContentsLoaderAttribute>();
         foreach (var loaderType in loaderTypes)
         {
             ValidateLoaderType(loaderType);
@@ -81,7 +81,7 @@ public static class ResourceLoaderManager
         foreach (var loaderType in loaderTypes)
         {
             var loader = CreateLoader(loaderType);
-            foreach (var attribute in loaderType.GetCustomAttributes<AutoResourceLoaderAttribute>(inherit: false))
+            foreach (var attribute in loaderType.GetCustomAttributes<AutoContentsLoaderAttribute>(inherit: false))
             {
                 Register(attribute.Path, loader);
             }
@@ -120,13 +120,13 @@ public static class ResourceLoaderManager
 
     private static void ValidateLoaderType(Type loaderType)
     {
-        AttributedTypeScanner.ValidateRegistrationType(loaderType, typeof(IResourceLoader), "Resource loader");
+        AttributedTypeScanner.ValidateRegistrationType(loaderType, typeof(IContentsLoader), "Resource loader");
 
         // 自动实例化要求实现的是 IResourceLoader<自己>，而不是别的 TSelf。
         // 不能用 MakeGenericType 来检查：约束不满足时它自己就会抛 ArgumentException。
         var implementsSelfFactory = loaderType.GetInterfaces().Any(implemented =>
                                                                        implemented.IsGenericType
-                                                                    && implemented.GetGenericTypeDefinition() == typeof(IResourceLoader<>)
+                                                                    && implemented.GetGenericTypeDefinition() == typeof(IContentsLoader<>)
                                                                     && implemented.GetGenericArguments()[0] == loaderType);
         if (!implementsSelfFactory)
         {
@@ -135,14 +135,14 @@ public static class ResourceLoaderManager
         }
     }
 
-    private static IResourceLoader CreateLoader(Type loaderType)
+    private static IContentsLoader CreateLoader(Type loaderType)
     {
         try
         {
-            var method = typeof(ResourceLoaderManager)
+            var method = typeof(ContentsLoaderManager)
                         .GetMethod(nameof(CreateLoaderCore), BindingFlags.Static | BindingFlags.NonPublic)!
                         .MakeGenericMethod(loaderType);
-            return method.Invoke(null, null) as IResourceLoader
+            return method.Invoke(null, null) as IContentsLoader
              ?? throw new InvalidOperationException(
                     $"Resource loader '{loaderType.FullName}' returned null from IResourceLoader<{loaderType.Name}>.Create().");
         }
@@ -153,7 +153,7 @@ public static class ResourceLoaderManager
         }
     }
 
-    private static TSelf CreateLoaderCore<TSelf>() where TSelf : IResourceLoader<TSelf> => TSelf.Create();
+    private static TSelf CreateLoaderCore<TSelf>() where TSelf : IContentsLoader<TSelf> => TSelf.Create();
 
     #endregion
 
