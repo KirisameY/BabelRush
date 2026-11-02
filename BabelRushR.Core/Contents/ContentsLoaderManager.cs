@@ -9,6 +9,8 @@ using JetBrains.Annotations;
 using KirisameY.GenericUtils;
 using KirisameY.Relinq.Extensions;
 
+using Tomlyn;
+
 using Zio;
 using Zio.FileSystems;
 
@@ -187,7 +189,10 @@ public static class ContentsLoaderManager
             ),
             _ => Optional.Empty<(string, IFileSystem)>()
         }).ToImmutableList();
-        // todo: metadata checking
+        var packsWithMeta = ResolveMetaData(packs);
+
+        progress.Report(["validating_dependencies"]);
+        ValidateDependencies(packsWithMeta);
 
         progress.Report(["loading_assemblies"]);
         // todo: load assemblies
@@ -196,16 +201,16 @@ public static class ContentsLoaderManager
         RegisterAttributedLoaders();
 
         progress.Report(["solving_load_order"]);
-        var sortedPacks = ResolveMetaDataAndOrder(packs);
+        var sortedPacks = ResolveOrder(packsWithMeta);
 
         // loading resources
-        foreach (var (packName, packFs) in sortedPacks)
+        foreach (var (_, packFs, meta) in sortedPacks)
         {
-            progress.Report(["loading_pack_resources", packName]);
+            progress.Report(["loading_pack_resources", meta.PackId]);
             foreach (var (path, loader) in Loaders)
             {
                 if (!packFs.DirectoryExists(path)) continue;
-                loader.Load(packName, packFs.GetDirectoryEntry(path));
+                loader.Load(meta.PackId, packFs.GetDirectoryEntry(path));
             }
         }
 
@@ -213,10 +218,142 @@ public static class ContentsLoaderManager
         foreach (var t in packs) t.Fs.Dispose();
     }
 
-    private static ImmutableList<(string PackName, IFileSystem PackFs)> ResolveMetaDataAndOrder(
-        IReadOnlyList<(string Path, IFileSystem Fs)> packs)
+    private static ImmutableList<(string Path, IFileSystem Fs, PackMetaData Meta)> ResolveMetaData(
+        IReadOnlyList<(string Path, IFileSystem Fs)> packs
+    )
     {
-        throw new NotImplementedException();
+        var metaPath = (UPath)"/pack.toml";
+        List<(string Path, IFileSystem Fs, PackMetaData Meta)> result = new(capacity: packs.Count);
+        foreach (var (path, fs) in packs)
+        {
+            if (!fs.FileExists(metaPath))
+            {
+                // todo: 在这里报个警告
+                continue;
+            }
+            using var metaStream = fs.GetFileEntry(metaPath).Open(FileMode.Open, FileAccess.Read);
+            var meta = TomlSerializer.Deserialize<PackMetaData>(metaStream, Serializing.DefaultOptions)!; // todo: 异常处理+警告+跳过
+            result.Add((path, fs, meta));
+        }
+        return [..result];
+    }
+
+    private static void ValidateDependencies(IReadOnlyList<(string Path, IFileSystem Fs, PackMetaData Meta)> packs)
+    {
+        var unfoundDependencies = packs.Select( //
+            l => l.Meta
+        ).Where( //
+            m => !m.Dependencies.IsEmpty
+        ).SelectMany( //
+            m => m.Dependencies.Select(dep => (depId: dep.PackId, depV: dep.Version, id: m.PackId))
+        ).GroupBy(
+            t => t.depId,
+            (depId, ts) => KeyValuePair.Create(
+                depId, ts.Select(t => (t.depV, t.id)).ToList()
+            )
+        ).ToDictionary();
+
+        List<string> errors = [];
+
+        foreach (var (_, _, packMeta) in packs)
+        {
+            if (!unfoundDependencies.TryGetValue(packMeta.PackId, out var l)) continue;
+            l.RemoveAll(t => t.depV <= packMeta.Version);
+            if (l.Count != 0)
+            {
+                foreach (var (depV, id) in l)
+                {
+                    var msg = $"{id} need {packMeta.PackId} not lower than {depV}, but current {packMeta.PackId} version is {packMeta.Version}";
+                    errors.Add(msg);
+                }
+            }
+            unfoundDependencies.Remove(packMeta.PackId);
+        }
+        foreach (var (depId, depV, id) in
+                 unfoundDependencies.SelectMany(kvp => kvp.Value.Select(t => (depId: kvp.Key, t.depV, t.id))))
+        {
+            var msg = $"{id} need {depId} not lower than {depV}, but {depId} not found.";
+            errors.Add(msg);
+        }
+
+        if (errors.Count > 0) throw new PackDependenciesNotSatisfiedException(errors);
+    }
+
+    private static ImmutableList<(string Path, IFileSystem Fs, PackMetaData Meta)> ResolveOrder(
+        IReadOnlyList<(string Path, IFileSystem Fs, PackMetaData Meta)> packs
+    )
+    {
+        var orderCells = packs.Select(t => t.Meta).SelectMany(meta =>
+        {
+            // ReSharper disable once InvokeAsExtensionMember
+            return Enumerable.Concat(
+                meta.LoadAfter.Select(before => (Before: before, After: meta.PackId)),
+                meta.LoadBefore.Select(after => (Before: meta.PackId, After: after))
+            );
+        }).GroupBy(
+            t => t.After,
+            (after, orders) => KeyValuePair.Create(after, orders.Select(t => t.Before).ToImmutableList())
+        ).ToImmutableDictionary();
+
+        Dictionary<string, Action> pendingDelegates = [];
+        List<(string Path, IFileSystem Fs, PackMetaData Meta)> orderedPacks = new(capacity: packs.Count);
+        int pointer = 0;
+
+        // traverse all packs and init state
+        foreach (var t in packs)
+        {
+            var id = t.Meta.PackId;
+            if (!orderCells.TryGetValue(id, out var deps))
+            {
+                orderedPacks.Add(t);
+            }
+            else
+            {
+                var left = deps.Count;
+                var pend = () =>
+                {
+                    left--;
+                    if (left == 0) orderedPacks.Add(t);
+                };
+                foreach (var dep in deps)
+                {
+                    var current = pendingDelegates.GetValueOrDefault(dep);
+                    pendingDelegates[dep] = current + pend;
+                }
+            }
+        }
+
+        // treat those not exist packages as handled
+        var unsolvedPacks = packs.ToDictionary(
+            t => t.Meta.PackId,
+            t => (After: t.Meta.LoadAfter, Before: t.Meta.LoadBefore)
+        );
+        foreach (var (dep, act) in pendingDelegates)
+        {
+            if (unsolvedPacks.ContainsKey(dep)) act.Invoke();
+        }
+
+        // now solve the rest
+        while (pointer < orderedPacks.Count)
+        {
+            var id = orderedPacks[pointer].Meta.PackId;
+            pendingDelegates.GetValueOrDefault(id)?.Invoke();
+            unsolvedPacks.Remove(id);
+            pointer++;
+        }
+
+        // not all packs resolved means there's circular orders
+        if (unsolvedPacks.Count != 0)
+        {
+            throw new PackCircularOrderedException(unsolvedPacks.Select(p => $"""
+            pack [{p.Key}] should be loaded 
+              after: {p.Value.After.Select(id => $"\n    {id}").Join(',')}
+              and before: {p.Value.Before.Select(id => $"\n    {id}").Join(',')}
+
+            """));
+        }
+
+        return [..orderedPacks];
     }
 
     #endregion
