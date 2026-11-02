@@ -127,19 +127,19 @@ public class ContentsLoaderManagerTests
     {
         public static RecordingLoader Create() => new RecordingLoader();
 
-        public void Load(string packageName, DirectoryEntry directory) { }
+        public void Load(string packageName, FileSystemEntry entry) { }
     }
 
     private sealed class BaseOnlyLoader : IContentsLoader
     {
-        public void Load(string packageName, DirectoryEntry directory) { }
+        public void Load(string packageName, FileSystemEntry entry) { }
     }
 
     private sealed class WrongSelfLoader : IContentsLoader<RecordingLoader>
     {
         public static RecordingLoader Create() => new RecordingLoader();
 
-        public void Load(string packageName, DirectoryEntry directory) { }
+        public void Load(string packageName, FileSystemEntry entry) { }
     }
 
     [AutoContentsLoader("/cards")]
@@ -148,7 +148,7 @@ public class ContentsLoaderManagerTests
     {
         public static MultiTargetLoader Create() => new MultiTargetLoader();
 
-        public void Load(string packageName, DirectoryEntry directory) { }
+        public void Load(string packageName, FileSystemEntry entry) { }
     }
 }
 

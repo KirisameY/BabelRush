@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace BabelRushR.Core.Registration;
+namespace BabelRushR.Core.Data;
 
 [AttributeUsage(AttributeTargets.Class, Inherited = false), MeansImplicitUse]
-public class RegisterInitializeAttribute : Attribute;
+public class DataRegisterInitializeAttribute : Attribute;

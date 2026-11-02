@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Reflection;
 
 using BabelRushR.Core.Common;
+using BabelRushR.Core.Common.Serializing;
 
 using JetBrains.Annotations;
 
@@ -209,13 +210,17 @@ public static class ContentsLoaderManager
             progress.Report(["loading_pack_resources", meta.PackId]);
             foreach (var (path, loader) in Loaders)
             {
-                if (!packFs.DirectoryExists(path)) continue;
+                if (packFs.TryGetFileSystemEntry(path) is not { } entry) continue;
                 loader.Load(meta.PackId, packFs.GetDirectoryEntry(path));
             }
         }
 
         progress.Report(["finalizing"]);
         foreach (var t in packs) t.Fs.Dispose();
+        foreach (var loader in Loaders.Select(t => t.Loader).OfType<IDisposable>())
+        {
+            loader.Dispose();
+        }
     }
 
     private static ImmutableList<(string Path, IFileSystem Fs, PackMetaData Meta)> ResolveMetaData(
@@ -232,7 +237,7 @@ public static class ContentsLoaderManager
                 continue;
             }
             using var metaStream = fs.GetFileEntry(metaPath).Open(FileMode.Open, FileAccess.Read);
-            var meta = TomlSerializer.Deserialize<PackMetaData>(metaStream, Serializing.DefaultOptions)!; // todo: 异常处理+警告+跳过
+            var meta = TomlSerializer.Deserialize<PackMetaData>(metaStream, SerializingOptions.Default)!; // todo: 异常处理+警告+跳过
             result.Add((path, fs, meta));
         }
         return [..result];

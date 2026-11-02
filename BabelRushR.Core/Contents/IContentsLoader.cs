@@ -15,8 +15,8 @@ public interface IContentsLoader
     ///     加载包内的文件。
     /// </summary>
     /// <param name="packageName">文件所属包的命名空间。</param>
-    /// <param name="directory">要加载的内容目录。</param>
-    void Load(string packageName, DirectoryEntry directory);
+    /// <param name="entry">要加载的内容目录或文件。</param>
+    void Load(string packageName, FileSystemEntry entry);
 }
 
 /// <summary>
