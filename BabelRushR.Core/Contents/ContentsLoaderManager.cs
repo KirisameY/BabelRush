@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.IO.Compression;
 using System.Reflection;
@@ -193,16 +194,16 @@ public static class ContentsLoaderManager
         var packsWithMeta = ResolveMetaData(packs);
 
         progress.Report(["validating_dependencies"]);
-        ValidateDependencies(packsWithMeta);
+        var packsSortedAsDependencies = ValidateDependencies(packsWithMeta);
 
         progress.Report(["loading_assemblies"]);
-        // todo: load assemblies
-
-        progress.Report(["scanning_loaders"]);
-        RegisterAttributedLoaders();
+        LoadPackAssemblies(packsSortedAsDependencies);
 
         progress.Report(["solving_load_order"]);
         var sortedPacks = ResolveOrder(packsWithMeta);
+
+        progress.Report(["scanning_loaders"]);
+        RegisterAttributedLoaders();
 
         // loading resources
         foreach (var (_, packFs, meta) in sortedPacks)
@@ -223,9 +224,30 @@ public static class ContentsLoaderManager
         }
     }
 
+    private static void LoadPackAssemblies(ImmutableList<(string Path, IFileSystem Fs, PackMetaData Meta)> packs)
+    {
+        Dictionary<string, PackAssemblyLoadContext> contexts = [];
+        var dllPath = (UPath)"/$assemblies";
+        foreach (var (_, fs, meta) in packs)
+        {
+            var ctx = contexts[meta.PackId] = new PackAssemblyLoadContext(
+                meta.PackId, [..meta.Dependencies.Select(d => contexts[d.PackId])]
+            );
+            foreach (var file in fs.EnumerateFileEntries(dllPath, "*.dll", SearchOption.AllDirectories))
+            {
+                using var stream = file.Open(FileMode.Open, FileAccess.Read);
+                ctx.LoadFromStream(stream);
+            }
+        }
+    }
+
+    #endregion
+
+
+    #region Pack Utils
+
     private static ImmutableList<(string Path, IFileSystem Fs, PackMetaData Meta)> ResolveMetaData(
-        IReadOnlyList<(string Path, IFileSystem Fs)> packs
-    )
+        IReadOnlyList<(string Path, IFileSystem Fs)> packs)
     {
         var metaPath = (UPath)"/pack.toml";
         List<(string Path, IFileSystem Fs, PackMetaData Meta)> result = new(capacity: packs.Count);
@@ -243,7 +265,8 @@ public static class ContentsLoaderManager
         return [..result];
     }
 
-    private static void ValidateDependencies(IReadOnlyList<(string Path, IFileSystem Fs, PackMetaData Meta)> packs)
+    private static ImmutableList<(string Path, IFileSystem Fs, PackMetaData Meta)> ValidateDependencies(
+        IReadOnlyList<(string Path, IFileSystem Fs, PackMetaData Meta)> packs)
     {
         var unfoundDependencies = packs.Select( //
             l => l.Meta
@@ -282,11 +305,12 @@ public static class ContentsLoaderManager
         }
 
         if (errors.Count > 0) throw new PackDependenciesNotSatisfiedException(errors);
+
+        return [..packs]; // todo: require sort by dependency and no circular
     }
 
     private static ImmutableList<(string Path, IFileSystem Fs, PackMetaData Meta)> ResolveOrder(
-        IReadOnlyList<(string Path, IFileSystem Fs, PackMetaData Meta)> packs
-    )
+        IReadOnlyList<(string Path, IFileSystem Fs, PackMetaData Meta)> packs)
     {
         var orderCells = packs.Select(t => t.Meta).SelectMany(meta =>
         {
