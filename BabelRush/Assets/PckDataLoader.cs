@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 
 using BabelRushR.Core.Contents;
 
@@ -11,10 +10,10 @@ using Zio;
 using FileAccess = System.IO.FileAccess;
 using GDFileAccess = Godot.FileAccess;
 
-namespace BabelRushR.Game.Bootstrap;
+namespace BabelRushR.Game.Assets;
 
 [AutoContentsLoader("/assets.pck")]
-public sealed class PckLoader : IContentsLoader<PckLoader>, IDisposable
+public sealed class PckDataLoader : IContentsLoader<PckDataLoader>, IDisposable
 {
     // FUCK GODOT
     private readonly MemoryStream _cache = new();
@@ -37,7 +36,7 @@ public sealed class PckLoader : IContentsLoader<PckLoader>, IDisposable
         ProjectSettings.LoadResourcePack(tmpFile.GetPath());
     }
 
-    public static PckLoader Create() => new();
+    public static PckDataLoader Create() => new();
 
     // FUCK GODOT
     public void Dispose()

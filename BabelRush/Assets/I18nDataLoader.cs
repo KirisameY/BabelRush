@@ -1,0 +1,42 @@
+﻿using System.IO;
+using System.Linq;
+
+using BabelRushR.Core.Contents;
+
+using KirisameY.Relinq.Extensions;
+
+using Zio;
+
+namespace BabelRushR.Game.Assets;
+
+[AutoContentsLoader("/local")]
+// ReSharper disable once InconsistentNaming
+public class I18nDataLoader : IContentsLoader<I18nDataLoader>
+{
+    public void Load(string packageName, FileSystemEntry entry)
+    {
+        if (entry is not DirectoryEntry directory) return;
+        var fs = directory.FileSystem;
+        foreach (var localeDir in directory.EnumerateDirectories())
+        {
+            var path = localeDir.Path;
+            var locale = localeDir.Name;
+            if (fs.TryGetFileSystemEntry(path / "translations") is DirectoryEntry trDir)
+            {
+                trDir.EnumerateFiles("*.toml", SearchOption.AllDirectories)
+                     .Select(f => f.Open(FileMode.Open, FileAccess.Read))
+                     .SelectSelf(s => TranslationLoader.LoadFromTomlStream(locale, packageName, s))
+                     .ForEach(s => s.Dispose());
+            }
+            if (fs.TryGetFileSystemEntry(path / "redirections") is DirectoryEntry reDir)
+            {
+                reDir.EnumerateFiles("*.toml", SearchOption.AllDirectories)
+                     .Select(f => f.Open(FileMode.Open, FileAccess.Read))
+                     .SelectSelf(s => L10nAssetRedirectionLoader.LoadFromTomlStream(locale, s))
+                     .ForEach(s => s.Dispose());
+            }
+        }
+    }
+
+    public static I18nDataLoader Create() => new();
+}
