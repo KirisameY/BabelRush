@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.IO.Compression;
 using System.Reflection;
@@ -212,7 +211,7 @@ public static class ContentsLoaderManager
             foreach (var (path, loader) in Loaders)
             {
                 if (packFs.TryGetFileSystemEntry(path) is not { } entry) continue;
-                loader.Load(meta.PackId, packFs.GetDirectoryEntry(path));
+                loader.Load(meta.PackId, entry);
             }
         }
 
@@ -306,7 +305,22 @@ public static class ContentsLoaderManager
 
         if (errors.Count > 0) throw new PackDependenciesNotSatisfiedException(errors);
 
-        return [..packs]; // todo: require sort by dependency and no circular
+        var dependencies = packs.Select(t => t.Meta)
+                                .Where(meta => !meta.Dependencies.IsEmpty)
+                                .ToDictionary(
+                                     meta => meta.PackId,
+                                     meta => meta.Dependencies.Select(dep => dep.PackId).Distinct().ToImmutableList()
+                                 );
+
+        return SortByDependencies(
+            packs,
+            t => t.Meta.PackId,
+            dependencies,
+            unsolvedIds => new PackCircularDependencyException(unsolvedIds.Select(id =>
+            {
+                return $"pack [{id}] depends on: {dependencies[id].Select(dep => $"\n    {dep}").Join(',')}\n";
+            }))
+        );
     }
 
     private static ImmutableList<(string Path, IFileSystem Fs, PackMetaData Meta)> ResolveOrder(
@@ -324,15 +338,43 @@ public static class ContentsLoaderManager
             (after, orders) => KeyValuePair.Create(after, orders.Select(t => t.Before).ToImmutableList())
         ).ToImmutableDictionary();
 
+        var packsById = packs.ToDictionary(t => t.Meta.PackId);
+
+        return SortByDependencies(
+            packs,
+            t => t.Meta.PackId,
+            orderCells,
+            unsolvedIds => new PackCircularOrderedException(unsolvedIds.Select(id => $"""
+            pack [{id}] should be loaded 
+              after: {packsById[id].Meta.LoadAfter.Select(before => $"\n    {before}").Join(',')}
+              and before: {packsById[id].Meta.LoadBefore.Select(after => $"\n    {after}").Join(',')}
+
+            """))
+        );
+    }
+
+    /// <summary>
+    ///     按 <paramref name="dependencies"/> 给出的前置关系对 <paramref name="packs"/> 做拓扑排序，并保持同层元素的原始顺序。
+    /// </summary>
+    /// <remarks>
+    ///     <paramref name="dependencies"/> 的键是等待方，值是要先于它出现的包 Id；指向不存在的包的依赖视为已满足。
+    ///     排序结束后仍有包排不进去，说明依赖成环，此时用 <paramref name="createCircularException"/> 构造并抛出异常。
+    /// </remarks>
+    private static ImmutableList<T> SortByDependencies<T>(
+        IReadOnlyList<T> packs,
+        Func<T, string> idSelector,
+        IReadOnlyDictionary<string, ImmutableList<string>> dependencies,
+        Func<IReadOnlyCollection<string>, Exception> createCircularException)
+    {
         Dictionary<string, Action> pendingDelegates = [];
-        List<(string Path, IFileSystem Fs, PackMetaData Meta)> orderedPacks = new(capacity: packs.Count);
+        List<T> orderedPacks = new(capacity: packs.Count);
         int pointer = 0;
 
         // traverse all packs and init state
         foreach (var t in packs)
         {
-            var id = t.Meta.PackId;
-            if (!orderCells.TryGetValue(id, out var deps))
+            var id = idSelector(t);
+            if (!dependencies.TryGetValue(id, out var deps) || deps.IsEmpty)
             {
                 orderedPacks.Add(t);
             }
@@ -353,36 +395,25 @@ public static class ContentsLoaderManager
         }
 
         // treat those not exist packages as handled
-        var unsolvedPacks = packs.ToDictionary(
-            t => t.Meta.PackId,
-            t => (After: t.Meta.LoadAfter, Before: t.Meta.LoadBefore)
-        );
+        var unsolvedIds = packs.Select(idSelector).ToHashSet();
         foreach (var (dep, act) in pendingDelegates)
         {
-            if (unsolvedPacks.ContainsKey(dep)) act.Invoke();
+            if (!unsolvedIds.Contains(dep)) act.Invoke();
         }
 
         // now solve the rest
         while (pointer < orderedPacks.Count)
         {
-            var id = orderedPacks[pointer].Meta.PackId;
+            var id = idSelector(orderedPacks[pointer]);
             pendingDelegates.GetValueOrDefault(id)?.Invoke();
-            unsolvedPacks.Remove(id);
+            unsolvedIds.Remove(id);
             pointer++;
         }
 
-        // not all packs resolved means there's circular orders
-        if (unsolvedPacks.Count != 0)
-        {
-            throw new PackCircularOrderedException(unsolvedPacks.Select(p => $"""
-            pack [{p.Key}] should be loaded 
-              after: {p.Value.After.Select(id => $"\n    {id}").Join(',')}
-              and before: {p.Value.Before.Select(id => $"\n    {id}").Join(',')}
-
-            """));
-        }
-
-        return [..orderedPacks];
+        // not all packs resolved means there's circular dependencies
+        return unsolvedIds.Count == 0
+            ? [..orderedPacks]
+            : throw createCircularException(unsolvedIds);
     }
 
     #endregion
