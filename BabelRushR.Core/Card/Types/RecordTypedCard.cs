@@ -1,5 +1,4 @@
-﻿using BabelRushR.Core.Card.Types;
-using BabelRushR.Core.Common;
+﻿using BabelRushR.Core.Common;
 using BabelRushR.Core.EntityAction;
 using BabelRushR.Core.Numeric;
 using BabelRushR.Core.Numeric.CommonModifiers;
@@ -9,13 +8,13 @@ using KirisameY.NotifiableCollections.Collections;
 using KirisameY.Numeric;
 using KirisameY.Registration.Data;
 
-namespace BabelRushR.Core.Card;
+namespace BabelRushR.Core.Card.Types;
 
-public class TypedCard(ICardType type) : ObservableObject, ICard
+public class RecordTypedCard(RecordCardType type) : ObservableObject, ICard
 {
     public ICardType Type => type;
 
-    public RegKey DisplayKey => field ??= type.Id;
+    public RegKey DisplayKey => field ??= type.ID;
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> Cost => field ??=
         INumeric.CreateReadonly(type.Cost, TypeA.Of<CommonNumericModifyOrder>())
                 .WithModifier(new CommonLimitModifier(min: 0))

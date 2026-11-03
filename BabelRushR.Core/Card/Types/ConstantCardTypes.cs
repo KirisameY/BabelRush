@@ -18,7 +18,7 @@ public static class ConstantCardTypes
 
     public static readonly ICardType Strike = New("strike", 1, [
         // todo: 目标选择还没接（EntityActionContext 目前只带 Actor），先只保留数值
-        (new ValuedDelegateEntityActionType((_, _) => { }), 6)
+        (ConstantEntityActionTypes.Attack, 6)
     ]);
 
     public static readonly ICardType Defense = New("defense", 1, []);
@@ -37,6 +37,6 @@ public static class ConstantCardTypes
 
     private class InnerRegistrant : IRegistrant<ICardType>
     {
-        public void AcceptTarget(IRegisterTarget<ICardType> target) => CardTypes.ForEach(type => target.AddItem(type.Id, type));
+        public void AcceptTarget(IRegisterTarget<ICardType> target) => CardTypes.ForEach(type => target.AddItem(type.ID, type));
     }
 }

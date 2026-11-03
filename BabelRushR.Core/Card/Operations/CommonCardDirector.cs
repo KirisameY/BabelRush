@@ -13,7 +13,7 @@ public class CommonCardDirector(IGamePlay gamePlay) : ICardDirector
     {
         gamePlay.EventBus.Publish(new CardPlayingEvent(card));
 
-        var ctx = new EntityActionContext(gamePlay.PlayerState.PCEntity);
+        var ctx = new EntityActionContext(gamePlay, gamePlay.PlayerState.PCEntity);
         foreach (var action in card.Actions)
         {
             action.Act(ctx);

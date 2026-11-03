@@ -13,7 +13,7 @@ public static class CardType
     public static IEnumerableRegistry<ICardType> Registry { get; } =
         new RegistryBuilder<ICardType>()
            .WithFallback(Fallback)
-           .AddRegistrant(DataRegistrationManager.Attach(new ListedTomlDataRegistrant<ICardType>("/cards", "card", c => c.Id)))
+           .AddRegistrant(DataRegistrationManager.Attach(new ListedTomlDataRegistrant<ICardType>("/cards", "card", c => c.ID)))
            .AddRegistrant(ConstantCardTypes.Registrant)
            .WithRegisterDoneEventSource(DataRegistrationManager.DoneSource)
            .Build();

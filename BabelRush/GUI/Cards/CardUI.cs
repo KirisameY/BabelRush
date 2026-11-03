@@ -41,7 +41,7 @@ public partial class CardUI : Button
         {
             if (field == value) return;
             field         = value;
-            Title.Text    = value;
+            Title.Text    = TranslationServer.Translate($"{value.NameSpace}:card.{value.Key}.name");
             Image.Texture = AssetLoader.Load<Texture2D>("graphic/card", value, "png") ?? new PlaceholderTexture2D();
         }
     } = RegKey.Default;

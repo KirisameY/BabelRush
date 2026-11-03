@@ -78,5 +78,5 @@ public partial class TestGamePlay : Node
 
     /// <summary>Action 的占位类型：目标选择与打牌都还没做，这里只关心数量。</summary>
     private static readonly IEntityActionType TestActionType =
-        new ValuedDelegateEntityActionType((_, _) => { });
+        new ValuedDelegateEntityActionType(RegKey.From("core", "test"), (_, _) => { });
 }

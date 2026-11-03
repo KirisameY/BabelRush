@@ -1,8 +1,6 @@
 ﻿using BabelRushR.Core.Entity;
+using BabelRushR.Core.GamePlay;
 
 namespace BabelRushR.Core.EntityAction;
 
-public record EntityActionContext(IEntity? Actor)
-{
-    public static EntityActionContext Empty => field ??= new((IEntity?)null);
-}
+public record EntityActionContext(IGamePlay GamePlay, IEntity Actor) { }

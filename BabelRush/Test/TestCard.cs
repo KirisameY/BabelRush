@@ -30,11 +30,11 @@ public partial class TestCard : Control
 
     private CardUI Card => field ??= GetNode<CardUI>("CardUI");
 
-    private HSlider CostModifierSlider   => field ??= GetNode<HSlider>("Controls/CostModifierRow/CostModifierSlider");
-    private Label   CostModifierValue    => field ??= GetNode<Label>("Controls/CostModifierRow/CostModifierValue");
-    private SpinBox TypeCostBox          => field ??= GetNode<SpinBox>("Controls/TypeCostRow/TypeCostBox");
-    private SpinBox ActionCountBox       => field ??= GetNode<SpinBox>("Controls/ActionCountRow/ActionCountBox");
-    private Button  RebuildButton        => field ??= GetNode<Button>("Controls/RebuildButton");
+    private HSlider CostModifierSlider => field ??= GetNode<HSlider>("Controls/CostModifierRow/CostModifierSlider");
+    private Label CostModifierValue => field ??= GetNode<Label>("Controls/CostModifierRow/CostModifierValue");
+    private SpinBox TypeCostBox => field ??= GetNode<SpinBox>("Controls/TypeCostRow/TypeCostBox");
+    private SpinBox ActionCountBox => field ??= GetNode<SpinBox>("Controls/ActionCountRow/ActionCountBox");
+    private Button RebuildButton => field ??= GetNode<Button>("Controls/RebuildButton");
 
     #endregion
 
@@ -50,7 +50,7 @@ public partial class TestCard : Control
     public override void _Ready()
     {
         CostModifierSlider.ValueChanged += _ => ApplyCostModifier();
-        RebuildButton.Pressed            += Rebuild;
+        RebuildButton.Pressed           += Rebuild;
 
         Rebuild();
     }
@@ -80,17 +80,15 @@ public partial class TestCard : Control
     private static ICardType CreateCardType(int cost, int actionCount) => new RecordCardType(
         TestCardTypeId,
         cost,
-        ImmutableArray.CreateRange(
-            Enumerable.Range(1, actionCount).Select(value => (TestActionType, value))
-        )
+        [..Enumerable.Range(1, actionCount).Select(value => (TestActionType, value))]
     );
 
-    private static readonly RegKey TestCardTypeId = RegKey.From("babelrush", "test");
+    private static readonly RegKey TestCardTypeId = RegKey.From("core", "test");
 
     /// <summary>
     ///     Action 的占位类型：目标选择与打牌都还没做，现在只关心数量，效果留空。
     /// </summary>
-    private static readonly IEntityActionType TestActionType = new ValuedDelegateEntityActionType((_, _) => { });
+    private static readonly IEntityActionType TestActionType = new ValuedDelegateEntityActionType(RegKey.From("core", "test"), (_, _) => { });
 
     #endregion
 

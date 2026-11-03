@@ -1,16 +1,14 @@
-﻿using System.Collections.Immutable;
+﻿using KirisameY.Registration.Data;
 
-using BabelRushR.Core.EntityAction.Types;
-
-using KirisameY.Registration.Data;
+using Tomlyn.Serialization;
 
 namespace BabelRushR.Core.Card.Types;
 
+[TomlPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[TomlDerivedType(typeof(DelayedRecordCardType))]
 public interface ICardType
 {
-    RegKey Id { get; }
-    int Cost { get; }
-    ImmutableArray<(IEntityActionType Type, int Value)> Actions { get; }
+    RegKey ID { get; }
 
     ICard CreateCard();
 }
