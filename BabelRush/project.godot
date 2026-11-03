@@ -29,6 +29,7 @@ project/solution_directory=".."
 [internationalization]
 
 locale/translation_remaps={}
+locale/test="zh_Hans"
 
 [physics]
 
