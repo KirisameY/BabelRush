@@ -63,8 +63,11 @@ public static class ContentsLoaderManager
         if (_loaded) throw new InvalidOperationException("ResourceLoader already loaded content packs.");
         ArgumentNullException.ThrowIfNull(loader);
 
-        Loaders.Add((ValidatePath(path), loader));
+        RegisterCore(path, loader);
     }
+
+    // 自动注册发生在 LoadPacks 内部，此时 _loaded 已经是 true；它不能再走带「加载后禁止注册」守卫的公开入口。
+    private static void RegisterCore(UPath path, IContentsLoader loader) => Loaders.Add((ValidatePath(path), loader));
 
     /// <summary>
     ///     发现标注了 <see cref="AutoContentsLoaderAttribute"/> 的加载器类型，实例化并按特性上的路径注册。
@@ -86,7 +89,7 @@ public static class ContentsLoaderManager
             var loader = CreateLoader(loaderType);
             foreach (var attribute in loaderType.GetCustomAttributes<AutoContentsLoaderAttribute>(inherit: false))
             {
-                Register(attribute.Path, loader);
+                RegisterCore(attribute.Path, loader);
             }
         }
     }
@@ -177,43 +180,55 @@ public static class ContentsLoaderManager
         // 目前只硬编码适配目录和zip包，哪天有需要的话可以写个接口支持更多格式的拓展不过我觉得很难会有这个必要
         var packs = entries.SelectExist(Optional<(string Path, IFileSystem Fs)> (entry) => entry switch
         {
-            DirectoryEntry directory => Optional.From((directory.Name, new SubFileSystem(contentsDir.FileSystem, directory.Path) as IFileSystem)),
-            FileEntry { ExtensionWithDot: ".zip" } file => Optional.From(
+            // 第三个参数是「是否连底层文件系统一起释放」：目录包只是 contentsDir 的视图，
+            // 释放它不能把调用方传进来的整个 contents 目录（以及其中其它包的视图）一起废掉。
+            DirectoryEntry directory => Optional.From((directory.Name, new SubFileSystem(contentsDir.FileSystem, directory.Path, false) as IFileSystem)),
+            // 扩展名比较不区分大小写：Windows 上 .ZIP 与 .zip 是同一类文件。
+            FileEntry file when string.Equals(file.ExtensionWithDot, ".zip", StringComparison.OrdinalIgnoreCase) => Optional.From(
                 (file.NameWithoutExtension,
                  new ZipArchiveFileSystem(file.Open(FileMode.Open, FileAccess.Read), ZipArchiveMode.Read) as IFileSystem)
             ),
             _ => Optional.Empty<(string, IFileSystem)>()
         }).ToImmutableList();
-        var packsWithMeta = ResolveMetaData(packs);
 
-        progress.Report(["validating_dependencies"]);
-        var packsSortedAsDependencies = ValidateDependencies(packsWithMeta);
-
-        progress.Report(["loading_assemblies"]);
-        LoadPackAssemblies(packsSortedAsDependencies);
-
-        progress.Report(["solving_load_order"]);
-        var sortedPacks = ResolveOrder(packsWithMeta);
-
-        progress.Report(["scanning_loaders"]);
-        RegisterAttributedLoaders();
-
-        // loading resources
-        foreach (var (_, packFs, meta) in sortedPacks)
+        try
         {
-            progress.Report(["loading_pack_resources", meta.PackId]);
-            foreach (var (path, loader) in Loaders)
+            var packsWithMeta = ResolveMetaData(packs);
+
+            progress.Report(["validating_dependencies"]);
+            var packsSortedAsDependencies = ValidateDependencies(packsWithMeta);
+
+            progress.Report(["loading_assemblies"]);
+            LoadPackAssemblies(packsSortedAsDependencies);
+
+            progress.Report(["solving_load_order"]);
+            var sortedPacks = ResolveOrder(packsWithMeta);
+
+            progress.Report(["scanning_loaders"]);
+            RegisterAttributedLoaders();
+
+            // loading resources
+            foreach (var (_, packFs, meta) in sortedPacks)
             {
-                if (packFs.TryGetFileSystemEntry(path) is not { } entry) continue;
-                loader.Load(meta.PackId, entry);
+                progress.Report(["loading_pack_resources", meta.PackId]);
+                foreach (var (path, loader) in Loaders)
+                {
+                    if (packFs.TryGetFileSystemEntry(path) is not { } entry) continue;
+                    loader.Load(meta.PackId, entry);
+                }
             }
-        }
 
-        progress.Report(["finalizing"]);
-        foreach (var t in packs) t.Fs.Dispose();
-        foreach (var loader in Loaders.Select(t => t.Loader).OfType<IDisposable>())
+            progress.Report(["finalizing"]);
+        }
+        finally
         {
-            loader.Dispose();
+            // 失败路径同样要收拾：包的文件系统（zip 句柄）不能泄漏，已登记的加载器也属于这次会话。
+            foreach (var t in packs) t.Fs.Dispose();
+            // 同一个加载器实例可能注册了多条路径；生命周期按实例算，不能重复释放。
+            foreach (var loader in Loaders.Select(t => t.Loader).OfType<IDisposable>().Distinct<IDisposable>(ReferenceEqualityComparer.Instance))
+            {
+                loader.Dispose();
+            }
         }
     }
 
@@ -226,6 +241,8 @@ public static class ContentsLoaderManager
             var ctx = contexts[meta.PackId] = new PackAssemblyLoadContext(
                 meta.PackId, [..meta.Dependencies.Select(d => contexts[d.PackId])]
             );
+            // 没有 $assemblies 的包是常态，不能把「目录不存在」当成错误。
+            if (!fs.DirectoryExists(dllPath)) continue;
             foreach (var file in fs.EnumerateFileEntries(dllPath, "*.dll", SearchOption.AllDirectories))
             {
                 using var stream = file.Open(FileMode.Open, FileAccess.Read);

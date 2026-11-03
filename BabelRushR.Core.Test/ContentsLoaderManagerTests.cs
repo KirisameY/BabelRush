@@ -8,9 +8,10 @@ using Zio;
 
 namespace BabelRushR.Core.Test;
 
+[Collection("Contents")]
 public class ContentsLoaderManagerTests
 {
-    public ContentsLoaderManagerTests() => ResourceLoaderManagerAccessor.InvokePrivateStatic("ClearRegistrations");
+    public ContentsLoaderManagerTests() => ResourceLoaderManagerAccessor.ResetAll();
 
 
     [Fact]
@@ -154,6 +155,19 @@ public class ContentsLoaderManagerTests
 
 public static class ResourceLoaderManagerAccessor
 {
+    /// <summary>把管理器的进程级静态状态恢复到「从未加载过」。</summary>
+    /// <remarks>
+    ///     管理器的一次性状态是为游戏启动设计的，测试每个用例都要重新来一遍；这里用反射守住它，
+    ///     不为测试把私有状态提升到 internal。
+    /// </remarks>
+    public static void ResetAll()
+    {
+        InvokePrivateStatic("ClearRegistrations");
+        var loadedField = typeof(ContentsLoaderManager).GetField("_loaded", BindingFlags.Static | BindingFlags.NonPublic)
+         ?? throw new MissingFieldException(typeof(ContentsLoaderManager).FullName, "_loaded");
+        loadedField.SetValue(null, false);
+    }
+
     // 注册表是私有的，这里只读取；不为测试把字段提升到 internal，理由同下面的反射调用。
     public static IReadOnlyList<(UPath Path, IContentsLoader Loader)> Registrations
     {

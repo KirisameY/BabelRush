@@ -54,7 +54,8 @@ public static class DataRegistrationManager
         public void Load(string packageName, FileSystemEntry entry)
         {
             if (entry is not DirectoryEntry directory) return;
-            using var fs = new SubFileSystem(directory.FileSystem, directory.Path);
+            // 只是包内 /data 的视图：释放它不能把整包的文件系统一起释放，否则同一包里后续的加载器会拿到已释放的 FS。
+            using var fs = new SubFileSystem(directory.FileSystem, directory.Path, false);
             _dataRegistrants.ForEach(reg => reg.Load(packageName, fs));
         }
 

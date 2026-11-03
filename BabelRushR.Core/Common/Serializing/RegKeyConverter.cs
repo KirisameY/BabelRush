@@ -15,7 +15,7 @@ public class RegKeyConverter(string? defaultNameSpace = null) : TomlConverter<Re
 
     public override void Write(TomlWriter writer, RegKey value)
     {
-        writer.WriteStringValue(value.NameSpace == defaultNameSpace ? value.NameSpace : value.FullName);
+        writer.WriteStringValue(value.NameSpace == defaultNameSpace ? value.Key : value.FullName);
     }
 
     public static RegKeyConverter Default { get; } = new();
