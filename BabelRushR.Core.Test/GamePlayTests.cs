@@ -1,4 +1,5 @@
-﻿using BabelRushR.Core.GamePlay;
+﻿using BabelRushR.Core.Battle;
+using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.Scenery;
 
@@ -210,6 +211,8 @@ public class GamePlayTests
         Assert.Collection(events,
             e => Assert.IsType<EntityAddedEvent>(e),
             e => Assert.IsType<PlayerAPChangedEvent>(e),
+            // 换场景会把已入阵的 PC 一起撤出战斗，先发成员离开事件，再发场景替换事件。
+            e => Assert.IsType<BattleUnitLeftEvent>(e),
             e => Assert.IsType<GamePlaySceneReplacedEvent>(e));
     }
 }

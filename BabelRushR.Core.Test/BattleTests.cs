@@ -29,12 +29,13 @@ public class BattleTests
     #region State & Camps
 
     [Fact]
-    public void A_New_GamePlay_Is_Not_In_Battle_And_Has_Empty_Camps()
+    public void A_New_GamePlay_Is_Not_In_Battle_But_The_PC_Is_In_The_Ally_Camp()
     {
-        var battle = NewGamePlay().Battle;
+        var gamePlay = NewGamePlay();
+        var battle = gamePlay.Battle;
 
         Assert.False(battle.IsInBattle);
-        Assert.Empty(battle.Allies);
+        Assert.Same(gamePlay.PlayerState.PCEntity, Assert.Single(battle.Allies));
         Assert.Empty(battle.Enemies);
     }
 
@@ -58,7 +59,7 @@ public class BattleTests
         Assert.True(battle.TryJoinBattle(ally, BattleSide.Ally));
 
         Assert.False(battle.IsInBattle);
-        Assert.Equal(new IEntity[] { ally }, battle.Allies);
+        Assert.Equal(new IEntity[] { gamePlay.PlayerState.PCEntity, ally }, battle.Allies);
         Assert.IsType<BattleUnitJoinedEvent>(Assert.Single(events));
     }
 
@@ -127,7 +128,7 @@ public class BattleTests
         Assert.True(battle.TryLeaveBattle(ally));
 
         Assert.True(battle.IsInBattle);
-        Assert.Empty(battle.Allies);
+        Assert.Equal(new IEntity[] { gamePlay.PlayerState.PCEntity }, battle.Allies);
         Assert.Equal(new IEntity[] { enemy }, battle.Enemies);
         Assert.IsType<BattleUnitLeftEvent>(Assert.Single(events));
     }
@@ -147,7 +148,7 @@ public class BattleTests
         battle.TryJoinBattle(enemyA, BattleSide.Enemy);
         battle.TryJoinBattle(enemyB, BattleSide.Enemy);
 
-        Assert.Equal(new IEntity[] { allyA, allyB }, battle.Allies);
+        Assert.Equal(new IEntity[] { gamePlay.PlayerState.PCEntity, allyA, allyB }, battle.Allies);
         Assert.Equal(new IEntity[] { enemyA, enemyB }, battle.Enemies);
     }
 
@@ -267,7 +268,7 @@ public class BattleTests
 
         Assert.False(battle.TryJoinBattle(unit, BattleSide.Enemy));
 
-        Assert.Equal(new IEntity[] { unit }, battle.Allies);
+        Assert.Equal(new IEntity[] { gamePlay.PlayerState.PCEntity, unit }, battle.Allies);
         Assert.Empty(battle.Enemies);
         Assert.False(battle.IsInBattle);
         Assert.Empty(events);
@@ -299,7 +300,7 @@ public class BattleTests
         Assert.False(battle.TryJoinBattle(unit, BattleSide.None));
 
         Assert.Equal(BattleSide.None, battle.GetSideOf(unit));
-        Assert.Empty(battle.Allies);
+        Assert.Equal(new IEntity[] { gamePlay.PlayerState.PCEntity }, battle.Allies);
         Assert.Empty(battle.Enemies);
         Assert.Empty(events);
     }
@@ -333,7 +334,7 @@ public class BattleTests
 
         Assert.True(gamePlay.Scene.RemoveEntity(ally));
 
-        Assert.Empty(battle.Allies);
+        Assert.Equal(new IEntity[] { gamePlay.PlayerState.PCEntity }, battle.Allies);
         Assert.Equal(BattleSide.None, battle.GetSideOf(ally));
         Assert.IsType<BattleUnitLeftEvent>(Assert.Single(events));
     }
@@ -386,7 +387,7 @@ public class BattleTests
         gamePlay.Update(0.016);
 
         Assert.True(battle.IsInBattle);
-        Assert.Empty(battle.Allies);
+        Assert.Equal(new IEntity[] { gamePlay.PlayerState.PCEntity }, battle.Allies);
         Assert.IsType<BattleUnitLeftEvent>(Assert.Single(events));
     }
 
@@ -400,6 +401,7 @@ public class BattleTests
     {
         var gamePlay = NewGamePlay();
         var battle = gamePlay.Battle;
+        var pc = gamePlay.PlayerState.PCEntity;
         var ally = AddEntity(gamePlay);
         var enemy = AddEntity(gamePlay);
         battle.TryJoinBattle(ally, BattleSide.Ally);
@@ -414,9 +416,10 @@ public class BattleTests
         Assert.Equal(BattleSide.None, battle.GetSideOf(ally));
         Assert.Equal(BattleSide.None, battle.GetSideOf(enemy));
 
-        // 先我方后敌方；最后一个敌人离开时补上战斗结束。
+        // PC 和 ally 都是我方：先报我方（按入阵顺序），再报敌方；最后一个敌人离开时补上战斗结束。
         Assert.Collection(events,
-            e => Assert.Equal(BattleSide.Ally, Assert.IsType<BattleUnitLeftEvent>(e).Side),
+            e => Assert.Same(pc, Assert.IsType<BattleUnitLeftEvent>(e).Unit),
+            e => Assert.Same(ally, Assert.IsType<BattleUnitLeftEvent>(e).Unit),
             e => Assert.Equal(BattleSide.Enemy, Assert.IsType<BattleUnitLeftEvent>(e).Side),
             e => Assert.IsType<BattleEndedEvent>(e));
     }
@@ -434,7 +437,10 @@ public class BattleTests
 
         Assert.Empty(battle.Allies);
         Assert.False(battle.IsInBattle);
-        Assert.IsType<BattleUnitLeftEvent>(Assert.Single(events));
+        // PC 和 ally 都在我方，替换场景会让两个人都离开；敌方为空，所以没有 BattleEndedEvent。
+        Assert.Collection(events,
+            e => Assert.Equal(BattleSide.Ally, Assert.IsType<BattleUnitLeftEvent>(e).Side),
+            e => Assert.Equal(BattleSide.Ally, Assert.IsType<BattleUnitLeftEvent>(e).Side));
     }
 
     #endregion
@@ -468,7 +474,7 @@ public class BattleTests
         battle.TryJoinBattle(ally, BattleSide.Ally);
         battle.TryJoinBattle(enemy, BattleSide.Enemy);
 
-        Assert.Equal(new IEntity[] { ally }, battle.GetSideEntities(BattleSide.Ally));
+        Assert.Equal(new IEntity[] { gamePlay.PlayerState.PCEntity, ally }, battle.GetSideEntities(BattleSide.Ally));
         Assert.Equal(new IEntity[] { enemy }, battle.GetSideEntities(BattleSide.Enemy));
         Assert.Null(battle.GetSideEntities(BattleSide.None));
     }
@@ -486,7 +492,7 @@ public class BattleTests
         // 目标选择预期的用法：先定位自己所在阵营，再取其对阵方的列表。
         Assert.Equal(new IEntity[] { enemy },
             battle.GetSideEntities(battle.GetSideOf(ally).Opponent));
-        Assert.Equal(new IEntity[] { ally },
+        Assert.Equal(new IEntity[] { gamePlay.PlayerState.PCEntity, ally },
             battle.GetSideEntities(battle.GetSideOf(enemy).Opponent));
     }
 
