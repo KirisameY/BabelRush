@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 
+using BabelRushR.Game.Binding;
 using BabelRushR.Mvvm.ViewModels;
 
 using Godot;
 
 using KirisameY.BindingBridge;
 using KirisameY.GenericUtils;
+
+using static BabelRushR.Game.Binding.DataBinding;
 
 namespace BabelRushR.Game.GUI.Cards.Components;
 
@@ -65,7 +68,7 @@ public partial class CardActionUI : Control
         if (ViewModel is not { } viewModel) return;
 
         _binds.AddRange(
-            // todo: bind here
+            Binder.BindPropertyOneWay(viewModel, vm => vm.Value, this, ui => ui.Value)
         );
     }
 

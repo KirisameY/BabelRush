@@ -16,13 +16,15 @@ namespace BabelRushR.Game.Test;
 
 /// <summary>
 ///     开发期的卡牌测试场景：中间一张 <see cref="CardUI"/>，右侧一个热改 Cost 的滑块，
-///     一组设定 <see cref="ICardType"/> 的 Cost 与 Action 数量的控件，以及一个按当前参数
+///     一组设定 <see cref="ICardType"/> 的虚拟 id、Cost、Action 数量与 Action 数值的控件，以及一个按当前参数
 ///     重建类型与卡、并换掉 CardUI 现有绑定的按钮。
 /// </summary>
 /// <remarks>
-///     卡牌初始绑定的「默认值」就取自场景里两个 <see cref="SpinBox"/> 的初值，与重建用的是同一份参数。<br/>
+///     卡牌初始绑定的「默认值」就取自场景里各输入控件的初值，与重建用的是同一份参数。<br/>
 ///     Cost 是「类型自带的基础值 + 挂上去的修正器」，所以滑块动的是修正器、不是数值本身；
-///     Action 数量的变化则直接体现为 CardUI 里那列动作行的增减。
+///     卡牌与 Action 的 id 只用于显示，不查注册表，所以可以随便填。<br/>
+///     Action 数量与「有无值」的变化直接体现为 CardUI 里那列动作行的数量，以及动作实例是
+///     <c>IValuedEntityAction</c> 还是普通的 <c>IEntityAction</c>。
 /// </remarks>
 public partial class TestCard : Control
 {
@@ -32,8 +34,12 @@ public partial class TestCard : Control
 
     private HSlider CostModifierSlider => field ??= GetNode<HSlider>("Controls/CostModifierRow/CostModifierSlider");
     private Label CostModifierValue => field ??= GetNode<Label>("Controls/CostModifierRow/CostModifierValue");
+    private LineEdit CardIdInput => field ??= GetNode<LineEdit>("Controls/CardIdRow/CardIdInput");
     private SpinBox TypeCostBox => field ??= GetNode<SpinBox>("Controls/TypeCostRow/TypeCostBox");
+    private LineEdit ActionIdInput => field ??= GetNode<LineEdit>("Controls/ActionIdRow/ActionIdInput");
     private SpinBox ActionCountBox => field ??= GetNode<SpinBox>("Controls/ActionCountRow/ActionCountBox");
+    private CheckBox ActionHasValueCheck => field ??= GetNode<CheckBox>("Controls/ActionHasValueRow/ActionHasValueCheck");
+    private SpinBox ActionValueBox => field ??= GetNode<SpinBox>("Controls/ActionValueRow/ActionValueBox");
     private Button RebuildButton => field ??= GetNode<Button>("Controls/RebuildButton");
 
     #endregion
@@ -50,8 +56,10 @@ public partial class TestCard : Control
     public override void _Ready()
     {
         CostModifierSlider.ValueChanged += _ => ApplyCostModifier();
+        ActionHasValueCheck.Toggled     += OnActionHasValueToggled;
         RebuildButton.Pressed           += Rebuild;
 
+        OnActionHasValueToggled(ActionHasValueCheck.ButtonPressed);
         Rebuild();
     }
 
@@ -65,7 +73,14 @@ public partial class TestCard : Control
     /// </summary>
     private void Rebuild()
     {
-        var card = CreateCardType((int)TypeCostBox.Value, (int)ActionCountBox.Value).CreateCard();
+        var card = CreateCardType(
+            ParseRegKey(CardIdInput.Text),
+            (int)TypeCostBox.Value,
+            (int)ActionCountBox.Value,
+            ParseRegKey(ActionIdInput.Text),
+            ActionHasValueCheck.ButtonPressed,
+            (int)ActionValueBox.Value
+        ).CreateCard();
 
         var old = _viewModel;
         _card          = card;
@@ -77,18 +92,35 @@ public partial class TestCard : Control
         ApplyCostModifier();
     }
 
-    private static ICardType CreateCardType(int cost, int actionCount) => new RecordCardType(
-        TestCardTypeId,
-        cost,
-        [..Enumerable.Range(1, actionCount).Select(value => (TestActionType, value))]
-    );
+    /// <summary>
+    ///     构造一个测试用的卡牌类型：id 只作显示用途，不查注册表；所有 action 共用同一个 action 类型。
+    /// </summary>
+    private static ICardType CreateCardType(
+        RegKey cardId, int cost, int actionCount, RegKey actionId, bool hasValue, int value)
+    {
+        // 有值 / 无值对应 Core 的两种 delegate 类型，CreateAction 时分别产出 IValuedEntityAction 和普通 IEntityAction。
+        IEntityActionType actionType = hasValue
+            ? new ValuedDelegateEntityActionType(actionId, (_, _) => { })
+            : new DelegateEntityActionType(actionId, _ => { });
 
-    private static readonly RegKey TestCardTypeId = RegKey.From("core", "test");
+        return new RecordCardType(
+            cardId,
+            cost,
+            [..Enumerable.Range(0, actionCount).Select(_ => (actionType, hasValue ? value : 0))]
+        );
+    }
 
     /// <summary>
-    ///     Action 的占位类型：目标选择与打牌都还没做，现在只关心数量，效果留空。
+    ///     测试用的虚拟 id：允许写 <c>namespace:key</c>，也允许只写 key（补 <c>core</c> 命名空间）。
     /// </summary>
-    private static readonly IEntityActionType TestActionType = new ValuedDelegateEntityActionType(RegKey.From("core", "test"), (_, _) => { });
+    private static RegKey ParseRegKey(string text)
+    {
+        var trimmed = text.Trim();
+        return (trimmed.Length == 0 ? null : RegKey.FromFull(trimmed)) ?? RegKey.From("core", trimmed);
+    }
+
+    /// <summary>没有数值的 action 类型不需要用户填数值，把输入框一并置灰。</summary>
+    private void OnActionHasValueToggled(bool hasValue) => ActionValueBox.Editable = hasValue;
 
     #endregion
 

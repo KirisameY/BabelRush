@@ -31,7 +31,7 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -320.0
+offset_left = -472.0
 offset_top = 40.0
 offset_right = -32.0
 offset_bottom = 40.0
@@ -43,7 +43,7 @@ layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="Label" type="Label" parent="Controls/CostModifierRow" unique_id=422552542]
-custom_minimum_size = Vector2(96, 0)
+custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 text = "Cost 修正"
 
@@ -61,12 +61,27 @@ layout_mode = 2
 text = "0"
 horizontal_alignment = 2
 
+[node name="CardIdRow" type="HBoxContainer" parent="Controls" unique_id=1911482637]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Controls/CardIdRow" unique_id=150831628]
+custom_minimum_size = Vector2(168, 0)
+layout_mode = 2
+text = "Card 虚拟 ID"
+
+[node name="CardIdInput" type="LineEdit" parent="Controls/CardIdRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "core:test"
+placeholder_text = "namespace:key"
+
 [node name="TypeCostRow" type="HBoxContainer" parent="Controls" unique_id=1721168867]
 layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="Label" type="Label" parent="Controls/TypeCostRow" unique_id=866694680]
-custom_minimum_size = Vector2(96, 0)
+custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 text = "类型 Cost"
 
@@ -76,12 +91,27 @@ size_flags_horizontal = 3
 max_value = 99.0
 value = 3.0
 
+[node name="ActionIdRow" type="HBoxContainer" parent="Controls" unique_id=1758903359]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Controls/ActionIdRow" unique_id=344120818]
+custom_minimum_size = Vector2(168, 0)
+layout_mode = 2
+text = "Action 虚拟 ID"
+
+[node name="ActionIdInput" type="LineEdit" parent="Controls/ActionIdRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "core:test"
+placeholder_text = "namespace:key"
+
 [node name="ActionCountRow" type="HBoxContainer" parent="Controls" unique_id=1879661596]
 layout_mode = 2
 theme_override_constants/separation = 8
 
 [node name="Label" type="Label" parent="Controls/ActionCountRow" unique_id=1011853900]
-custom_minimum_size = Vector2(96, 0)
+custom_minimum_size = Vector2(168, 0)
 layout_mode = 2
 text = "Action 数量"
 
@@ -90,6 +120,35 @@ layout_mode = 2
 size_flags_horizontal = 3
 max_value = 8.0
 value = 2.0
+
+[node name="ActionHasValueRow" type="HBoxContainer" parent="Controls" unique_id=1809735725]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Controls/ActionHasValueRow" unique_id=1832746380]
+custom_minimum_size = Vector2(168, 0)
+layout_mode = 2
+text = "Action 有数值"
+
+[node name="ActionHasValueCheck" type="CheckBox" parent="Controls/ActionHasValueRow"]
+layout_mode = 2
+text = "是"
+button_pressed = true
+
+[node name="ActionValueRow" type="HBoxContainer" parent="Controls" unique_id=1794949132]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="Label" type="Label" parent="Controls/ActionValueRow" unique_id=724937502]
+custom_minimum_size = Vector2(168, 0)
+layout_mode = 2
+text = "Action 数值"
+
+[node name="ActionValueBox" type="SpinBox" parent="Controls/ActionValueRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 999.0
+value = 1.0
 
 [node name="RebuildButton" type="Button" parent="Controls" unique_id=1329202194]
 layout_mode = 2
