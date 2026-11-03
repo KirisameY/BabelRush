@@ -165,25 +165,19 @@ public static class ContentsLoaderManager
 
     private static bool _loaded = false;
 
-    public static Task LoadPacksAsync(UPath relativeContentsPath, IProgress<IReadOnlyList<string>> progress) =>
-        Task.Run(() => LoadPacks(relativeContentsPath, progress));
+    public static Task LoadPacksAsync(DirectoryEntry contentsDir, IProgress<IReadOnlyList<string>> progress) =>
+        Task.Run(() => LoadPacks(contentsDir, progress));
 
-    public static void LoadPacks(UPath relativeContentsPath, IProgress<IReadOnlyList<string>> progress)
+    public static void LoadPacks(DirectoryEntry contentsDir, IProgress<IReadOnlyList<string>> progress)
     {
         if (Interlocked.Exchange(ref _loaded, true)) throw new InvalidOperationException("ResourceLoader already loaded content packs.");
-
-        progress.Report(["directing_contents_path"]);
-        using var fileSys = new PhysicalFileSystem();
-        var contentsPath = fileSys.ConvertPathFromInternal(Directory.GetCurrentDirectory()) / relativeContentsPath;
-        var contentsDir = fileSys.GetDirectoryEntry(contentsPath);
 
         progress.Report(["solving_content_packs"]);
         var entries = contentsDir.EnumerateEntries();
         // 目前只硬编码适配目录和zip包，哪天有需要的话可以写个接口支持更多格式的拓展不过我觉得很难会有这个必要
         var packs = entries.SelectExist(Optional<(string Path, IFileSystem Fs)> (entry) => entry switch
         {
-            // ReSharper disable once AccessToDisposedClosure
-            DirectoryEntry directory => Optional.From((directory.Name, new SubFileSystem(fileSys, directory.Path) as IFileSystem)),
+            DirectoryEntry directory => Optional.From((directory.Name, new SubFileSystem(contentsDir.FileSystem, directory.Path) as IFileSystem)),
             FileEntry { ExtensionWithDot: ".zip" } file => Optional.From(
                 (file.NameWithoutExtension,
                  new ZipArchiveFileSystem(file.Open(FileMode.Open, FileAccess.Read), ZipArchiveMode.Read) as IFileSystem)
