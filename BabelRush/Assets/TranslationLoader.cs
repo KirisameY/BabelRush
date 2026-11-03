@@ -22,6 +22,7 @@ public static class TranslationLoader
         {
             translation.AddMessage($"{packName}:{key}", value);
         }
+        TranslationServer.AddTranslation(translation);
     }
 
     private static Dictionary<string, string> FlattenFromTomlTable(TomlTable fromTable)

@@ -1,10 +1,13 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.IO;
 
+using BabelRushR.Core.Battle;
 using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.Card.Types;
-using BabelRushR.Core.EntityAction.Types;
+using BabelRushR.Core.Contents;
 using BabelRushR.Core.GamePlay;
+using BabelRushR.Game.Bootstrap;
 using BabelRushR.Game.GUI;
 using BabelRushR.Mvvm.ViewModels;
 
@@ -12,38 +15,43 @@ using Godot;
 
 using KirisameY.Registration.Data;
 
+using Zio;
+using Zio.FileSystems;
+
 namespace BabelRushR.Game.Test;
 
 /// <summary>
 ///     开发期的启动场景：就地开一局游戏、包成 VM 交给 <see cref="GamePlayUI"/>，并负责它的释放。
 /// </summary>
 /// <remarks>
-///     右上角的两个按钮只在本测试场景里直接操作 Core：一个随机加牌，一个清空手牌。
-///     这样可以手动验证空手牌、增量加入、清空和扇面重排，而不必预置固定牌。
+///     启动时先加载 Contents 下的资源包，让卡牌等数据进入注册表；右上角的控件只在本测试场景里直接操作 Core：
+///     按输入的 id 加一张牌、清空手牌。这样可以手动验证空手牌、按 id 加入、清空和扇面重排，而不必预置固定牌。
 /// </remarks>
 public partial class TestGamePlay : Node
 {
     private GamePlayViewModel? _viewModel;
     private CommonGamePlay? _gamePlay;
 
-    private readonly Random _random = new();
-    private int _nextCardId;
-
+    private LineEdit CardIdInput => field ??= GetNode<LineEdit>("TestControls/Buttons/CardIdInput");
     private Button AddCardButton => field ??= GetNode<Button>("TestControls/Buttons/AddCardButton");
     private Button ClearHandButton => field ??= GetNode<Button>("TestControls/Buttons/ClearHandButton");
 
     public override void _Ready()
     {
+        LoadContents();
+
         _gamePlay = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 30));
 
         _viewModel                                  = new GamePlayViewModel(_gamePlay);
         GetNode<GamePlayUI>("GamePlayUI").ViewModel = _viewModel;
 
-        AddCardButton.Pressed   += AddRandomCard;
+        AddCardButton.Pressed   += AddCard;
         ClearHandButton.Pressed += ClearHand;
 
         // 走在 VM 建好之后：这条走的是集合绑定的增量 Add 分支，而不是绑定时的那次全量同步。
-        _gamePlay.Scene.AddEntity(new TestEntity(maxHP: 12) { Position = 200 });
+        var enemy = new TestEntity(maxHP: 12) { Position = 200 };
+        _gamePlay.Scene.AddEntity(enemy);
+        _gamePlay.Battle.TryJoinBattle(enemy, BattleSide.Enemy);
     }
 
     public override void _ExitTree()
@@ -52,17 +60,20 @@ public partial class TestGamePlay : Node
         _gamePlay?.Dispose();
     }
 
-    private void AddRandomCard()
+    private void AddCard()
     {
         if (_gamePlay is not { } gamePlay) return;
 
-        var cost = _random.Next(0, 10);
-        var actionCount = _random.Next(0, 4);
-        var cardType = new RecordCardType(
-            RegKey.From("babelrush.test", $"hand_{_nextCardId++}"),
-            cost,
-            [.. Enumerable.Range(0, actionCount).Select(i => (TestActionType, i + 1))]
-        );
+        var text = CardIdInput.Text.Trim();
+        if (text.Length == 0) return;
+
+        // 既能输入 "babelrush:strike"，也能只输入 "strike"：裸 key 按本测试包的命名空间补齐。
+        var id = RegKey.FromFull(text) ?? RegKey.From("babelrush", text);
+        if (!CardType.Registry.TryGetValue(id, out var cardType))
+        {
+            GD.PushWarning($"Card id not found: {id}");
+            cardType = PlaceHolderCardType.Instance;
+        }
 
         gamePlay.PlayerState.CardDeck.AddCard(cardType.CreateCard(), CardPile.Hand);
     }
@@ -76,7 +87,17 @@ public partial class TestGamePlay : Node
         }
     }
 
-    /// <summary>Action 的占位类型：目标选择与打牌都还没做，这里只关心数量。</summary>
-    private static readonly IEntityActionType TestActionType =
-        new ValuedDelegateEntityActionType(RegKey.From("core", "test"), (_, _) => { });
+    /// <summary>
+    ///     加载 <see cref="ContentsInfo.RelativePackPath"/> 下的资源包；必须在创建 GamePlay 之前完成，
+    ///     因为卡牌注册表是在数据加载器的释放阶段冻结的。
+    /// </summary>
+    private static void LoadContents()
+    {
+        using var fs = new PhysicalFileSystem();
+        var contentsPath = Path.GetFullPath(
+            Path.Combine(Directory.GetCurrentDirectory(), ContentsInfo.RelativePackPath)
+        );
+        var contentsDir = new DirectoryEntry(fs, fs.ConvertPathFromInternal(contentsPath));
+        ContentsLoaderManager.LoadPacks(contentsDir, new Progress<IReadOnlyList<string>>());
+    }
 }

@@ -15,16 +15,21 @@ layer = 100
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -320.0
+offset_left = -520.0
 offset_top = 16.0
 offset_right = -16.0
 offset_bottom = 56.0
 grow_horizontal = 0
 theme_override_constants/separation = 8
 
+[node name="CardIdInput" type="LineEdit" parent="TestControls/Buttons" unique_id=1371586039]
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "卡牌 ID（如 babelrush:strike）"
+
 [node name="AddCardButton" type="Button" parent="TestControls/Buttons" unique_id=2005460580]
 layout_mode = 2
-text = "加一张随机牌"
+text = "添加卡牌"
 
 [node name="ClearHandButton" type="Button" parent="TestControls/Buttons" unique_id=964730839]
 layout_mode = 2
