@@ -27,8 +27,7 @@
 - [x] lib 重构：NotifiableCollection
 - [x] core：LimitModifier 及其应用
 - [x] core 重构：Type 对象基础接口仅保留 id 属性和创建实例的功能，具体依赖转至具体实现
-- [ ] core 新增：包装的 NotifiableList 接口和实现，以便在发生变更前后进行事件请求和通知且不增加父对象API复杂度
-- [ ] core 新增：日志框架
+- [x] core 新增：日志框架
 
 ## 琐碎的短期目标
 
