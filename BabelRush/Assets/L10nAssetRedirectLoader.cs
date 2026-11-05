@@ -25,7 +25,7 @@ public static class L10nAssetRedirectionLoader
             var dict = TomlSerializer.Deserialize<Dictionary<string, string>>(stream)!;
             foreach (var (from, to) in dict)
             {
-                AssetLoader.AddL10nRedirect(locale, from, to);
+                AssetLoader.SetL10nRedirect(locale, from, to);
             }
         }
         catch (TomlException e)

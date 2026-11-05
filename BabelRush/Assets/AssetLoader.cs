@@ -27,6 +27,6 @@ public static class AssetLoader
     }
 
     // ReSharper disable once InconsistentNaming
-    public static void AddL10nRedirect(string locale, string source, string target) =>
-        _redirects.GetOrAdd(locale, _ => []).Add(source, target);
+    public static void SetL10nRedirect(string locale, string source, string target) =>
+        _redirects.GetOrAdd(locale, _ => [])[source] = target;
 }
