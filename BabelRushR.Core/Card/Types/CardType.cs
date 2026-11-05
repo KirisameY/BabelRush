@@ -1,7 +1,10 @@
-﻿using BabelRushR.Core.Data;
+﻿using BabelRushR.Core.Common;
+using BabelRushR.Core.Data;
 
 using KirisameY.Registration.Registering;
 using KirisameY.Registration.Registry;
+
+using ZLogger;
 
 namespace BabelRushR.Core.Card.Types;
 
@@ -12,7 +15,11 @@ public static class CardType
 
     public static IEnumerableRegistry<ICardType> Registry { get; } =
         new RegistryBuilder<ICardType>()
-           .WithFallback(Fallback)
+           .WithFallback(key =>
+            {
+                Logging.Logger(typeof(CardType)).ZLogWarning($"CardType {key} not found in registry, fallback value used.");
+                return Fallback;
+            })
            .AddRegistrant(DataRegistrationManager.Attach(new ListedTomlDataRegistrant<ICardType>("/cards", "card", c => c.ID)))
            .AddRegistrant(ConstantCardTypes.Registrant)
            .WithRegisterDoneEventSource(DataRegistrationManager.DoneSource)

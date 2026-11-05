@@ -1,18 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+
+using BabelRushR.Core.Common;
 
 using Godot;
 
+using Microsoft.Extensions.Logging;
+
 using Tomlyn;
 using Tomlyn.Model;
+
+using Zio;
+
+using ZLogger;
 
 namespace BabelRushR.Game.Assets;
 
 public static class TranslationLoader
 {
-    public static void LoadFromTomlStream(string locale, string packName, Stream stream)
+    private static ILogger Logger => field ??= Logging.Logger(typeof(TranslationLoader));
+
+    public static void LoadFromTomlStream(string locale, string packName, UPath filePath, Stream stream)
     {
-        var table = TomlSerializer.Deserialize<TomlTable>(stream)!;
+        TomlTable table;
+        try
+        {
+            table = TomlSerializer.Deserialize<TomlTable>(stream)!;
+        }
+        catch (TomlException e)
+        {
+            Logger.ZLogError($"Error while loading translation in pack {packName}, file {filePath}: {e.Message}");
+            return;
+        }
         if (table.TryGetValue("$namespace", out var ns) && ns is string nst) packName = nst;
         var flattenDict = FlattenFromTomlTable(table);
 

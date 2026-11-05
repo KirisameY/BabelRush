@@ -30,7 +30,4 @@ public abstract class DataRegistrant<T> : DataRegistrant, IRegistrant<T>
     }
 
     protected abstract void Load(string packNameSpace, IFileSystem packFs, IRegisterTarget<T> target);
-
-    protected virtual TomlSerializerOptions GetOptions(string packNameSpace) =>
-        SerializingOptions.WithDefaultNamespace(packNameSpace);
 }

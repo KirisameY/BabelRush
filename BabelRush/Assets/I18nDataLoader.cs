@@ -24,16 +24,16 @@ public class I18nDataLoader : IContentsLoader<I18nDataLoader>
             if (fs.TryGetFileSystemEntry(path / "translations") is DirectoryEntry trDir)
             {
                 trDir.EnumerateFiles("*.toml", SearchOption.AllDirectories)
-                     .Select(f => f.Open(FileMode.Open, FileAccess.Read))
-                     .SelectSelf(s => TranslationLoader.LoadFromTomlStream(locale, packageName, s))
-                     .ForEach(s => s.Dispose());
+                     .Select(f => (path: f.Path, str: f.Open(FileMode.Open, FileAccess.Read)))
+                     .SelectSelf(t => TranslationLoader.LoadFromTomlStream(locale, packageName, t.path, t.str))
+                     .ForEach(t => t.str.Dispose());
             }
             if (fs.TryGetFileSystemEntry(path / "redirections") is DirectoryEntry reDir)
             {
                 reDir.EnumerateFiles("*.toml", SearchOption.AllDirectories)
-                     .Select(f => f.Open(FileMode.Open, FileAccess.Read))
-                     .SelectSelf(s => L10nAssetRedirectionLoader.LoadFromTomlStream(locale, s))
-                     .ForEach(s => s.Dispose());
+                     .Select(f => (path: f.Path, str: f.Open(FileMode.Open, FileAccess.Read)))
+                     .SelectSelf(t => L10nAssetRedirectionLoader.LoadFromTomlStream(locale, packageName, t.path, t.str))
+                     .ForEach(t => t.str.Dispose());
             }
         }
     }

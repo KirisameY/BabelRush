@@ -10,10 +10,14 @@ using JetBrains.Annotations;
 using KirisameY.GenericUtils;
 using KirisameY.Relinq.Extensions;
 
+using Microsoft.Extensions.Logging;
+
 using Tomlyn;
 
 using Zio;
 using Zio.FileSystems;
+
+using ZLogger;
 
 namespace BabelRushR.Core.Contents;
 
@@ -176,6 +180,7 @@ public static class ContentsLoaderManager
         if (Interlocked.Exchange(ref _loaded, true)) throw new InvalidOperationException("ResourceLoader already loaded content packs.");
 
         progress.Report(["solving_content_packs"]);
+        Logger.ZLogInformation($"Loading content packs...");
         var entries = contentsDir.EnumerateEntries();
         // 目前只硬编码适配目录和zip包，哪天有需要的话可以写个接口支持更多格式的拓展不过我觉得很难会有这个必要
         var packs = entries.SelectExist(Optional<(string Path, IFileSystem Fs)> (entry) => entry switch
@@ -193,24 +198,28 @@ public static class ContentsLoaderManager
 
         try
         {
+            Logger.ZLogInformation($"{packs.Count} packs found.");
             var packsWithMeta = ResolveMetaData(packs);
 
             progress.Report(["validating_dependencies"]);
             var packsSortedAsDependencies = ValidateDependencies(packsWithMeta);
 
             progress.Report(["loading_assemblies"]);
+            Logger.ZLogInformation($"Loading dotnet assemblies...");
             LoadPackAssemblies(packsSortedAsDependencies);
 
             progress.Report(["solving_load_order"]);
             var sortedPacks = ResolveOrder(packsWithMeta);
 
             progress.Report(["scanning_loaders"]);
+            Logger.ZLogInformation($"Scanning content loaders...");
             RegisterAttributedLoaders();
 
             // loading resources
-            foreach (var (_, packFs, meta) in sortedPacks)
+            foreach (var (packPath, packFs, meta) in sortedPacks)
             {
-                progress.Report(["loading_pack_resources", meta.PackId]);
+                progress.Report(["loading_pack_data", meta.PackId]);
+                Logger.ZLogInformation($"Loading data in pack {meta.PackId}({packPath}).");
                 foreach (var (path, loader) in Loaders)
                 {
                     if (packFs.TryGetFileSystemEntry(path) is not { } entry) continue;
@@ -218,7 +227,15 @@ public static class ContentsLoaderManager
                 }
             }
 
+            Logger.ZLogInformation($"{sortedPacks.Count} packs loaded: "
+                                 + $"{sortedPacks.Select(p => $"\n    [{p.Meta.PackId}] {p.Meta.Version}")}");
+            Logger.ZLogInformation($"Loading done, now finalizing.");
             progress.Report(["finalizing"]);
+        }
+        catch (Exception e)
+        {
+            Logger.ZLogCritical(e, $"Packs load failed due to exception: {e}");
+            throw;
         }
         finally
         {
@@ -265,12 +282,19 @@ public static class ContentsLoaderManager
         {
             if (!fs.FileExists(metaPath))
             {
-                // todo: 在这里报个警告
+                Logger.ZLogWarning($"Pack at {path} will not be loaded due to it does not have a metadata file (\"/pack.toml\" expected).");
                 continue;
             }
             using var metaStream = fs.GetFileEntry(metaPath).Open(FileMode.Open, FileAccess.Read);
-            var meta = TomlSerializer.Deserialize<PackMetaData>(metaStream, SerializingOptions.Default)!; // todo: 异常处理+警告+跳过
-            result.Add((path, fs, meta));
+            try
+            {
+                var meta = TomlSerializer.Deserialize<PackMetaData>(metaStream, SerializingOptions.Default)!;
+                result.Add((path, fs, meta));
+            }
+            catch (TomlException e)
+            {
+                Logger.ZLogError($"Metadata of pack {path} read failed: {e.Message}");
+            }
         }
         return [..result];
     }
@@ -428,4 +452,6 @@ public static class ContentsLoaderManager
     }
 
     #endregion
+
+    private static ILogger Logger => field ??= Logging.Logger(typeof(ContentsLoaderManager));
 }
