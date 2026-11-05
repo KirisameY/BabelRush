@@ -5,8 +5,12 @@ using Tomlyn;
 
 namespace BabelRushR.Core.Test;
 
+[Collection("Contents")]
 public class PackMetaDataTests
 {
+    // 同 DataRegistrantTests：SerializingOptions 是进程级一次性状态，必须复位并和其他 Contents 用例串行。
+    public PackMetaDataTests() => SerializingOptionsTestAccessor.ResetAndInitialize();
+
     [Fact]
     public void Metadata_Deserializes_All_Fields_With_Snake_Case_Names()
     {

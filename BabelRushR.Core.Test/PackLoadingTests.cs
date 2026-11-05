@@ -341,7 +341,7 @@ public class PackLoadingTests
         Assert.True(progress.Contains("loading_assemblies"));
         Assert.True(progress.Contains("solving_load_order"));
         Assert.True(progress.Contains("scanning_loaders"));
-        Assert.True(progress.Contains("loading_pack_resources", "alpha"));
+        Assert.True(progress.Contains("loading_pack_data", "alpha"));
 
         // 主阶段必须按依赖验证 → Assembly → 顺序解析 → 扫描加载器 → 逐包加载的次序报告。
         var steps = new[]
@@ -350,7 +350,7 @@ public class PackLoadingTests
             progress.IndexOf("loading_assemblies"),
             progress.IndexOf("solving_load_order"),
             progress.IndexOf("scanning_loaders"),
-            progress.IndexOf("loading_pack_resources", "alpha"),
+            progress.IndexOf("loading_pack_data", "alpha"),
             progress.IndexOf("finalizing"),
         };
         Assert.All(steps, index => Assert.True(index >= 0));

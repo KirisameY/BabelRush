@@ -11,8 +11,12 @@ using Zio.FileSystems;
 
 namespace BabelRushR.Core.Test;
 
+[Collection("Contents")]
 public class DataRegistrantTests
 {
+    // 不经过 LoadPacks 就直接使用 SerializingOptions，必须复位进程级一次性状态，并和其他会复位它的用例串行。
+    public DataRegistrantTests() => SerializingOptionsTestAccessor.ResetAndInitialize();
+
     [Fact]
     public void CommonRegistrant_Loads_Toml_Recursively_And_Applies_The_Pack_Namespace()
     {
@@ -50,7 +54,7 @@ public class DataRegistrantTests
     }
 
     [Fact]
-    public void ListedRegistrant_Loads_Multiple_Entries_From_The_Root_Array()
+    public void ListedRegistrant_Loads_Multiple_Entries_And_Scans_Nested_Directories()
     {
         using var fs = new MemoryFileSystem();
         Write(fs, "/cards/cards.toml", """
@@ -62,8 +66,7 @@ public class DataRegistrantTests
                                        id = "defend"
                                        name = "Defend"
                                        """);
-        // 目录式枚举不带 AllDirectories：嵌套文件不属于列表文件。
-        Write(fs, "/cards/nested/ignored.toml", """
+        Write(fs, "/cards/nested/nested.toml", """
                                                 [[card]]
                                                 id = "nested"
                                                 name = "Nested"
@@ -75,10 +78,10 @@ public class DataRegistrantTests
 
         registrant.Load("pack", fs);
 
-        Assert.Equal(2, target.Items.Count);
+        Assert.Equal(3, target.Items.Count);
         Assert.Contains(RegKey.From("pack", "strike"), target.Items.Keys);
         Assert.Contains(RegKey.From("pack", "defend"), target.Items.Keys);
-        Assert.DoesNotContain(RegKey.From("pack", "nested"), target.Items.Keys);
+        Assert.Contains(RegKey.From("pack", "nested"), target.Items.Keys);
     }
 
     [Fact]

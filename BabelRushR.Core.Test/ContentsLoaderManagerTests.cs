@@ -162,6 +162,8 @@ public static class ResourceLoaderManagerAccessor
     /// </remarks>
     public static void ResetAll()
     {
+        // 加载流程会在扫描加载器后收集一次反序列化选项；同一进程里重跑加载时这份一次性状态也要复位。
+        SerializingOptionsTestAccessor.Reset();
         InvokePrivateStatic("ClearRegistrations");
         var loadedField = typeof(ContentsLoaderManager).GetField("_loaded", BindingFlags.Static | BindingFlags.NonPublic)
          ?? throw new MissingFieldException(typeof(ContentsLoaderManager).FullName, "_loaded");
