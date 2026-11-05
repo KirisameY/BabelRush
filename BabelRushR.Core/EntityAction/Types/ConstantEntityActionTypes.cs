@@ -1,7 +1,4 @@
-﻿using System.Collections.Immutable;
-
-using BabelRushR.Core.Battle;
-using BabelRushR.Core.Card.Types;
+﻿using BabelRushR.Core.Battle;
 
 using KirisameY.Registration.Data;
 using KirisameY.Registration.Registering;
