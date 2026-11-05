@@ -4,7 +4,7 @@ using Tomlyn.Serialization;
 
 namespace BabelRushR.Core.Card.Types;
 
-[TomlPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[TomlPolymorphic]
 [TomlDerivedType(typeof(DelayedRecordCardType))]
 public interface ICardType
 {

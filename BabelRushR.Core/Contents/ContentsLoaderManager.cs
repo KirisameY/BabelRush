@@ -76,10 +76,6 @@ public static class ContentsLoaderManager
     /// <summary>
     ///     发现标注了 <see cref="AutoContentsLoaderAttribute"/> 的加载器类型，实例化并按特性上的路径注册。
     /// </summary>
-    /// <remarks>
-    ///     尚未接线：等包的遍历完成后由加载流程调用。同一类型只创建一个实例，供它的所有路径复用；
-    ///     本方法不幂等，重复调用会让每个路径多出一份注册，只应调用一次。
-    /// </remarks>
     private static void RegisterAttributedLoaders()
     {
         var loaderTypes = AttributedTypeScanner.FindTypesWithAttribute<AutoContentsLoaderAttribute>();
@@ -214,6 +210,7 @@ public static class ContentsLoaderManager
             progress.Report(["scanning_loaders"]);
             Logger.ZLogInformation($"Scanning content loaders...");
             RegisterAttributedLoaders();
+            SerializingOptions.CollectOptions();
 
             // loading resources
             foreach (var (packPath, packFs, meta) in sortedPacks)
@@ -288,7 +285,7 @@ public static class ContentsLoaderManager
             using var metaStream = fs.GetFileEntry(metaPath).Open(FileMode.Open, FileAccess.Read);
             try
             {
-                var meta = TomlSerializer.Deserialize<PackMetaData>(metaStream, SerializingOptions.Default)!;
+                var meta = TomlSerializer.Deserialize<PackMetaData>(metaStream, SerializingOptions.DefaultBeforeInitialize)!;
                 result.Add((path, fs, meta));
             }
             catch (TomlException e)
