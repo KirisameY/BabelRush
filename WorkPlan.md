@@ -28,7 +28,7 @@
 - [x] core：LimitModifier 及其应用
 - [x] core 重构：Type 对象基础接口仅保留 id 属性和创建实例的功能，具体依赖转至具体实现
 - [x] core 新增：日志框架
-- [ ] core 重构：「多态反序列化」以及「Converter」、「TypeInfo解析规则」改为从程序集中动态反射收集注册项然后再用于创建context
+- [x] core 重构：「多态反序列化」以及「Converter」、「TypeInfo解析规则」改为从程序集中动态反射收集注册项然后再用于创建context
 - [ ] core 重构：「GamePlayEventHandler」改为创建实例+可选Disposable、更名为"AttachedGamePlayLogic"
 - [ ] core：统一常规注册器的便捷创建
 

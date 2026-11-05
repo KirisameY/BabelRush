@@ -14,10 +14,5 @@ namespace BabelRushR.Core.Contents;
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false), MeansImplicitUse]
 public sealed class AutoContentsLoaderAttribute(string path) : Attribute
 {
-    /// <summary>从包根开始的绝对路径，例如 <c>/cards</c>。</summary>
-    /// <remarks>
-    ///     特性实参只能是编译期常量，所以构造函数收 <see cref="string"/>，在这里一次性转成 <see cref="UPath"/>；
-    ///     归一化交给 <see cref="UPath"/>，<c>\</c> 与 <c>.</c>、<c>..</c> 等写法都会在这里被抹平。
-    /// </remarks>
-    public UPath Path { get; } = new(path ?? throw new ArgumentNullException(nameof(path)));
+    public UPath Path => new(path);
 }
