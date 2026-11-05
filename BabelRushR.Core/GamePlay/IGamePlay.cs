@@ -32,4 +32,7 @@ public interface IGamePlay : INotifyPropertyChanged, IUpdatable, IDisposable
 
     /// <summary>上一帧实际推进的时间（秒）。</summary>
     double DeltaTime { get; }
+
+    bool Disposed { get; }
+    event Action Disposing;
 }
