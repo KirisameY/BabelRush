@@ -3,6 +3,7 @@ using BabelRushR.Core.Numeric;
 using BabelRushR.Core.Numeric.CommonModifiers;
 
 using KirisameY.Numeric;
+using KirisameY.Registration.Data;
 
 namespace BabelRushR.Core.Entity;
 
@@ -11,6 +12,8 @@ namespace BabelRushR.Core.Entity;
 /// </summary>
 public abstract class EntityBase(int maxHP) : ObservableObject, IEntity
 {
+    public abstract RegKey DisplayKey { get; }
+
     // 初值单独存一份：主构造参数若同时被初始化器和成员体引用，会触发 CS9124。
     private readonly int _baseMaxHP = maxHP;
 

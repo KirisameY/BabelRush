@@ -1,5 +1,7 @@
 using BabelRushR.Core.Entity;
 
+using KirisameY.Registration.Data;
+
 namespace BabelRushR.Game.Test;
 
 /// <summary>
@@ -15,18 +17,20 @@ internal sealed class TestEntity(int maxHP) : EntityBase(maxHP)
 
     private double _direction = 1.0;
 
+    public override RegKey DisplayKey => field ??= RegKey.From("core", "test");
+
     protected override void DoUpdate(double delta)
     {
         var next = Position + _direction * Speed * delta;
 
         if (next > Travel)
         {
-            next = 2 * Travel - next;
+            next       = 2 * Travel - next;
             _direction = -1.0;
         }
         else if (next < -Travel)
         {
-            next = -2 * Travel - next;
+            next       = -2 * Travel - next;
             _direction = 1.0;
         }
 

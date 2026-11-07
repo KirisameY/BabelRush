@@ -1,5 +1,7 @@
 ﻿using BabelRushR.Core.Entity;
 
+using KirisameY.Registration.Data;
+
 namespace BabelRushR.Core.Test;
 
 /// <summary>
@@ -12,6 +14,8 @@ internal sealed class TestEntity(int maxHP) : EntityBase(maxHP)
     public double LastDelta { get; private set; }
 
     public Action<double>? DoUpdateCallback { get; init; }
+
+    public override RegKey DisplayKey => field ??= RegKey.From("core", "test");
 
     protected override void DoUpdate(double delta)
     {

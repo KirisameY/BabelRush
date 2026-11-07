@@ -3,11 +3,14 @@ using BabelRushR.Core.Numeric;
 using BabelRushR.Core.Scenery;
 
 using KirisameY.Numeric;
+using KirisameY.Registration.Data;
 
 namespace BabelRushR.Core.Entity;
 
 public interface IEntity : ISceneObject, IUpdatable
 {
+    RegKey DisplayKey { get; }
+
     /// <summary>当前生命值，应被钳制在 [0, <see cref="MaxHP"/>] 内。</summary>
     int HP { get; set; }
 
