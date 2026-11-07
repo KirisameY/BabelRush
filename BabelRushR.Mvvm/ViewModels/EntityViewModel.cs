@@ -25,8 +25,6 @@ public sealed class EntityViewModel(IEntity entity) : ViewModelBase<EntityViewMo
     private static readonly PropertyChangeReactor<EntityViewModel> Reactions = new(
         new Dictionary<string, (ImmutableArray<Action<EntityViewModel>> Updates, ImmutableArray<string> Notifications)>
         {
-            [nameof(IEntity.HP)]       = ([], [nameof(HP), nameof(HPRatio)]),
-            [nameof(IEntity.MaxHP)]    = ([], [nameof(MaxHP), nameof(HPRatio)]),
             [nameof(IEntity.IsAlive)]  = ([], [nameof(IsAlive)]),
             [nameof(IEntity.Position)] = ([], [nameof(Position)]),
         }.ToFrozenDictionary()
@@ -34,14 +32,7 @@ public sealed class EntityViewModel(IEntity entity) : ViewModelBase<EntityViewMo
 
     public IEntity SourceEntity => entity;
 
-    public int HP => entity.HP;
-
-    public int MaxHP => entity.MaxHP.Value;
-
-    /// <summary>
-    ///     血量比例，供血条一类的控件直接使用。
-    /// </summary>
-    public double HPRatio => MaxHP > 0 ? HP / (double)MaxHP : 0;
+    public HealthBarViewModel HealthBar => field ??= Track(new HealthBarViewModel(entity.Health));
 
     public bool IsAlive => entity.IsAlive;
 

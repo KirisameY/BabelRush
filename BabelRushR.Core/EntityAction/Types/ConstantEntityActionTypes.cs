@@ -19,7 +19,7 @@ public static class ConstantEntityActionTypes
         var side = play.Battle.GetSideOf(context.Actor);
         play.Battle.GetSideEntities(side.Opponent)
            ?.MinBy(e => Math.Abs(e.Position - context.Actor.Position))
-           ?.HP -= value;
+           ?.Health.HP -= value; // todo: 轉 attack
     });
 
     // ReSharper restore UnusedMember.Global

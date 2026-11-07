@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://drxquc6h00dj3"]
+
+[ext_resource type="Script" uid="uid://c8fukjai27yvi" path="res://GUI/Entities/Components/HealthBar.cs" id="1_evrfx"]
+
+[node name="HealthBar" type="Node2D" unique_id=128321205]
+script = ExtResource("1_evrfx")
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=1737223658]
+offset_left = -129.0
+offset_top = 20.0
+offset_right = 132.0
+offset_bottom = 47.0
+value = 100.0
+show_percentage = false

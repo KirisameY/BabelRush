@@ -1,4 +1,5 @@
 ﻿using BabelRushR.Core.Common;
+using BabelRushR.Core.Entity.Health;
 using BabelRushR.Core.Numeric;
 using BabelRushR.Core.Numeric.CommonModifiers;
 
@@ -14,26 +15,11 @@ public abstract class EntityBase(int maxHP) : ObservableObject, IEntity
 {
     public abstract RegKey DisplayKey { get; }
 
-    // 初值单独存一份：主构造参数若同时被初始化器和成员体引用，会触发 CS9124。
-    private readonly int _baseMaxHP = maxHP;
+    public IEntityHealth Health => field ??=
+        new CommonEntityHealth(maxHP)
+           .WithUpdatedHandler((_, args) => OnPropertyChanged(nameof(IsAlive)));
 
-    public IModifierEditableNumeric<int, CommonNumericModifyOrder> MaxHP =>
-        field ??= INumeric.CreateReadonly<int, CommonNumericModifyOrder>(_baseMaxHP)
-                          .WithModifier(new CommonLimitModifier(min: 1))
-                          .WithUpdateHandler((_, _) => HP = HP) // 更新时重新赋值HP触发钳制
-                          .WithUpdateHandler(PropertyChangedHandler());
-
-    public int HP
-    {
-        get;
-        set
-        {
-            if (SetProperty(ref field, Math.Clamp(value, 0, MaxHP.Value)))
-                OnPropertyChanged(nameof(IsAlive));
-        }
-    } = maxHP;
-
-    public bool IsAlive => HP > 0;
+    public bool IsAlive => Health.HP > 0;
 
     public double Position
     {

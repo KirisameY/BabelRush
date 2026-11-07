@@ -2,6 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://2qy2f20uqwy" path="res://icon.svg" id="1_8lagd"]
 [ext_resource type="Script" uid="uid://ir632uuvrcvf" path="res://GUI/Entities/EntityUI.cs" id="1_jptbh"]
+[ext_resource type="PackedScene" uid="uid://drxquc6h00dj3" path="res://GUI/Entities/Components/HealthBar.tscn" id="3_bbnvj"]
 
 [node name="EntityUI" type="Node2D" unique_id=1756563978]
 script = ExtResource("1_jptbh")
@@ -10,10 +11,4 @@ script = ExtResource("1_jptbh")
 position = Vector2(0, -64)
 texture = ExtResource("1_8lagd")
 
-[node name="ProgressBar" type="ProgressBar" parent="." unique_id=1563969019]
-offset_left = -129.0
-offset_top = 20.0
-offset_right = 132.0
-offset_bottom = 47.0
-value = 100.0
-show_percentage = false
+[node name="HealthBar" parent="." unique_id=128321205 instance=ExtResource("3_bbnvj")]

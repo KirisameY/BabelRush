@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using BabelRushR.Game.Binding;
+using BabelRushR.Game.GUI.Entities.Components;
 using BabelRushR.Mvvm.ViewModels;
 
 using Godot;
@@ -26,7 +27,7 @@ public partial class EntityUI : Node2D
 
     #region Nodes & Properties
 
-    private ProgressBar HPBar => field ??= GetNode<ProgressBar>("ProgressBar");
+    private HealthBar HealthBar => field ??= GetNode<HealthBar>("HealthBar");
 
     public double PositionX
     {
@@ -61,10 +62,7 @@ public partial class EntityUI : Node2D
         // 反过来的话血量超过初始上限时进度条会停错位置。
         _binds.AddRange(
             DataBinding.Binder.BindPropertyOneWay(
-                viewModel, vm => vm.MaxHP, this, ui => ui.HPBar.MaxValue
-            ),
-            DataBinding.Binder.BindPropertyOneWay(
-                viewModel, vm => vm.HP, this, ui => ui.HPBar.Value
+                viewModel, vm => vm.HealthBar, this, ui => ui.HealthBar.ViewModel
             ),
             DataBinding.Binder.BindPropertyOneWay(
                 viewModel, vm => vm.Position, this, ui => ui.PositionX
