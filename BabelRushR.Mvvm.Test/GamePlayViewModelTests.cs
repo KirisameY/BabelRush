@@ -77,7 +77,8 @@ public class GamePlayViewModelTests
     [Fact]
     public void Switching_The_Scene_Rebuilds_The_Scene_ViewModel()
     {
-        var player = new TestEntity(maxHP: 10) { HP = 5 };
+        var player = new TestEntity(maxHP: 10);
+        player.Health.HP = 5;
         var gamePlay = NewTestGamePlay(player);
         var viewModel = new GamePlayViewModel(gamePlay);
         var oldSceneViewModel = viewModel.Scene;
@@ -91,11 +92,11 @@ public class GamePlayViewModelTests
 
         var oldNotified = NotificationRecorder.PropertyNames(oldPlayerViewModel);
         var newNotified = NotificationRecorder.PropertyNames(viewModel.Scene.Find(player)!);
-        player.HP = 3;
+        player.Health.HP = 3;
 
         // 旧树已被拆干净，新树接着跟
         Assert.Empty(oldNotified);
-        Assert.Contains(nameof(EntityViewModel.HPRatio), newNotified);
+        Assert.Contains(nameof(EntityViewModel.IsAlive), newNotified);
     }
 
     [Fact]
@@ -119,7 +120,8 @@ public class GamePlayViewModelTests
     [Fact]
     public void Disposing_After_A_Scene_Switch_Releases_The_New_Scene()
     {
-        var player = new TestEntity(maxHP: 10) { HP = 5 };
+        var player = new TestEntity(maxHP: 10);
+        player.Health.HP = 5;
         var gamePlay = NewTestGamePlay(player);
         var viewModel = new GamePlayViewModel(gamePlay);
 
@@ -128,7 +130,7 @@ public class GamePlayViewModelTests
         var notified = NotificationRecorder.PropertyNames(playerViewModel);
 
         viewModel.Dispose();
-        player.HP = 3;
+        player.Health.HP = 3;
 
         // 换进来的那个场景 VM 也得被 Track 上，Dispose 时才摘得干净
         Assert.Empty(notified);

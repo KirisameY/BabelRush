@@ -1,4 +1,4 @@
-﻿using BabelRushR.Core.Battle;
+using BabelRushR.Core.Battle;
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Scenery;
@@ -361,7 +361,7 @@ public class BattleTests
         battle.TryJoinBattle(enemy, BattleSide.Enemy);
         var events = RecordBattleEvents(gamePlay);
 
-        enemy.HP = 0;
+        enemy.Health.HP = 0;
         gamePlay.Update(0.016);
 
         Assert.DoesNotContain(enemy, gamePlay.Scene.Entities);
@@ -383,7 +383,7 @@ public class BattleTests
         battle.TryJoinBattle(enemy, BattleSide.Enemy);
         var events = RecordBattleEvents(gamePlay);
 
-        ally.HP = 0;
+        ally.Health.HP = 0;
         gamePlay.Update(0.016);
 
         Assert.True(battle.IsInBattle);

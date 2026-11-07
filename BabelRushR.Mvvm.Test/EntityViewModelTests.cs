@@ -1,4 +1,3 @@
-using BabelRushR.Core.Numeric;
 using BabelRushR.Mvvm.ViewModels;
 
 namespace BabelRushR.Mvvm.Test;
@@ -8,72 +7,45 @@ public class EntityViewModelTests
     [Fact]
     public void Exposes_The_Entity_State()
     {
-        var entity = new TestEntity(maxHP: 10) { HP = 7, Position = 3.5 };
+        var entity = new TestEntity(maxHP: 10);
+        entity.Health.HP = 7;
+        entity.Position = 3.5;
 
         var viewModel = new EntityViewModel(entity);
 
-        Assert.Equal(7, viewModel.HP);
-        Assert.Equal(10, viewModel.MaxHP);
-        Assert.Equal(0.7, viewModel.HPRatio, 10);
+        Assert.Equal(7, viewModel.HealthBar.HP);
+        Assert.Equal(10, viewModel.HealthBar.MaxHP);
+        Assert.Equal(0.7, viewModel.HealthBar.HPRatio, 10);
         Assert.True(viewModel.IsAlive);
         Assert.Equal(3.5, viewModel.Position);
     }
 
-    // commented since max hp cannot be zero
-    // [Fact]
-    // public void HPRatio_Is_Zero_When_MaxHP_Is_Zero()
-    // {
-    //     var entity = new TestEntity(maxHP: 0);
-    //
-    //     var viewModel = new EntityViewModel(entity);
-    //
-    //     Assert.Equal(0, viewModel.MaxHP);
-    //     Assert.Equal(0.0, viewModel.HPRatio);
-    // }
-
     [Fact]
-    public void HP_Change_Notifies_HP_HPRatio_And_IsAlive()
+    public void HP_Change_Notifies_IsAlive()
     {
-        var entity = new TestEntity(maxHP: 10) { HP = 5 };
+        var entity = new TestEntity(maxHP: 10);
+        entity.Health.HP = 5;
         var viewModel = new EntityViewModel(entity);
         var notified = NotificationRecorder.PropertyNames(viewModel);
 
-        entity.HP = 3;
+        entity.Health.HP = 3;
 
-        Assert.Equal(3, viewModel.HP);
-        Assert.Contains(nameof(EntityViewModel.HP), notified);
-        Assert.Contains(nameof(EntityViewModel.HPRatio), notified);
+        Assert.True(viewModel.IsAlive);
         Assert.Contains(nameof(EntityViewModel.IsAlive), notified);
     }
 
     [Fact]
     public void IsAlive_Change_Notifies_IsAlive()
     {
-        var entity = new TestEntity(maxHP: 10) { HP = 1 };
+        var entity = new TestEntity(maxHP: 10);
+        entity.Health.HP = 1;
         var viewModel = new EntityViewModel(entity);
         var notified = NotificationRecorder.PropertyNames(viewModel);
 
-        entity.HP = 0;
+        entity.Health.HP = 0;
 
         Assert.False(viewModel.IsAlive);
         Assert.Contains(nameof(EntityViewModel.IsAlive), notified);
-    }
-
-    [Fact]
-    public void MaxHP_Change_Notifies_MaxHP_And_HPRatio()
-    {
-        var entity = new TestEntity(maxHP: 10);
-        var viewModel = new EntityViewModel(entity);
-        var notified = NotificationRecorder.PropertyNames(viewModel);
-
-        entity.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 10));
-
-        Assert.Equal(20, viewModel.MaxHP);
-        Assert.Equal(0.5, viewModel.HPRatio, 10);
-
-        // 不比对顺序：上限变化会连带触发 HP 重钳制，Core 那边的通知次序不是本测试要锁定的东西。
-        Assert.Contains(nameof(EntityViewModel.MaxHP), notified);
-        Assert.Contains(nameof(EntityViewModel.HPRatio), notified);
     }
 
     [Fact]

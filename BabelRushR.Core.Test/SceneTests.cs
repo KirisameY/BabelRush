@@ -1,4 +1,4 @@
-﻿using BabelRushR.Core.Entity;
+using BabelRushR.Core.Entity;
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Scenery;
 
@@ -87,7 +87,7 @@ public class SceneTests
         var entity = new TestEntity(maxHP: 5);
         scene.AddEntity(entity);
 
-        entity.HP = 0;
+        entity.Health.HP = 0;
         scene.Update(0.016);
 
         Assert.DoesNotContain(entity, scene.Entities);
@@ -114,7 +114,7 @@ public class SceneTests
         var entity = new TestEntity(maxHP: 5);
         scene.AddEntity(entity);
 
-        entity.HP = 0;
+        entity.Health.HP = 0;
         scene.Update(0.016);
 
         Assert.DoesNotContain(entity, scene.Entities);
@@ -165,7 +165,7 @@ public class SceneTests
         scene.AddEntity(entity);
         entityEvents.Clear(); // 丢弃加入事件
 
-        entity.HP = 0;
+        entity.Health.HP = 0;
         scene.Update(0.016);
 
         Assert.Equal(new IEntity[] { entity }, removed);
@@ -180,7 +180,7 @@ public class SceneTests
     {
         var (scene, _) = NewAttachedScene();
         var victim = new TestEntity(maxHP: 5);
-        var killer = new TestEntity(maxHP: 5) { DoUpdateCallback = _ => victim.HP = 0 };
+        var killer = new TestEntity(maxHP: 5) { DoUpdateCallback = _ => victim.Health.HP = 0 };
         scene.AddEntity(victim);
         scene.AddEntity(killer);
 
@@ -200,7 +200,7 @@ public class SceneTests
         var entity = new TestEntity(maxHP: 5);
         scene.AddEntity(entity);
 
-        entity.HP = 0;
+        entity.Health.HP = 0;
         scene.Update(0.016);
 
         Assert.False(stillPresentWhenNotified);

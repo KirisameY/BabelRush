@@ -1,4 +1,5 @@
-﻿using BabelRushR.Core.Entity;
+using BabelRushR.Core.Entity;
+using BabelRushR.Core.Entity.Health;
 using BabelRushR.Core.Numeric;
 
 namespace BabelRushR.Core.Test;
@@ -10,11 +11,11 @@ public class EntityTests
     {
         var entity = new TestEntity(maxHP: 10);
 
-        entity.HP = 99;
-        Assert.Equal(10, entity.HP);
+        entity.Health.HP = 99;
+        Assert.Equal(10, entity.Health.HP);
 
-        entity.HP = -5;
-        Assert.Equal(0, entity.HP);
+        entity.Health.HP = -5;
+        Assert.Equal(0, entity.Health.HP);
     }
 
     [Fact]
@@ -24,10 +25,10 @@ public class EntityTests
 
         Assert.True(entity.IsAlive);
 
-        entity.HP = 1;
+        entity.Health.HP = 1;
         Assert.True(entity.IsAlive);
 
-        entity.HP = 0;
+        entity.Health.HP = 0;
         Assert.False(entity.IsAlive);
     }
 
@@ -36,7 +37,7 @@ public class EntityTests
     {
         var entity = new TestEntity(maxHP: 0);
 
-        Assert.Equal(0, entity.HP);
+        Assert.Equal(0, entity.Health.HP);
         Assert.False(entity.IsAlive);
     }
 
@@ -44,7 +45,7 @@ public class EntityTests
     public void Dead_Entity_Does_Not_Update()
     {
         var entity = new TestEntity(maxHP: 10);
-        entity.HP = 0;
+        entity.Health.HP = 0;
 
         entity.Update(0.016);
 
@@ -69,11 +70,12 @@ public class EntityTests
         var changed = new List<string?>();
         entity.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
 
-        entity.HP = 5;
+        entity.Health.HP = 5;
         entity.Position = 3.5;
 
-        Assert.Contains(nameof(EntityBase.HP), changed);
-        Assert.Contains(nameof(EntityBase.Position), changed);
+        // HP 现在由 Health 自己通知，实体这一层只转发生死状态。
+        Assert.Contains(nameof(IEntity.IsAlive), changed);
+        Assert.Contains(nameof(IEntity.Position), changed);
     }
 
     [Fact]
@@ -83,7 +85,7 @@ public class EntityTests
         var changed = new List<string?>();
         entity.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
 
-        entity.HP = 10;
+        entity.Health.HP = 10;
         entity.Position = 0;
 
         Assert.Empty(changed);
@@ -94,36 +96,36 @@ public class EntityTests
     {
         var entity = new TestEntity(maxHP: 10);
         var changed = new List<string?>();
-        entity.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
+        entity.Health.PropertyChanged += (_, e) => changed.Add(e.PropertyName);
 
-        entity.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 5));
+        entity.Health.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 5));
 
-        Assert.Contains(nameof(IEntity.MaxHP), changed);
-        Assert.Equal(15, entity.MaxHP.Value);
+        Assert.Contains(nameof(IEntityHealth.MaxHP), changed);
+        Assert.Equal(15, entity.Health.MaxHP.Value);
     }
 
     [Fact]
     public void Lowering_MaxHP_Reclamps_Current_HP()
     {
         var entity = new TestEntity(maxHP: 10);
-        entity.HP = 10;
+        entity.Health.HP = 10;
 
-        entity.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v -= 4));
+        entity.Health.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v -= 4));
 
-        Assert.Equal(6, entity.MaxHP.Value);
-        Assert.Equal(6, entity.HP);
+        Assert.Equal(6, entity.Health.MaxHP.Value);
+        Assert.Equal(6, entity.Health.HP);
     }
 
     [Fact]
     public void Raising_MaxHP_Leaves_Current_HP_Untouched()
     {
         var entity = new TestEntity(maxHP: 10);
-        entity.HP = 4;
+        entity.Health.HP = 4;
 
-        entity.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 5));
+        entity.Health.MaxHP.AddModifier(Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 5));
 
-        Assert.Equal(15, entity.MaxHP.Value);
-        Assert.Equal(4, entity.HP);
+        Assert.Equal(15, entity.Health.MaxHP.Value);
+        Assert.Equal(4, entity.Health.HP);
     }
 
     [Fact]
@@ -132,10 +134,10 @@ public class EntityTests
         var entity = new TestEntity(maxHP: 10);
         var modifier = Modifier.Of(CommonNumericModifyOrder.BaseAdd, static (ref double v) => v += 5);
 
-        entity.MaxHP.AddModifier(modifier);
-        Assert.Equal(15, entity.MaxHP.Value);
+        entity.Health.MaxHP.AddModifier(modifier);
+        Assert.Equal(15, entity.Health.MaxHP.Value);
 
-        Assert.True(entity.MaxHP.RemoveModifier(modifier));
-        Assert.Equal(10, entity.MaxHP.Value);
+        Assert.True(entity.Health.MaxHP.RemoveModifier(modifier));
+        Assert.Equal(10, entity.Health.MaxHP.Value);
     }
 }
