@@ -30,7 +30,7 @@ public class CommonEntityHealth(int maxHP) : ObservableObject, IEntityHealth
         {
             var old = field;
             if (SetProperty(ref field, Math.Clamp(value, 0, MaxHP.Value)))
-                Updated?.Invoke(this, new(IEntityHealth.Part.HP, old, field));
+                Updated?.Invoke(this, new(EntityHealthPart.HP, old, field));
         }
     } = maxHP;
 
@@ -41,7 +41,7 @@ public class CommonEntityHealth(int maxHP) : ObservableObject, IEntityHealth
         {
             var old = field;
             if (SetProperty(ref field, Math.Clamp(value, 0, MaxShield.Value)))
-                Updated?.Invoke(this, new(IEntityHealth.Part.Shield, old, field));
+                Updated?.Invoke(this, new(EntityHealthPart.Shield, old, field));
         }
     }
 
@@ -52,7 +52,7 @@ public class CommonEntityHealth(int maxHP) : ObservableObject, IEntityHealth
         {
             var old = field;
             if (SetProperty(ref field, Math.Max(value, 0)))
-                Updated?.Invoke(this, new(IEntityHealth.Part.Block, old, field));
+                Updated?.Invoke(this, new(EntityHealthPart.Block, old, field));
         }
     }
 

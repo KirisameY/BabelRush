@@ -18,16 +18,11 @@ public interface IEntityHealth : INotifyPropertyChanged
 
     public event EventHandler<UpdatedEventArgs> Updated;
 
-    public class UpdatedEventArgs(Part part, int oldValue, int newValue) : EventArgs
+    public class UpdatedEventArgs(EntityHealthPart part, int oldValue, int newValue) : EventArgs
     {
-        public Part Part => part;
+        public EntityHealthPart Part => part;
         public int OldValue => oldValue;
         public int NewValue => newValue;
-    }
-
-    public enum Part
-    {
-        HP, Shield, Block
     }
 }
 
