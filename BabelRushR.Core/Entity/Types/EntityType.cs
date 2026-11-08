@@ -10,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace BabelRushR.Core.Entity.Types;
 
 [DataRegisterInitialize]
-public class EntityType
+public static class EntityType
 {
     public static ILogger Logger => field ??= Logging.Logger(typeof(CardType));
 

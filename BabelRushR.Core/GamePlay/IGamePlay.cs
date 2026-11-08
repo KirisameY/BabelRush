@@ -22,11 +22,6 @@ public interface IGamePlay : INotifyPropertyChanged, IUpdatable, IDisposable
     IScene Scene { get; }
     [Immutable] IPlayerState PlayerState { get; }
 
-    [Immutable] ICardDirector CardDirector { get; }
-
-    /// <summary>战斗状态：双方阵营与是否在战斗中。首次访问时创建，常驻本局。</summary>
-    [Immutable] IBattle Battle { get; }
-
     /// <summary>开局以来经过的累计时间（秒）。</summary>
     double Time { get; }
 

@@ -1,11 +1,13 @@
-﻿using BabelRushR.Core.EntityAction;
+﻿using System.Runtime.CompilerServices;
+
+using BabelRushR.Core.EntityAction;
 using BabelRushR.Core.GamePlay;
 
 using KirisameY.EventBus.EventComponents;
 
 namespace BabelRushR.Core.Card.Operations;
 
-public class CommonCardDirector(IGamePlay gamePlay) : ICardDirector
+public sealed class CardDirector(IGamePlay gamePlay)
 {
     private ICardDeck CardDeck => gamePlay.PlayerState.CardDeck;
 
@@ -35,5 +37,15 @@ public class CommonCardDirector(IGamePlay gamePlay) : ICardDirector
 
         PlayCard(card);
         return true;
+    }
+}
+
+public static class CardDirectorAttachment
+{
+    private static readonly ConditionalWeakTable<IGamePlay, CardDirector> _cache = [];
+
+    extension(IGamePlay gamePlay)
+    {
+        public CardDirector CardDirector => _cache.GetOrAdd(gamePlay, play => new(play));
     }
 }

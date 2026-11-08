@@ -70,10 +70,6 @@ public class CommonGamePlay(ulong seed) : ObservableObject, IGamePlay
         }
     }
 
-    public ICardDirector CardDirector => field ??= new CommonCardDirector(this);
-
-    public IBattle Battle => field ??= new CommonBattle(this);
-
     public double Time
     {
         get;

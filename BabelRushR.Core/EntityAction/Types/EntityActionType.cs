@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 namespace BabelRushR.Core.EntityAction.Types;
 
 [DataRegisterInitialize]
-public class EntityActionType
+public static class EntityActionType
 {
     public static ILogger Logger => field ??= Logging.Logger(typeof(EntityActionType));
 

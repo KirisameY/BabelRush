@@ -169,7 +169,7 @@ public class BattleTests
         var second = AddEntity(gamePlay);
         battle.TryJoinBattle(first, BattleSide.Enemy);
         Assert.Single(changed);
-        Assert.Equal(nameof(IBattle.IsInBattle), changed[0]);
+        Assert.Equal(nameof(Battle.Battle.IsInBattle), changed[0]);
 
         battle.TryJoinBattle(second, BattleSide.Enemy); // 敌方 1 → 2，状态没有翻转
         Assert.Single(changed);
@@ -179,7 +179,7 @@ public class BattleTests
 
         battle.TryLeaveBattle(first);
         Assert.Equal(2, changed.Count);
-        Assert.Equal(nameof(IBattle.IsInBattle), changed[1]);
+        Assert.Equal(nameof(Battle.Battle.IsInBattle), changed[1]);
     }
 
     [Fact]

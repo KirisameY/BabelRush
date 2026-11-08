@@ -1,4 +1,6 @@
-﻿using BabelRushR.Core.Common;
+﻿using System.Runtime.CompilerServices;
+
+using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.GamePlay;
 
@@ -6,26 +8,14 @@ using KirisameY.NotifiableCollections.Collections;
 
 namespace BabelRushR.Core.Battle;
 
-/// <summary>
-///     <see cref="IBattle"/> 的默认实现：两个可通知列表保存双方成员，成员变化驱动战斗状态。
-/// </summary>
-/// <remarks>
-///     成员表直接用实体本身作字典键，依赖引用相等（与 Mvvm 的集合包装对源集合的要求一致）。<br/>
-///     单位离开场景时自动退出：死亡清扫发的是 <see cref="EntityDiedEvent"/>，它派生自
-///     <see cref="EntityRemovedEvent"/>，所以这里只订阅后者。<br/>
-///     场景整体替换时旧场景的成员不会再收到单独的移除事件，故另外订阅
-///     <see cref="GamePlaySceneReplacedEvent"/> 做全量驱逐。<br/>
-///     订阅与一局游戏同寿。Battle 是 GamePlay 的常驻子系统，不参与自动注册处理器的清理；
-///     <see cref="CommonGamePlay.Dispose"/> 只释放处理器，不会撤销这里的订阅。
-/// </remarks>
-public class CommonBattle : ObservableObject, IBattle
+public sealed class Battle : ObservableObject
 {
     private readonly IGamePlay _gamePlay;
     private readonly NotifiableList<IEntity> _allies = [];
     private readonly NotifiableList<IEntity> _enemies = [];
     private readonly Dictionary<IEntity, BattleSide> _sides = [];
 
-    public CommonBattle(IGamePlay gamePlay)
+    public Battle(IGamePlay gamePlay)
     {
         _gamePlay = gamePlay;
         gamePlay.EventBus.Subscribe<EntityRemovedEvent>(OnEntityRemoved);
@@ -104,4 +94,14 @@ public class CommonBattle : ObservableObject, IBattle
     }
 
     #endregion
+}
+
+public static class BattleAttachment
+{
+    private static readonly ConditionalWeakTable<IGamePlay, Battle> _cache = [];
+
+    extension(IGamePlay gamePlay)
+    {
+        public Battle Battle => _cache.GetOrAdd(gamePlay, play => new(play));
+    }
 }
