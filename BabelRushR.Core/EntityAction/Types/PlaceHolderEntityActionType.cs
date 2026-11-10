@@ -10,5 +10,5 @@ public class PlaceHolderEntityActionType : IEntityActionType
 
     public RegKey ID => field ??= RegKey.From("core", "404");
 
-    public IEntityAction CreateAction(int value) => new DelegateEntityAction(_ => { });
+    public IEntityAction CreateAction(int value) => new DelegateEntityAction((_, _) => { });
 }

@@ -100,8 +100,8 @@ public partial class TestCard : Control
     {
         // 有值 / 无值对应 Core 的两种 delegate 类型，CreateAction 时分别产出 IValuedEntityAction 和普通 IEntityAction。
         IEntityActionType actionType = hasValue
-            ? new ValuedDelegateEntityActionType(actionId, (_, _) => { })
-            : new DelegateEntityActionType(actionId, _ => { });
+            ? new ValuedDelegateEntityActionType(actionId, (_, _, _) => { })
+            : new DelegateEntityActionType(actionId, (_, _) => { });
 
         return new RecordCardType(
             cardId,

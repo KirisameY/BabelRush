@@ -7,16 +7,16 @@ using KirisameY.Numeric;
 
 namespace BabelRushR.Core.EntityAction;
 
-public class DelegateEntityAction(Action<EntityActionContext> action) : ObservableObject, IEntityAction
+public class DelegateEntityAction(Action<DelegateEntityAction, EntityActionContext> action) : ObservableObject, IEntityAction
 {
-    public void Act(EntityActionContext ctx) => action.Invoke(ctx);
+    public void Act(EntityActionContext ctx) => action.Invoke(this, ctx);
 }
 
-public class ValuedDelegateEntityAction(Action<EntityActionContext, int> action, int value) : ObservableObject, IValuedEntityAction
+public class ValuedDelegateEntityAction(Action<ValuedDelegateEntityAction, EntityActionContext, int> action, int value) : ObservableObject, IValuedEntityAction
 {
     public IModifierEditableNumeric<int, CommonNumericModifyOrder> Value =>
         INumeric.CreateReadonly(value, TypeA.Of<CommonNumericModifyOrder>())
                 .WithModifier(new CommonLimitModifier(min: 0))
                 .WithUpdateHandler(PropertyChangedHandler());
-    public void Act(EntityActionContext ctx) => action.Invoke(ctx, Value.Value);
+    public void Act(EntityActionContext ctx) => action.Invoke(this, ctx, Value.Value);
 }

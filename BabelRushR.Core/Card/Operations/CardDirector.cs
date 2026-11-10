@@ -15,7 +15,7 @@ public sealed class CardDirector(IGamePlay gamePlay)
     {
         gamePlay.EventBus.Publish(new CardPlayingEvent(card));
 
-        var ctx = new EntityActionContext(gamePlay, gamePlay.PlayerState.PCEntity);
+        var ctx = new CardEntityActionContext(gamePlay, gamePlay.PlayerState.PCEntity, card);
         foreach (var action in card.Actions)
         {
             action.Act(ctx);

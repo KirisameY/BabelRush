@@ -2,7 +2,7 @@
 
 namespace BabelRushR.Core.EntityAction.Types;
 
-public class DelegateEntityActionType(RegKey id, Action<EntityActionContext> action) : IEntityActionType
+public class DelegateEntityActionType(RegKey id, Action<DelegateEntityAction, EntityActionContext> action) : IEntityActionType
 {
     public RegKey ID => id;
 
@@ -12,7 +12,7 @@ public class DelegateEntityActionType(RegKey id, Action<EntityActionContext> act
     }
 }
 
-public class ValuedDelegateEntityActionType(RegKey id, Action<EntityActionContext, int> action) : IEntityActionType
+public class ValuedDelegateEntityActionType(RegKey id, Action<ValuedDelegateEntityAction, EntityActionContext, int> action) : IEntityActionType
 {
     public RegKey ID => id;
 
