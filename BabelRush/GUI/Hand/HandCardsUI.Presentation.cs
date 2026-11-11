@@ -69,6 +69,7 @@ public partial class HandCardsUI
 
     private bool _layoutValid;
     private float _step;
+    private float _hoverLiftCorrection;
     private Vector2 _centerBase;
     private Tween? _centerTween;
     private CardUI? _hovered;
@@ -155,6 +156,23 @@ public partial class HandCardsUI
         Size.Y - BottomPadding + ArcRadius * Mathf.Cos(maxTilt) - cardSize.X * 0.5f * Mathf.Sin(maxTilt)
     );
 
+    /// <summary>
+    ///     悬停牌要比普通牌多抬多少：把当前扇面比「吃满」时低的那一截补回来。
+    /// </summary>
+    /// <remarks>
+    ///     <see cref="CenterBaseOf"/> 会随当前 <c>maxTilt</c> 把圆心往上抬，让最外侧牌的下角贴住
+    ///     <see cref="BottomPadding"/>；牌少、扇面窄时抬得少，圆心就偏低。悬停牌最终落在圆心正上方
+    ///     <see cref="ArcRadius"/> + <see cref="HoverLift"/> 处，这截偏低会原样带到屏幕上。
+    ///     这里只补悬停牌的半径，不动圆心的 y，所以 idle、层序、圆心的横向跟随都不受影响。
+    /// </remarks>
+    private float ComputeHoverLiftCorrection(Vector2 cardSize)
+    {
+        // 扇面「吃满」的参照张数：总弧刚好走完的那一张；再多的牌只会缩小 step，扇面不再变宽。
+        var saturatedCount = Mathf.Max(2, Mathf.CeilToInt(MaxTotalArcDegrees / MaxAngleStepDegrees) + 1);
+        var saturatedTilt  = ComputeStep(saturatedCount, cardSize) * (saturatedCount - 1) * 0.5f;
+        return Mathf.Max(0f, _centerBase.Y - CenterBaseOf(saturatedTilt, cardSize).Y);
+    }
+
     private void InitializeLayout()
     {
         Resized += Relayout;
@@ -231,7 +249,8 @@ public partial class HandCardsUI
     private float AngleAt(int index) => (index - (_cards.Count - 1) * 0.5f) * _step;
 
     /// <summary>卡片离圆心的距离；悬停的牌被推远一点，于是沿半径方向抬起来。</summary>
-    private float RadiusFor(CardUI card) => ArcRadius + (card == _hovered ? HoverLift : 0f);
+    private float RadiusFor(CardUI card) =>
+        ArcRadius + (card == _hovered ? HoverLift + _hoverLiftCorrection : 0f);
 
     private float TargetScale(CardUI card) => card == _hovered ? HoverScale : 1f;
 
@@ -259,8 +278,10 @@ public partial class HandCardsUI
 
         _step       = ComputeStep(_cards.Count, cardSize);
         _centerBase = CenterBaseOf(_step * (_cards.Count - 1) * 0.5f, cardSize);
-        var firstLayout = !_layoutValid;
-        _layoutValid = true;
+
+        _hoverLiftCorrection = ComputeHoverLiftCorrection(cardSize);
+        var firstLayout      = !_layoutValid;
+        _layoutValid         = true;
 
         for (var i = 0; i < _cards.Count; i++)
         {
@@ -371,9 +392,10 @@ public partial class HandCardsUI
         _centerTween?.Kill();
         _centerTween = null;
 
-        _centerBase         = CenterBaseOf(0f, Vector2.Zero);
-        CardCenter.Rotation = 0f;
-        CardCenter.Position = _centerBase;
+        _centerBase          = CenterBaseOf(0f, Vector2.Zero);
+        _hoverLiftCorrection = 0f;
+        CardCenter.Rotation  = 0f;
+        CardCenter.Position  = _centerBase;
     }
 
     #endregion
