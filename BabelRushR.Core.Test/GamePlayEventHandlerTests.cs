@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 
 using BabelRushR.Core.GamePlay;
+using BabelRushR.Core.Level;
 using BabelRushR.Core.Scenery;
 
 namespace BabelRushR.Core.Test;
@@ -27,6 +28,7 @@ public class GamePlayEventHandlerTests
         {
             Scene       = new CommonScene(),
             PlayerState = new CommonPlayerState(new TestEntity(maxHP: 10)),
+            Level       = new CommonLevel(),
         };
 
 

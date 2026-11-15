@@ -1,5 +1,6 @@
 using BabelRushR.Core.Entity;
 using BabelRushR.Core.GamePlay;
+using BabelRushR.Core.Level;
 using BabelRushR.Core.Scenery;
 
 namespace BabelRushR.Core.Test;
@@ -17,6 +18,7 @@ public class SceneTests
         {
             Scene       = scene,
             PlayerState = new CommonPlayerState(new TestEntity(maxHP: 10)),
+            Level       = new CommonLevel(),
         };
         return (scene, gamePlay);
     }

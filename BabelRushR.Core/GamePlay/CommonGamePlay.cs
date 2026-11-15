@@ -1,9 +1,10 @@
-﻿using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;
 
 using BabelRushR.Core.Battle;
 using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Entity;
+using BabelRushR.Core.Level;
 using BabelRushR.Core.Scenery;
 
 using KirisameY.EventBus;
@@ -22,18 +23,20 @@ namespace BabelRushR.Core.GamePlay;
 public class CommonGamePlay(ulong seed) : ObservableObject, IGamePlay
 {
     /// <summary>
-    /// 自建事件总线、场景与玩家状态，放入玩家实体，并注册自动发现的事件处理器。
+    /// 自建事件总线、场景、关卡与玩家状态，放入玩家实体，并注册自动发现的事件处理器。
     /// </summary>
-    public static CommonGamePlay Create(ulong seed, IEntity pcEntity, int maxAP = 6, double apRegeneration = 1.0)
+    public static CommonGamePlay Create(ulong seed, IEntity pcEntity, int maxAP = 6, double apRegeneration = 1.0, ILevel? level = null)
     {
         var gamePlay = new CommonGamePlay(seed)
         {
             Scene       = new CommonScene(),
             PlayerState = new CommonPlayerState(pcEntity, maxAP, apRegeneration),
+            Level       = level ?? new CommonLevel(),
         };
 
         gamePlay.Scene.AddEntity(pcEntity);
         gamePlay.Battle.TryJoinBattle(pcEntity, BattleSide.Ally);
+        gamePlay.Level.TryBegin();
         GamePlayAttachedLogicManager.RegisterDiscovered(gamePlay);
         return gamePlay;
     }
@@ -67,6 +70,19 @@ public class CommonGamePlay(ulong seed) : ObservableObject, IGamePlay
         {
             field = value;
             value.Initialize(this);
+        }
+    }
+
+    public required ILevel Level
+    {
+        get;
+        set
+        {
+            var old = field;
+            if (!SetProperty(ref field, value)) return;
+
+            old?.Unattach();
+            value.Attach(this);
         }
     }
 

@@ -26,4 +26,8 @@
         <InternalsVisibleTo Include="BabelRushR.Core.Test" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Level\" />
+    </ItemGroup>
+
 </Project>

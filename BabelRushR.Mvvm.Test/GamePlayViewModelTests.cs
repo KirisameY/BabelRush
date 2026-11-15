@@ -1,5 +1,6 @@
 using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.GamePlay;
+using BabelRushR.Core.Level;
 using BabelRushR.Core.Scenery;
 using BabelRushR.Mvvm.ViewModels;
 
@@ -189,6 +190,7 @@ public class GamePlayViewModelTests
         {
             Scene       = scene,
             PlayerState = new CommonPlayerState(pcEntity),
+            Level       = new CommonLevel(),
         };
     }
 

@@ -1,4 +1,5 @@
-﻿using BabelRushR.Core.GamePlay;
+using BabelRushR.Core.GamePlay;
+using BabelRushR.Core.Level;
 using BabelRushR.Core.Numeric;
 using BabelRushR.Core.Scenery;
 
@@ -259,6 +260,7 @@ public class PlayerStateTests
         {
             Scene       = new CommonScene(),
             PlayerState = playerState,
+            Level       = new CommonLevel(),
         };
         var events = new List<PlayerAPChangedEvent>();
         game.EventBus.Subscribe<PlayerAPChangedEvent>(events.Add);

@@ -1,8 +1,9 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 
 using BabelRushR.Core.Battle;
 using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.Common;
+using BabelRushR.Core.Level;
 using BabelRushR.Core.Scenery;
 
 using KirisameY.EventBus;
@@ -20,6 +21,7 @@ public interface IGamePlay : INotifyPropertyChanged, IUpdatable, IDisposable
     IRandomizer GetRandomizer(string scopeName);
 
     IScene Scene { get; }
+    ILevel Level { get; }
     [Immutable] IPlayerState PlayerState { get; }
 
     /// <summary>开局以来经过的累计时间（秒）。</summary>
