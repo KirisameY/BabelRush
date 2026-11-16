@@ -10,50 +10,51 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
 {
     public CommonLevel() : this(LevelMap.Empty) { }
 
-    private readonly NotifiableList<RoomPlacement> _placedRooms = [];
     private bool _begun;
     private double _nextStart;
-    private IReadOnlyList<LevelNode>? _passedNodes;
 
     public IGamePlay? GamePlay { get; private set; }
 
-    public LevelMap Map => map;
+    public LevelMap Map { get; } = map;
 
-    public LevelNode CurrentNode
+    public LevelNode CurrentFork
     {
         get;
         private set
         {
             if (ReferenceEquals(field, value)) return;
-            field        = value;
-            _passedNodes = null;
+            field = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(PassedNodes));
         }
     } = map.StartNode;
 
-    public IReadOnlyNotifiableList<RoomPlacement> PlacedRooms => field ??= _placedRooms.AsReadOnlyNotifiableList();
+    public LevelNode CurrentRoom
+    {
+        get;
+        private set => SetProperty(ref field, value);
+    } = map.StartNode;
 
-    // todo: 不要這麼做，回頭改成直接維護一個列表
-    public IReadOnlyList<LevelNode> PassedNodes => _passedNodes ??=
-    [
-        .. _placedRooms.Where(placement => !ReferenceEquals(placement.Node, CurrentNode))
-                       .Select(placement => placement.Node)
-    ];
+    private readonly NotifiableList<LevelNode> _placedNodes = [];
+    public IReadOnlyNotifiableList<LevelNode> PlacedNodes => field ??= _placedNodes.AsReadOnlyNotifiableList();
+
+    private readonly NotifiableList<LevelNode> _passedNodes = [];
+    public IReadOnlyNotifiableList<LevelNode> PassedNodes => field ??= _passedNodes.AsReadOnlyNotifiableList();
+
 
     public bool TryBegin() // todo: Begin 機制刪掉，回頭改成Attach到GamePlay時直接收拾好場景
     {
         if (_begun) return false;
 
         var gamePlay = GamePlay ?? throw new InvalidOperationException($"{nameof(CommonLevel)} uninitialized");
-        Place([CurrentNode], gamePlay);
+        Place([CurrentRoom], gamePlay);
         _begun = true;
         return true;
     }
 
     public bool CanSelect(LevelNode node) =>
-        CurrentNode.NextNodes.Contains(node)
-     && !_placedRooms.Any(placement => ReferenceEquals(placement.Node, node));
+        Map.Nodes.Contains(node)
+     && CurrentFork.NextNodes.Contains(node)
+     && !_placedNodes.Contains(node);
 
     public bool TrySelectNext(LevelNode node)
     {
@@ -63,7 +64,7 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
 
         var chain = BuildChain(node);
         Place(chain, gamePlay);
-        CurrentNode = chain[^1];
+        CurrentFork = chain[^1];
         return true;
     }
 
@@ -81,14 +82,12 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
 
     private void Place(IReadOnlyList<LevelNode> chain, IGamePlay gamePlay)
     {
-        var placements = new List<RoomPlacement>(chain.Count);
         var contents = new List<(RoomContent Content, double Start)>();
         var start = _nextStart;
 
         foreach (var node in chain)
         {
             var length = node.Definition.Length;
-            placements.Add(new RoomPlacement(node, start));
             foreach (var content in node.Definition.CreateContents(new RoomContentContext(gamePlay, node, start, length)))
             {
                 contents.Add((content, start));
@@ -110,7 +109,7 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
             entities.Add(entity);
         }
 
-        foreach (var placement in placements) _placedRooms.Add(placement);
+        foreach (var node in chain) _placedNodes.Add(node);
 
         for (var i = 0; i < contents.Count; i++)
         {

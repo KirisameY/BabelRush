@@ -31,11 +31,9 @@ public class LevelTests
 
         var game = NewGamePlay(level);
 
-        var placement = Assert.Single(level.PlacedRooms);
-        Assert.Same(root, placement.Node);
-        Assert.Equal(0d, placement.Start);
-        Assert.Equal(10d, placement.End);
-        Assert.Same(root, level.CurrentNode);
+        Assert.Same(root, Assert.Single(level.PlacedNodes));
+        Assert.Same(root, level.CurrentFork);
+        Assert.Same(root, level.CurrentRoom);
         Assert.Empty(level.PassedNodes);
         Assert.Contains(roomEntity, game.Scene.Entities);
         Assert.Equal(0d, roomEntity.Position);
@@ -79,18 +77,19 @@ public class LevelTests
 
         Assert.True(level.TrySelectNext(a));
 
-        Assert.Equal(new[] { root, a, a1, f }, level.PlacedRooms.Select(placement => placement.Node));
-        Assert.Equal(new[] { 0d, 10d, 30d, 60d }, level.PlacedRooms.Select(placement => placement.Start));
-        Assert.Same(f, level.CurrentNode);
-        Assert.Equal(new[] { root, a, a1 }, level.PassedNodes);
-        Assert.DoesNotContain(c, level.PlacedRooms.Select(placement => placement.Node));
+        Assert.Equal(new[] { root, a, a1, f }, level.PlacedNodes);
+        Assert.Same(f, level.CurrentFork);
+        Assert.Same(root, level.CurrentRoom);
+        Assert.Empty(level.PassedNodes);
+        Assert.DoesNotContain(c, level.PlacedNodes);
         Assert.True(level.CanSelect(g));
         Assert.True(level.CanSelect(h));
         Assert.False(level.CanSelect(c));
-        Assert.Contains(aEntity, game.Scene.Entities);
         Assert.Equal(10d, aEntity.Position);
-        Assert.Contains(fEntity, game.Scene.Entities);
+        Assert.Equal(30d, a1Entity.Position);
         Assert.Equal(60d, fEntity.Position);
+        Assert.Contains(aEntity, game.Scene.Entities);
+        Assert.Contains(fEntity, game.Scene.Entities);
     }
 
     [Fact]
@@ -115,15 +114,16 @@ public class LevelTests
 
         Assert.True(level.TrySelectNext(a));
 
-        Assert.Equal(new[] { root, a }, level.PlacedRooms.Select(placement => placement.Node));
-        Assert.Same(a, level.CurrentNode);
-        Assert.Equal(new[] { root }, level.PassedNodes);
+        Assert.Equal(new[] { root, a }, level.PlacedNodes);
+        Assert.Same(a, level.CurrentFork);
+        Assert.Same(root, level.CurrentRoom);
+        Assert.Empty(level.PassedNodes);
         Assert.True(level.CanSelect(b));
         Assert.True(level.CanSelect(c));
     }
 
     [Fact]
-    public void Passed_Nodes_Keep_Placement_Order_Across_Selections()
+    public void Current_Fork_Advances_While_Current_Room_Stays()
     {
         var builder = new LevelMapBuilder();
         var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
@@ -144,12 +144,15 @@ public class LevelTests
         var level = new CommonLevel(map);
         NewGamePlay(level);
 
-        level.TrySelectNext(a);
-        Assert.Equal(new[] { root, a }, level.PassedNodes);
+        Assert.True(level.TrySelectNext(a));
+        Assert.Same(f, level.CurrentFork);
+        Assert.Same(root, level.CurrentRoom);
+        Assert.Equal(new[] { root, a, f }, level.PlacedNodes);
 
-        level.TrySelectNext(b);
-        Assert.Equal(new[] { root, a, f }, level.PassedNodes);
-        Assert.Equal(new[] { 0d, 10d, 30d, 60d }, level.PlacedRooms.Select(placement => placement.Start));
+        Assert.True(level.TrySelectNext(b));
+        Assert.Same(b, level.CurrentFork);
+        Assert.Same(root, level.CurrentRoom);
+        Assert.Equal(new[] { root, a, f, b }, level.PlacedNodes);
     }
 
     [Fact]
@@ -173,8 +176,9 @@ public class LevelTests
 
         Assert.False(level.TrySelectNext(b));
         Assert.False(level.TrySelectNext(root));
-        Assert.Same(root, level.CurrentNode);
-        Assert.Single(level.PlacedRooms);
+        Assert.Same(root, level.CurrentFork);
+        Assert.Same(root, level.CurrentRoom);
+        Assert.Same(root, Assert.Single(level.PlacedNodes));
         Assert.Empty(level.PassedNodes);
         Assert.Equal(entityCount, game.Scene.Entities.Count);
         Assert.True(level.CanSelect(a));
@@ -196,8 +200,9 @@ public class LevelTests
         NewGamePlay(level);
 
         Assert.Throws<NotSupportedException>(() => level.TrySelectNext(bad));
-        Assert.Same(root, level.CurrentNode);
-        Assert.Single(level.PlacedRooms);
+        Assert.Same(root, level.CurrentFork);
+        Assert.Same(root, level.CurrentRoom);
+        Assert.Same(root, Assert.Single(level.PlacedNodes));
         Assert.Empty(level.PassedNodes);
     }
 
@@ -227,13 +232,13 @@ public class LevelTests
         var level = new CommonLevel(map);
         NewGamePlay(level);
 
-        var placed = level.PlacedRooms.Count;
+        var placed = level.PlacedNodes.Count;
         Assert.False(level.TryBegin());
-        Assert.Equal(placed, level.PlacedRooms.Count);
+        Assert.Equal(placed, level.PlacedNodes.Count);
     }
 
     [Fact]
-    public void Selection_Raises_CurrentNode_And_PassedNodes_Notifications()
+    public void Selection_Raises_CurrentFork_Notification()
     {
         var builder = new LevelMapBuilder();
         var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
@@ -250,8 +255,7 @@ public class LevelTests
 
         Assert.True(level.TrySelectNext(a));
 
-        Assert.Contains(nameof(ILevel.CurrentNode), changed);
-        Assert.Contains(nameof(ILevel.PassedNodes), changed);
+        Assert.Contains(nameof(ILevel.CurrentFork), changed);
     }
 
     [Fact]
@@ -278,9 +282,9 @@ public class LevelTests
         var game = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10));
         var level = game.Level;
 
-        Assert.Single(level.PlacedRooms);
+        Assert.Single(level.PlacedNodes);
         Assert.Empty(level.PassedNodes);
-        Assert.False(level.TrySelectNext(level.CurrentNode));
+        Assert.False(level.TrySelectNext(level.CurrentFork));
     }
 
     private sealed class NonEntityRoomDefinition(RegKey id, double length) : IRoomDefinition

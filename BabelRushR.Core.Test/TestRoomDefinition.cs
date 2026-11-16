@@ -5,28 +5,19 @@ using KirisameY.Registration.Data;
 
 namespace BabelRushR.Core.Test;
 
-internal sealed class TestRoomDefinition : IRoomDefinition
+internal sealed class TestRoomDefinition(RegKey id, double length, params IEntity[] contents) : IRoomDefinition
 {
-    private readonly IEntity[] _contents;
+    public RegKey ID => id;
 
-    public TestRoomDefinition(RegKey id, double length, params IEntity[] contents)
-    {
-        ID = id;
-        Length = length;
-        _contents = contents;
-    }
+    public double Length => length;
 
-    public RegKey ID { get; }
-
-    public double Length { get; }
-
-    public IReadOnlyList<IEntity> Contents => _contents;
+    public IReadOnlyList<IEntity> Contents => contents;
 
     public IEnumerable<RoomContent> CreateContents(RoomContentContext context)
     {
-        for (var i = 0; i < _contents.Length; i++)
+        for (var i = 0; i < contents.Length; i++)
         {
-            yield return new RoomContent(_contents[i], i);
+            yield return new RoomContent(contents[i], i);
         }
     }
 }

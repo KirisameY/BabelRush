@@ -10,7 +10,6 @@ public sealed class LevelMapBuilder
     public LevelNodeBuilder Add(IRoomDefinition definition, MapPosition position)
     {
         EnsureMutable();
-        ArgumentNullException.ThrowIfNull(definition);
 
         if (!double.IsFinite(definition.Length) || definition.Length < 0)
             throw new ArgumentOutOfRangeException(nameof(definition), "Room length must be a finite non-negative value.");
@@ -26,7 +25,6 @@ public sealed class LevelMapBuilder
     public LevelMap Build(LevelNodeBuilder start)
     {
         EnsureMutable();
-        ArgumentNullException.ThrowIfNull(start);
 
         if (!_nodes.Contains(start))
             throw new InvalidOperationException("Start node is not part of this map builder.");

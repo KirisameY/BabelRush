@@ -21,7 +21,6 @@ public sealed class LevelNodeBuilder
     public LevelNodeBuilder ConnectTo(LevelNodeBuilder next)
     {
         _owner.EnsureMutable();
-        ArgumentNullException.ThrowIfNull(next);
 
         if (!ReferenceEquals(next._owner, _owner))
             throw new InvalidOperationException("Cannot connect nodes from different map builders.");

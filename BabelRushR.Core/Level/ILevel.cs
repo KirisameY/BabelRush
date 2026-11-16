@@ -12,11 +12,13 @@ public interface ILevel : INotifyPropertyChanged
 
     LevelMap Map { get; }
 
-    LevelNode CurrentNode { get; }
+    LevelNode CurrentFork { get; }
 
-    IReadOnlyNotifiableList<RoomPlacement> PlacedRooms { get; }
+    LevelNode CurrentRoom { get; }
 
-    IReadOnlyList<LevelNode> PassedNodes { get; }
+    IReadOnlyNotifiableList<LevelNode> PlacedNodes { get; }
+
+    IReadOnlyNotifiableList<LevelNode> PassedNodes { get; }
 
     bool CanSelect(LevelNode node); // todo: 我想維護一個可選節點的 Set 會更好
 
