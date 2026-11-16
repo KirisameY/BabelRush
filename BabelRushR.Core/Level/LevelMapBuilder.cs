@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+
 namespace BabelRushR.Core.Level;
 
 public sealed class LevelMapBuilder
@@ -47,8 +49,8 @@ public sealed class LevelMapBuilder
 
     private static bool IsInsideUnitSquare(MapPosition position) =>
         double.IsFinite(position.X) && double.IsFinite(position.Y)
-        && position.X is >= 0 and <= 1
-        && position.Y is >= 0 and <= 1;
+     && position.X is >= 0 and <= 1
+     && position.Y is >= 0 and <= 1;
 
     private void ValidateReachable(LevelNodeBuilder start)
     {
@@ -91,8 +93,8 @@ public sealed class LevelMapBuilder
         if (baked.TryGetValue(node, out var result)) return result;
 
         // 先烘焙后继再构造当前节点；菱形结构靠记忆化复用同一份实例。
-        var next = node.Next.Select(nextNode => Bake(nextNode, baked)).ToArray();
-        result = new LevelNode(node.Definition, node.Position, next);
+        var next = node.Next.Select(nextNode => Bake(nextNode, baked)).ToImmutableList();
+        result      = new LevelNode(node.Definition, node.Position, next);
         baked[node] = result;
         return result;
     }

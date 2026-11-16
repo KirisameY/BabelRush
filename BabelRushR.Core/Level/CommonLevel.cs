@@ -6,24 +6,18 @@ using KirisameY.NotifiableCollections.Collections;
 
 namespace BabelRushR.Core.Level;
 
-public sealed class CommonLevel : ObservableObject, ILevel
+public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
 {
+    public CommonLevel() : this(LevelMap.Empty) { }
+
     private readonly NotifiableList<RoomPlacement> _placedRooms = [];
     private bool _begun;
     private double _nextStart;
     private IReadOnlyList<LevelNode>? _passedNodes;
 
-    public CommonLevel() : this(LevelMap.Empty) { }
-
-    public CommonLevel(LevelMap map)
-    {
-        Map = map ?? throw new ArgumentNullException(nameof(map));
-        CurrentNode = map.StartNode;
-    }
-
     public IGamePlay? GamePlay { get; private set; }
 
-    public LevelMap Map { get; }
+    public LevelMap Map => map;
 
     public LevelNode CurrentNode
     {
@@ -31,20 +25,23 @@ public sealed class CommonLevel : ObservableObject, ILevel
         private set
         {
             if (ReferenceEquals(field, value)) return;
-            field = value;
+            field        = value;
             _passedNodes = null;
             OnPropertyChanged();
             OnPropertyChanged(nameof(PassedNodes));
         }
-    }
+    } = map.StartNode;
 
     public IReadOnlyNotifiableList<RoomPlacement> PlacedRooms => field ??= _placedRooms.AsReadOnlyNotifiableList();
 
-    public IReadOnlyList<LevelNode> PassedNodes =>
-        _passedNodes ??= [.. _placedRooms.Where(placement => !ReferenceEquals(placement.Node, CurrentNode))
-                                         .Select(placement => placement.Node)];
+    // todo: 不要這麼做，回頭改成直接維護一個列表
+    public IReadOnlyList<LevelNode> PassedNodes => _passedNodes ??=
+    [
+        .. _placedRooms.Where(placement => !ReferenceEquals(placement.Node, CurrentNode))
+                       .Select(placement => placement.Node)
+    ];
 
-    public bool TryBegin()
+    public bool TryBegin() // todo: Begin 機制刪掉，回頭改成Attach到GamePlay時直接收拾好場景
     {
         if (_begun) return false;
 
@@ -55,10 +52,8 @@ public sealed class CommonLevel : ObservableObject, ILevel
     }
 
     public bool CanSelect(LevelNode node) =>
-        node is not null
-        && Map.Nodes.Contains(node)
-        && CurrentNode.NextNodes.Contains(node)
-        && !_placedRooms.Any(placement => ReferenceEquals(placement.Node, node));
+        CurrentNode.NextNodes.Contains(node)
+     && !_placedRooms.Any(placement => ReferenceEquals(placement.Node, node));
 
     public bool TrySelectNext(LevelNode node)
     {
@@ -76,7 +71,7 @@ public sealed class CommonLevel : ObservableObject, ILevel
     {
         var chain = new List<LevelNode> { node };
         var current = node;
-        while (current.NextNodes.Length == 1)
+        while (current.NextNodes.Count == 1)
         {
             current = current.NextNodes[0];
             chain.Add(current);
@@ -120,7 +115,7 @@ public sealed class CommonLevel : ObservableObject, ILevel
         for (var i = 0; i < contents.Count; i++)
         {
             var (content, contentStart) = contents[i];
-            content.Content.Position = contentStart + content.Offset;
+            content.Content.Position    = contentStart + content.Offset;
             if (!gamePlay.Scene.AddEntity(entities[i]))
                 throw new InvalidOperationException("Room content is already present in the scene.");
         }

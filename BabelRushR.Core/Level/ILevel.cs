@@ -8,7 +8,7 @@ namespace BabelRushR.Core.Level;
 
 public interface ILevel : INotifyPropertyChanged
 {
-    IGamePlay? GamePlay { get; }
+    IGamePlay? GamePlay { get; } // todo: 這真的應該是公開接口的一部分嗎？
 
     LevelMap Map { get; }
 
@@ -18,11 +18,11 @@ public interface ILevel : INotifyPropertyChanged
 
     IReadOnlyList<LevelNode> PassedNodes { get; }
 
-    bool CanSelect(LevelNode node);
+    bool CanSelect(LevelNode node); // todo: 我想維護一個可選節點的 Set 會更好
 
     bool TrySelectNext(LevelNode node);
 
-    bool TryBegin();
+    bool TryBegin(); // todo: 不要這麼做
 
     protected internal void Attach(IGamePlay gamePlay);
 

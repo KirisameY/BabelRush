@@ -8,7 +8,7 @@ namespace BabelRushR.Core.Test;
 public class PlayerStateTests
 {
     private static CommonGamePlay NewGame(int maxAP = 3, double apRegeneration = 1.0)
-        => CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10), maxAP, apRegeneration);
+        => CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10), maxAP: maxAP, apRegeneration: apRegeneration);
 
     [Fact]
     public void Exposes_PCEntity_Config_And_Empty_Piles()

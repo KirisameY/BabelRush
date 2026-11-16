@@ -25,7 +25,7 @@ public class CommonGamePlay(ulong seed) : ObservableObject, IGamePlay
     /// <summary>
     /// 自建事件总线、场景、关卡与玩家状态，放入玩家实体，并注册自动发现的事件处理器。
     /// </summary>
-    public static CommonGamePlay Create(ulong seed, IEntity pcEntity, int maxAP = 6, double apRegeneration = 1.0, ILevel? level = null)
+    public static CommonGamePlay Create(ulong seed, IEntity pcEntity, ILevel? level = null, int maxAP = 6, double apRegeneration = 1.0)
     {
         var gamePlay = new CommonGamePlay(seed)
         {
@@ -73,6 +73,8 @@ public class CommonGamePlay(ulong seed) : ObservableObject, IGamePlay
         }
     }
 
+    // todo: 一般來說 Level 需要從關卡生成器生成，而後者需要請求隨機器，而隨機器需要先創建實例。故不應該將level設爲required。
+    //       也許我們是需要先將 Scene 置空 Level 佔位，裝配 GamePlay 時傳入第一個關卡的生成器，然後生成後設定 Level。
     public required ILevel Level
     {
         get;

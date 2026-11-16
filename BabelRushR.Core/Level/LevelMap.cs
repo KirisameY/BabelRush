@@ -4,11 +4,9 @@ namespace BabelRushR.Core.Level;
 
 public sealed class LevelMap
 {
-    public LevelMap(LevelNode startNode, IEnumerable<LevelNode> nodes)
+    // todo: 以及，使用主構造器
+    public LevelMap(LevelNode startNode, IEnumerable<LevelNode> nodes) // todo: 理論上，所有節點都是從start開始的，那我們只需要從start手動遍歷一遍不就有nodes的集合了嗎？
     {
-        ArgumentNullException.ThrowIfNull(startNode);
-        ArgumentNullException.ThrowIfNull(nodes);
-
         StartNode = startNode;
         Nodes = [.. nodes];
 
