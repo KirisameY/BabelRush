@@ -10,10 +10,9 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
 {
     public CommonLevel() : this(LevelMap.Empty) { }
 
-    private bool _begun;
     private double _nextStart;
 
-    public IGamePlay? GamePlay { get; private set; }
+    private IGamePlay GamePlay { get => field ?? throw new InvalidOperationException($"{nameof(CommonLevel)} uninitialized"); set; }
 
     public LevelMap Map { get; } = map;
 
@@ -40,17 +39,6 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
     private readonly NotifiableList<LevelNode> _passedNodes = [];
     public IReadOnlyNotifiableList<LevelNode> PassedNodes => field ??= _passedNodes.AsReadOnlyNotifiableList();
 
-
-    public bool TryBegin() // todo: Begin 機制刪掉，回頭改成Attach到GamePlay時直接收拾好場景
-    {
-        if (_begun) return false;
-
-        var gamePlay = GamePlay ?? throw new InvalidOperationException($"{nameof(CommonLevel)} uninitialized");
-        Place([CurrentRoom], gamePlay);
-        _begun = true;
-        return true;
-    }
-
     public bool CanSelect(LevelNode node) =>
         Map.Nodes.Contains(node)
      && CurrentFork.NextNodes.Contains(node)
@@ -58,12 +46,10 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
 
     public bool TrySelectNext(LevelNode node)
     {
-        var gamePlay = GamePlay ?? throw new InvalidOperationException($"{nameof(CommonLevel)} uninitialized");
-        if (!_begun) TryBegin();
         if (!CanSelect(node)) return false;
 
         var chain = BuildChain(node);
-        Place(chain, gamePlay);
+        Place(chain, GamePlay);
         CurrentFork = chain[^1];
         return true;
     }
@@ -122,8 +108,13 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
         _nextStart = start;
     }
 
-    internal void Attach(IGamePlay gamePlay) => GamePlay = gamePlay;
+    internal void Attach(IGamePlay gamePlay)
+    {
+        GamePlay = gamePlay;
+        Place([CurrentRoom], GamePlay);
+    }
+
     void ILevel.Attach(IGamePlay gamePlay) => Attach(gamePlay);
-    internal void Unattach() => GamePlay = null;
+    internal void Unattach() => GamePlay = null!;
     void ILevel.Unattach() => Unattach();
 }

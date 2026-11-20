@@ -36,7 +36,6 @@ public class CommonGamePlay(ulong seed) : ObservableObject, IGamePlay
 
         gamePlay.Scene.AddEntity(pcEntity);
         gamePlay.Battle.TryJoinBattle(pcEntity, BattleSide.Ally);
-        gamePlay.Level.TryBegin();
         GamePlayAttachedLogicManager.RegisterDiscovered(gamePlay);
         return gamePlay;
     }
