@@ -21,9 +21,9 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
         get;
         private set
         {
-            if (ReferenceEquals(field, value)) return;
-            field = value;
-            OnPropertyChanged();
+            SetProperty(ref field, value);
+            _selectableNodes.Clear();
+            _selectableNodes.UnionWith(value.NextNodes);
         }
     } = map.StartNode;
 
@@ -39,14 +39,12 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
     private readonly NotifiableList<LevelNode> _passedNodes = [];
     public IReadOnlyNotifiableList<LevelNode> PassedNodes => field ??= _passedNodes.AsReadOnlyNotifiableList();
 
-    public bool CanSelect(LevelNode node) =>
-        Map.Nodes.Contains(node)
-     && CurrentFork.NextNodes.Contains(node)
-     && !_placedNodes.Contains(node);
+    private readonly NotifiableHashSet<LevelNode> _selectableNodes = [];
+    public IReadOnlyNotifiableSet<LevelNode> SelectableNodes => field ??= _selectableNodes.AsReadOnlyNotifiableSet();
 
     public bool TrySelectNext(LevelNode node)
     {
-        if (!CanSelect(node)) return false;
+        if (!_selectableNodes.Contains(node)) return false;
 
         var chain = BuildChain(node);
         Place(chain, GamePlay);

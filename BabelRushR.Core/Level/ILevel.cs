@@ -18,7 +18,7 @@ public interface ILevel : INotifyPropertyChanged
 
     IReadOnlyNotifiableList<LevelNode> PassedNodes { get; }
 
-    bool CanSelect(LevelNode node); // todo: 我想維護一個可選節點的 Set 會更好
+    IReadOnlyNotifiableSet<LevelNode> SelectableNodes { get; }
 
     bool TrySelectNext(LevelNode node);
 
