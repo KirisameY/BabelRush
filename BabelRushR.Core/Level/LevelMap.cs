@@ -1,19 +1,33 @@
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 
 namespace BabelRushR.Core.Level;
 
-public sealed class LevelMap(LevelNode startNode, IEnumerable<LevelNode> nodes) // todo: 理論上，所有節點都是從start開始的，那我們只需要從start手動遍歷一遍不就有nodes的集合了嗎？
+public sealed class LevelMap(LevelNode startNode)
 {
     public LevelNode StartNode { get; } = startNode;
 
-    public ImmutableList<LevelNode> Nodes { get; } = [.. nodes];
+    public FrozenSet<LevelNode> Nodes { get; } = [..EnumerateNodesFrom(startNode)];
 
     public static LevelMap Empty => field ??= CreateEmpty();
 
     private static LevelMap CreateEmpty()
     {
-        var builder = new LevelMapBuilder();
-        var root = builder.Add(PlaceHolderRoomDefinition.Instance, new MapPosition(0.5, 0.5));
-        return builder.Build(root);
+        var builder = new LevelMapBuilder(PlaceHolderRoomDefinition.Instance, new MapPosition(0.5, 0.5));
+        return builder.Build();
+    }
+
+    private static IEnumerable<LevelNode> EnumerateNodesFrom(LevelNode startNode)
+    {
+        Queue<LevelNode> queue = [];
+        queue.Enqueue(startNode);
+        while (queue.TryDequeue(out var node))
+        {
+            yield return node;
+            foreach (var next in node.NextNodes)
+            {
+                if (next.NextNodes.Count > 0) queue.Enqueue(next);
+                yield return next;
+            }
+        }
     }
 }

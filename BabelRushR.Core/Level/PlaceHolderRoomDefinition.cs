@@ -12,5 +12,5 @@ public sealed class PlaceHolderRoomDefinition : IRoomDefinition
 
     public double Length => 0;
 
-    public IEnumerable<RoomContent> CreateContents(RoomContentContext context) => [];
+    public IEnumerable<RoomContent> CreateContents() => [];
 }

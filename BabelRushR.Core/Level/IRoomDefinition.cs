@@ -13,5 +13,5 @@ public interface IRoomDefinition
 
     [Immutable] double Length { get; }
 
-    IEnumerable<RoomContent> CreateContents(RoomContentContext context);
+    IEnumerable<RoomContent> CreateContents();
 }

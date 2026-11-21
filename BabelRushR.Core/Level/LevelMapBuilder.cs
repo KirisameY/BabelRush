@@ -1,99 +1,70 @@
-using System.Collections.Immutable;
+﻿using System.Collections;
 
 namespace BabelRushR.Core.Level;
 
-public sealed class LevelMapBuilder
+public class LevelMapBuilder(IRoomDefinition startRoomDefinition, MapPosition startRoomPosition)
 {
-    private readonly List<LevelNodeBuilder> _nodes = [];
-    private bool _built;
+    public Node StartNode { get; } = new(startRoomDefinition, startRoomPosition);
 
-    public LevelNodeBuilder Add(IRoomDefinition definition, MapPosition position)
+    public Node CreateNode(IRoomDefinition definition, MapPosition position) => new(definition, position);
+
+    public LevelMap Build()
     {
-        EnsureMutable();
-
-        if (!double.IsFinite(definition.Length) || definition.Length < 0)
-            throw new ArgumentOutOfRangeException(nameof(definition), "Room length must be a finite non-negative value.");
-
-        if (!IsInsideUnitSquare(position))
-            throw new ArgumentOutOfRangeException(nameof(position), "Map position must be inside [0,1]^2.");
-
-        var node = new LevelNodeBuilder(this, definition, position);
-        _nodes.Add(node);
-        return node;
-    }
-
-    public LevelMap Build(LevelNodeBuilder start)
-    {
-        EnsureMutable();
-
-        if (!_nodes.Contains(start))
-            throw new InvalidOperationException("Start node is not part of this map builder.");
-
-        ValidateReachable(start);
-        ValidateAcyclic(start);
-
-        var baked = new Dictionary<LevelNodeBuilder, LevelNode>();
-        var nodes = new List<LevelNode>(_nodes.Count);
-        foreach (var node in _nodes) nodes.Add(Bake(node, baked));
-
-        _built = true;
-        return new LevelMap(baked[start], nodes);
-    }
-
-    internal void EnsureMutable()
-    {
-        if (_built) throw new InvalidOperationException("The map has already been built.");
-    }
-
-    private static bool IsInsideUnitSquare(MapPosition position) =>
-        double.IsFinite(position.X) && double.IsFinite(position.Y)
-     && position.X is >= 0 and <= 1
-     && position.Y is >= 0 and <= 1;
-
-    private void ValidateReachable(LevelNodeBuilder start)
-    {
-        var visited = new HashSet<LevelNodeBuilder>();
-        var pending = new Stack<LevelNodeBuilder>();
-        pending.Push(start);
-
-        while (pending.TryPop(out var node))
+        Stack<(List<LevelNode> ParantNodes, Node Self, List<LevelNode> Children)> stack = [];
+        Dictionary<Node, LevelNode> cache = [];
+        List<LevelNode> result = [];
+        stack.Push((result, StartNode, new(capacity: StartNode.FollowingNodes.Count)));
+        while (stack.TryPeek(out var t))
         {
-            if (!visited.Add(node)) continue;
-            foreach (var next in node.Next) pending.Push(next);
-        }
+            var (parentNodes, node, children) = t;
 
-        if (visited.Count != _nodes.Count)
-            throw new InvalidOperationException("All map nodes must be reachable from the start node.");
-    }
-
-    private static void ValidateAcyclic(LevelNodeBuilder start)
-    {
-        var state = new Dictionary<LevelNodeBuilder, bool>();
-
-        void Visit(LevelNodeBuilder node)
-        {
-            if (state.TryGetValue(node, out var finished))
+            if (cache.TryGetValue(node, out var baked))
             {
-                if (!finished) throw new InvalidOperationException("The map must be acyclic.");
-                return;
+                parentNodes.Add(baked);
+                stack.Pop();
             }
-
-            state[node] = false;
-            foreach (var next in node.Next) Visit(next);
-            state[node] = true;
+            else if (node.FollowingNodes.Count == children.Count)
+            {
+                baked = new(node.Definition, node.Position, [..children]);
+                cache.Add(node, baked);
+                parentNodes.Add(baked);
+                stack.Pop();
+            }
+            else
+            {
+                foreach (var following in node.FollowingNodes)
+                {
+                    stack.Push((children, following, new(capacity: following.FollowingNodes.Count)));
+                }
+            }
         }
-
-        Visit(start);
+        return new(result[0]);
     }
 
-    private static LevelNode Bake(LevelNodeBuilder node, Dictionary<LevelNodeBuilder, LevelNode> baked)
+    public record Node(IRoomDefinition Definition, MapPosition Position)
     {
-        if (baked.TryGetValue(node, out var result)) return result;
+        private readonly HashSet<Node> _followingNodes = [];
+        public IReadOnlySet<Node> FollowingNodes => field ??= _followingNodes.AsReadOnly();
 
-        // 先烘焙后继再构造当前节点；菱形结构靠记忆化复用同一份实例。
-        var next = node.Next.Select(nextNode => Bake(nextNode, baked)).ToImmutableList();
-        result      = new LevelNode(node.Definition, node.Position, next);
-        baked[node] = result;
-        return result;
+        public void ConnectTo(Node following)
+        {
+            if (EnumNodesStartFrom(following).Contains(this)) throw new InvalidOperationException("Circular path is not allowed.");
+            _followingNodes.Add(following);
+        }
+
+        private IEnumerable<Node> EnumNodesStartFrom(Node node)
+        {
+            HashSet<Node> enumerated = [];
+            Queue<Node> queue = [];
+            queue.Enqueue(node);
+            while (queue.TryDequeue(out var n))
+            {
+                yield return n;
+                foreach (var following in n.FollowingNodes)
+                {
+                    if (enumerated.Add(following)) queue.Enqueue(following);
+                }
+            }
+        }
     }
 }

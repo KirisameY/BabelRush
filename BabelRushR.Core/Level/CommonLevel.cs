@@ -72,7 +72,7 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
         foreach (var node in chain)
         {
             var length = node.Definition.Length;
-            foreach (var content in node.Definition.CreateContents(new RoomContentContext(gamePlay, node, start, length)))
+            foreach (var content in node.Definition.CreateContents())
             {
                 contents.Add((content, start));
             }
