@@ -13,7 +13,7 @@ internal sealed class TestRoomDefinition(RegKey id, double length, params IEntit
 
     public IReadOnlyList<IEntity> Contents => contents;
 
-    public IEnumerable<RoomContent> CreateContents(RoomContentContext context)
+    public IEnumerable<RoomContent> CreateContents()
     {
         for (var i = 0; i < contents.Length; i++)
         {

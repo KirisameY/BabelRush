@@ -9,112 +9,96 @@ public class LevelMapBuilderTests
     private static IRoomDefinition Room(string key = "room", double length = 10) =>
         new TestRoomDefinition(RegKey.From("test", key), length);
 
-    [Theory]
-    [InlineData(-0.01, 0.5)]
-    [InlineData(1.01, 0.5)]
-    [InlineData(0.5, -0.01)]
-    [InlineData(0.5, 1.01)]
-    public void Add_Rejects_Positions_Outside_The_Unit_Square(double x, double y)
-    {
-        var builder = new LevelMapBuilder();
+    private static LevelNode Node(LevelMap map, string key) =>
+        map.Nodes.Single(node => node.Definition.ID == RegKey.From("test", key));
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => builder.Add(Room(), new MapPosition(x, y)));
+    [Fact]
+    public void CreateNode_Does_Not_Connect_The_Node()
+    {
+        var start = Room("start");
+        var builder = new LevelMapBuilder(start, new MapPosition(0.5, 0.5));
+        var orphan = builder.CreateNode(Room("orphan"), new MapPosition(0.5, 0.9));
+
+        var map = builder.Build();
+
+        Assert.Empty(orphan.FollowingNodes);
+        Assert.Same(start, map.StartNode.Definition);
+        Assert.Single(map.Nodes);
     }
 
     [Fact]
-    public void Add_Rejects_Non_Finite_Positions()
+    public void Build_Returns_A_Map_Starting_At_The_Builder_Start_Node()
     {
-        var builder = new LevelMapBuilder();
+        var definition = Room("start");
+        var builder = new LevelMapBuilder(definition, new MapPosition(0.1, 0.2));
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => builder.Add(Room(), new MapPosition(double.NaN, 0.5)));
-        Assert.Throws<ArgumentOutOfRangeException>(() => builder.Add(Room(), new MapPosition(0.5, double.PositiveInfinity)));
-    }
+        var map = builder.Build();
 
-    [Theory]
-    [InlineData(-1.0)]
-    [InlineData(double.NaN)]
-    [InlineData(double.PositiveInfinity)]
-    public void Add_Rejects_Invalid_Room_Lengths(double length)
-    {
-        var builder = new LevelMapBuilder();
-
-        Assert.Throws<ArgumentOutOfRangeException>(() => builder.Add(Room(length: length), new MapPosition(0.5, 0.5)));
+        Assert.Same(definition, map.StartNode.Definition);
+        Assert.Equal(new MapPosition(0.1, 0.2), map.StartNode.Position);
+        Assert.Same(map.StartNode, Assert.Single(map.Nodes));
     }
 
     [Fact]
-    public void Connect_Rejects_Nodes_From_Another_Builder()
+    public void ConnectTo_Rejects_A_Cycle()
     {
-        var first = new LevelMapBuilder();
-        var second = new LevelMapBuilder();
-        var a = first.Add(Room("a"), new MapPosition(0.1, 0.1));
-        var b = second.Add(Room("b"), new MapPosition(0.9, 0.9));
+        var builder = new LevelMapBuilder(Room("a"), new MapPosition(0.1, 0.1));
+        var b = builder.CreateNode(Room("b"), new MapPosition(0.5, 0.5));
+        builder.StartNode.ConnectTo(b);
 
-        Assert.Throws<InvalidOperationException>(() => a.ConnectTo(b));
+        Assert.Throws<InvalidOperationException>(() => b.ConnectTo(builder.StartNode));
     }
 
     [Fact]
-    public void Connect_Rejects_Duplicate_Edges()
+    public void ConnectTo_Rejects_A_Self_Loop()
     {
-        var builder = new LevelMapBuilder();
-        var a = builder.Add(Room("a"), new MapPosition(0.1, 0.1));
-        var b = builder.Add(Room("b"), new MapPosition(0.9, 0.9));
-        a.ConnectTo(b);
+        var builder = new LevelMapBuilder(Room("a"), new MapPosition(0.5, 0.5));
 
-        Assert.Throws<InvalidOperationException>(() => a.ConnectTo(b));
+        Assert.Throws<InvalidOperationException>(() => builder.StartNode.ConnectTo(builder.StartNode));
     }
 
     [Fact]
-    public void Build_Rejects_Unreachable_Nodes()
+    public void Connecting_The_Same_Edge_Twice_Keeps_One_Edge()
     {
-        var builder = new LevelMapBuilder();
-        var start = builder.Add(Room("start"), new MapPosition(0.5, 0.1));
-        builder.Add(Room("orphan"), new MapPosition(0.5, 0.9));
+        var builder = new LevelMapBuilder(Room("a"), new MapPosition(0.1, 0.1));
+        var b = builder.CreateNode(Room("b"), new MapPosition(0.5, 0.5));
+        builder.StartNode.ConnectTo(b);
+        builder.StartNode.ConnectTo(b);
 
-        Assert.Throws<InvalidOperationException>(() => builder.Build(start));
+        var map = builder.Build();
+
+        Assert.Equal(RegKey.From("test", "b"), Assert.Single(map.StartNode.NextNodes).Definition.ID);
     }
 
     [Fact]
-    public void Build_Rejects_Cycles()
+    public void Build_Ignores_Nodes_That_Are_Not_Reachable_From_The_Start()
     {
-        var builder = new LevelMapBuilder();
-        var a = builder.Add(Room("a"), new MapPosition(0.1, 0.1));
-        var b = builder.Add(Room("b"), new MapPosition(0.9, 0.9));
-        a.ConnectTo(b);
-        b.ConnectTo(a);
+        var builder = new LevelMapBuilder(Room("start"), new MapPosition(0.5, 0.1));
+        builder.CreateNode(Room("orphan"), new MapPosition(0.5, 0.9));
 
-        Assert.Throws<InvalidOperationException>(() => builder.Build(a));
-    }
+        var map = builder.Build();
 
-    [Fact]
-    public void Build_Forbids_Further_Mutation()
-    {
-        var builder = new LevelMapBuilder();
-        var a = builder.Add(Room("a"), new MapPosition(0.1, 0.1));
-        var b = builder.Add(Room("b"), new MapPosition(0.9, 0.9));
-        a.ConnectTo(b);
-        builder.Build(a);
-
-        Assert.Throws<InvalidOperationException>(() => builder.Add(Room("late"), new MapPosition(0.5, 0.5)));
-        Assert.Throws<InvalidOperationException>(() => a.ConnectTo(b));
+        Assert.Single(map.Nodes);
+        Assert.Equal(RegKey.From("test", "start"), map.StartNode.Definition.ID);
     }
 
     [Fact]
     public void Build_Reuses_Shared_Successors()
     {
-        var builder = new LevelMapBuilder();
-        var root = builder.Add(Room("root"), new MapPosition(0.5, 0.1));
-        var left = builder.Add(Room("left"), new MapPosition(0.25, 0.5));
-        var right = builder.Add(Room("right"), new MapPosition(0.75, 0.5));
-        var end = builder.Add(Room("end"), new MapPosition(0.5, 0.9));
-        root.ConnectTo(left).ConnectTo(right);
+        var builder = new LevelMapBuilder(Room("root"), new MapPosition(0.5, 0.1));
+        var left = builder.CreateNode(Room("left"), new MapPosition(0.25, 0.5));
+        var right = builder.CreateNode(Room("right"), new MapPosition(0.75, 0.5));
+        var end = builder.CreateNode(Room("end"), new MapPosition(0.5, 0.9));
+        builder.StartNode.ConnectTo(left);
+        builder.StartNode.ConnectTo(right);
         left.ConnectTo(end);
         right.ConnectTo(end);
 
-        var map = builder.Build(root);
+        var map = builder.Build();
 
-        var endNode = map.Nodes.Single(node => node.Definition.ID == RegKey.From("test", "end"));
-        var leftNode = map.Nodes.Single(node => node.Definition.ID == RegKey.From("test", "left"));
-        var rightNode = map.Nodes.Single(node => node.Definition.ID == RegKey.From("test", "right"));
+        var endNode = Node(map, "end");
+        var leftNode = Node(map, "left");
+        var rightNode = Node(map, "right");
 
         Assert.Same(endNode, Assert.Single(leftNode.NextNodes));
         Assert.Same(endNode, Assert.Single(rightNode.NextNodes));
@@ -123,12 +107,26 @@ public class LevelMapBuilderTests
     [Fact]
     public void Build_Accepts_A_Terminal_Node()
     {
-        var builder = new LevelMapBuilder();
-        var start = builder.Add(Room("start"), new MapPosition(0.5, 0.5));
+        var builder = new LevelMapBuilder(Room("start"), new MapPosition(0.5, 0.5));
 
-        var map = builder.Build(start);
+        var map = builder.Build();
 
         Assert.Same(map.StartNode, Assert.Single(map.Nodes));
         Assert.Empty(map.StartNode.NextNodes);
+    }
+
+    [Fact]
+    public void A_Built_Map_Does_Not_See_Edges_Connected_Afterwards()
+    {
+        var builder = new LevelMapBuilder(Room("start"), new MapPosition(0.5, 0.1));
+        var a = builder.CreateNode(Room("a"), new MapPosition(0.5, 0.5));
+        var b = builder.CreateNode(Room("b"), new MapPosition(0.5, 0.9));
+        builder.StartNode.ConnectTo(a);
+
+        var map = builder.Build();
+        builder.StartNode.ConnectTo(b);
+
+        Assert.Equal(RegKey.From("test", "a"), Assert.Single(map.StartNode.NextNodes).Definition.ID);
+        Assert.Equal(2, builder.Build().StartNode.NextNodes.Count);
     }
 }

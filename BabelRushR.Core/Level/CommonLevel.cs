@@ -16,17 +16,6 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
 
     public LevelMap Map { get; } = map;
 
-    public LevelNode CurrentFork
-    {
-        get;
-        private set
-        {
-            SetProperty(ref field, value);
-            _selectableNodes.Clear();
-            _selectableNodes.UnionWith(value.NextNodes);
-        }
-    } = map.StartNode;
-
     public LevelNode CurrentRoom
     {
         get;
@@ -39,8 +28,20 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
     private readonly NotifiableList<LevelNode> _passedNodes = [];
     public IReadOnlyNotifiableList<LevelNode> PassedNodes => field ??= _passedNodes.AsReadOnlyNotifiableList();
 
-    private readonly NotifiableHashSet<LevelNode> _selectableNodes = [];
+    // 必須在 CurrentFork 之前初始化：屬性的初始化器直接寫 backing field，不經過 setter。
+    private readonly NotifiableHashSet<LevelNode> _selectableNodes = [.. map.StartNode.NextNodes];
     public IReadOnlyNotifiableSet<LevelNode> SelectableNodes => field ??= _selectableNodes.AsReadOnlyNotifiableSet();
+
+    public LevelNode CurrentFork
+    {
+        get;
+        private set
+        {
+            SetProperty(ref field, value);
+            _selectableNodes.Clear();
+            _selectableNodes.UnionWith(value.NextNodes);
+        }
+    } = map.StartNode;
 
     public bool TrySelectNext(LevelNode node)
     {

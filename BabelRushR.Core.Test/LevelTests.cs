@@ -20,12 +20,11 @@ public class LevelTests
         CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10), level: level);
 
     [Fact]
-    public void Begin_Places_The_Start_Room()
+    public void Attaching_Places_The_Start_Room()
     {
         var roomEntity = new TestEntity(maxHP: 5);
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10, roomEntity), new MapPosition(0.5, 0.9));
-        var map = builder.Build(rootBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10, roomEntity), new MapPosition(0.5, 0.9));
+        var map = builder.Build();
         var root = Get(map, "root");
         var level = new CommonLevel(map);
 
@@ -50,20 +49,21 @@ public class LevelTests
         var hEntity = new TestEntity(maxHP: 5);
         var cEntity = new TestEntity(maxHP: 5);
 
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10, rootEntity), new MapPosition(0.5, 0.95));
-        var aBuilder = builder.Add(new TestRoomDefinition(Key("a"), 20, aEntity), new MapPosition(0.25, 0.7));
-        var a1Builder = builder.Add(new TestRoomDefinition(Key("a1"), 30, a1Entity), new MapPosition(0.25, 0.45));
-        var fBuilder = builder.Add(new TestRoomDefinition(Key("f"), 40, fEntity), new MapPosition(0.25, 0.2));
-        var gBuilder = builder.Add(new TestRoomDefinition(Key("g"), 50, gEntity), new MapPosition(0.1, 0.05));
-        var hBuilder = builder.Add(new TestRoomDefinition(Key("h"), 50, hEntity), new MapPosition(0.4, 0.05));
-        var cBuilder = builder.Add(new TestRoomDefinition(Key("c"), 60, cEntity), new MapPosition(0.75, 0.7));
-        rootBuilder.ConnectTo(aBuilder).ConnectTo(cBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10, rootEntity), new MapPosition(0.5, 0.95));
+        var aBuilder = builder.CreateNode(new TestRoomDefinition(Key("a"), 20, aEntity), new MapPosition(0.25, 0.7));
+        var a1Builder = builder.CreateNode(new TestRoomDefinition(Key("a1"), 30, a1Entity), new MapPosition(0.25, 0.45));
+        var fBuilder = builder.CreateNode(new TestRoomDefinition(Key("f"), 40, fEntity), new MapPosition(0.25, 0.2));
+        var gBuilder = builder.CreateNode(new TestRoomDefinition(Key("g"), 50, gEntity), new MapPosition(0.1, 0.05));
+        var hBuilder = builder.CreateNode(new TestRoomDefinition(Key("h"), 50, hEntity), new MapPosition(0.4, 0.05));
+        var cBuilder = builder.CreateNode(new TestRoomDefinition(Key("c"), 60, cEntity), new MapPosition(0.75, 0.7));
+        builder.StartNode.ConnectTo(aBuilder);
+        builder.StartNode.ConnectTo(cBuilder);
         aBuilder.ConnectTo(a1Builder);
         a1Builder.ConnectTo(fBuilder);
-        fBuilder.ConnectTo(gBuilder).ConnectTo(hBuilder);
+        fBuilder.ConnectTo(gBuilder);
+        fBuilder.ConnectTo(hBuilder);
 
-        var map = builder.Build(rootBuilder);
+        var map = builder.Build();
         var root = Get(map, "root");
         var a = Get(map, "a");
         var a1 = Get(map, "a1");
@@ -82,9 +82,9 @@ public class LevelTests
         Assert.Same(root, level.CurrentRoom);
         Assert.Empty(level.PassedNodes);
         Assert.DoesNotContain(c, level.PlacedNodes);
-        Assert.True(level.CanSelect(g));
-        Assert.True(level.CanSelect(h));
-        Assert.False(level.CanSelect(c));
+        Assert.Contains(g, level.SelectableNodes);
+        Assert.Contains(h, level.SelectableNodes);
+        Assert.DoesNotContain(c, level.SelectableNodes);
         Assert.Equal(10d, aEntity.Position);
         Assert.Equal(30d, a1Entity.Position);
         Assert.Equal(60d, fEntity.Position);
@@ -95,15 +95,15 @@ public class LevelTests
     [Fact]
     public void Selecting_A_Fork_Places_Only_That_Room()
     {
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
-        var aBuilder = builder.Add(new TestRoomDefinition(Key("a"), 20), new MapPosition(0.5, 0.5));
-        var bBuilder = builder.Add(new TestRoomDefinition(Key("b"), 30), new MapPosition(0.25, 0.1));
-        var cBuilder = builder.Add(new TestRoomDefinition(Key("c"), 30), new MapPosition(0.75, 0.1));
-        rootBuilder.ConnectTo(aBuilder);
-        aBuilder.ConnectTo(bBuilder).ConnectTo(cBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
+        var aBuilder = builder.CreateNode(new TestRoomDefinition(Key("a"), 20), new MapPosition(0.5, 0.5));
+        var bBuilder = builder.CreateNode(new TestRoomDefinition(Key("b"), 30), new MapPosition(0.25, 0.1));
+        var cBuilder = builder.CreateNode(new TestRoomDefinition(Key("c"), 30), new MapPosition(0.75, 0.1));
+        builder.StartNode.ConnectTo(aBuilder);
+        aBuilder.ConnectTo(bBuilder);
+        aBuilder.ConnectTo(cBuilder);
 
-        var map = builder.Build(rootBuilder);
+        var map = builder.Build();
         var root = Get(map, "root");
         var a = Get(map, "a");
         var b = Get(map, "b");
@@ -118,24 +118,24 @@ public class LevelTests
         Assert.Same(a, level.CurrentFork);
         Assert.Same(root, level.CurrentRoom);
         Assert.Empty(level.PassedNodes);
-        Assert.True(level.CanSelect(b));
-        Assert.True(level.CanSelect(c));
+        Assert.Contains(b, level.SelectableNodes);
+        Assert.Contains(c, level.SelectableNodes);
     }
 
     [Fact]
     public void Current_Fork_Advances_While_Current_Room_Stays()
     {
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
-        var aBuilder = builder.Add(new TestRoomDefinition(Key("a"), 20), new MapPosition(0.5, 0.6));
-        var fBuilder = builder.Add(new TestRoomDefinition(Key("f"), 30), new MapPosition(0.5, 0.3));
-        var bBuilder = builder.Add(new TestRoomDefinition(Key("b"), 40), new MapPosition(0.25, 0.05));
-        var cBuilder = builder.Add(new TestRoomDefinition(Key("c"), 40), new MapPosition(0.75, 0.05));
-        rootBuilder.ConnectTo(aBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
+        var aBuilder = builder.CreateNode(new TestRoomDefinition(Key("a"), 20), new MapPosition(0.5, 0.6));
+        var fBuilder = builder.CreateNode(new TestRoomDefinition(Key("f"), 30), new MapPosition(0.5, 0.3));
+        var bBuilder = builder.CreateNode(new TestRoomDefinition(Key("b"), 40), new MapPosition(0.25, 0.05));
+        var cBuilder = builder.CreateNode(new TestRoomDefinition(Key("c"), 40), new MapPosition(0.75, 0.05));
+        builder.StartNode.ConnectTo(aBuilder);
         aBuilder.ConnectTo(fBuilder);
-        fBuilder.ConnectTo(bBuilder).ConnectTo(cBuilder);
+        fBuilder.ConnectTo(bBuilder);
+        fBuilder.ConnectTo(cBuilder);
 
-        var map = builder.Build(rootBuilder);
+        var map = builder.Build();
         var root = Get(map, "root");
         var a = Get(map, "a");
         var f = Get(map, "f");
@@ -158,14 +158,13 @@ public class LevelTests
     [Fact]
     public void Failed_Selection_Changes_Nothing()
     {
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
-        var aBuilder = builder.Add(new TestRoomDefinition(Key("a"), 20), new MapPosition(0.5, 0.5));
-        var bBuilder = builder.Add(new TestRoomDefinition(Key("b"), 30), new MapPosition(0.5, 0.2));
-        rootBuilder.ConnectTo(aBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
+        var aBuilder = builder.CreateNode(new TestRoomDefinition(Key("a"), 20), new MapPosition(0.5, 0.5));
+        var bBuilder = builder.CreateNode(new TestRoomDefinition(Key("b"), 30), new MapPosition(0.5, 0.2));
+        builder.StartNode.ConnectTo(aBuilder);
         aBuilder.ConnectTo(bBuilder);
 
-        var map = builder.Build(rootBuilder);
+        var map = builder.Build();
         var root = Get(map, "root");
         var a = Get(map, "a");
         var b = Get(map, "b");
@@ -181,18 +180,17 @@ public class LevelTests
         Assert.Same(root, Assert.Single(level.PlacedNodes));
         Assert.Empty(level.PassedNodes);
         Assert.Equal(entityCount, game.Scene.Entities.Count);
-        Assert.True(level.CanSelect(a));
+        Assert.Contains(a, level.SelectableNodes);
     }
 
     [Fact]
     public void Non_Entity_Content_Throws_Before_Any_State_Changes()
     {
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
-        var badBuilder = builder.Add(new NonEntityRoomDefinition(Key("bad"), 10), new MapPosition(0.5, 0.5));
-        rootBuilder.ConnectTo(badBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
+        var badBuilder = builder.CreateNode(new NonEntityRoomDefinition(Key("bad"), 10), new MapPosition(0.5, 0.5));
+        builder.StartNode.ConnectTo(badBuilder);
 
-        var map = builder.Build(rootBuilder);
+        var map = builder.Build();
         var root = Get(map, "root");
         var bad = Get(map, "bad");
 
@@ -209,43 +207,40 @@ public class LevelTests
     [Fact]
     public void Selecting_From_An_Unattached_Level_Throws()
     {
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
-        var aBuilder = builder.Add(new TestRoomDefinition(Key("a"), 10), new MapPosition(0.5, 0.5));
-        rootBuilder.ConnectTo(aBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
+        var aBuilder = builder.CreateNode(new TestRoomDefinition(Key("a"), 10), new MapPosition(0.5, 0.5));
+        builder.StartNode.ConnectTo(aBuilder);
 
-        var map = builder.Build(rootBuilder);
+        var map = builder.Build();
         var a = Get(map, "a");
         var level = new CommonLevel(map);
 
-        Assert.True(level.CanSelect(a));
-        Assert.Throws<InvalidOperationException>(() => level.TryBegin());
+        Assert.Contains(a, level.SelectableNodes);
         Assert.Throws<InvalidOperationException>(() => level.TrySelectNext(a));
     }
 
     [Fact]
-    public void Begin_Is_Idempotent()
+    public void Reassigning_The_Same_Level_Does_Not_Place_It_Again()
     {
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
-        var map = builder.Build(rootBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
+        var map = builder.Build();
         var level = new CommonLevel(map);
-        NewGamePlay(level);
+        var game = NewGamePlay(level);
 
         var placed = level.PlacedNodes.Count;
-        Assert.False(level.TryBegin());
+        game.Level = level;
+
         Assert.Equal(placed, level.PlacedNodes.Count);
     }
 
     [Fact]
     public void Selection_Raises_CurrentFork_Notification()
     {
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
-        var aBuilder = builder.Add(new TestRoomDefinition(Key("a"), 20), new MapPosition(0.5, 0.5));
-        rootBuilder.ConnectTo(aBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
+        var aBuilder = builder.CreateNode(new TestRoomDefinition(Key("a"), 20), new MapPosition(0.5, 0.5));
+        builder.StartNode.ConnectTo(aBuilder);
 
-        var map = builder.Build(rootBuilder);
+        var map = builder.Build();
         var a = Get(map, "a");
         var level = new CommonLevel(map);
         NewGamePlay(level);
@@ -263,9 +258,8 @@ public class LevelTests
     {
         var first = new TestEntity(maxHP: 5);
         var second = new TestEntity(maxHP: 5);
-        var builder = new LevelMapBuilder();
-        var rootBuilder = builder.Add(new TestRoomDefinition(Key("root"), 10, first, second), new MapPosition(0.5, 0.9));
-        var map = builder.Build(rootBuilder);
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10, first, second), new MapPosition(0.5, 0.9));
+        var map = builder.Build();
         var level = new CommonLevel(map);
 
         var game = NewGamePlay(level);
@@ -293,7 +287,7 @@ public class LevelTests
 
         public double Length => length;
 
-        public IEnumerable<RoomContent> CreateContents(RoomContentContext context)
+        public IEnumerable<RoomContent> CreateContents()
         {
             yield return new RoomContent(new TestSceneObject(), 0);
         }

@@ -14,7 +14,7 @@ public class RoomDefinitionTests
         Assert.Same(definition, PlaceHolderRoomDefinition.Instance);
         Assert.Equal(RegKey.From("core", "404"), definition.ID);
         Assert.Equal(0, definition.Length);
-        Assert.Empty(definition.CreateContents(default));
+        Assert.Empty(definition.CreateContents());
     }
 
     [Fact]
