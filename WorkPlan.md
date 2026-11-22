@@ -82,5 +82,5 @@
 
 - [x] CardCost field 初始为 0 故输入 0 时不更新而 UI 占位符显示为 12
 - [x] 手牌数量较少时 hover 状态下牌的UI位置会更靠下
-- [ ] HashCode.Combine 只在同一個進程期間具備穩定性，亟需修復
+- [x] HashCode.Combine 只在同一個進程期間具備穩定性，亟需修復
 - [ ]
