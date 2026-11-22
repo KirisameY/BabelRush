@@ -18,8 +18,8 @@ public static class EntityType
 
     public static IEnumerableRegistry<IEntityType> Registry { get; } =
         new RegistryBuilder<IEntityType>()
-           .WithFallback(RegistryCreatUtils.CreateFallback(Fallback, Logger, "EntityType"))
-           .AddRegistrant(RegistryCreatUtils.ListDataRegistrant<IEntityType>("/entities", "entity", c => c.ID))
+           .WithFallback(RegistryCreateUtils.CreateFallback(Fallback, Logger, "EntityType"))
+           .AddRegistrant(RegistryCreateUtils.ListDataRegistrant<IEntityType>("/entities", "entity", c => c.ID))
            // .AddRegistrant(ConstantEntityTypes.Registrant)
            .WithRegisterDoneEventSource(DataRegistrationManager.DoneSource)
            .Build();

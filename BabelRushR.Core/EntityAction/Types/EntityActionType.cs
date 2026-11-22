@@ -17,7 +17,7 @@ public static class EntityActionType
 
     public static IEnumerableRegistry<IEntityActionType> Registry { get; } =
         new RegistryBuilder<IEntityActionType>()
-           .WithFallback(RegistryCreatUtils.CreateFallback(Fallback, Logger, "EntityActionType"))
+           .WithFallback(RegistryCreateUtils.CreateFallback(Fallback, Logger, "EntityActionType"))
            .AddRegistrant(ConstantEntityActionTypes.Registrant)
            .WithRegisterDoneEventSource(DataRegistrationManager.DoneSource)
            .Build();

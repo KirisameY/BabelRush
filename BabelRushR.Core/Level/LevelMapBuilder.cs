@@ -10,7 +10,7 @@ public class LevelMapBuilder(IRoomDefinition startRoomDefinition, MapPosition st
 
     public LevelMap Build()
     {
-        Stack<(List<LevelNode> ParantNodes, Node Self, List<LevelNode> Children)> stack = [];
+        Stack<(List<LevelNode> ParentNodes, Node Self, List<LevelNode> Children)> stack = [];
         Dictionary<Node, LevelNode> cache = [];
         List<LevelNode> result = [];
         stack.Push((result, StartNode, new(capacity: StartNode.FollowingNodes.Count)));

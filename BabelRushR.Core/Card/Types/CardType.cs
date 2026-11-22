@@ -17,8 +17,8 @@ public static class CardType
 
     public static IEnumerableRegistry<ICardType> Registry { get; } =
         new RegistryBuilder<ICardType>()
-           .WithFallback(RegistryCreatUtils.CreateFallback(Fallback, Logger, "CardType"))
-           .AddRegistrant(RegistryCreatUtils.ListDataRegistrant<ICardType>("/cards","card", c=>c.ID))
+           .WithFallback(RegistryCreateUtils.CreateFallback(Fallback, Logger, "CardType"))
+           .AddRegistrant(RegistryCreateUtils.ListDataRegistrant<ICardType>("/cards","card", c=>c.ID))
            .AddRegistrant(ConstantCardTypes.Registrant)
            .WithRegisterDoneEventSource(DataRegistrationManager.DoneSource)
            .Build();

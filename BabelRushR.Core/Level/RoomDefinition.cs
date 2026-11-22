@@ -17,7 +17,7 @@ public static class RoomDefinition
 
     public static IEnumerableRegistry<IRoomDefinition> Registry { get; } =
         new RegistryBuilder<IRoomDefinition>()
-           .WithFallback(RegistryCreatUtils.CreateFallback(Fallback, Logger!, "RoomDefinition"))
+           .WithFallback(RegistryCreateUtils.CreateFallback(Fallback, Logger!, "RoomDefinition"))
            .WithRegisterDoneEventSource(DataRegistrationManager.DoneSource)
            .Build();
 }

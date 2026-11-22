@@ -9,7 +9,7 @@ using ZLogger;
 
 namespace BabelRushR.Core.Data;
 
-public static class RegistryCreatUtils
+public static class RegistryCreateUtils
 {
     public static Func<RegKey, T> CreateFallback<T>(T value, ILogger logger, string registryName) =>
         CreateFallback(_ => value, logger, registryName);

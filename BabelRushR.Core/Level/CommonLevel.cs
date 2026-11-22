@@ -114,6 +114,6 @@ public sealed class CommonLevel(LevelMap map) : ObservableObject, ILevel
     }
 
     void ILevel.Attach(IGamePlay gamePlay) => Attach(gamePlay);
-    internal void Unattach() => GamePlay = null!;
+    internal void Unattach() => GamePlay = null!; // 似乎破壞了nullable但是無妨，在Unattach狀態下調用功能本就是非法的，這會讓它一如預期地拋出異常
     void ILevel.Unattach() => Unattach();
 }

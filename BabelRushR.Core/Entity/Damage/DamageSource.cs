@@ -7,6 +7,6 @@ public abstract record DamageSource();
 
 public abstract record EntityDamageSource(IEntity Attacker) : DamageSource;
 
-public record EntityActionDamageSource(IEntity Attacker, IEntityAction Action) : DamageSource;
+public record EntityActionDamageSource(IEntity Attacker, IEntityAction Action) : EntityDamageSource(Attacker);
 
-public record CardEntityActionDamageSource(IEntity Attacker, IEntityAction Action, ICard Card) : DamageSource;
+public record CardEntityActionDamageSource(IEntity Attacker, IEntityAction Action, ICard Card) : EntityActionDamageSource(Attacker, Action);
