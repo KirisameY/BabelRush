@@ -7,6 +7,7 @@ using Tomlyn.Serialization;
 namespace BabelRushR.Core.Level;
 
 [TomlPolymorphic]
+[TomlDerivedType(typeof(RecordRoomDefinition))]
 public interface IRoomDefinition
 {
     [Immutable] RegKey ID { get; }
