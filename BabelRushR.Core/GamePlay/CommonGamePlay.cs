@@ -17,18 +17,16 @@ namespace BabelRushR.Core.GamePlay;
 /// </summary>
 public class CommonGamePlay : ObservableObject, IGamePlay
 {
-    private CommonGamePlay(ulong seed)
-    {
-        _randoms = new GameRandoms(seed);
-    }
+    private CommonGamePlay() { }
 
     /// <summary>
     /// 自建事件总线、场景、关卡与玩家状态，放入玩家实体，并注册自动发现的事件处理器。
     /// </summary>
     public static CommonGamePlay Create(ulong seed, IEntity pcEntity, ILevelDefinition? level = null, int maxAP = 6, double apRegeneration = 1.0)
     {
-        var gamePlay = new CommonGamePlay(seed)
+        var gamePlay = new CommonGamePlay
         {
+            Randoms     = new GameRandoms(seed),
             Scene       = new CommonScene(),
             PlayerState = new CommonPlayerState(pcEntity, maxAP, apRegeneration),
         };
@@ -42,11 +40,7 @@ public class CommonGamePlay : ObservableObject, IGamePlay
 
     public IEventBus<GamePlayEvent> EventBus => field ??= new SimpleEventBus<GamePlayEvent>();
 
-
-    private readonly GameRandoms _randoms;
-    public ulong RandomSeed => _randoms.Seed;
-    public IRandomizer GetRandomizer(string scopeName) => _randoms.GetRandomizer(scopeName);
-
+    public required GameRandoms Randoms { get; init; }
 
     public required IScene Scene
     {

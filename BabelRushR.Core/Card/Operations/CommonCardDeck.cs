@@ -9,6 +9,7 @@ using KirisameY.GenericUtils;
 using KirisameY.NotifiableCollections.Collections;
 using KirisameY.Numeric;
 using KirisameY.Randomizer;
+using KirisameY.Registration.Data;
 
 namespace BabelRushR.Core.Card.Operations;
 
@@ -121,11 +122,14 @@ public class CommonCardDeck(IGamePlay gamePlay) : ICardDeck
 
     private bool _checking = false;
 
+    private static readonly RegKey ShuffleRandomKey = RegKey.From("core", "card.shuffle");
+
     public void ShuffleDiscardPileToDrawPile()
     {
-        var randomizer = gamePlay.GetRandomizer("core.card_shuffle");
+        var randomizer = gamePlay.Randoms.GetRandomizer(ShuffleRandomKey);
         while (DiscardPile.Count > 0)
         {
+            // 這裏可以用提前生成序列的方式來優化，避免從棄牌堆n次o(n)=o(n^2)的反復移除
             var from = randomizer.NextI32(DiscardPile.Count);
             MoveCard(CardPile.Discard, from, CardPile.Draw);
         }

@@ -14,9 +14,7 @@ public interface IGamePlay : INotifyPropertyChanged, IUpdatable, IDisposable
     /// <summary>供逻辑层内部通信，表现层同步请订阅 Notify 相关接口。</summary>
     [Immutable] IEventBus<GamePlayEvent> EventBus { get; }
 
-    [Immutable] ulong RandomSeed { get; }
-
-    IRandomizer GetRandomizer(string scopeName); // todo: 抽一個GamePlayRandom對象，我的意思是現有的那個public掉就行
+    [Immutable] GameRandoms Randoms { get; }
 
     IScene Scene { get; }
     ILevel Level { get; }

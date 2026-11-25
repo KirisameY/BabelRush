@@ -3,40 +3,42 @@ using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Text;
 
+using BabelRushR.Core.Common;
+
 using KirisameY.Randomizer;
 using KirisameY.Randomizer.RandomGenerators;
+using KirisameY.Registration.Data;
 
 namespace BabelRushR.Core.GamePlay;
 
-internal class GameRandoms(ulong seed)
+public sealed class GameRandoms(ulong seed)
 {
-    public ulong Seed => seed;
+    [Immutable] public ulong Seed => seed;
 
-    private readonly Dictionary<string, IRandomizer> _randomizers = [];
+    private readonly Dictionary<RegKey, IRandomizer> _randomizers = [];
 
     private readonly ArrayBufferWriter<byte> _buffer = new();
 
-    public IRandomizer GetRandomizer(string scopeName)
+    public IRandomizer GetRandomizer(RegKey scope) => _randomizers.GetValueOrDefault(scope) ?? ResetRandomizer(scope);
+
+    public IRandomizer ResetRandomizer(RegKey scope)
     {
-        if (!_randomizers.TryGetValue(scopeName, out var result))
+        ulong scopedSeed;
+        lock (_buffer)
         {
-            ulong scopedSeed;
-            lock (_buffer)
-            {
-                _buffer.Clear();
+            _buffer.Clear();
 
-                var strMax = Encoding.Unicode.GetMaxByteCount(scopeName.Length);
-                var strLength = Encoding.Unicode.GetBytes(scopeName, _buffer.GetSpan(strMax));
-                _buffer.Advance(strLength);
+            BinaryPrimitives.WriteUInt64BigEndian(_buffer.GetSpan(8), seed);
+            _buffer.Advance(8);
 
-                BinaryPrimitives.WriteUInt64BigEndian(_buffer.GetSpan(8), seed);
-                _buffer.Advance(8);
+            var scopeName = scope.FullName;
+            var strMax = Encoding.Unicode.GetMaxByteCount(scopeName.Length);
+            var strLength = Encoding.Unicode.GetBytes(scopeName, _buffer.GetSpan(strMax));
+            _buffer.Advance(strLength);
 
-                scopedSeed = XxHash64.HashToUInt64(_buffer.WrittenSpan);
-            }
-            _randomizers[scopeName] = result = new XorShiftStarGenerator(scopedSeed);
+            scopedSeed = XxHash64.HashToUInt64(_buffer.WrittenSpan);
         }
-
+        var result = _randomizers[scope] = new XorShiftStarGenerator(scopedSeed);
         return result;
     }
 }
