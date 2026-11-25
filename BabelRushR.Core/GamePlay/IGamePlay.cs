@@ -1,7 +1,5 @@
 using System.ComponentModel;
 
-using BabelRushR.Core.Battle;
-using BabelRushR.Core.Card.Operations;
 using BabelRushR.Core.Common;
 using BabelRushR.Core.Level;
 using BabelRushR.Core.Scenery;
@@ -18,11 +16,14 @@ public interface IGamePlay : INotifyPropertyChanged, IUpdatable, IDisposable
 
     [Immutable] ulong RandomSeed { get; }
 
-    IRandomizer GetRandomizer(string scopeName);
+    IRandomizer GetRandomizer(string scopeName); // todo: 抽一個GamePlayRandom對象，我的意思是現有的那個public掉就行
 
     IScene Scene { get; }
     ILevel Level { get; }
+
     [Immutable] IPlayerState PlayerState { get; }
+
+    void SetLevel(ILevelDefinition level);
 
     /// <summary>开局以来经过的累计时间（秒）。</summary>
     double Time { get; }

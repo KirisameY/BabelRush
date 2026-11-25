@@ -11,9 +11,5 @@ public class PlaceHolderLevelDefinition : ILevelDefinition
 
     public RegKey ID => field ??= RegKey.From("core", "404");
 
-    public ILevel GenerateLevel(IGamePlay gamePlay) => new CommonLevel(
-        new LevelMap(
-            new LevelNode(PlaceHolderRoomDefinition.Instance, new MapPosition(0.5, 0.5), [])
-        )
-    );
+    public ILevel GenerateLevel(IGamePlay gamePlay) => new CommonLevel();
 }
