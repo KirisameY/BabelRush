@@ -17,7 +17,7 @@ public class LevelTests
         map.Nodes.Single(node => node.Definition.ID == Key(key));
 
     private static CommonGamePlay NewGamePlay(ILevel level) =>
-        CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10), level: level);
+        CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10), level: new TestLevelDefinition(level));
 
     [Fact]
     public void Attaching_Places_The_Start_Room()
@@ -228,9 +228,58 @@ public class LevelTests
         var game = NewGamePlay(level);
 
         var placed = level.PlacedNodes.Count;
-        game.Level = level;
+        game.SetLevel(new TestLevelDefinition(level));
 
         Assert.Equal(placed, level.PlacedNodes.Count);
+    }
+
+    [Fact]
+    public void Create_Hands_Itself_To_The_Level_Definition()
+    {
+        IGamePlay? seen = null;
+        var definition = new TestLevelDefinition(Key("level"), gamePlay =>
+        {
+            seen = gamePlay;
+            return new CommonLevel();
+        });
+
+        var game = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10), level: definition);
+
+        Assert.Same(game, seen);
+    }
+
+    [Fact]
+    public void SetLevel_Generates_From_The_Definition_And_Replaces_The_Level()
+    {
+        var first = new CommonLevel();
+        var second = new CommonLevel();
+        var game = CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), new TestEntity(maxHP: 10), level: new TestLevelDefinition(first));
+        var changed = new List<string?>();
+        game.PropertyChanged += (_, args) => changed.Add(args.PropertyName);
+
+        game.SetLevel(new TestLevelDefinition(second));
+
+        Assert.Same(second, game.Level);
+        Assert.Contains(nameof(IGamePlay.Level), changed);
+    }
+
+    [Fact]
+    public void SetLevel_Detaches_The_Replaced_Level()
+    {
+        var builder = new LevelMapBuilder(new TestRoomDefinition(Key("root"), 10), new MapPosition(0.5, 0.9));
+        var aBuilder = builder.CreateNode(new TestRoomDefinition(Key("a"), 10), new MapPosition(0.5, 0.5));
+        builder.StartNode.ConnectTo(aBuilder);
+
+        var map = builder.Build();
+        var a = Get(map, "a");
+        var old = new CommonLevel(map);
+        var game = NewGamePlay(old);
+
+        game.SetLevel(PlaceHolderLevelDefinition.Instance);
+
+        // 換關卡後舊關卡已脫離 GamePlay，再選擇房間會因為未初始化而拋出。
+        Assert.Throws<InvalidOperationException>(() => old.TrySelectNext(a));
+        Assert.DoesNotContain(a, game.Level.SelectableNodes);
     }
 
     [Fact]

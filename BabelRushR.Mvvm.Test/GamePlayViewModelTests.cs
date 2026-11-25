@@ -1,6 +1,8 @@
+using System.Reflection;
+
 using BabelRushR.Core.Card.Operations;
+using BabelRushR.Core.Common;
 using BabelRushR.Core.GamePlay;
-using BabelRushR.Core.Level;
 using BabelRushR.Core.Scenery;
 using BabelRushR.Mvvm.ViewModels;
 
@@ -110,8 +112,8 @@ public class GamePlayViewModelTests
         var playerViewModel = sceneViewModel.Find(player)!;
 
         // 没真换场景时，点名通知、"全部失效"、以及把同一个场景实例再赋一次，都不该推倒重来
-        gamePlay.Raise(nameof(IGamePlay.Scene));
-        gamePlay.Raise(null);
+        RaisePropertyChanged(gamePlay, nameof(IGamePlay.Scene));
+        RaisePropertyChanged(gamePlay, null);
         gamePlay.Scene = gamePlay.Scene;
 
         Assert.Same(sceneViewModel, viewModel.Scene);
@@ -170,29 +172,16 @@ public class GamePlayViewModelTests
     }
 
     /// <summary>
-    ///     真的 <see cref="CommonGamePlay"/>，只是额外开一个把属性通知发出去的口子——
-    ///     <c>OnPropertyChanged</c> 是 protected，测试只能靠派生类拿到它。
+    ///     <c>OnPropertyChanged</c> 是 protected，测试靠反射拿到它来伪造属性通知。
     /// </summary>
-    /// <remarks>
-    ///     <c>Scene</c> 现在本身就是可写的，换场景不再需要替身。
-    /// </remarks>
-    private sealed class RaisableGamePlay(ulong seed) : CommonGamePlay(seed)
-    {
-        public void Raise(string? propertyName) => OnPropertyChanged(propertyName);
-    }
+    private static readonly MethodInfo RaisePropertyChangedMethod =
+        typeof(ObservableObject).GetMethod("OnPropertyChanged", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
-    private static RaisableGamePlay NewTestGamePlay(TestEntity pcEntity)
-    {
-        // 先往场景里放实体再挂上去：这条路上不会发 EntityAddedEvent，本类也不关心事件。
-        var scene = new CommonScene();
-        scene.AddEntity(pcEntity);
-        return new RaisableGamePlay((ulong)Random.Shared.NextInt64())
-        {
-            Scene       = scene,
-            PlayerState = new CommonPlayerState(pcEntity),
-            Level       = new CommonLevel(),
-        };
-    }
+    private static void RaisePropertyChanged(IGamePlay gamePlay, string? propertyName) =>
+        RaisePropertyChangedMethod.Invoke(gamePlay, [propertyName]);
+
+    private static CommonGamePlay NewTestGamePlay(TestEntity pcEntity) =>
+        CommonGamePlay.Create((ulong)Random.Shared.NextInt64(), pcEntity);
 
     private static CommonScene NewScene(TestEntity entity)
     {

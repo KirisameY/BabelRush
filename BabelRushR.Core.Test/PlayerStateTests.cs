@@ -1,7 +1,5 @@
 using BabelRushR.Core.GamePlay;
-using BabelRushR.Core.Level;
 using BabelRushR.Core.Numeric;
-using BabelRushR.Core.Scenery;
 
 namespace BabelRushR.Core.Test;
 
@@ -256,12 +254,7 @@ public class PlayerStateTests
     public void Assembling_A_Player_State_Into_A_GamePlay_Is_What_Makes_It_Usable()
     {
         var playerState = new CommonPlayerState(new TestEntity(maxHP: 10));
-        var game = new CommonGamePlay((ulong)Random.Shared.NextInt64())
-        {
-            Scene       = new CommonScene(),
-            PlayerState = playerState,
-            Level       = new CommonLevel(),
-        };
+        var game = TestGamePlay.Assemble(playerState: playerState);
         var events = new List<PlayerAPChangedEvent>();
         game.EventBus.Subscribe<PlayerAPChangedEvent>(events.Add);
 

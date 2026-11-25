@@ -1,7 +1,6 @@
 using BabelRushR.Core.Battle;
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Entity;
-using BabelRushR.Core.Level;
 using BabelRushR.Core.Scenery;
 
 namespace BabelRushR.Core.Test;
@@ -9,16 +8,10 @@ namespace BabelRushR.Core.Test;
 public class GamePlayTests
 {
     /// <summary>
-    ///     手动装配一局：<see cref="CommonGamePlay.Scene"/> 与 <c>PlayerState</c> 都是 required 的，
-    ///     只能经由对象初始化器交给它。与 <see cref="CommonGamePlay.Create"/> 不同，这里不塞玩家实体。
+    ///     手动装配一局：与 <see cref="CommonGamePlay.Create"/> 不同，这里不塞玩家实体。
     /// </summary>
     private static CommonGamePlay NewGamePlay(IScene? scene = null, IPlayerState? playerState = null)
-        => new((ulong)Random.Shared.NextInt64())
-        {
-            Scene       = scene ?? new CommonScene(),
-            PlayerState = playerState ?? new CommonPlayerState(new TestEntity(maxHP: 10)),
-            Level       = new CommonLevel(),
-        };
+        => TestGamePlay.Assemble(scene: scene, playerState: playerState);
 
     [Fact]
     public void Update_Accumulates_Time_And_Tracks_Last_Delta()
@@ -102,6 +95,26 @@ public class GamePlayTests
 
         Assert.Same(pc, gamePlay.PlayerState.PCEntity);
         Assert.Same(pc, Assert.Single(gamePlay.Scene.Entities));
+    }
+
+    [Fact]
+    public void Create_Seeds_Randoms_With_The_Requested_Seed()
+    {
+        const ulong seed = 0xDEAD_BEEF_CAFE_BABEul;
+
+        var gamePlay = CommonGamePlay.Create(seed, new TestEntity(maxHP: 10));
+
+        Assert.Equal(seed, gamePlay.Randoms.Seed);
+    }
+
+    [Fact]
+    public void Hand_Assembled_GamePlay_Exposes_The_Randoms_It_Was_Given()
+    {
+        var randoms = new GameRandoms(1234);
+
+        var gamePlay = TestGamePlay.Assemble(randoms: randoms);
+
+        Assert.Same(randoms, gamePlay.Randoms);
     }
 
     [Fact]

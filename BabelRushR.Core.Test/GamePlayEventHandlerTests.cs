@@ -3,8 +3,6 @@ using System.Reflection;
 using System.Reflection.Emit;
 
 using BabelRushR.Core.GamePlay;
-using BabelRushR.Core.Level;
-using BabelRushR.Core.Scenery;
 
 namespace BabelRushR.Core.Test;
 
@@ -24,12 +22,7 @@ public class GamePlayEventHandlerTests
         => CommonGamePlay.Create(seed, new TestEntity(maxHP: 10));
 
     private static CommonGamePlay NewHandAssembledGame(ulong seed)
-        => new(seed)
-        {
-            Scene       = new CommonScene(),
-            PlayerState = new CommonPlayerState(new TestEntity(maxHP: 10)),
-            Level       = new CommonLevel(),
-        };
+        => TestGamePlay.Assemble(seed);
 
 
     [Fact]
@@ -246,7 +239,7 @@ public class GamePlayEventHandlerTests
 
         private ProbeHandler(IGamePlay gamePlay)
         {
-            _seed = gamePlay.RandomSeed;
+            _seed = gamePlay.Randoms.Seed;
             _ = gamePlay.EventBus.Subscribe<ProbeEvent>(OnProbe);
         }
 
