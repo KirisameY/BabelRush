@@ -4,6 +4,7 @@ using BabelRushR.Core.Entity;
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Level;
 using BabelRushR.Core.Scenery;
+using BabelRushR.Core.Scenery.Objects;
 
 using KirisameY.Registration.Data;
 
@@ -342,14 +343,5 @@ public class LevelTests
         }
     }
 
-    private sealed class TestSceneObject : ISceneObject
-    {
-        public double Position { get; set; }
-
-        public event PropertyChangedEventHandler? PropertyChanged
-        {
-            add { }
-            remove { }
-        }
-    }
+    private sealed class TestSceneObject : SceneObjectBase { }
 }

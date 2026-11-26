@@ -2,6 +2,7 @@
 using BabelRushR.Core.Entity.Health;
 using BabelRushR.Core.Numeric;
 using BabelRushR.Core.Scenery;
+using BabelRushR.Core.Scenery.Objects;
 
 using KirisameY.Numeric;
 using KirisameY.Registration.Data;

@@ -1,5 +1,6 @@
 using BabelRushR.Core.GamePlay;
 using BabelRushR.Core.Scenery;
+using BabelRushR.Core.Scenery.Objects;
 
 namespace BabelRushR.Core.Level;
 

@@ -1,6 +1,6 @@
 ﻿using Tomlyn.Serialization;
 
-namespace BabelRushR.Core.Scenery;
+namespace BabelRushR.Core.Scenery.Objects;
 
 [TomlPolymorphic(TypeDiscriminatorPropertyName = "type")]
 public interface ISceneObjectExpression

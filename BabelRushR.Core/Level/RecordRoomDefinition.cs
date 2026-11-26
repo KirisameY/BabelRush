@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
 
 using BabelRushR.Core.Scenery;
+using BabelRushR.Core.Scenery.Objects;
 
 using KirisameY.Registration.Data;
 

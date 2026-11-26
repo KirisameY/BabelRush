@@ -21,6 +21,8 @@ public class CommonScene : ObservableObject, IScene
     {
         if (Entities.Contains(entity)) return false;
         _entities.Add(entity);
+        entity.AttachTo(this);
+
         GamePlay?.EventBus.Publish(new EntityAddedEvent(entity));
         return true;
     }
@@ -28,6 +30,7 @@ public class CommonScene : ObservableObject, IScene
     public bool RemoveEntity(IEntity entity)
     {
         if (!_entities.Remove(entity)) return false;
+        entity.UnattachFrom(this);
 
         GamePlay?.EventBus.Publish(new EntityRemovedEvent(entity));
         return true;
